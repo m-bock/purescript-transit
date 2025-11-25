@@ -1,0 +1,16 @@
+package:
+  name: transit
+  dependencies:
+    - console
+    - effect
+    - prelude
+    - variant
+    - typelevel-lists
+    - maybe
+  test:
+    main: Test.Main
+    dependencies: []
+workspace:
+  packageSet:
+    registry: 68.1.1
+  extraPackages: {}
