@@ -1,0 +1,38 @@
+digraph EspressoStateMachine {
+    rankdir=TB;
+    node [shape=rectangle, fontsize=12];
+
+    // Start pseudo-state
+    start [shape=circle, label="", width=0.2, height=0.2, fixedsize=true];
+
+    // States
+    Idle     [label=< <b>Idle</b> >, style=filled, fillcolor=lightgray, penwidth=0, fontcolor=gray, fontname="Arial"];
+    Heating  [label=< <b>Heating</b> >, style=filled, fillcolor=orange, penwidth=0, fontcolor="#CC5500", fontname="Arial"];
+    Ready    [label=< <b>Ready</b> >, style=filled, fillcolor=lightgreen, penwidth=0, fontcolor=darkgreen, fontname="Arial"];
+    Brewing  [label=< <b>Brewing</b> >, style=filled, fillcolor=lightblue, penwidth=0, fontcolor=skyblue, fontname="Arial"];
+    Error    [label=< <b>Error</b> >, style=filled, fillcolor=lightcoral, penwidth=0, fontcolor=indianred, fontname="Arial"];
+    Done     [label=< <b>Done</b> >, style=filled, fillcolor=lightseagreen, penwidth=0, fontcolor=mediumturquoise, fontname="Arial"];
+
+    // Choice/junction nodes
+    T2 [shape=diamond, label="", style=filled, fillcolor=orange, width=0.3, height=0.3, fixedsize=true, penwidth=0];
+    T  [shape=diamond, label="", style=filled, fillcolor=lightblue, width=0.3, height=0.3, fixedsize=true, penwidth=0];
+
+    // Transitions
+    start -> Idle;
+
+    Idle -> Heating [label=<<b>Power On</b>>, color=lightgray, fontcolor=gray];
+
+    Heating -> T2 [label=<<b>Heat Tick</b>>, color=orange, fontcolor="#CC5500"];
+    T2 -> Ready [label=<<i>Temp Reached</i>>, color=orange, fontcolor="#CC5500"];
+    T2 -> Heating [label=<<i>ContinueHeat</i>>, color=orange, fontcolor="#CC5500"];
+
+    Ready -> Brewing [label=<<b>Start Brew</b>>, color=lightgreen, fontcolor=darkgreen];
+
+    Brewing -> T [label=<<b>Brew Tick</b>>, color=lightblue, fontcolor=skyblue];
+    T -> Brewing [label=<<i>Continue</i>>, color=lightblue, fontcolor=skyblue];
+    T -> Error   [label=<<i>Error</i>>, color=lightblue, fontcolor=skyblue];
+    T -> Done    [label=<<i>Complete</i>>, color=lightblue, fontcolor=skyblue];
+
+    Ready -> Idle [label=<<b>Power Off</b>>, color=lightgreen, fontcolor=darkgreen];
+    Error -> Idle [label=<<b>Reset</b>>, color=lightcoral, fontcolor=indianred];
+}
