@@ -60,14 +60,14 @@ instance
 instance
   FromDSL
     (TransitionBuilderAddRet symStateOut (TransitionBuilderInit symStateIn symMsg))
-    (C.MkTransition (C.MkStateName symStateIn) (C.MkMsgName symMsg) (C.MkStateNameList (Nil' :< symStateOut)))
+    (C.MkTransition symStateIn symMsg (Nil' :< symStateOut))
 
 instance
-  ( FromDSL rest (C.MkTransition stateIn msg (C.MkStateNameList symsStateOut))
+  ( FromDSL rest (C.MkTransition stateIn msg symsStateOut)
   ) =>
   FromDSL
     (TransitionBuilderAddExtraRet symStateOut rest)
-    (C.MkTransition stateIn msg (C.MkStateNameList (symsStateOut :< symStateOut)))
+    (C.MkTransition stateIn msg (symsStateOut :< symStateOut))
 
 ---
 
@@ -88,9 +88,9 @@ test1 = checkFromDSL
       :: Proxy
            ( C.MkStateGraph
                ( Nil'
-                   :< (C.MkTransition (C.MkStateName "State1") (C.MkMsgName "Msg1") (C.MkStateNameList (Nil' :< "State2")))
-                   :< (C.MkTransition (C.MkStateName "State2") (C.MkMsgName "Msg2") (C.MkStateNameList (Nil' :< "State3" :< "State1")))
-                   :< (C.MkTransition (C.MkStateName "State3") (C.MkMsgName "Msg3") (C.MkStateNameList (Nil' :< "State1" :< "State2" :< "State4")))
-               ))
+                   :< (C.MkTransition "State1" "Msg1" (Nil' :< "State2"))
+                   :< (C.MkTransition "State2" "Msg2" (Nil' :< "State3" :< "State1"))
+                   :< (C.MkTransition "State3" "Msg3" (Nil' :< "State1" :< "State2" :< "State4"))
+               )
            )
-  
+  )

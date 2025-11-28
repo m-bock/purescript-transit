@@ -2,7 +2,7 @@ module Transit.MatchSub where
 
 import Prelude
 
-import Data.Generic.Rep (class Generic, Argument(..), Constructor(..), NoArguments(..), Sum(..), from, to)
+import Data.Generic.Rep (class Generic, Argument(..), Constructor(..), NoArguments(..), Sum(..), from)
 import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
 import Data.Variant as V
@@ -12,7 +12,6 @@ import Prim.Row as Row
 import Transit.Util (Generically(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
-import Unsafe.Coerce (unsafeCoerce)
 
 class
   MatchSub (sym :: Symbol) ty a

@@ -2,13 +2,16 @@ module Transit.Core where
 
 import Prelude
 
-import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple.Nested (type (/\), (/\))
-import Data.Unit (Unit)
-import Transit.MatchSub (class GetSubset, class MatchSub, integrate, matchSub, matchSub2)
+import Transit.MatchSub (class GetSubset, class MatchSub, integrate, matchSub2)
 import Transit.Util (type (:<))
 import Type.Data.List (List', Nil')
-import Unsafe.Coerce (unsafeCoerce)
+
+type StateName = Symbol
+
+type MsgName = Symbol
+
+---
 
 foreign import data StateGraph :: Type
 
@@ -16,27 +19,9 @@ foreign import data MkStateGraph :: List' Transition -> StateGraph
 
 ---
 
-foreign import data StateName :: Type
-
-foreign import data MkStateName :: Symbol -> StateName
-
----
-
-foreign import data MsgName :: Type
-
-foreign import data MkMsgName :: Symbol -> MsgName
-
----
-
-foreign import data StateNameList :: Type
-
-foreign import data MkStateNameList :: List' Symbol -> StateNameList
-
----
-
 foreign import data Transition :: Type
 
-foreign import data MkTransition :: StateName -> MsgName -> StateNameList -> Transition
+foreign import data MkTransition :: StateName -> MsgName -> List' StateName -> Transition
 
 ---
 
@@ -54,7 +39,7 @@ instance
   , MkUpdate (MkStateGraph rest1) rest2 msg state
   ) =>
   MkUpdate
-    (MkStateGraph (rest1 :< (MkTransition (MkStateName symStateIn) (MkMsgName symMsg) (MkStateNameList symsStateOut))))
+    (MkStateGraph (rest1 :< (MkTransition symStateIn symMsg symsStateOut)))
     (rest2 /\ Match symStateIn symMsg msgIn stateIn stateOut)
     msg
     state

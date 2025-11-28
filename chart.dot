@@ -1,38 +1,43 @@
 digraph EspressoStateMachine {
     rankdir=TB;
-    node [shape=rectangle, fontsize=12];
+    label=<<b>Espresso Machine State Machine</b>>;
+    labelloc=t;
+    labeljust=c;
+    fontname="Arial";
+    node [shape=box, fontsize=12, style=filled];
+    edge [fontsize=10, arrowsize=0.7, penwidth=1.8];
 
     // Start pseudo-state
-    start [shape=circle, label="", width=0.2, height=0.2, fixedsize=true];
+    start [shape=circle, label="", width=0.2, height=0.2, fixedsize=true, style=filled, fillcolor="0 0 0.5", penwidth=0];
 
     // States
-    Idle     [label=< <b>Idle</b> >, style=filled, fillcolor=lightgray, penwidth=0, fontcolor=gray, fontname="Arial"];
-    Heating  [label=< <b>Heating</b> >, style=filled, fillcolor=orange, penwidth=0, fontcolor="#CC5500", fontname="Arial"];
-    Ready    [label=< <b>Ready</b> >, style=filled, fillcolor=lightgreen, penwidth=0, fontcolor=darkgreen, fontname="Arial"];
-    Brewing  [label=< <b>Brewing</b> >, style=filled, fillcolor=lightblue, penwidth=0, fontcolor=skyblue, fontname="Arial"];
-    Error    [label=< <b>Error</b> >, style=filled, fillcolor=lightcoral, penwidth=0, fontcolor=indianred, fontname="Arial"];
-    Done     [label=< <b>Done</b> >, style=filled, fillcolor=lightseagreen, penwidth=0, fontcolor=mediumturquoise, fontname="Arial"];
+    Idle     [label=<<b>Idle</b>>, fillcolor="0.75 0.6 0.9", penwidth=0, fontcolor="0.75 0.6 0.5", fontname="Arial", labelloc=c];
+    Heating  [label=<<b>Heating</b>>, fillcolor="0.1 1.0 1.0", penwidth=0, fontcolor="0.1 1.0 0.6", fontname="Arial", labelloc=c];
+    Ready    [label=<<b>Ready</b>>, fillcolor="0.33 0.4 0.9", penwidth=0, fontcolor="0.33 0.4 0.4", fontname="Arial", labelloc=c];
+    Brewing  [label=<<b>Brewing</b>>, fillcolor="0.55 0.5 1.0", penwidth=0, fontcolor="0.55 0.5 0.7", fontname="Arial", labelloc=c];
+    Error    [label=<<b>Error</b>>, fillcolor="0 0.5 0.94", penwidth=0, fontcolor="0 0.5 0.6", fontname="Arial", labelloc=c];
+    Done     [label=<<b>Done</b>>, fillcolor="0.5 0.5 0.7", penwidth=0, fontcolor="0.5 0.5 0.5", fontname="Arial", labelloc=c];
 
     // Choice/junction nodes
-    T2 [shape=diamond, label="", style=filled, fillcolor=orange, width=0.3, height=0.3, fixedsize=true, penwidth=0];
-    T  [shape=diamond, label="", style=filled, fillcolor=lightblue, width=0.3, height=0.3, fixedsize=true, penwidth=0];
+    T2 [shape=diamond, label="?", style=filled, fillcolor="0.1 1.0 1.0", width=0.3, height=0.3, fixedsize=true, penwidth=0];
+    T  [shape=diamond, label="?", style=filled, fillcolor="0.55 0.5 1.0", width=0.3, height=0.3, fixedsize=true, penwidth=0];
 
     // Transitions
-    start -> Idle;
+    start -> Idle [color="0 0 0.5"];
 
-    Idle -> Heating [label=<<b>Power On</b>>, color=lightgray, fontcolor=gray];
+    Idle -> Heating [label=<<b>Power On</b>>, color="0.75 0.6 0.9", fontcolor="0.75 0.6 0.5", fontsize=12];
 
-    Heating -> T2 [label=<<b>Heat Tick</b>>, color=orange, fontcolor="#CC5500"];
-    T2 -> Ready [label=<<i>Temp Reached</i>>, color=orange, fontcolor="#CC5500"];
-    T2 -> Heating [label=<<i>ContinueHeat</i>>, color=orange, fontcolor="#CC5500"];
+    Heating -> T2 [label=<<b>Heat Tick</b>>, color="0.1 1.0 1.0", fontcolor="0.1 1.0 0.6", fontsize=12];
+    T2 -> Ready [label=<<i>Temp Reached</i>>, color="0.1 1.0 1.0", fontcolor="0.1 1.0 0.6"];
+    T2 -> Heating [label=<<i>ContinueHeat</i>>, color="0.1 1.0 1.0", fontcolor="0.1 1.0 0.6"];
 
-    Ready -> Brewing [label=<<b>Start Brew</b>>, color=lightgreen, fontcolor=darkgreen];
+    Ready -> Brewing [label=<<b>Start Brew</b>>, color="0.33 0.4 0.9", fontcolor="0.33 0.4 0.4", fontsize=12];
 
-    Brewing -> T [label=<<b>Brew Tick</b>>, color=lightblue, fontcolor=skyblue];
-    T -> Brewing [label=<<i>Continue</i>>, color=lightblue, fontcolor=skyblue];
-    T -> Error   [label=<<i>Error</i>>, color=lightblue, fontcolor=skyblue];
-    T -> Done    [label=<<i>Complete</i>>, color=lightblue, fontcolor=skyblue];
+    Brewing -> T [label=<<b>Brew Tick</b>>, color="0.55 0.5 1.0", fontcolor="0.55 0.5 0.7", fontsize=12];
+    T -> Brewing [label=<<i>Continue</i>>, color="0.55 0.5 1.0", fontcolor="0.55 0.5 0.7"];
+    T -> Error   [label=<<i>Error</i>>, color="0.55 0.5 1.0", fontcolor="0.55 0.5 0.7"];
+    T -> Done    [label=<<i>Complete</i>>, color="0.55 0.5 1.0", fontcolor="0.55 0.5 0.7"];
 
-    Ready -> Idle [label=<<b>Power Off</b>>, color=lightgreen, fontcolor=darkgreen];
-    Error -> Idle [label=<<b>Reset</b>>, color=lightcoral, fontcolor=indianred];
+    Ready -> Idle [label=<<b>Power Off</b>>, color="0.33 0.4 0.9", fontcolor="0.33 0.4 0.4", fontsize=12];
+    Error -> Idle [label=<<b>Reset</b>>, color="0 0.5 0.94", fontcolor="0 0.5 0.6", fontsize=12];
 }
