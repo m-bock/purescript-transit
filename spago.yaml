@@ -10,8 +10,22 @@ package:
     - labeled-data
   test:
     main: Test.Main
-    dependencies: []
+    dependencies:
+      - patchdown
 workspace:
   packageSet:
     registry: 68.1.1
-  extraPackages: {}
+  extraPackages:
+    codec-argonaut:
+      git: https://github.com/garyb/purescript-codec-argonaut.git
+      ref: dc287c83b79f86f8d9a0045dcb740f0cf9d23ccd
+      dependencies:
+        - argonaut-core
+        - codec
+        - variant
+        - ordered-collections
+        - type-equality
+        - foreign-object
+    patchdown:
+      git: https://github.com/m-bock/purescript-patchdown.git
+      ref: 7012c7a839d7c2f8e9d1a8acf9a56d9435eaccc4

@@ -3,15 +3,19 @@ module Transit.MatchSub where
 import Prelude
 
 import Data.Generic.Rep (class Generic, Argument(..), Constructor(..), NoArguments(..), Sum(..), from)
+import Data.Symbol (class IsSymbol)
 import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import LabeledData.TransformEntry.Transforms (ArgsToRecord, NoTransform, SingleField)
 import LabeledData.VariantLike.Generic (class GenericVariantLike, genericFromVariant)
 import Prim.Row as Row
+import Safe.Coerce (coerce)
+import Transit.Core (MkReturn, MkReturnVia, RetVia, Return)
 import Transit.Util (Generically(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
 
 class
   MatchSub (sym :: Symbol) ty a
@@ -43,15 +47,29 @@ instance (MatchSub sym t1 a, MatchSub sym t2 a) => MatchSub sym (Sum t1 t2) a wh
 ---
 
 class
-  GetSubset (syms :: List' Symbol) ty a
+  GetSubset (syms :: List' Return) ty a
   | syms ty -> a
   where
   integrate :: a -> ty
 
 type Opts = SingleField /\ ArgsToRecord NoTransform
 
-instance (GenericVariantLike Opts t r, FilterRow syms r r', Row.Union r' rx r) => GetSubset syms (Generically t) (Variant r') where
-  integrate v = Generically $ genericFromVariant (Proxy @Opts) $ V.expand v
+instance
+  ( GenericVariantLike Opts t r
+  , FilterRow syms r r' r2'
+  , Row.Union r2' rx r
+  ) =>
+  GetSubset syms (Generically t) (Variant r') where
+  integrate v = Generically z
+    where
+    z :: t
+    z = genericFromVariant (Proxy @Opts) $ y
+
+    y :: Variant r
+    y = V.expand x
+
+    x :: Variant r2'
+    x = f @syms @r v
 
 ---
 
@@ -67,24 +85,62 @@ derive instance Generic D _
 
 test1 :: Unit
 test1 = checkGetSubset
-  (Proxy :: _ ("Foo" :> Nil'))
+  (Proxy :: _ (MkReturn "Foo" :> Nil'))
   (Proxy :: _ (Generically D))
   (Proxy :: _ (Variant ("Foo" :: Int)))
 
 test2 :: Unit
 test2 = checkGetSubset
-  (Proxy :: _ ("Bar" :> "Baz" :> Nil'))
+  (Proxy :: _ (MkReturnVia "xxx" "Bar" :> Nil'))
   (Proxy :: _ (Generically D))
-  (Proxy :: _ (Variant ("Bar" :: String, "Baz" :: Boolean)))
+  (Proxy :: _ (Variant ("Bar" :: RetVia "xxx" String)))
 
 ---
 
-class FilterRow (syms :: List' Symbol) (rin :: Row Type) (rout :: Row Type) | syms rin -> rout
+class FilterRow (syms :: List' Return) (rin :: Row Type) (rout :: Row Type) (rout2 :: Row Type) | syms rin -> rout rout2 where
+  f :: Variant rout -> Variant rout2
 
-instance FilterRow Nil' r ()
+instance FilterRow Nil' r () ()
+  where
+  f = identity
 
 instance
-  ( Row.Cons sym a rout' rout
-  , FilterRow syms rin rout'
+  ( Row.Cons symState a rout' rout
+  , Row.Cons symState a rout2' rout2
+  , Row.Cons symState a rin' rin
+  , FilterRow syms rin rout' rout2'
   ) =>
-  FilterRow (sym :> syms) rin rout
+  FilterRow (MkReturn symState :> syms) rin rout rout2
+  where
+  f = unsafeCoerce
+
+instance
+  ( Row.Cons symState (RetVia symGuard a) rout' rout
+  , Row.Cons symState a rout2' rout2
+  , Row.Cons symState a rin' rin
+  , FilterRow syms rin rout' rout2'
+  , IsSymbol symState
+  ) =>
+  FilterRow (MkReturnVia symGuard symState :> syms) rin rout rout2
+  where
+  f v = unsafeCoerce "todo" --V.overOne (Proxy @symState) (unsafeCoerce :: RetVia symGuard a -> a) (?a) v
+    where
+    f' :: Variant rout' -> Variant rout2'
+    f' = f @syms @rin
+
+checkFilterRow :: forall syms rin rout rout2. (FilterRow syms rin rout rout2) => Proxy syms -> Proxy rin -> Proxy rout -> Proxy rout2 -> Unit
+checkFilterRow _ _ _ _ = unit
+
+test3 :: Unit
+test3 = checkFilterRow
+  (Proxy :: _ (MkReturn "Foo" :> Nil'))
+  (Proxy :: _ ("Foo" :: Int))
+  (Proxy :: _ ("Foo" :: Int))
+  (Proxy :: _ ("Foo" :: Int))
+
+test4 :: Unit
+test4 = checkFilterRow
+  (Proxy :: _ (MkReturnVia "xxx" "Bar" :> Nil'))
+  (Proxy :: _ ("Bar" :: String))
+  (Proxy :: _ ("Bar" :: RetVia "xxx" String))
+  (Proxy :: _ ("Bar" :: String))

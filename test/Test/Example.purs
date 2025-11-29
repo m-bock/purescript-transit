@@ -10,9 +10,9 @@ import Data.Unit (unit)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row (class Cons)
-import Transit.Core (Match(..), MkReturn, MkStateGraph, MkTransition, StateGraph, match, return)
+import Transit.Core (MkReturn, MkReturnVia, MkStateGraph, MkTransition, RetVia(..), StateGraph)
 import Transit.DSL (type (:*), type (:->), type (:@), type (:|), AddTransition, MkStateGraphDSL, StateGraphDSL, TransitionBuilderAddExtraRet, TransitionBuilderAddRet, TransitionBuilderInit)
-import Transit.Facade (mkUpdate, mkUpdateG)
+import Transit.MkUpdate (match, mkUpdateG, return)
 import Transit.Util (type (:<), Generically)
 import Type.Data.List (Nil')
 import Type.Function (type (#))
@@ -30,7 +30,7 @@ type MyStateGraph :: StateGraph
 type MyStateGraph = MkStateGraph
   ( Nil'
       :< (MkTransition "State1" "Msg1" (Nil' :< MkReturn "State2"))
-      :< (MkTransition "State2" "Msg2" (Nil' :< MkReturn "State3" :< MkReturn "State1"))
+      :< (MkTransition "State2" "Msg2" (Nil' :< MkReturnVia "foo" "State3" :< MkReturn "State1"))
   )
 
 type MyStateGraphDSLRep :: StateGraphDSL
@@ -86,7 +86,7 @@ update = mkUpdateG @MyStateGraph $
     & match @"State2" @"Msg2"
         ( \msg state ->
             if true then
-              return @"State3" { baz: false }
+              return @"State3" (RetVia @"foo" { baz: false })
             else
               return @"State1" { foo: 0 }
         )

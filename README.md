@@ -3,6 +3,20 @@
 
 Type-Safe State Machines.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Transit](#transit)
+  - [A](#a)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# Transit
+
+## A
+
+<img src="assets/espresso-machine-state-diagram.svg" alt="Transit" />
+
 ```purescript
 
 
