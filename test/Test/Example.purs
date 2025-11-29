@@ -10,8 +10,9 @@ import Data.Unit (unit)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row (class Cons)
-import Transit.Core (Match(..), MkStateGraph, MkTransition, StateGraph, mkUpdate)
+import Transit.Core (Match(..), MkReturn, MkStateGraph, MkTransition, StateGraph, match, return)
 import Transit.DSL (type (:*), type (:->), type (:@), type (:|), AddTransition, MkStateGraphDSL, StateGraphDSL, TransitionBuilderAddExtraRet, TransitionBuilderAddRet, TransitionBuilderInit)
+import Transit.Facade (mkUpdate, mkUpdateG)
 import Transit.Util (type (:<), Generically)
 import Type.Data.List (Nil')
 import Type.Function (type (#))
@@ -28,8 +29,8 @@ derive instance Generic State _
 type MyStateGraph :: StateGraph
 type MyStateGraph = MkStateGraph
   ( Nil'
-      :< (MkTransition "State1" "Msg1" (Nil' :< "State2"))
-      :< (MkTransition "State2" "Msg2" (Nil' :< "State3" :< "State1"))
+      :< (MkTransition "State1" "Msg1" (Nil' :< MkReturn "State2"))
+      :< (MkTransition "State2" "Msg2" (Nil' :< MkReturn "State3" :< MkReturn "State1"))
   )
 
 type MyStateGraphDSLRep :: StateGraphDSL
@@ -78,23 +79,16 @@ infixl 7 type S as :>>
 
 infixl 5 type T as :>
 
--- update :: Generically Msg -> Generically State -> Generically State
--- update = mkUpdate @MyStateGraph $
---   unit
---     & match @"State1" @"Msg1" (\msg state -> return @"State2" { bar: "" })
---     & match @"State2" @"Msg2"
---         ( \msg state ->
---             if true then
---               returnVia @"Guard1" @"State3" { baz: false }
---             else
---               returnVia @"Guard1" @"State1" { foo: 0 }
---         )
---     & match @"State1" @"Msg1" (\msg state -> return @"State2" { bar: "" })
+update :: Msg -> State -> State
+update = mkUpdateG @MyStateGraph $
+  unit
+    & match @"State1" @"Msg1" (\msg state -> return @"State2" { bar: "" })
+    & match @"State2" @"Msg2"
+        ( \msg state ->
+            if true then
+              return @"State3" { baz: false }
+            else
+              return @"State1" { foo: 0 }
+        )
 
--- _match :: forall t0 t1 t2 @t3 @t4. (t0 -> t1 -> t2) -> Match t3 t4 t0 t1 t2
--- _match f = Match f
-
--- _return :: forall (@sym ∷ Symbol) (a ∷ Type) (r1 ∷ Row Type) (r2 ∷ Row Type). Cons sym a r1 r2 ⇒ IsSymbol sym ⇒ a → Variant r2
--- _return v = V.inj (Proxy :: _ sym) v
-
--- infixl 5 Tuple as &
+infixl 5 Tuple as &
