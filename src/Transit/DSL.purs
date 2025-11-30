@@ -6,11 +6,11 @@ import Transit.Util (type (:<))
 import Type.Data.List (Nil')
 import Type.Proxy (Proxy(..))
 
-foreign import data StateGraphDSL :: Type
+foreign import data StateSpec :: Type
 
-foreign import data MkStateGraphDSL :: StateGraphDSL
+foreign import data MkStateSpec :: StateSpec
 
-foreign import data AddTransition :: TransitionBuilderFinal -> StateGraphDSL -> StateGraphDSL
+foreign import data AddTransition :: TransitionBuilderFinal -> StateSpec -> StateSpec
 
 --
 
@@ -36,7 +36,7 @@ infixl 5 type AddTransitionFlipped as :*
 
 infixl 5 type TransitionBuilderAddExtraRetFlipped as :|
 
-infixl 5 type TransitionBuilderAddRetFlipped as :->
+infixl 5 type TransitionBuilderAddRetFlipped as :>
 
 infixl 5 type TransitionBuilderInit as :@
 
@@ -79,9 +79,9 @@ class FromDSL dsl a | dsl -> a
 --   ( Proxy
 --       :: Proxy
 --            ( MkStateGraphDSL
---                :* ("State1" :@ "Msg1" :-> "State2")
---                :* ("State2" :@ "Msg2" :-> "State3" :| "State1")
---                :* ("State3" :@ "Msg3" :-> "State1" :| "State2" :| "State4")
+--                :* ("State1" :@ "Msg1" :> "State2")
+--                :* ("State2" :@ "Msg2" :> "State3" :| "State1")
+--                :* ("State3" :@ "Msg3" :> "State1" :| "State2" :| "State4")
 --            )
 --   )
 --   ( Proxy

@@ -2,41 +2,37 @@ module Test.Example where
 
 import Prelude
 
-import Data.Generic.Rep (class Generic)
-import Data.Symbol (class IsSymbol)
-import Data.Tuple (Tuple(..))
-import Data.Tuple.Nested ((/\))
-import Data.Unit (unit)
-import Data.Variant (Variant)
-import Data.Variant as V
-import Prim.Row (class Cons)
-import Transit.Core (MkReturn, MkReturnVia, MkStateGraph, MkTransition, RetVia(..), StateGraph)
-import Transit.DSL (type (:*), type (:->), type (:@), type (:|), AddTransition, MkStateGraphDSL, StateGraphDSL, TransitionBuilderAddExtraRet, TransitionBuilderAddRet, TransitionBuilderInit)
-import Transit.MkUpdate (match, mkUpdateG, return)
-import Transit.Util (type (:<), Generically)
-import Type.Data.List (Nil')
-import Type.Function (type (#))
-import Type.Proxy (Proxy(..))
+import Effect (Effect)
+import Transit (MkStateSpec, type (:*), type (:@), type (:>))
+import Transit.Gen.Graphviz as TransitGraphviz
 
-data Msg = Msg1 { foo :: Int } | Msg2 { bar :: String }
+type DoorSpec = MkStateSpec
+  :* ("DoorIsOpen" :@ "CloseTheDoor" :> "DoorIsClosed")
+  :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
 
-derive instance Generic Msg _
+main :: Effect Unit
+main = do
+  TransitGraphviz.writeToFile @DoorSpec "graphs/door-graph.dot"
 
-data State = State1 { foo :: Int } | State2 { bar :: String } | State3 { baz :: Boolean }
+-- data Msg = Msg1 { foo :: Int } | Msg2 { bar :: String }
 
-derive instance Generic State _
+-- derive instance Generic Msg _
 
-type MyStateGraph :: StateGraph
-type MyStateGraph = MkStateGraph
-  ( Nil'
-      :< (MkTransition "State1" "Msg1" (Nil' :< MkReturn "State2"))
-      :< (MkTransition "State2" "Msg2" (Nil' :< MkReturnVia "foo" "State3" :< MkReturn "State1"))
-  )
+-- data State = State1 { foo :: Int } | State2 { bar :: String } | State3 { baz :: Boolean }
 
-type MyStateGraphDSLRep :: StateGraphDSL
-type MyStateGraphDSLRep = MkStateGraphDSL
-  # AddTransition (TransitionBuilderInit "State1" "Msg1" # TransitionBuilderAddRet "State2")
-  # AddTransition (TransitionBuilderInit "State2" "Msg2" # TransitionBuilderAddRet "State3" # TransitionBuilderAddExtraRet "State1")
+-- derive instance Generic State _
+
+-- type MyStateGraph :: StateGraph
+-- type MyStateGraph = MkStateGraph
+--   ( Nil'
+--       :< (MkTransition "State1" "Msg1" (Nil' :< MkReturn "State2"))
+--       :< (MkTransition "State2" "Msg2" (Nil' :< MkReturnVia "foo" "State3" :< MkReturn "State1"))
+--   )
+
+-- type MyStateGraphDSLRep :: StateGraphDSL
+-- type MyStateGraphDSLRep = MkStateGraphDSL
+--   # AddTransition (TransitionBuilderInit "State1" "Msg1" # TransitionBuilderAddRet "State2")
+--   # AddTransition (TransitionBuilderInit "State2" "Msg2" # TransitionBuilderAddRet "State3" # TransitionBuilderAddExtraRet "State1")
 
 -- type MyStateGraphDSL :: StateGraphDSL
 -- type MyStateGraphDSL = MkStateGraphDSL
@@ -68,27 +64,27 @@ type MyStateGraphDSLRep = MkStateGraphDSL
 --         :|| "Guard3" :? "State4"
 --     )
 
-data T a b
-data G a b
+--data T a b
+-- data G a b
 
-data S a b
+-- data S a b
 
-infixl 9 type T as :?
-infixl 7 type G as :||
-infixl 7 type S as :>>
+-- infixl 9 type T as :?
+-- infixl 7 type G as :||
+-- infixl 7 type S as :>>
 
-infixl 5 type T as :>
+-- infixl 5 type T as :>
 
-update :: Msg -> State -> State
-update = mkUpdateG @MyStateGraph $
-  unit
-    & match @"State1" @"Msg1" (\msg state -> return @"State2" { bar: "" })
-    & match @"State2" @"Msg2"
-        ( \msg state ->
-            if true then
-              return @"State3" (RetVia @"foo" { baz: false })
-            else
-              return @"State1" { foo: 0 }
-        )
+-- update :: Msg -> State -> State
+-- update = mkUpdateG @MyStateGraph $
+--   unit
+--     & match @"State1" @"Msg1" (\msg state -> return @"State2" { bar: "" })
+--     & match @"State2" @"Msg2"
+--         ( \msg state ->
+--             if true then
+--               return @"State3" (RetVia @"foo" { baz: false })
+--             else
+--               return @"State1" { foo: 0 }
+--         )
 
-infixl 5 Tuple as &
+-- infixl 5 Tuple as &

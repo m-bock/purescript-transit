@@ -15,7 +15,11 @@ Type-Safe State Machines.
 
 ## A
 
-<img src="assets/espresso-machine-state-diagram.svg" alt="Transit" />
+<img src="graphs/door-graph.svg" />
+
+-
+
+<img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
 
 ```purescript
 
