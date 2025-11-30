@@ -5,7 +5,9 @@
         "path": "./",
         "core": {
           "dependencies": [
+            "colors",
             "console",
+            "dotlang",
             "effect",
             "labeled-data",
             "maybe",
@@ -17,12 +19,14 @@
             "aff",
             "arrays",
             "bifunctors",
+            "colors",
             "console",
             "const",
             "contravariant",
             "control",
             "datetime",
             "distributive",
+            "dotlang",
             "effect",
             "either",
             "enums",
@@ -53,6 +57,7 @@
             "refs",
             "safe-coerce",
             "st",
+            "strings",
             "tailrec",
             "transformers",
             "tuples",
@@ -715,6 +720,10 @@
           "variant"
         ]
       },
+      "dotlang": {
+        "git": "https://github.com/shamansir/purescript-dotlang.git",
+        "ref": "b40e6aeb3b4a03499011182d0d7b5936f3c72c30"
+      },
       "patchdown": {
         "git": "https://github.com/m-bock/purescript-patchdown.git",
         "ref": "7012c7a839d7c2f8e9d1a8acf9a56d9435eaccc4"
@@ -876,6 +885,19 @@
         "variant"
       ]
     },
+    "colors": {
+      "type": "registry",
+      "version": "7.0.1",
+      "integrity": "sha256-udlg/y2PFsHYli8Tgz8BQGGrOjyGo0BcJj36IfgYADs=",
+      "dependencies": [
+        "arrays",
+        "integers",
+        "lists",
+        "numbers",
+        "partial",
+        "strings"
+      ]
+    },
     "console": {
       "type": "registry",
       "version": "6.1.0",
@@ -958,6 +980,21 @@
         "prelude",
         "tuples",
         "type-equality"
+      ]
+    },
+    "dotlang": {
+      "type": "git",
+      "url": "https://github.com/shamansir/purescript-dotlang.git",
+      "rev": "b40e6aeb3b4a03499011182d0d7b5936f3c72c30",
+      "dependencies": [
+        "arrays",
+        "colors",
+        "console",
+        "effect",
+        "maybe",
+        "prelude",
+        "psci-support",
+        "strings"
       ]
     },
     "effect": {
