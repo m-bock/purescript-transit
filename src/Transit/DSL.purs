@@ -1,6 +1,8 @@
 module Transit.DSL where
 
+import Data.Reflectable (class Reflectable)
 import Data.Unit (Unit, unit)
+import Transit.Core (StateGraph, StateGraph_(..))
 import Transit.Core as C
 import Transit.Util (type (:<))
 import Type.Data.List (Nil')
@@ -42,18 +44,24 @@ infixl 5 type TransitionBuilderInit as :@
 
 ---
 
+instance Reflectable (AddTransition t b) (StateGraph_) where
+  reflectType _ = StateGraph []
+
+instance Reflectable MkStateSpec StateGraph_ where
+  reflectType _ = StateGraph []
+
 class FromDSL :: forall k1 k2. k1 -> k2 -> Constraint
 class FromDSL dsl a | dsl -> a
 
 ---
 
--- instance FromDSL MkStateGraphDSL (C.MkStateGraph Nil')
+instance FromDSL MkStateSpec (C.MkStateGraph Nil')
 
--- instance
---   ( FromDSL rest (C.MkStateGraph xs)
---   , FromDSL a a'
---   ) =>
---   FromDSL (AddTransition a rest) (C.MkStateGraph (xs :< a'))
+instance
+  ( FromDSL rest (C.MkStateGraph xs)
+  , FromDSL a a'
+  ) =>
+  FromDSL (AddTransition a rest) (C.MkStateGraph (xs :< a'))
 
 -- ---
 

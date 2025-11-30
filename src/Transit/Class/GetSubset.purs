@@ -12,7 +12,7 @@ import LabeledData.VariantLike.Generic (class GenericVariantLike, genericFromVar
 import Prim.Row as Row
 import Safe.Coerce (coerce)
 import Transit.Class.FilterRow (class FilterRow, filterRow)
-import Transit.Core (MkReturn, MkReturnVia, Return, ReturnStateVia)
+import Transit.Core (MkReturn, MkReturnVia, Return, ReturnState, ReturnStateVia)
 import Transit.Util (Generically(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
@@ -61,7 +61,7 @@ test1 :: Unit
 test1 = checkGetSubset
   (Proxy :: _ (MkReturn "Foo" :> Nil'))
   (Proxy :: _ (Generically D))
-  (Proxy :: _ (Variant ("Foo" :: Int)))
+  (Proxy :: _ (Variant ("Foo" :: ReturnState Int)))
 
 test2 :: Unit
 test2 = checkGetSubset

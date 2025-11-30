@@ -5,7 +5,7 @@ import Prelude
 import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Prim.Row as Row
-import Transit.Core (MkReturn, MkReturnVia, Return, ReturnStateVia)
+import Transit.Core (MkReturn, MkReturnVia, Return, ReturnState, ReturnStateVia)
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
@@ -20,7 +20,7 @@ instance FilterRow Nil' r () ()
   filterRow = identity
 
 instance
-  ( Row.Cons symState a rout' rout
+  ( Row.Cons symState (ReturnState a) rout' rout
   , Row.Cons symState a rout2' rout2
   , Row.Cons symState a rin' rin
   , FilterRow syms rin rout' rout2'
@@ -47,7 +47,7 @@ test3 :: Unit
 test3 = checkFilterRow
   (Proxy :: _ (MkReturn "Foo" :> Nil'))
   (Proxy :: _ ("Foo" :: Int))
-  (Proxy :: _ ("Foo" :: Int))
+  (Proxy :: _ ("Foo" :: ReturnState Int))
   (Proxy :: _ ("Foo" :: Int))
 
 test4 :: Unit

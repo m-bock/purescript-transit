@@ -2,34 +2,50 @@ module Transit.Gen.Graphviz where
 
 import Prelude
 
-import Color (rgb)
-import Data.DotLang (node, (=*>), (==>))
-import Data.DotLang as Dot
-import Data.DotLang.Attr (FillStyle(..))
-import Data.DotLang.Attr.Edge as Edge
-import Data.DotLang.Attr.Node as Node
-import Data.DotLang.Class (toText)
+import Color (Color)
+import Data.Array as Array
+import Data.Reflectable (class Reflectable, reflectType)
+import Data.String as Str
 import Effect (Effect)
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Core (StateGraph_(..))
+import Transit.Core (Return, Return_(..), StateGraph_(..), Transition_(..))
+import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
-type GraphizGraph = {}
+mkGraphvizGraph :: Options -> StateGraph_ -> GraphvizGraph
+mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph
+  { global: []
+  , nodes:
+      [
 
-exampleGraph = Dot.DiGraph
-  [ node "a" [ Node.Shape Node.Diamond, Node.Style Node.Filled, Node.FillColor (rgb 255 0 0) ]
-  , node "b" []
-  , "a" ==> "b"
-  , "a" =*> "d" $ [ Edge.FillColor (rgb 255 0 0) ]
-  ]
+      ] <> map mkNode (getStates sg)
+  , edges: []
+  }
 
-f :: StateGraph_ -> GraphizGraph
-f = unsafeCoerce "todo"
+mkNode :: String -> Node
+mkNode stateName = Node stateName []
 
-g :: GraphizGraph -> String
-g = unsafeCoerce "todo"
+getStates :: StateGraph_ -> Array String
+getStates sg =
+  Array.nub $ Array.concat [ getFromStates sg, getToStates sg ]
+
+getFromStates :: StateGraph_ -> Array String
+getFromStates (StateGraph transitions) =
+  map (\(Transition stateName _ _) -> stateName) transitions
+
+getToStates :: StateGraph_ -> Array String
+getToStates (StateGraph transitions) =
+  join $ map
+    ( \(Transition _ _ returns) -> map
+        ( case _ of
+            Return stateName -> stateName
+            ReturnVia _ stateName -> stateName
+        )
+        returns
+    )
+    transitions
 
 type Options =
   { title :: String
@@ -40,8 +56,38 @@ defaultOptions =
   { title: "Untitled"
   }
 
-h :: forall @spec. (Options -> Options) -> FilePath -> Effect Unit
-h = unsafeCoerce "todo"
+writeToFile :: forall @spec. Reflectable spec StateGraph_ => (Options -> Options) -> FilePath -> Effect Unit
+writeToFile mkOptions path = FS.writeTextFile
+  UTF8
+  path
+  (toText (mkGraphvizGraph (mkOptions defaultOptions) $ reflectType (Proxy @spec)))
 
-writeToFile :: forall @spec. FilePath -> Effect Unit
-writeToFile path = FS.writeTextFile UTF8 path (toText exampleGraph)
+writeToFile_ :: forall @spec. Reflectable spec StateGraph_ => FilePath -> Effect Unit
+writeToFile_ = writeToFile @spec identity
+
+class ToText a where
+  toText :: a -> String
+
+newtype GraphvizGraph = GraphvizGraph
+  { global :: Array Attr
+  , nodes :: Array Node
+  , edges :: Array Edge
+  }
+
+instance ToText GraphvizGraph where
+  toText (GraphvizGraph { global, nodes, edges }) =
+    "digraph " <> "" <> " {" <> "" <> Str.joinWith "\n" (map toText nodes) <> "}"
+
+data Node = Node String (Array Attr)
+
+instance ToText Node where
+  toText (Node stateName attrs) = stateName <> " [" <> "" <> "]"
+
+data Edge = Edge String String (Array Attr)
+
+instance ToText Edge where
+  toText (Edge from to attrs) = from <> " -> " <> to <> " [" <> "" <> "]"
+
+data Attr = Attr String Value
+
+data Value = Value String | ValueColor Color

@@ -1,1 +1,1 @@
-digraph {a [shape=diamond, style=filled, fillcolor="#ff0000"]; b []; a -> b; a -> d [fillcolor="#ff0000"]; }
+digraph  {}

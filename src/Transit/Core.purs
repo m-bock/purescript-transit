@@ -34,7 +34,7 @@ type StateName_ = String
 type MsgName_ = String
 type GuardName_ = String
 
-newtype StateGraph_ = StateGraph_ (Array Transition_)
+newtype StateGraph_ = StateGraph (Array Transition_)
 
 data Transition_ = Transition StateName_ MsgName_ (Array Return_)
 
@@ -47,10 +47,10 @@ data Return_
 --------------------------------------------------------------------------------
 
 instance Reflectable (MkStateGraph Nil') StateGraph_ where
-  reflectType _ = StateGraph_ []
+  reflectType _ = StateGraph []
 
 instance (Reflectable transitions (Array Transition_)) => Reflectable (MkStateGraph (transition :> transitions)) StateGraph_ where
-  reflectType _ = StateGraph_ $ reflectType (Proxy @transitions)
+  reflectType _ = StateGraph $ reflectType (Proxy @transitions)
 
 instance
   ( IsSymbol stateName
@@ -77,3 +77,7 @@ derive instance Newtype (Match symState symMsg msgIn stateIn stateOut) _
 newtype ReturnStateVia (symGuard :: Symbol) a = ReturnStateVia a
 
 derive instance Newtype (ReturnStateVia symGuard a) _
+
+newtype ReturnState a = ReturnState a
+
+derive instance Newtype (ReturnState a) _
