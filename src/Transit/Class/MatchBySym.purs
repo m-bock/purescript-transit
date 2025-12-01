@@ -4,7 +4,6 @@ import Prelude
 
 import Data.Generic.Rep (class Generic, Argument(..), Constructor(..), NoArguments(..), Sum(..), from)
 import Transit.Util (Generically(..))
-import Type.Proxy (Proxy(..))
 
 class
   MatchBySym (sym :: Symbol) ty a
@@ -32,16 +31,3 @@ instance (MatchBySym sym t1 a, MatchBySym sym t2 a) => MatchBySym sym (Sum t1 t2
 matchBySym2 :: forall @sym1 @sym2 a1 b1 a2 b2 z. MatchBySym sym1 a1 b1 => MatchBySym sym2 a2 b2 => (b1 -> b2 -> z) -> (Unit -> z) -> a1 -> a2 -> z
 matchBySym2 f z x1 x2 =
   matchBySym @sym1 (\y1 -> matchBySym @sym2 (\y2 -> f y1 y2) z x2) z x1
-
-checkMatchBySym :: forall sym a b. MatchBySym sym a b => Proxy sym -> Proxy a -> Proxy b -> Unit
-checkMatchBySym _ _ _ = unit
-
-data Test = Test1 Int | Test2 String
-
-derive instance Generic Test _
-
-test1 :: Unit
-test1 = checkMatchBySym (Proxy :: _ "Test1") (Proxy :: _ (Generically Test)) (Proxy :: _ Int)
-
-test2 :: Unit
-test2 = checkMatchBySym (Proxy :: _ "Test2") (Proxy :: _ (Generically Test)) (Proxy :: _ String)

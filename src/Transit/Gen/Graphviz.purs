@@ -2,15 +2,16 @@ module Transit.Gen.Graphviz where
 
 import Prelude
 
-import Color (Color)
 import Data.Array as Array
 import Data.Reflectable (class Reflectable, reflectType)
-import Data.String as Str
+import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
+import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Core (Return, Return_(..), StateGraph_(..), Transition_(..))
+import Transit.Core (Return_(..), StateGraph_(..), Transition_(..))
+import Transit.DotLang (Edge(..), GraphvizGraph(..), Node(..), toText)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -21,11 +22,22 @@ mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph
       [
 
       ] <> map mkNode (getStates sg)
-  , edges: []
+  , edges: map mkEdge (getEdges sg)
   }
 
 mkNode :: String -> Node
 mkNode stateName = Node stateName []
+
+mkEdge :: String /\ String -> Edge
+mkEdge (from /\ to) = Edge from to []
+
+getEdges :: StateGraph_ -> Array (String /\ String)
+getEdges (StateGraph transitions) =
+  map getEdge transitions
+  where
+  getEdge = case _ of
+    (Transition from _ [ Return to ]) -> from /\ to
+    _ -> unsafeCoerce "todo"
 
 getStates :: StateGraph_ -> Array String
 getStates sg =
@@ -57,37 +69,11 @@ defaultOptions =
   }
 
 writeToFile :: forall @spec. Reflectable spec StateGraph_ => (Options -> Options) -> FilePath -> Effect Unit
-writeToFile mkOptions path = FS.writeTextFile
-  UTF8
-  path
-  (toText (mkGraphvizGraph (mkOptions defaultOptions) $ reflectType (Proxy @spec)))
+writeToFile mkOptions path = do
+  FS.writeTextFile UTF8 path
+    (toText (mkGraphvizGraph (mkOptions defaultOptions) $ reflectType (Proxy @spec)))
+  Console.log $ "Wrote graphviz graph to " <> path
 
 writeToFile_ :: forall @spec. Reflectable spec StateGraph_ => FilePath -> Effect Unit
 writeToFile_ = writeToFile @spec identity
 
-class ToText a where
-  toText :: a -> String
-
-newtype GraphvizGraph = GraphvizGraph
-  { global :: Array Attr
-  , nodes :: Array Node
-  , edges :: Array Edge
-  }
-
-instance ToText GraphvizGraph where
-  toText (GraphvizGraph { global, nodes, edges }) =
-    "digraph " <> "" <> " {" <> "" <> Str.joinWith "\n" (map toText nodes) <> "}"
-
-data Node = Node String (Array Attr)
-
-instance ToText Node where
-  toText (Node stateName attrs) = stateName <> " [" <> "" <> "]"
-
-data Edge = Edge String String (Array Attr)
-
-instance ToText Edge where
-  toText (Edge from to attrs) = from <> " -> " <> to <> " [" <> "" <> "]"
-
-data Attr = Attr String Value
-
-data Value = Value String | ValueColor Color
