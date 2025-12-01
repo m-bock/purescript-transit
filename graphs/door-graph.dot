@@ -1,1 +1,8 @@
-digraph  {}
+digraph 
+{
+rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>
+DoorIsClosed [shape = "box", label = <<b>DoorIsClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#bf99e6", fontcolor = "#bf9980", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+DoorIsOpen [shape = "box", label = <<b>DoorIsOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#bf99e6", fontcolor = "#bf9980", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+DoorIsClosed -> DoorIsOpen [label = <<b>Reset</b>>, fontcolor = "#0080f0", fontsize = 12, color = "#0080f0"]
+DoorIsOpen -> DoorIsClosed [label = <<b>Reset</b>>, fontcolor = "#0080f0", fontsize = 12, color = "#0080f0"]
+}

@@ -13,7 +13,7 @@ type DoorSpec = MkStateSpec
 main :: Effect Unit
 main = do
   TransitGraphviz.writeToFile_ @DoorSpec "graphs/door-graph.dot"
-
+  pure unit
 -- data Msg = Msg1 { foo :: Int } | Msg2 { bar :: String }
 
 -- derive instance Generic Msg _

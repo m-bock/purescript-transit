@@ -8,7 +8,7 @@ import Data.Newtype (class Newtype)
 import Data.Reflectable (class Reflectable, reflectType)
 import Data.Show.Generic (genericShow)
 import Data.Symbol (reflectSymbol)
-import Type.Data.List (type (:>), List', Nil')
+import Type.Data.List (type (:>), Cons', List', Nil')
 import Type.Prelude (class IsSymbol, Proxy(..))
 
 --------------------------------------------------------------------------------
@@ -83,10 +83,27 @@ instance
 instance
   ( IsSymbol stateName
   , IsSymbol msgName
-  , Reflectable returns (Array Return_)
   ) =>
-  Reflectable (MkTransition stateName msgName returns) Transition_ where
-  reflectType _ = Transition (reflectSymbol (Proxy @stateName)) (reflectSymbol (Proxy @msgName)) (reflectType (Proxy @returns))
+  Reflectable (MkTransition stateName msgName Nil') Transition_ where
+  reflectType _ = Transition
+    (reflectSymbol (Proxy @stateName))
+    (reflectSymbol (Proxy @msgName))
+    []
+
+instance
+  ( IsSymbol stateName
+  , IsSymbol msgName
+  , Reflectable (MkTransition stateName msgName returns) Transition_
+  , Reflectable ret Return_
+  ) =>
+  Reflectable (MkTransition stateName msgName (Cons' ret returns)) Transition_ where
+  reflectType _ = Transition
+    (reflectSymbol (Proxy @stateName))
+    (reflectSymbol (Proxy @msgName))
+    (Array.cons head tail)
+    where
+    head = reflectType (Proxy @ret)
+    Transition _ _ tail = reflectType (Proxy @(MkTransition stateName msgName returns))
 
 instance (IsSymbol stateName) => Reflectable (MkReturn stateName) Return_ where
   reflectType _ = Return (reflectSymbol (Proxy @stateName))

@@ -2,6 +2,7 @@ module Transit.Gen.Graphviz where
 
 import Prelude
 
+import Color as Color
 import Data.Array as Array
 import Data.Reflectable (class Reflectable, reflectType)
 import Data.Tuple.Nested (type (/\), (/\))
@@ -11,13 +12,19 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Core (Return_(..), StateGraph_(..), Transition_(..))
-import Transit.DotLang (Edge(..), GraphvizGraph(..), Node(..), toText)
+import Transit.DotLang (Edge(..), GraphvizGraph(..), Node(..), rankDirTD, toText)
+import Transit.DotLang as D
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 mkGraphvizGraph :: Options -> StateGraph_ -> GraphvizGraph
 mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph
-  { global: []
+  { global:
+      D.GlobalAttrs
+        [ D.rankDirTD
+        , D.fontNameArial
+        , D.labelHtmlBold options.title
+        ]
   , nodes:
       [
 
@@ -26,10 +33,25 @@ mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph
   }
 
 mkNode :: String -> Node
-mkNode stateName = Node stateName []
+mkNode stateName = Node stateName
+  [ D.shapeBox
+  , D.labelHtmlBold stateName
+  , D.fontSize 12
+  , D.styleFilled
+  , D.fillColor (Color.rgba' 0.75 0.6 0.9 1.0)
+  , D.fontColor (Color.rgba' 0.75 0.6 0.5 1.0)
+  , D.fontNameArial
+  , D.labelLocC
+  , D.penWidth 0.0
+  ]
 
 mkEdge :: String /\ String -> Edge
-mkEdge (from /\ to) = Edge from to []
+mkEdge (from /\ to) = Edge from to
+  [ D.labelHtmlBold "Reset"
+  , D.fontColor (Color.rgba' 0.0 0.5 0.94 1.0)
+  , D.fontSize 12
+  , D.color (Color.rgba' 0.0 0.5 0.94 1.0)
+  ]
 
 getEdges :: StateGraph_ -> Array (String /\ String)
 getEdges (StateGraph transitions) =
