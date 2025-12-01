@@ -70,8 +70,10 @@ defaultOptions =
 
 writeToFile :: forall @spec. Reflectable spec StateGraph_ => (Options -> Options) -> FilePath -> Effect Unit
 writeToFile mkOptions path = do
+  let reflected = reflectType (Proxy @spec)
+  Console.log $ "Reflected: " <> show reflected
   FS.writeTextFile UTF8 path
-    (toText (mkGraphvizGraph (mkOptions defaultOptions) $ reflectType (Proxy @spec)))
+    (toText (mkGraphvizGraph (mkOptions defaultOptions) reflected))
   Console.log $ "Wrote graphviz graph to " <> path
 
 writeToFile_ :: forall @spec. Reflectable spec StateGraph_ => FilePath -> Effect Unit

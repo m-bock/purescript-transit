@@ -46,10 +46,10 @@ infixl 5 type TransitionBuilderInit as :@
 
 ---
 
-instance (FromDSL MkStateSpec o, Reflectable o o') => Reflectable MkStateSpec o' where
-  reflectType _ = reflectType (Proxy @o)
+-- instance (FromDSL MkStateSpec o, Reflectable o o') => Reflectable MkStateSpec o' where
+--   reflectType _ = reflectType (Proxy @o)
 
-instance (FromDSL (AddTransition t b) o, Reflectable o o') => Reflectable (AddTransition t b) o' where
+instance (FromDSL (AddTransition t b) o, Reflectable o StateGraph_) => Reflectable (AddTransition t b) StateGraph_ where
   reflectType _ = reflectType (Proxy @o)
 
 ---
