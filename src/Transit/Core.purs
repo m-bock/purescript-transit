@@ -49,8 +49,9 @@ data Return_
 instance Reflectable (MkStateGraph Nil') StateGraph_ where
   reflectType _ = StateGraph []
 
-instance (Reflectable transitions (Array Transition_)) => Reflectable (MkStateGraph (transition :> transitions)) StateGraph_ where
-  reflectType _ = StateGraph $ reflectType (Proxy @transitions)
+instance (Reflectable (MkStateGraph transitions) StateGraph_) => Reflectable (MkStateGraph (transition :> transitions)) StateGraph_ where
+
+  reflectType _ = reflectType (Proxy @(MkStateGraph transitions))
 
 instance
   ( IsSymbol stateName

@@ -1,11 +1,11 @@
 module Transit.DSL where
 
-import Data.Reflectable (class Reflectable)
+import Data.Reflectable (class Reflectable, reflectType)
 import Data.Unit (Unit, unit)
-import Transit.Core (StateGraph, StateGraph_(..))
+import Transit.Core (MkReturn, MkReturnVia, StateGraph, StateGraph_(..))
 import Transit.Core as C
 import Transit.Util (type (:<))
-import Type.Data.List (Nil')
+import Type.Data.List (Cons', Nil')
 import Type.Proxy (Proxy(..))
 
 foreign import data StateSpec :: Type
@@ -26,6 +26,8 @@ foreign import data TransitionBuilderFinal :: Type
 
 foreign import data TransitionBuilderAddRet :: Symbol -> TransitionBuilderStep1 -> TransitionBuilderFinal
 
+foreign import data TransitionBuilderAddRetVia :: Symbol -> Symbol -> TransitionBuilderStep1 -> TransitionBuilderFinal
+
 foreign import data TransitionBuilderAddExtraRet :: Symbol -> TransitionBuilderFinal -> TransitionBuilderFinal
 
 --
@@ -44,11 +46,13 @@ infixl 5 type TransitionBuilderInit as :@
 
 ---
 
-instance Reflectable (AddTransition t b) (StateGraph_) where
-  reflectType _ = StateGraph []
+instance (FromDSL MkStateSpec o, Reflectable o o') => Reflectable MkStateSpec o' where
+  reflectType _ = reflectType (Proxy @o)
 
-instance Reflectable MkStateSpec StateGraph_ where
-  reflectType _ = StateGraph []
+instance (FromDSL (AddTransition t b) o, Reflectable o o') => Reflectable (AddTransition t b) o' where
+  reflectType _ = reflectType (Proxy @o)
+
+---
 
 class FromDSL :: forall k1 k2. k1 -> k2 -> Constraint
 class FromDSL dsl a | dsl -> a
@@ -65,14 +69,19 @@ instance
 
 -- ---
 
--- instance
---   FromDSL
---     (TransitionBuilderAddRet symStateOut (TransitionBuilderInit symStateIn symMsg))
---     (C.MkTransition symStateIn symMsg (Nil' :< symStateOut))
+instance
+  FromDSL
+    (TransitionBuilderAddRet symStateOut (TransitionBuilderInit symStateIn symMsg))
+    (C.MkTransition symStateIn symMsg (Cons' (MkReturn symStateOut) Nil'))
 
--- instance
---   ( FromDSL rest (C.MkTransition stateIn msg symsStateOut)
---   ) =>
---   FromDSL
---     (TransitionBuilderAddExtraRet symStateOut rest)
---     (C.MkTransition stateIn msg (symsStateOut :< symStateOut))
+instance
+  FromDSL
+    (TransitionBuilderAddRetVia symGuard symStateOut (TransitionBuilderInit symStateIn symMsg))
+    (C.MkTransition symStateIn symMsg (Cons' (MkReturnVia symGuard symStateOut) Nil'))
+
+instance
+  ( FromDSL rest (C.MkTransition stateIn msg symsStateOut)
+  ) =>
+  FromDSL
+    (TransitionBuilderAddExtraRet symStateOut rest)
+    (C.MkTransition stateIn msg (Cons' (MkReturn symStateOut) symsStateOut))
