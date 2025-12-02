@@ -75,7 +75,7 @@ instance
   ) =>
   Reflectable (MkStateGraph (transition :> transitions)) StateGraph_ where
 
-  reflectType _ = StateGraph (Array.cons head tail)
+  reflectType _ = StateGraph (Array.snoc tail head)
     where
     head = reflectType (Proxy @transition)
     (StateGraph tail) = reflectType (Proxy @(MkStateGraph transitions))
@@ -100,7 +100,7 @@ instance
   reflectType _ = Transition
     (reflectSymbol (Proxy @stateName))
     (reflectSymbol (Proxy @msgName))
-    (Array.cons head tail)
+    (Array.snoc tail head)
     where
     head = reflectType (Proxy @ret)
     Transition _ _ tail = reflectType (Proxy @(MkTransition stateName msgName returns))

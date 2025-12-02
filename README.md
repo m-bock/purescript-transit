@@ -1,5 +1,8 @@
-![Light](assets/logo-light.png#gh-light-mode-only)
-![Dark](assets/logo-dark.png#gh-dark-mode-only)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.png">
+  <img alt="State diagram" src="assets/logo-light.png">
+</picture>
 
 Type-Safe State Machines.
 
@@ -17,7 +20,7 @@ Type-Safe State Machines.
 
 <img src="graphs/door-graph.svg" />
 
--
+<img src="graphs/color-test.svg" />
 
 <img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
 

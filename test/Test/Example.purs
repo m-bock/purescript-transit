@@ -6,12 +6,40 @@ import Effect (Effect)
 import Transit (MkStateSpec, type (:*), type (:@), type (:>))
 import Transit.Gen.Graphviz as TransitGraphviz
 
+type ColorTest = MkStateSpec
+  :* ("StateA" :@ "MsgA" :> "StateB")
+  :* ("StateB" :@ "MsgB" :> "StateC")
+  :* ("StateC" :@ "MsgC" :> "StateD")
+  :* ("StateD" :@ "MsgD" :> "StateE")
+  :* ("StateE" :@ "MsgE" :> "StateF")
+  :* ("StateF" :@ "MsgF" :> "StateG")
+  :* ("StateG" :@ "MsgG" :> "StateH")
+  :* ("StateH" :@ "MsgH" :> "StateI")
+  :* ("StateI" :@ "MsgI" :> "StateJ")
+  :* ("StateJ" :@ "MsgJ" :> "StateK")
+  :* ("StateK" :@ "MsgK" :> "StateL")
+  :* ("StateL" :@ "MsgL" :> "StateM")
+  :* ("StateM" :@ "MsgM" :> "StateN")
+  :* ("StateN" :@ "MsgN" :> "StateO")
+  :* ("StateO" :@ "MsgO" :> "StateP")
+  :* ("StateP" :@ "MsgP" :> "StateQ")
+  :* ("StateQ" :@ "MsgQ" :> "StateR")
+  :* ("StateR" :@ "MsgR" :> "StateS")
+  :* ("StateS" :@ "MsgS" :> "StateT")
+  :* ("StateT" :@ "MsgT" :> "StateU")
+  :* ("StateU" :@ "MsgU" :> "StateV")
+  :* ("StateV" :@ "MsgV" :> "StateW")
+  :* ("StateW" :@ "MsgW" :> "StateX")
+  :* ("StateX" :@ "MsgX" :> "StateY")
+  :* ("StateY" :@ "MsgY" :> "StateZ")
+
 type DoorSpec = MkStateSpec
   :* ("DoorIsOpen" :@ "CloseTheDoor" :> "DoorIsClosed")
   :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
 
 main :: Effect Unit
 main = do
+  TransitGraphviz.writeToFile_ @ColorTest "graphs/color-test.dot"
   TransitGraphviz.writeToFile_ @DoorSpec "graphs/door-graph.dot"
   pure unit
 -- data Msg = Msg1 { foo :: Int } | Msg2 { bar :: String }

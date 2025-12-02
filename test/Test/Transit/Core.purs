@@ -16,6 +16,8 @@ type MyStateGraph :: StateGraph
 type MyStateGraph = MkStateGraph
   ( Nil'
       :< (MkTransition "TestState1" "TestMsg1" (Nil' :< MkReturn "TestState2"))
+      :< (MkTransition "TestState2" "TestMsg2" (Nil' :< MkReturn "TestState3"))
+
   -- :< (MkTransition "TestState2" "TestMsg2" (Nil' :< MkReturnVia "foo" "TestState3" :< MkReturn "TestState1"))
   )
 
@@ -30,4 +32,9 @@ spec = do
     describe "MyStateGraph" do
       it "should be equal to the reflected type" do
         let ret = reflectType (Proxy @MyStateGraph)
-        ret `shouldEqual` (StateGraph [ (Transition "TestState1" "TestMsg1" [ (Return "TestState2") ]) ])
+        ret `shouldEqual`
+          ( StateGraph
+              [ (Transition "TestState1" "TestMsg1" [ (Return "TestState2") ])
+              , (Transition "TestState2" "TestMsg2" [ (Return "TestState3") ])
+              ]
+          )

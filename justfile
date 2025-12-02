@@ -5,4 +5,4 @@ gen-docs:
     PATCHDOWN_FILE_PATH="./README.md" npx spago run -m Test.Main
     npx doctoc --maxlevel 3 README.md
 
-gen: gen-svgs gen-docs
+gen: gen-docs gen-svgs 

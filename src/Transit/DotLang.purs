@@ -9,11 +9,9 @@ import Data.String as Str
 class ToText a where
   toText :: a -> String
 
-newtype GraphvizGraph = GraphvizGraph
-  { global :: GlobalAttrs
-  , nodes :: Array Node
-  , edges :: Array Edge
-  }
+data Section = SecNode Node | SecEdge Edge | SecGlobal GlobalAttrs
+
+newtype GraphvizGraph = GraphvizGraph (Array Section)
 
 newtype GlobalAttrs = GlobalAttrs (Array Attr)
 
@@ -26,15 +24,18 @@ data Attr = Attr String Value
 data Value = Value String | ValueColor Color | ValueInt Int | ValueNumber Number | ValueBoolean Boolean | HtmlLabel String
 
 instance ToText GraphvizGraph where
-  toText (GraphvizGraph { global, nodes, edges }) =
+  toText (GraphvizGraph sections) =
     Str.joinWith "\n" $ join
       [ pure "digraph "
       , pure "{"
-      , pure $ toText global
-      , map toText nodes
-      , map toText edges
+      , map toText sections
       , pure "}"
       ]
+
+instance ToText Section where
+  toText (SecNode node) = toText node
+  toText (SecEdge edge) = toText edge
+  toText (SecGlobal global) = toText global
 
 instance ToText Node where
   toText (Node stateName attrs) = stateName <> " [" <> toText attrs <> "]"
@@ -109,6 +110,9 @@ fontColor color = Attr "fontcolor" (ValueColor color)
 
 labelLocC :: Attr
 labelLocC = Attr "labelloc" (Value "c")
+
+labelLocT :: Attr
+labelLocT = Attr "labelloc" (Value "t")
 
 color :: Color -> Attr
 color color = Attr "color" (ValueColor color)

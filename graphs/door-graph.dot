@@ -1,8 +1,10 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>
-DoorIsClosed [shape = "box", label = <<b>DoorIsClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#bf99e6", fontcolor = "#bf9980", fontname = "Arial", labelloc = "c", penwidth = 0.0]
-DoorIsOpen [shape = "box", label = <<b>DoorIsOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#bf99e6", fontcolor = "#bf9980", fontname = "Arial", labelloc = "c", penwidth = 0.0]
-DoorIsClosed -> DoorIsOpen [label = <<b>Reset</b>>, fontcolor = "#0080f0", fontsize = 12, color = "#0080f0"]
-DoorIsOpen -> DoorIsClosed [label = <<b>Reset</b>>, fontcolor = "#0080f0", fontsize = 12, color = "#0080f0"]
+rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12
+DoorIsOpen [shape = "box", label = <<b>DoorIsOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#1449a8", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+__Start__ [shape = "circle", label = "", width = 0.2, height = 0.2, fixedsize = true, style = "filled", penwidth = 0.0]
+__Start__ -> DoorIsOpen [arrowsize = "0.7"]
+DoorIsOpen -> DoorIsClosed [label = <<b>CloseTheDoor</b>>, fontcolor = "#1449a8", color = "#2f80ed", fontsize = 12, arrowsize = "0.7"]
+DoorIsClosed [shape = "box", label = <<b>DoorIsClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#f2994a", fontcolor = "#9b5a1e", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+DoorIsClosed -> DoorIsOpen [label = <<b>OpenTheDoor</b>>, fontcolor = "#9b5a1e", color = "#f2994a", fontsize = 12, arrowsize = "0.7"]
 }
