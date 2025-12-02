@@ -13,20 +13,20 @@
 <g id="node1" class="node">
 <title>StateA</title>
 <polygon fill="#2f80ed" stroke="black" stroke-width="0" points="56,-2161 1,-2161 1,-2125 56,-2125 56,-2161"/>
-<text text-anchor="start" x="9" y="-2140.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1449a8">StateA</text>
+<text text-anchor="start" x="9" y="-2140.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0e50a8">StateA</text>
 </g>
 <!-- StateB -->
 <g id="node3" class="node">
 <title>StateB</title>
 <polygon fill="#f2994a" stroke="black" stroke-width="0" points="56,-2076 1,-2076 1,-2040 56,-2040 56,-2076"/>
-<text text-anchor="start" x="9" y="-2055.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#9b5a1e">StateB</text>
+<text text-anchor="start" x="9" y="-2055.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8660e">StateB</text>
 </g>
 <!-- StateA&#45;&gt;StateB -->
 <g id="edge2" class="edge">
 <title>StateA&#45;&gt;StateB</title>
 <path fill="none" stroke="#2f80ed" d="M28.5,-2124.8C28.5,-2112.78 28.5,-2096.57 28.5,-2083.24"/>
 <polygon fill="#2f80ed" stroke="#2f80ed" points="30.95,-2083.18 28.5,-2076.18 26.05,-2083.18 30.95,-2083.18"/>
-<text text-anchor="start" x="28.5" y="-2098.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#1449a8">MsgA</text>
+<text text-anchor="start" x="28.5" y="-2098.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0e50a8">MsgA</text>
 </g>
 <!-- __Start__ -->
 <g id="node2" class="node">
@@ -43,313 +43,313 @@
 <g id="node4" class="node">
 <title>StateC</title>
 <polygon fill="#eb5757" stroke="black" stroke-width="0" points="56,-1991 1,-1991 1,-1955 56,-1955 56,-1991"/>
-<text text-anchor="start" x="9" y="-1970.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#a52525">StateC</text>
+<text text-anchor="start" x="9" y="-1970.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c41717">StateC</text>
 </g>
 <!-- StateB&#45;&gt;StateC -->
 <g id="edge3" class="edge">
 <title>StateB&#45;&gt;StateC</title>
 <path fill="none" stroke="#f2994a" d="M28.5,-2039.8C28.5,-2027.78 28.5,-2011.57 28.5,-1998.24"/>
 <polygon fill="#f2994a" stroke="#f2994a" points="30.95,-1998.18 28.5,-1991.18 26.05,-1998.18 30.95,-1998.18"/>
-<text text-anchor="start" x="28.5" y="-2013.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#9b5a1e">MsgB</text>
+<text text-anchor="start" x="28.5" y="-2013.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">MsgB</text>
 </g>
 <!-- StateD -->
 <g id="node5" class="node">
 <title>StateD</title>
 <polygon fill="#56ccf2" stroke="black" stroke-width="0" points="56,-1906 1,-1906 1,-1870 56,-1870 56,-1906"/>
-<text text-anchor="start" x="9" y="-1885.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1994bb">StateD</text>
+<text text-anchor="start" x="9" y="-1885.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#10a3d2">StateD</text>
 </g>
 <!-- StateC&#45;&gt;StateD -->
 <g id="edge4" class="edge">
 <title>StateC&#45;&gt;StateD</title>
 <path fill="none" stroke="#eb5757" d="M28.5,-1954.8C28.5,-1942.78 28.5,-1926.57 28.5,-1913.24"/>
 <polygon fill="#eb5757" stroke="#eb5757" points="30.95,-1913.18 28.5,-1906.18 26.05,-1913.18 30.95,-1913.18"/>
-<text text-anchor="start" x="28.5" y="-1928.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#a52525">MsgC</text>
+<text text-anchor="start" x="28.5" y="-1928.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c41717">MsgC</text>
 </g>
 <!-- StateE -->
 <g id="node6" class="node">
 <title>StateE</title>
 <polygon fill="#a3e635" stroke="black" stroke-width="0" points="55.5,-1821 1.5,-1821 1.5,-1785 55.5,-1785 55.5,-1821"/>
-<text text-anchor="start" x="9.5" y="-1800.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#5c9817">StateE</text>
+<text text-anchor="start" x="9.5" y="-1800.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#6ca114">StateE</text>
 </g>
 <!-- StateD&#45;&gt;StateE -->
 <g id="edge5" class="edge">
 <title>StateD&#45;&gt;StateE</title>
 <path fill="none" stroke="#56ccf2" d="M28.5,-1869.8C28.5,-1857.78 28.5,-1841.57 28.5,-1828.24"/>
 <polygon fill="#56ccf2" stroke="#56ccf2" points="30.95,-1828.18 28.5,-1821.18 26.05,-1828.18 30.95,-1828.18"/>
-<text text-anchor="start" x="28.5" y="-1843.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#1994bb">MsgD</text>
+<text text-anchor="start" x="28.5" y="-1843.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#10a3d2">MsgD</text>
 </g>
 <!-- StateF -->
 <g id="node7" class="node">
 <title>StateF</title>
-<polygon fill="#9b51e0" stroke="black" stroke-width="0" points="55.5,-1736 1.5,-1736 1.5,-1700 55.5,-1700 55.5,-1736"/>
-<text text-anchor="start" x="10" y="-1715.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#691db1">StateF</text>
+<polygon fill="#a550de" stroke="black" stroke-width="0" points="55.5,-1736 1.5,-1736 1.5,-1700 55.5,-1700 55.5,-1736"/>
+<text text-anchor="start" x="10" y="-1715.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#7120a8">StateF</text>
 </g>
 <!-- StateE&#45;&gt;StateF -->
 <g id="edge6" class="edge">
 <title>StateE&#45;&gt;StateF</title>
 <path fill="none" stroke="#a3e635" d="M28.5,-1784.8C28.5,-1772.78 28.5,-1756.57 28.5,-1743.24"/>
 <polygon fill="#a3e635" stroke="#a3e635" points="30.95,-1743.18 28.5,-1736.18 26.05,-1743.18 30.95,-1743.18"/>
-<text text-anchor="start" x="28.5" y="-1758.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#5c9817">MsgE</text>
+<text text-anchor="start" x="28.5" y="-1758.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#6ca114">MsgE</text>
 </g>
 <!-- StateG -->
 <g id="node8" class="node">
 <title>StateG</title>
-<polygon fill="#f2c94c" stroke="black" stroke-width="0" points="56,-1651 1,-1651 1,-1615 56,-1615 56,-1651"/>
-<text text-anchor="start" x="9" y="-1630.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#9b7e1b">StateG</text>
+<polygon fill="#f2d14a" stroke="black" stroke-width="0" points="56,-1651 1,-1651 1,-1615 56,-1615 56,-1651"/>
+<text text-anchor="start" x="9" y="-1630.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8a30e">StateG</text>
 </g>
 <!-- StateF&#45;&gt;StateG -->
 <g id="edge7" class="edge">
 <title>StateF&#45;&gt;StateG</title>
-<path fill="none" stroke="#9b51e0" d="M28.5,-1699.8C28.5,-1687.78 28.5,-1671.57 28.5,-1658.24"/>
-<polygon fill="#9b51e0" stroke="#9b51e0" points="30.95,-1658.18 28.5,-1651.18 26.05,-1658.18 30.95,-1658.18"/>
-<text text-anchor="start" x="28.5" y="-1673.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#691db1">MsgF</text>
+<path fill="none" stroke="#a550de" d="M28.5,-1699.8C28.5,-1687.78 28.5,-1671.57 28.5,-1658.24"/>
+<polygon fill="#a550de" stroke="#a550de" points="30.95,-1658.18 28.5,-1651.18 26.05,-1658.18 30.95,-1658.18"/>
+<text text-anchor="start" x="28.5" y="-1673.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#7120a8">MsgF</text>
 </g>
 <!-- StateH -->
 <g id="node9" class="node">
 <title>StateH</title>
-<polygon fill="#2dc653" stroke="black" stroke-width="0" points="56,-1566 1,-1566 1,-1530 56,-1530 56,-1566"/>
-<text text-anchor="start" x="9" y="-1545.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1c6a35">StateH</text>
+<polygon fill="#2dc472" stroke="black" stroke-width="0" points="56,-1566 1,-1566 1,-1530 56,-1530 56,-1566"/>
+<text text-anchor="start" x="9" y="-1545.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1a7142">StateH</text>
 </g>
 <!-- StateG&#45;&gt;StateH -->
 <g id="edge8" class="edge">
 <title>StateG&#45;&gt;StateH</title>
-<path fill="none" stroke="#f2c94c" d="M28.5,-1614.8C28.5,-1602.78 28.5,-1586.57 28.5,-1573.24"/>
-<polygon fill="#f2c94c" stroke="#f2c94c" points="30.95,-1573.18 28.5,-1566.18 26.05,-1573.18 30.95,-1573.18"/>
-<text text-anchor="start" x="28.5" y="-1588.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#9b7e1b">MsgG</text>
+<path fill="none" stroke="#f2d14a" d="M28.5,-1614.8C28.5,-1602.78 28.5,-1586.57 28.5,-1573.24"/>
+<polygon fill="#f2d14a" stroke="#f2d14a" points="30.95,-1573.18 28.5,-1566.18 26.05,-1573.18 30.95,-1573.18"/>
+<text text-anchor="start" x="28.5" y="-1588.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8a30e">MsgG</text>
 </g>
 <!-- StateI -->
 <g id="node10" class="node">
 <title>StateI</title>
-<polygon fill="#ff6b81" stroke="black" stroke-width="0" points="55.5,-1481 1.5,-1481 1.5,-1445 55.5,-1445 55.5,-1481"/>
-<text text-anchor="start" x="12" y="-1460.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8203d">StateI</text>
+<polygon fill="#ff6f84" stroke="black" stroke-width="0" points="55.5,-1481 1.5,-1481 1.5,-1445 55.5,-1445 55.5,-1481"/>
+<text text-anchor="start" x="12" y="-1460.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ff092d">StateI</text>
 </g>
 <!-- StateH&#45;&gt;StateI -->
 <g id="edge9" class="edge">
 <title>StateH&#45;&gt;StateI</title>
-<path fill="none" stroke="#2dc653" d="M28.5,-1529.8C28.5,-1517.78 28.5,-1501.57 28.5,-1488.24"/>
-<polygon fill="#2dc653" stroke="#2dc653" points="30.95,-1488.18 28.5,-1481.18 26.05,-1488.18 30.95,-1488.18"/>
-<text text-anchor="start" x="28.5" y="-1503.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#1c6a35">MsgH</text>
+<path fill="none" stroke="#2dc472" d="M28.5,-1529.8C28.5,-1517.78 28.5,-1501.57 28.5,-1488.24"/>
+<polygon fill="#2dc472" stroke="#2dc472" points="30.95,-1488.18 28.5,-1481.18 26.05,-1488.18 30.95,-1488.18"/>
+<text text-anchor="start" x="28.5" y="-1503.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#1a7142">MsgH</text>
 </g>
 <!-- StateJ -->
 <g id="node11" class="node">
 <title>StateJ</title>
-<polygon fill="#3a82f7" stroke="black" stroke-width="0" points="55.5,-1396 1.5,-1396 1.5,-1360 55.5,-1360 55.5,-1396"/>
-<text text-anchor="start" x="10" y="-1375.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0e45c4">StateJ</text>
+<polygon fill="#3c80f7" stroke="black" stroke-width="0" points="55.5,-1396 1.5,-1396 1.5,-1360 55.5,-1360 55.5,-1396"/>
+<text text-anchor="start" x="10" y="-1375.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#084dc5">StateJ</text>
 </g>
 <!-- StateI&#45;&gt;StateJ -->
 <g id="edge10" class="edge">
 <title>StateI&#45;&gt;StateJ</title>
-<path fill="none" stroke="#ff6b81" d="M28.5,-1444.8C28.5,-1432.78 28.5,-1416.57 28.5,-1403.24"/>
-<polygon fill="#ff6b81" stroke="#ff6b81" points="30.95,-1403.18 28.5,-1396.18 26.05,-1403.18 30.95,-1403.18"/>
-<text text-anchor="start" x="28.5" y="-1418.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8203d">MsgI</text>
+<path fill="none" stroke="#ff6f84" d="M28.5,-1444.8C28.5,-1432.78 28.5,-1416.57 28.5,-1403.24"/>
+<polygon fill="#ff6f84" stroke="#ff6f84" points="30.95,-1403.18 28.5,-1396.18 26.05,-1403.18 30.95,-1403.18"/>
+<text text-anchor="start" x="28.5" y="-1418.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#ff092d">MsgI</text>
 </g>
 <!-- StateK -->
 <g id="node12" class="node">
 <title>StateK</title>
-<polygon fill="#f66b0e" stroke="black" stroke-width="0" points="56,-1311 1,-1311 1,-1275 56,-1275 56,-1311"/>
-<text text-anchor="start" x="9" y="-1290.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#8f470f">StateK</text>
+<polygon fill="#f86607" stroke="black" stroke-width="0" points="56,-1311 1,-1311 1,-1275 56,-1275 56,-1311"/>
+<text text-anchor="start" x="9" y="-1290.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#953d04">StateK</text>
 </g>
 <!-- StateJ&#45;&gt;StateK -->
 <g id="edge11" class="edge">
 <title>StateJ&#45;&gt;StateK</title>
-<path fill="none" stroke="#3a82f7" d="M28.5,-1359.8C28.5,-1347.78 28.5,-1331.57 28.5,-1318.24"/>
-<polygon fill="#3a82f7" stroke="#3a82f7" points="30.95,-1318.18 28.5,-1311.18 26.05,-1318.18 30.95,-1318.18"/>
-<text text-anchor="start" x="28.5" y="-1333.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0e45c4">MsgJ</text>
+<path fill="none" stroke="#3c80f7" d="M28.5,-1359.8C28.5,-1347.78 28.5,-1331.57 28.5,-1318.24"/>
+<polygon fill="#3c80f7" stroke="#3c80f7" points="30.95,-1318.18 28.5,-1311.18 26.05,-1318.18 30.95,-1318.18"/>
+<text text-anchor="start" x="28.5" y="-1333.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#084dc5">MsgJ</text>
 </g>
 <!-- StateL -->
 <g id="node13" class="node">
 <title>StateL</title>
-<polygon fill="#6fcf97" stroke="black" stroke-width="0" points="55.5,-1226 1.5,-1226 1.5,-1190 55.5,-1190 55.5,-1226"/>
-<text text-anchor="start" x="10" y="-1205.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#35935a">StateL</text>
+<polygon fill="#6cd5a5" stroke="black" stroke-width="0" points="55.5,-1226 1.5,-1226 1.5,-1190 55.5,-1190 55.5,-1226"/>
+<text text-anchor="start" x="10" y="-1205.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#31ab72">StateL</text>
 </g>
 <!-- StateK&#45;&gt;StateL -->
 <g id="edge12" class="edge">
 <title>StateK&#45;&gt;StateL</title>
-<path fill="none" stroke="#f66b0e" d="M28.5,-1274.8C28.5,-1262.78 28.5,-1246.57 28.5,-1233.24"/>
-<polygon fill="#f66b0e" stroke="#f66b0e" points="30.95,-1233.18 28.5,-1226.18 26.05,-1233.18 30.95,-1233.18"/>
-<text text-anchor="start" x="28.5" y="-1248.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#8f470f">MsgK</text>
+<path fill="none" stroke="#f86607" d="M28.5,-1274.8C28.5,-1262.78 28.5,-1246.57 28.5,-1233.24"/>
+<polygon fill="#f86607" stroke="#f86607" points="30.95,-1233.18 28.5,-1226.18 26.05,-1233.18 30.95,-1233.18"/>
+<text text-anchor="start" x="28.5" y="-1248.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#953d04">MsgK</text>
 </g>
 <!-- StateM -->
 <g id="node14" class="node">
 <title>StateM</title>
-<polygon fill="#bb6bd9" stroke="black" stroke-width="0" points="56.5,-1141 0.5,-1141 0.5,-1105 56.5,-1105 56.5,-1141"/>
-<text text-anchor="start" x="8.5" y="-1120.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#812eaa">StateM</text>
+<polygon fill="#b06fd9" stroke="black" stroke-width="0" points="56.5,-1141 0.5,-1141 0.5,-1105 56.5,-1105 56.5,-1141"/>
+<text text-anchor="start" x="8.5" y="-1120.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#8030b2">StateM</text>
 </g>
 <!-- StateL&#45;&gt;StateM -->
 <g id="edge13" class="edge">
 <title>StateL&#45;&gt;StateM</title>
-<path fill="none" stroke="#6fcf97" d="M28.5,-1189.8C28.5,-1177.78 28.5,-1161.57 28.5,-1148.24"/>
-<polygon fill="#6fcf97" stroke="#6fcf97" points="30.95,-1148.18 28.5,-1141.18 26.05,-1148.18 30.95,-1148.18"/>
-<text text-anchor="start" x="28.5" y="-1163.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#35935a">MsgL</text>
+<path fill="none" stroke="#6cd5a5" d="M28.5,-1189.8C28.5,-1177.78 28.5,-1161.57 28.5,-1148.24"/>
+<polygon fill="#6cd5a5" stroke="#6cd5a5" points="30.95,-1148.18 28.5,-1141.18 26.05,-1148.18 30.95,-1148.18"/>
+<text text-anchor="start" x="28.5" y="-1163.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#31ab72">MsgL</text>
 </g>
 <!-- StateN -->
 <g id="node15" class="node">
 <title>StateN</title>
-<polygon fill="#2d9cdb" stroke="black" stroke-width="0" points="56,-1056 1,-1056 1,-1020 56,-1020 56,-1056"/>
-<text text-anchor="start" x="9" y="-1035.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#186796">StateN</text>
+<polygon fill="#2b97db" stroke="black" stroke-width="0" points="56,-1056 1,-1056 1,-1020 56,-1020 56,-1056"/>
+<text text-anchor="start" x="9" y="-1035.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#175d89">StateN</text>
 </g>
 <!-- StateM&#45;&gt;StateN -->
 <g id="edge14" class="edge">
 <title>StateM&#45;&gt;StateN</title>
-<path fill="none" stroke="#bb6bd9" d="M28.5,-1104.8C28.5,-1092.78 28.5,-1076.57 28.5,-1063.24"/>
-<polygon fill="#bb6bd9" stroke="#bb6bd9" points="30.95,-1063.18 28.5,-1056.18 26.05,-1063.18 30.95,-1063.18"/>
-<text text-anchor="start" x="28.5" y="-1078.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#812eaa">MsgM</text>
+<path fill="none" stroke="#b06fd9" d="M28.5,-1104.8C28.5,-1092.78 28.5,-1076.57 28.5,-1063.24"/>
+<polygon fill="#b06fd9" stroke="#b06fd9" points="30.95,-1063.18 28.5,-1056.18 26.05,-1063.18 30.95,-1063.18"/>
+<text text-anchor="start" x="28.5" y="-1078.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#8030b2">MsgM</text>
 </g>
 <!-- StateO -->
 <g id="node16" class="node">
 <title>StateO</title>
-<polygon fill="#ff8fa3" stroke="black" stroke-width="0" points="56,-971 1,-971 1,-935 56,-935 56,-971"/>
-<text text-anchor="start" x="9" y="-950.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#d8314d">StateO</text>
+<polygon fill="#ff91a4" stroke="black" stroke-width="0" points="56,-971 1,-971 1,-935 56,-935 56,-971"/>
+<text text-anchor="start" x="9" y="-950.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ff2b51">StateO</text>
 </g>
 <!-- StateN&#45;&gt;StateO -->
 <g id="edge15" class="edge">
 <title>StateN&#45;&gt;StateO</title>
-<path fill="none" stroke="#2d9cdb" d="M28.5,-1019.8C28.5,-1007.78 28.5,-991.57 28.5,-978.24"/>
-<polygon fill="#2d9cdb" stroke="#2d9cdb" points="30.95,-978.18 28.5,-971.18 26.05,-978.18 30.95,-978.18"/>
-<text text-anchor="start" x="28.5" y="-993.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#186796">MsgN</text>
+<path fill="none" stroke="#2b97db" d="M28.5,-1019.8C28.5,-1007.78 28.5,-991.57 28.5,-978.24"/>
+<polygon fill="#2b97db" stroke="#2b97db" points="30.95,-978.18 28.5,-971.18 26.05,-978.18 30.95,-978.18"/>
+<text text-anchor="start" x="28.5" y="-993.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#175d89">MsgN</text>
 </g>
 <!-- StateP -->
 <g id="node17" class="node">
 <title>StateP</title>
-<polygon fill="#4c6ef5" stroke="black" stroke-width="0" points="55.5,-886 1.5,-886 1.5,-850 55.5,-850 55.5,-886"/>
-<text text-anchor="start" x="9.5" y="-865.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0b38de">StateP</text>
+<polygon fill="#4a6ff4" stroke="black" stroke-width="0" points="55.5,-886 1.5,-886 1.5,-850 55.5,-850 55.5,-886"/>
+<text text-anchor="start" x="9.5" y="-865.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c36cd">StateP</text>
 </g>
 <!-- StateO&#45;&gt;StateP -->
 <g id="edge16" class="edge">
 <title>StateO&#45;&gt;StateP</title>
-<path fill="none" stroke="#ff8fa3" d="M28.5,-934.8C28.5,-922.78 28.5,-906.57 28.5,-893.24"/>
-<polygon fill="#ff8fa3" stroke="#ff8fa3" points="30.95,-893.18 28.5,-886.18 26.05,-893.18 30.95,-893.18"/>
-<text text-anchor="start" x="28.5" y="-908.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#d8314d">MsgO</text>
+<path fill="none" stroke="#ff91a4" d="M28.5,-934.8C28.5,-922.78 28.5,-906.57 28.5,-893.24"/>
+<polygon fill="#ff91a4" stroke="#ff91a4" points="30.95,-893.18 28.5,-886.18 26.05,-893.18 30.95,-893.18"/>
+<text text-anchor="start" x="28.5" y="-908.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#ff2b51">MsgO</text>
 </g>
 <!-- StateQ -->
 <g id="node18" class="node">
 <title>StateQ</title>
-<polygon fill="#ffc300" stroke="black" stroke-width="0" points="56,-801 1,-801 1,-765 56,-765 56,-801"/>
-<text text-anchor="start" x="9" y="-780.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#836500">StateQ</text>
+<polygon fill="#ffc700" stroke="black" stroke-width="0" points="56,-801 1,-801 1,-765 56,-765 56,-801"/>
+<text text-anchor="start" x="9" y="-780.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#997700">StateQ</text>
 </g>
 <!-- StateP&#45;&gt;StateQ -->
 <g id="edge17" class="edge">
 <title>StateP&#45;&gt;StateQ</title>
-<path fill="none" stroke="#4c6ef5" d="M28.5,-849.8C28.5,-837.78 28.5,-821.57 28.5,-808.24"/>
-<polygon fill="#4c6ef5" stroke="#4c6ef5" points="30.95,-808.18 28.5,-801.18 26.05,-808.18 30.95,-808.18"/>
-<text text-anchor="start" x="28.5" y="-823.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0b38de">MsgP</text>
+<path fill="none" stroke="#4a6ff4" d="M28.5,-849.8C28.5,-837.78 28.5,-821.57 28.5,-808.24"/>
+<polygon fill="#4a6ff4" stroke="#4a6ff4" points="30.95,-808.18 28.5,-801.18 26.05,-808.18 30.95,-808.18"/>
+<text text-anchor="start" x="28.5" y="-823.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0c36cd">MsgP</text>
 </g>
 <!-- StateR -->
 <g id="node19" class="node">
 <title>StateR</title>
-<polygon fill="#c471f5" stroke="black" stroke-width="0" points="56,-716 1,-716 1,-680 56,-680 56,-716"/>
-<text text-anchor="start" x="9" y="-695.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#8613e8">StateR</text>
+<polygon fill="#c56cf4" stroke="black" stroke-width="0" points="56,-716 1,-716 1,-680 56,-680 56,-716"/>
+<text text-anchor="start" x="9" y="-695.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#9e12e8">StateR</text>
 </g>
 <!-- StateQ&#45;&gt;StateR -->
 <g id="edge18" class="edge">
 <title>StateQ&#45;&gt;StateR</title>
-<path fill="none" stroke="#ffc300" d="M28.5,-764.8C28.5,-752.78 28.5,-736.57 28.5,-723.24"/>
-<polygon fill="#ffc300" stroke="#ffc300" points="30.95,-723.18 28.5,-716.18 26.05,-723.18 30.95,-723.18"/>
-<text text-anchor="start" x="28.5" y="-738.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#836500">MsgQ</text>
+<path fill="none" stroke="#ffc700" d="M28.5,-764.8C28.5,-752.78 28.5,-736.57 28.5,-723.24"/>
+<polygon fill="#ffc700" stroke="#ffc700" points="30.95,-723.18 28.5,-716.18 26.05,-723.18 30.95,-723.18"/>
+<text text-anchor="start" x="28.5" y="-738.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#997700">MsgQ</text>
 </g>
 <!-- StateS -->
 <g id="node20" class="node">
 <title>StateS</title>
-<polygon fill="#27ae60" stroke="black" stroke-width="0" points="55.5,-631 1.5,-631 1.5,-595 55.5,-595 55.5,-631"/>
-<text text-anchor="start" x="9.5" y="-610.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#17643a">StateS</text>
+<polygon fill="#26ab6b" stroke="black" stroke-width="0" points="55.5,-631 1.5,-631 1.5,-595 55.5,-595 55.5,-631"/>
+<text text-anchor="start" x="9.5" y="-610.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#145837">StateS</text>
 </g>
 <!-- StateR&#45;&gt;StateS -->
 <g id="edge19" class="edge">
 <title>StateR&#45;&gt;StateS</title>
-<path fill="none" stroke="#c471f5" d="M28.5,-679.8C28.5,-667.78 28.5,-651.57 28.5,-638.24"/>
-<polygon fill="#c471f5" stroke="#c471f5" points="30.95,-638.18 28.5,-631.18 26.05,-638.18 30.95,-638.18"/>
-<text text-anchor="start" x="28.5" y="-653.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#8613e8">MsgR</text>
+<path fill="none" stroke="#c56cf4" d="M28.5,-679.8C28.5,-667.78 28.5,-651.57 28.5,-638.24"/>
+<polygon fill="#c56cf4" stroke="#c56cf4" points="30.95,-638.18 28.5,-631.18 26.05,-638.18 30.95,-638.18"/>
+<text text-anchor="start" x="28.5" y="-653.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#9e12e8">MsgR</text>
 </g>
 <!-- StateT -->
 <g id="node21" class="node">
 <title>StateT</title>
-<polygon fill="#ff4d6d" stroke="black" stroke-width="0" points="55.5,-546 1.5,-546 1.5,-510 55.5,-510 55.5,-546"/>
-<text text-anchor="start" x="10" y="-525.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ae1934">StateT</text>
+<polygon fill="#ff527c" stroke="black" stroke-width="0" points="55.5,-546 1.5,-546 1.5,-510 55.5,-510 55.5,-546"/>
+<text text-anchor="start" x="10" y="-525.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#eb0039">StateT</text>
 </g>
 <!-- StateS&#45;&gt;StateT -->
 <g id="edge20" class="edge">
 <title>StateS&#45;&gt;StateT</title>
-<path fill="none" stroke="#27ae60" d="M28.5,-594.8C28.5,-582.78 28.5,-566.57 28.5,-553.24"/>
-<polygon fill="#27ae60" stroke="#27ae60" points="30.95,-553.18 28.5,-546.18 26.05,-553.18 30.95,-553.18"/>
-<text text-anchor="start" x="28.5" y="-568.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#17643a">MsgS</text>
+<path fill="none" stroke="#26ab6b" d="M28.5,-594.8C28.5,-582.78 28.5,-566.57 28.5,-553.24"/>
+<polygon fill="#26ab6b" stroke="#26ab6b" points="30.95,-553.18 28.5,-546.18 26.05,-553.18 30.95,-553.18"/>
+<text text-anchor="start" x="28.5" y="-568.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#145837">MsgS</text>
 </g>
 <!-- StateU -->
 <g id="node22" class="node">
 <title>StateU</title>
-<polygon fill="#8b5cf6" stroke="black" stroke-width="0" points="56,-461 1,-461 1,-425 56,-425 56,-461"/>
-<text text-anchor="start" x="9" y="-440.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#440fca">StateU</text>
+<polygon fill="#975af7" stroke="black" stroke-width="0" points="56,-461 1,-461 1,-425 56,-425 56,-461"/>
+<text text-anchor="start" x="9" y="-440.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#5e0be0">StateU</text>
 </g>
 <!-- StateT&#45;&gt;StateU -->
 <g id="edge21" class="edge">
 <title>StateT&#45;&gt;StateU</title>
-<path fill="none" stroke="#ff4d6d" d="M28.5,-509.8C28.5,-497.78 28.5,-481.57 28.5,-468.24"/>
-<polygon fill="#ff4d6d" stroke="#ff4d6d" points="30.95,-468.18 28.5,-461.18 26.05,-468.18 30.95,-468.18"/>
-<text text-anchor="start" x="28.5" y="-483.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#ae1934">MsgT</text>
+<path fill="none" stroke="#ff527c" d="M28.5,-509.8C28.5,-497.78 28.5,-481.57 28.5,-468.24"/>
+<polygon fill="#ff527c" stroke="#ff527c" points="30.95,-468.18 28.5,-461.18 26.05,-468.18 30.95,-468.18"/>
+<text text-anchor="start" x="28.5" y="-483.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#eb0039">MsgT</text>
 </g>
 <!-- StateV -->
 <g id="node23" class="node">
 <title>StateV</title>
-<polygon fill="#ff8b3d" stroke="black" stroke-width="0" points="55.5,-376 1.5,-376 1.5,-340 55.5,-340 55.5,-376"/>
-<text text-anchor="start" x="9.5" y="-355.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#a75114">StateV</text>
+<polygon fill="#ff9038" stroke="black" stroke-width="0" points="55.5,-376 1.5,-376 1.5,-340 55.5,-340 55.5,-376"/>
+<text text-anchor="start" x="9.5" y="-355.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#d15d00">StateV</text>
 </g>
 <!-- StateU&#45;&gt;StateV -->
 <g id="edge22" class="edge">
 <title>StateU&#45;&gt;StateV</title>
-<path fill="none" stroke="#8b5cf6" d="M28.5,-424.8C28.5,-412.78 28.5,-396.57 28.5,-383.24"/>
-<polygon fill="#8b5cf6" stroke="#8b5cf6" points="30.95,-383.18 28.5,-376.18 26.05,-383.18 30.95,-383.18"/>
-<text text-anchor="start" x="28.5" y="-398.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#440fca">MsgU</text>
+<path fill="none" stroke="#975af7" d="M28.5,-424.8C28.5,-412.78 28.5,-396.57 28.5,-383.24"/>
+<polygon fill="#975af7" stroke="#975af7" points="30.95,-383.18 28.5,-376.18 26.05,-383.18 30.95,-383.18"/>
+<text text-anchor="start" x="28.5" y="-398.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#5e0be0">MsgU</text>
 </g>
 <!-- StateW -->
 <g id="node24" class="node">
 <title>StateW</title>
 <polygon fill="#56ccf2" stroke="black" stroke-width="0" points="57,-291 0,-291 0,-255 57,-255 57,-291"/>
-<text text-anchor="start" x="8" y="-270.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1994bb">StateW</text>
+<text text-anchor="start" x="8" y="-270.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#10a3d2">StateW</text>
 </g>
 <!-- StateV&#45;&gt;StateW -->
 <g id="edge23" class="edge">
 <title>StateV&#45;&gt;StateW</title>
-<path fill="none" stroke="#ff8b3d" d="M28.5,-339.8C28.5,-327.78 28.5,-311.57 28.5,-298.24"/>
-<polygon fill="#ff8b3d" stroke="#ff8b3d" points="30.95,-298.18 28.5,-291.18 26.05,-298.18 30.95,-298.18"/>
-<text text-anchor="start" x="28.5" y="-313.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#a75114">MsgV</text>
+<path fill="none" stroke="#ff9038" d="M28.5,-339.8C28.5,-327.78 28.5,-311.57 28.5,-298.24"/>
+<polygon fill="#ff9038" stroke="#ff9038" points="30.95,-298.18 28.5,-291.18 26.05,-298.18 30.95,-298.18"/>
+<text text-anchor="start" x="28.5" y="-313.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#d15d00">MsgV</text>
 </g>
 <!-- StateX -->
 <g id="node25" class="node">
 <title>StateX</title>
 <polygon fill="#2f80ed" stroke="black" stroke-width="0" points="55.5,-206 1.5,-206 1.5,-170 55.5,-170 55.5,-206"/>
-<text text-anchor="start" x="9.5" y="-185.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1449a8">StateX</text>
+<text text-anchor="start" x="9.5" y="-185.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0e50a8">StateX</text>
 </g>
 <!-- StateW&#45;&gt;StateX -->
 <g id="edge24" class="edge">
 <title>StateW&#45;&gt;StateX</title>
 <path fill="none" stroke="#56ccf2" d="M28.5,-254.8C28.5,-242.78 28.5,-226.57 28.5,-213.24"/>
 <polygon fill="#56ccf2" stroke="#56ccf2" points="30.95,-213.18 28.5,-206.18 26.05,-213.18 30.95,-213.18"/>
-<text text-anchor="start" x="28.5" y="-228.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#1994bb">MsgW</text>
+<text text-anchor="start" x="28.5" y="-228.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#10a3d2">MsgW</text>
 </g>
 <!-- StateY -->
 <g id="node26" class="node">
 <title>StateY</title>
 <polygon fill="#f2994a" stroke="black" stroke-width="0" points="55.5,-121 1.5,-121 1.5,-85 55.5,-85 55.5,-121"/>
-<text text-anchor="start" x="9.5" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#9b5a1e">StateY</text>
+<text text-anchor="start" x="9.5" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8660e">StateY</text>
 </g>
 <!-- StateX&#45;&gt;StateY -->
 <g id="edge25" class="edge">
 <title>StateX&#45;&gt;StateY</title>
 <path fill="none" stroke="#2f80ed" d="M28.5,-169.8C28.5,-157.78 28.5,-141.57 28.5,-128.24"/>
 <polygon fill="#2f80ed" stroke="#2f80ed" points="30.95,-128.18 28.5,-121.18 26.05,-128.18 30.95,-128.18"/>
-<text text-anchor="start" x="28.5" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#1449a8">MsgX</text>
+<text text-anchor="start" x="28.5" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0e50a8">MsgX</text>
 </g>
 <!-- StateZ -->
 <g id="node27" class="node">
 <title>StateZ</title>
 <polygon fill="#eb5757" stroke="black" stroke-width="0" points="55.5,-36 1.5,-36 1.5,0 55.5,0 55.5,-36"/>
-<text text-anchor="start" x="10" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#a52525">StateZ</text>
+<text text-anchor="start" x="10" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c41717">StateZ</text>
 </g>
 <!-- StateY&#45;&gt;StateZ -->
 <g id="edge26" class="edge">
 <title>StateY&#45;&gt;StateZ</title>
 <path fill="none" stroke="#f2994a" d="M28.5,-84.8C28.5,-72.78 28.5,-56.57 28.5,-43.24"/>
 <polygon fill="#f2994a" stroke="#f2994a" points="30.95,-43.18 28.5,-36.18 26.05,-43.18 30.95,-43.18"/>
-<text text-anchor="start" x="28.5" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#9b5a1e">MsgY</text>
+<text text-anchor="start" x="28.5" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">MsgY</text>
 </g>
 </g>
 </svg>
