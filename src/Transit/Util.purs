@@ -16,3 +16,10 @@ newtype Generically a = Generically a
 
 derive instance Newtype (Generically a) _
 
+type Id :: forall k. k -> k
+type Id a = a
+
+data Tup :: forall k1 k2. k1 -> k2 -> Type
+data Tup a b
+
+infixl 5 type Tup as :*

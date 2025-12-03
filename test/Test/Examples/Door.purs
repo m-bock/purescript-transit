@@ -9,25 +9,30 @@ import Data.Tuple (Tuple)
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Transit (match, mkUpdateGeneric, return)
-import Transit (type (:*), type (:@), MkStateSpec, mkUpdateGeneric)
+import Transit (type (:*), type (:>), type (:@), MkStateSpec, mkUpdateGeneric)
 import Transit.Core (MkReturn, MkStateGraph, MkTransition, ReturnState(..), StateGraph)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.MkUpdate (mkUpdate)
 import Transit.Tmp (build)
-import Transit.Util (type (:<), Generically)
-import Type.Data.List (type (:>), Nil')
+import Transit.Util (type (:<), Generically, Id)
+import Type.Data.List (Nil')
+import Type.Data.List as L
 import Type.Function (type ($))
 
 -- type DoorSpec =
 --   MkStateSpec
 --     :$ ("DoorIsOpen" :+ "CloseTheDoor" := "DoorIsClosed")
---     :> ("DoorIsClosed" :+ "OpenTheDoor" := "DoorIsOpen")
+--     :* ("DoorIsClosed" :+ "OpenTheDoor" := "DoorIsOpen")
+
+-- type DSL = MkStateSpec
+--   $ ("DoorIsOpen" :@ "CloseTheDoor" :> "DoorIsClosed")
+--       :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
 
 type DoorStateGraph :: StateGraph
 type DoorStateGraph = MkStateGraph
-  ( (MkTransition "DoorIsOpen" "CloseTheDoor" (Nil' :< MkReturn "DoorIsClosed"))
-      :> (MkTransition "DoorIsClosed" "OpenTheDoor" (Nil' :< MkReturn "DoorIsOpen"))
-      :> Nil'
+  ( Id $ (MkTransition "DoorIsOpen" "CloseTheDoor" (MkReturn "DoorIsClosed" L.:> Nil'))
+      L.:> (MkTransition "DoorIsClosed" "OpenTheDoor" (MkReturn "DoorIsOpen" L.:> Nil'))
+      L.:> Nil'
   )
 
 -- type MyStateGraph :: StateGraph

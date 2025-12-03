@@ -36,7 +36,7 @@ type AddTransitionFlipped a b = AddTransition b a
 type TransitionBuilderAddExtraRetFlipped a b = TransitionBuilderAddExtraRet b a
 type TransitionBuilderAddRetFlipped a b = TransitionBuilderAddRet b a
 
-infixl 5 type AddTransitionFlipped as :*
+infixr 5 type AddTransitionFlipped as :*
 
 infixl 5 type TransitionBuilderAddExtraRetFlipped as :|
 

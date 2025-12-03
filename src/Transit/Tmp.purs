@@ -42,3 +42,18 @@ type T2 = String :> Boolean :> Int :> Nil'
 
 test2 :: Unit
 test2 = checkRevert @T1 @T2
+
+---
+
+data D1 a b
+
+data D2 a b
+
+infixl 5 type D1 as :**
+
+infixr 6 type D2 as :++
+
+type D = Int :** Int
+  :** String
+    :++ Int
+    :++ Int
