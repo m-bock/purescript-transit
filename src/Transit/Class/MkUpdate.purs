@@ -9,27 +9,29 @@ import Transit.GetSubset (class GetSubset, getSubset)
 import Transit.Util (type (:<))
 import Type.Data.List (Nil')
 
-class MkUpdate (spec :: StateGraph) impl msg state | spec msg state -> impl where
-  mkUpdate :: impl -> msg -> state -> state
+class MkUpdate (spec :: StateGraph) m impl msg state | spec msg state m -> impl where
+  mkUpdate :: impl -> msg -> state -> m state
 
-instance MkUpdate (MkStateGraph Nil') Unit msg state where
-  mkUpdate _ _ state = state
+instance (Monad m) => MkUpdate (MkStateGraph Nil') m Unit msg state where
+  mkUpdate _ _ state = pure state
 
 instance
   ( MatchBySym symStateIn state stateIn
   , GetSubset returns state stateOut
   , MatchBySym symMsg msg msgIn
-  , MkUpdate (MkStateGraph rest1) rest2 msg state
+  , MkUpdate (MkStateGraph rest1) m rest2 msg state
+  , Applicative m
   ) =>
   MkUpdate
     (MkStateGraph (rest1 :< (MkTransition symStateIn symMsg returns)))
+    m
     (rest2 /\ Match symStateIn symMsg msgIn stateIn stateOut)
     msg
     state
   where
   mkUpdate (rest /\ Match fn) msg state =
     matchBySym2 @symMsg @symStateIn
-      (\m s -> getSubset @returns $ fn m s)
+      (\m s -> pure $ getSubset @returns $ fn m s)
       (\_ -> mkUpdate @(MkStateGraph rest1) rest msg state)
       msg
       state

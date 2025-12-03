@@ -3,33 +3,71 @@ module Test.Examples.Door where
 import Prelude
 
 import Data.Generic.Rep (class Generic)
+import Data.Identity (Identity)
+import Data.Tuple.Nested ((/\))
 import Effect (Effect)
-import Transit (MkStateSpec, type (:*), type (:@), type (:>))
+import Transit (match, mkUpdateGeneric, return)
+import Transit (type (:*), type (:>), type (:@), MkStateSpec, mkUpdateGeneric)
+import Transit.Core (MkReturn, MkStateGraph, MkTransition, ReturnState(..), StateGraph)
 import Transit.Gen.Graphviz as TransitGraphviz
+import Transit.MkUpdate (mkUpdate)
+import Transit.Tmp (build)
+import Transit.Util (type (:<), Generically)
+import Type.Data.List (Nil')
 
-type DoorSpec = MkStateSpec
-  :* ("DoorIsOpen" :@ "CloseTheDoor" :> "DoorIsClosed")
-  :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
+type DoorSpec =
+  MkStateSpec
+    :* ("DoorIsOpen" :@ "CloseTheDoor" :> "DoorIsClosed")
+    :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
 
-data State = DoorIsOpen | DoorIsClosed
+type DoorStateGraph :: StateGraph
+type DoorStateGraph = MkStateGraph
+  ( Nil'
+      :< (MkTransition "DoorIsOpen" "CloseTheDoor" (Nil' :< MkReturn "DoorIsClosed"))
+      :< (MkTransition "DoorIsClosed" "OpenTheDoor" (Nil' :< MkReturn "DoorIsOpen"))
+  )
 
-data Msg = CloseTheDoor | OpenTheDoor
+-- type MyStateGraph :: StateGraph
+-- type MyStateGraph = MkStateGraph
+--   ( Nil'
+--       :< (MkTransition "State1" "Msg1" (Nil' :< MkReturn "State2"))
+--       :< (MkTransition "State2" "Msg2" (Nil' :< MkReturnVia "foo" "State3" :< MkReturn "State1"))
+--   )
+
+-- :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
+
+data State = DoorIsOpen {} | DoorIsClosed { foo :: Int }
+
+data Msg = CloseTheDoor {} | OpenTheDoor {}
 
 derive instance Generic State _
 derive instance Generic Msg _
 
-update :: Msg -> State -> State
-update msg state = case state, msg of
-  DoorIsOpen, CloseTheDoor -> DoorIsClosed
-  DoorIsClosed, OpenTheDoor -> DoorIsOpen
-  _, _ -> state
+-- update :: Msg -> State -> State
+-- update msg state = case state, msg of
+--   DoorIsOpen, CloseTheDoor -> DoorIsClosed
+--   DoorIsClosed, OpenTheDoor -> DoorIsOpen
+--   _, _ -> state
 
--- update2 :: Msg -> State -> State
--- update2 = mkUpdateG @DoorSpec $
---   unit
---     & match @"DoorIsOpen" @"CloseTheDoor" (\msg state -> return @"DoorIsClosed")
---     & match @"DoorIsClosed" @"OpenTheDoor" (\msg state -> return @"DoorIsOpen")
+update2 :: Msg -> State -> State
+update2 = build (mkUpdateGeneric @DoorSpec)
+  ( match @"DoorIsClosed" @"OpenTheDoor" \msg state ->
+      return @"DoorIsOpen" {}
+  )
+  ( match @"DoorIsOpen" @"CloseTheDoor" \msg state ->
+      return @"DoorIsClosed" { foo: 2 }
+  )
+
+--(unit /\ (match @"DoorIsOpen" @"CloseTheDoor" (\msg state -> return @"DoorIsClosed" (ReturnState { foo: 2 }))))
+
+--  build (mkUpdateGeneric @DoorSpec) ?a ?b
+
+-- (match @"DoorIsOpen" @"CloseTheDoor" (\msg state -> return @"DoorIsClosed"))
+-- (match @"DoorIsClosed" @"OpenTheDoor" (\msg state -> return @"DoorIsOpen"))
+
+-- & match @"DoorIsClosed" @"OpenTheDoor" (\msg state -> return @"DoorIsOpen")
 
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ @DoorSpec "graphs/door-graph.dot"
+  pure unit
+--TransitGraphviz.writeToFile_ @DoorSpec "graphs/door-graph.dot"

@@ -3,6 +3,7 @@ module Test.Transit.Class.MkUpdate where
 import Prelude
 
 import Data.Generic.Rep (class Generic)
+import Data.Identity (Identity)
 import Data.Tuple (Tuple)
 import Data.Variant (Variant)
 import Transit.Core (Match, MkReturn, MkReturnVia, MkStateGraph, MkTransition, ReturnState, ReturnStateVia, StateGraph)
@@ -10,7 +11,7 @@ import Transit.MkUpdate (class MkUpdate)
 import Transit.Util (type (:<), Generically)
 import Type.Data.List (Nil')
 
-check :: forall @spec @impl @msg @state. (MkUpdate spec impl msg state) => Unit
+check :: forall @spec @m @impl @msg @state. (MkUpdate spec m impl msg state) => Unit
 check = unit
 
 data TestState = TestState1 Int | TestState2 String | TestState3 Boolean
@@ -24,6 +25,7 @@ derive instance Generic TestMsg _
 test1 :: Unit
 test1 = check
   @(MkStateGraph Nil')
+  @Identity
   @Unit
   @(Generically TestMsg)
   @(Generically TestState)
@@ -38,6 +40,7 @@ type MyStateGraph = MkStateGraph
 test2 :: Unit
 test2 = check
   @MyStateGraph
+  @Identity
   @( Tuple
       ( Tuple Unit
           ( Match "TestState1" "TestMsg1" Int Int
