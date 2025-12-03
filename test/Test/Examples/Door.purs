@@ -9,8 +9,9 @@ import Data.Tuple (Tuple)
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Transit (match, mkUpdateGeneric, return)
-import Transit (type (:*), type (:>), type (:@), MkStateSpec, mkUpdateGeneric)
+import Transit (type (:*), type (:@), Empty, Wrap, mkUpdateGeneric)
 import Transit.Core (MkReturn, MkStateGraph, MkTransition, ReturnState(..), StateGraph)
+import Transit.DSL (type (>|))
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.MkUpdate (mkUpdate)
 import Transit.Tmp (build)
@@ -57,8 +58,13 @@ derive instance Generic Msg _
 --   DoorIsClosed, OpenTheDoor -> DoorIsOpen
 --   _, _ -> state
 
+type Spec =
+  Empty
+    :* ("DoorIsOpen" :@ "CloseTheDoor" >| "DoorIsClosed")
+    :* ("DoorIsClosed" :@ "OpenTheDoor" >| "DoorIsOpen")
+
 update2 :: Msg -> State -> State
-update2 = build (mkUpdateGeneric @DoorStateGraph)
+update2 = build (mkUpdateGeneric @(Wrap Spec))
   ( match @"DoorIsOpen" @"CloseTheDoor" \msg state ->
       return @"DoorIsClosed" { foo: 2 }
   )
