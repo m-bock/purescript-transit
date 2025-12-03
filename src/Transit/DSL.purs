@@ -39,11 +39,8 @@ type T2 =
 
 ---
 
--- instance (FromDSL MkStateSpec o, Reflectable o o') => Reflectable MkStateSpec o' where
---   reflectType _ = reflectType (Proxy @o)
-
--- instance (FromDSL (AddTransition t b) o, Reflectable o StateGraph_) => Reflectable (AddTransition t b) StateGraph_ where
---   reflectType _ = reflectType (Proxy @o)
+instance (FromDSL (Wrap dsl) o, Reflectable o StateGraph_) => Reflectable (Wrap dsl) StateGraph_ where
+  reflectType _ = reflectType (Proxy @o)
 
 ---
 
