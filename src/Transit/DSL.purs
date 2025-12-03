@@ -67,6 +67,8 @@ instance
   ) =>
   FromDSL (AddTransition a rest) (C.MkStateGraph (xs :< a'))
 
+instance FromDSL (C.MkStateGraph xs) (C.MkStateGraph xs)
+
 -- ---
 
 instance

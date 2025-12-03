@@ -2,29 +2,32 @@ module Test.Examples.Door where
 
 import Prelude
 
+import Data.Function (($))
 import Data.Generic.Rep (class Generic)
 import Data.Identity (Identity)
-import Data.Tuple.Nested ((/\))
+import Data.Tuple (Tuple)
+import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Transit (match, mkUpdateGeneric, return)
-import Transit (type (:*), type (:>), type (:@), MkStateSpec, mkUpdateGeneric)
+import Transit (type (:*), type (:@), MkStateSpec, mkUpdateGeneric)
 import Transit.Core (MkReturn, MkStateGraph, MkTransition, ReturnState(..), StateGraph)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.MkUpdate (mkUpdate)
 import Transit.Tmp (build)
 import Transit.Util (type (:<), Generically)
-import Type.Data.List (Nil')
+import Type.Data.List (type (:>), Nil')
+import Type.Function (type ($))
 
-type DoorSpec =
-  MkStateSpec
-    :* ("DoorIsOpen" :@ "CloseTheDoor" :> "DoorIsClosed")
-    :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
+-- type DoorSpec =
+--   MkStateSpec
+--     :$ ("DoorIsOpen" :+ "CloseTheDoor" := "DoorIsClosed")
+--     :> ("DoorIsClosed" :+ "OpenTheDoor" := "DoorIsOpen")
 
 type DoorStateGraph :: StateGraph
 type DoorStateGraph = MkStateGraph
-  ( Nil'
-      :< (MkTransition "DoorIsOpen" "CloseTheDoor" (Nil' :< MkReturn "DoorIsClosed"))
-      :< (MkTransition "DoorIsClosed" "OpenTheDoor" (Nil' :< MkReturn "DoorIsOpen"))
+  ( (MkTransition "DoorIsOpen" "CloseTheDoor" (Nil' :< MkReturn "DoorIsClosed"))
+      :> (MkTransition "DoorIsClosed" "OpenTheDoor" (Nil' :< MkReturn "DoorIsOpen"))
+      :> Nil'
   )
 
 -- type MyStateGraph :: StateGraph
@@ -50,12 +53,12 @@ derive instance Generic Msg _
 --   _, _ -> state
 
 update2 :: Msg -> State -> State
-update2 = build (mkUpdateGeneric @DoorSpec)
-  ( match @"DoorIsClosed" @"OpenTheDoor" \msg state ->
-      return @"DoorIsOpen" {}
-  )
+update2 = build (mkUpdateGeneric @DoorStateGraph)
   ( match @"DoorIsOpen" @"CloseTheDoor" \msg state ->
       return @"DoorIsClosed" { foo: 2 }
+  )
+  ( match @"DoorIsClosed" @"OpenTheDoor" \msg state ->
+      return @"DoorIsOpen" {}
   )
 
 --(unit /\ (match @"DoorIsOpen" @"CloseTheDoor" (\msg state -> return @"DoorIsClosed" (ReturnState { foo: 2 }))))

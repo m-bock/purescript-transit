@@ -5,11 +5,12 @@ import Prelude
 import Data.Generic.Rep (class Generic)
 import Data.Identity (Identity)
 import Data.Tuple (Tuple)
+import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
 import Transit.Core (Match, MkReturn, MkReturnVia, MkStateGraph, MkTransition, ReturnState, ReturnStateVia, StateGraph)
 import Transit.MkUpdate (class MkUpdate)
 import Transit.Util (type (:<), Generically)
-import Type.Data.List (Nil')
+import Type.Data.List (type (:>), Nil')
 
 check :: forall @spec @m @impl @msg @state. (MkUpdate spec m impl msg state) => Unit
 check = unit
@@ -32,32 +33,30 @@ test1 = check
 
 type MyStateGraph :: StateGraph
 type MyStateGraph = MkStateGraph
-  ( Nil'
-      :< (MkTransition "TestState1" "TestMsg1" (Nil' :< MkReturn "TestState2"))
-      :< (MkTransition "TestState2" "TestMsg2" (Nil' :< MkReturnVia "foo" "TestState3" :< MkReturn "TestState1"))
+  ( (MkTransition "TestState1" "TestMsg1" (Nil' :< MkReturn "TestState2"))
+      :> (MkTransition "TestState2" "TestMsg2" (Nil' :< MkReturnVia "foo" "TestState3" :< MkReturn "TestState1"))
+      :> Nil'
   )
+
+type T1 = Match "TestState1" "TestMsg1" Int Int
+  ( Variant
+      ( "TestState2" :: ReturnState String
+      )
+  )
+
+type T2 = Match "TestState2" "TestMsg2" String String
+  ( Variant
+      ( "TestState1" :: ReturnState Int
+      , "TestState3" :: ReturnStateVia "foo" Boolean
+      )
+  )
+
+type T = T1 /\ T2 /\ Unit
 
 test2 :: Unit
 test2 = check
   @MyStateGraph
   @Identity
-  @( Tuple
-      ( Tuple Unit
-          ( Match "TestState1" "TestMsg1" Int Int
-              ( Variant
-                  ( "TestState2" :: ReturnState String
-                  )
-              )
-          )
-      )
-      ( Match "TestState2" "TestMsg2" String String
-          ( Variant
-              ( "TestState1" :: ReturnState Int
-              , "TestState3" :: ReturnStateVia "foo" Boolean
-              )
-          )
-      )
-
-  )
+  @T
   @(Generically TestMsg)
   @(Generically TestState)
