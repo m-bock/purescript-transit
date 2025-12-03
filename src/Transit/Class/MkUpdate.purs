@@ -6,8 +6,6 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
 import Transit.Core (Match(..), MkStateGraph, MkTransition, StateGraph)
 import Transit.GetSubset (class GetSubset, getSubset)
-import Transit.Tmp (class Revert)
-import Transit.Util (type (:<))
 import Type.Data.List (type (:>), Nil')
 
 class MkUpdate (spec :: StateGraph) m impl msg state | spec msg state m -> impl where

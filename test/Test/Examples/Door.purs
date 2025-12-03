@@ -15,7 +15,7 @@ import Transit.DSL (type (>|))
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.MkUpdate (mkUpdate)
 import Transit.Tmp (build)
-import Transit.Util (type (:<), Generically, Id)
+import Transit.Util (Generically)
 import Type.Data.List (Nil')
 import Type.Data.List as L
 import Type.Function (type ($))
@@ -31,7 +31,7 @@ import Type.Function (type ($))
 
 type DoorStateGraph :: StateGraph
 type DoorStateGraph = MkStateGraph
-  ( Id $ (MkTransition "DoorIsOpen" "CloseTheDoor" (MkReturn "DoorIsClosed" L.:> Nil'))
+  ( (MkTransition "DoorIsOpen" "CloseTheDoor" (MkReturn "DoorIsClosed" L.:> Nil'))
       L.:> (MkTransition "DoorIsClosed" "OpenTheDoor" (MkReturn "DoorIsOpen" L.:> Nil'))
       L.:> Nil'
   )

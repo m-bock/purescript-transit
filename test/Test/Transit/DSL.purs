@@ -1,14 +1,11 @@
 module Test.Transit.DSL where
 
-import Data.Reflectable (class Reflectable)
 import Data.Unit (Unit, unit)
-import Transit.Core (MkReturn, MkStateGraph, MkTransition, StateGraph, StateGraph_(..))
+import Transit.Core (MkStateGraph)
 import Transit.Core as C
 import Transit.DSL (class FromDSL, type (:*), type (:?), type (:@), type (>|), Empty, Wrap)
-import Transit.Util (type (:<), Id)
-import Type.Data.List (type (:>), Cons', Nil')
+import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($), APPLY)
-import Type.Proxy (Proxy(..))
 
 check :: forall @a @b. (FromDSL a b) => Unit
 check = unit

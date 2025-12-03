@@ -10,7 +10,7 @@ import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
 import Transit.Core (Match, MkReturn, MkReturnVia, MkStateGraph, MkTransition, ReturnState, ReturnStateVia, StateGraph)
 import Transit.MkUpdate (class MkUpdate)
-import Transit.Util (type (:<), Generically, Id)
+import Transit.Util (Generically)
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($))
 
@@ -35,7 +35,7 @@ test1 = check
 
 type MyStateGraph :: StateGraph
 type MyStateGraph = MkStateGraph
-  ( Id $ (MkTransition "TestState1" "TestMsg1" (MkReturn "TestState2" :> Nil'))
+  ( (MkTransition "TestState1" "TestMsg1" (MkReturn "TestState2" :> Nil'))
       :> (MkTransition "TestState2" "TestMsg2" (MkReturnVia "foo" "TestState3" :> MkReturn "TestState1" :> Nil'))
       :> Nil'
   )

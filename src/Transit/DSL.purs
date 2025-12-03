@@ -1,41 +1,30 @@
 module Transit.DSL where
 
 import Data.Reflectable (class Reflectable, reflectType)
-import Data.Unit (Unit, unit)
-import Transit.Core (MkReturn, MkReturnVia, StateGraph, StateGraph_(..))
+import Transit.Core (StateGraph_)
 import Transit.Core as C
-import Transit.Util (type (:<))
-import Type.Data.List (type (:>), Cons', Nil')
+import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
 
-foreign import data StateSpec :: Type
-
---foreign import data MkStateSpec :: forall k. k -> StateSpec
-
-data C
-
+data D :: forall k1 k2. k1 -> k2 -> Type
 data D a b
 
 infixr 0 type D as :*
 
+data StateWithMsg :: forall k1 k2. k1 -> k2 -> Type
 data StateWithMsg a b
 
 infixl 5 type StateWithMsg as :@
 
+data AddOut :: forall k1 k2. k1 -> k2 -> Type
 data AddOut a b
 
 infixl 5 type AddOut as >|
 
+data J :: forall k1 k2. k1 -> k2 -> Type
 data J a b
 
 infixl 9 type J as :?
-
-type T = C :* (Int :@ String >| Boolean >| Int) :* (Int :@ String >| Boolean >| Int)
-
-type T2 =
-  Int :@ String
-    >| Boolean :? Int
-    >| Int :? Boolean
 
 ---
 
@@ -44,6 +33,7 @@ instance (FromDSL (Wrap dsl) o, Reflectable o StateGraph_) => Reflectable (Wrap 
 
 ---
 
+data Wrap :: forall k. k -> Type
 data Wrap a
 
 data Empty
