@@ -59,14 +59,20 @@ type DoorDSL =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return_ @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return_ @"DoorOpen")
-  (match @"DoorClosed" @"Lock" \_ { newPin } -> return @"DoorLocked" { pin: newPin })
-  ( match @"DoorLocked" @"Unlock" \{ pin } { enteredPin } ->
-      if pin == enteredPin then
+  ( match @"DoorOpen" @"Close" \_ _ ->
+      return_ @"DoorClosed"
+  )
+  ( match @"DoorClosed" @"Open" \_ _ ->
+      return_ @"DoorOpen"
+  )
+  ( match @"DoorClosed" @"Lock" \_ msg ->
+      return @"DoorLocked" { pin: msg.newPin }
+  )
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      if state.pin == msg.enteredPin then
         return_ @"DoorClosed"
       else
-        return @"DoorLocked" { pin }
+        return @"DoorLocked" { pin: state.pin }
   )
 
 --------------------------------------------------------------------------------
