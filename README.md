@@ -23,13 +23,11 @@ Type-Safe State Machines.
 spago install transit
 ```
 
-## A
+## Example1: Door
 
-<img src="graphs/door-graph.svg" />
+Let's have a look at the following state diagram:
 
-<img src="graphs/door-with-lock.svg" />
-
-<img src="graphs/door-with-pin.svg" />
+<img src="graphs/door.svg" />
 
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
@@ -38,15 +36,17 @@ pick:
   - Msg
 -->
 
+It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen`. In PureScript types, we can represent this with the following data types:
+
 ```purescript
-data State
-  = DoorOpen
-  | DoorClosed
+data State = DoorOpen | DoorClosed
 
 data Msg = Close | Open
 ```
 
 <!-- PD_END -->
+
+the classic approach to implement the state machine in pure functional programming is to write an update function that takes a state and a message and returns a new state. For example:
 
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
@@ -64,7 +64,101 @@ updateClassic state msg = case state, msg of
 
 <!-- PD_END -->
 
+The state diagram shows clearly the characteristics of the state machine. E.g. we see right away that the door can be opened and closed infinitely. In other words: There are no unwanted dead ends.
+
+Unfortunately the state diagram and the actual implementation can easily get out of sync.
+
+With the transit library we take a slightly different approach. We define first a type level specification of the state machine. It looks like this:
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/Door.purs
+pick:
+  - DoorDSL
+-->
+
+```purescript
+type DoorDSL =
+  Wrap $ Empty
+    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
+    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
+```
+
+<!-- PD_END -->
+
+This fully specifies the state machine. Based on this spec we can now an update function which only allows implementations legal state transitions. For example:
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/Door.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdateGeneric @DoorDSL
+  (match @"DoorOpen" @"Close" \_ _ -> return' @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return' @"DoorOpen")
+```
+
+<!-- PD_END -->
+
+As you can see the type of the update function is exactly the same as the type of the update function we wrote in the classic approach. The most interesting part here is what would _not_ compile:
+
+- Missing a match line for a state transition
+- Returning illegal states
+- Missing names of states and messages
+
+Indeed this is the only possible implementation of this particular state machine. Like for example there is only one possible way to implement the identity function.
+Later we see examples where there are multiple possible implementations.
+
+Moreover we can now generate the state diagram from the spec:
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/Door.purs
+pick:
+  - main
+-->
+
+```purescript
+main :: Effect Unit
+main = do
+  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door.dot"
+```
+
+<!-- PD_END -->
+
+We can be much more confident now that the state machine is correct.
+
+We can even go one step further and write tests to verify certain properties of the state machine. For example we can verify that there are no dead ends in the state machine:
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/Door.purs
+pick:
+  - spec
+-->
+
+```purescript
+spec :: Spec Unit
+spec = do
+  describe "Dead ends" do
+    it "should be empty" do
+      let r = reflectType (Proxy @DoorDSL)
+      let states = R.getStates r
+      let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
+      deadEnds `shouldEqual` []
+```
+
+<!-- PD_END -->
+
+## Example2: Door with Lock
+
+<img src="graphs/door-with-lock.svg" />
+
 ---
+
+<img src="graphs/door-with-pin.svg" />
 
 <img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
 

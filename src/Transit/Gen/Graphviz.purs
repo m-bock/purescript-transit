@@ -73,7 +73,7 @@ mkNode sg i stateName =
   color = (getColor i).light
 
   getEdge = case _ of
-    (R.Transition from msg [ R.Return to ]) ->
+    (R.Transition from msg [ R.Return Nothing to ]) ->
       [ SecEdge $ Edge from to
           [ D.labelHtmlBold msg
           , D.fontColor color.edgeFont
@@ -89,7 +89,7 @@ mkNode sg i stateName =
       ]
 
   mkMultiEdgeOut from msg = case _ of
-    (R.Return to) -> SecEdge $ mkEdge2 (from <> "__" <> msg) to color Nothing
+    (R.Return Nothing to) -> SecEdge $ mkEdge2 (from <> "__" <> msg) to color Nothing
     _ -> unsafeCoerce "todo"
 
 mkEdge1 :: String -> String -> Colors -> String -> Edge
@@ -130,7 +130,7 @@ getEdges (R.StateGraph transitions) =
   map getEdge transitions
   where
   getEdge = case _ of
-    (R.Transition from msg [ R.Return to ]) -> SecEdge $ Edge from to
+    (R.Transition from msg [ R.Return Nothing to ]) -> SecEdge $ Edge from to
       [ D.labelHtmlBold msg
       --, D.fontColor (Color.rgba' 0.0 0.5 0.94 1.0)
       , D.fontSize 12
@@ -152,8 +152,7 @@ getToStates (R.StateGraph transitions) =
   join $ map
     ( \(R.Transition _ _ returns) -> map
         ( case _ of
-            Return stateName -> stateName
-            ReturnVia _ stateName -> stateName
+            Return _ stateName -> stateName
         )
         returns
     )

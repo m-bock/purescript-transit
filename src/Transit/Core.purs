@@ -4,6 +4,7 @@ import Prelude
 
 import Data.Array as Array
 import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Reflectable (class Reflectable, reflectType)
 import Data.Show.Generic (genericShow)
@@ -30,6 +31,14 @@ foreign import data MkTransition :: StateName -> MsgName -> List' Return -> Tran
 foreign import data Return :: Type
 foreign import data MkReturn :: StateName -> Return
 foreign import data MkReturnVia :: GuardName -> StateName -> Return
+
+---
+
+class IsStateSym (sym :: Symbol) (state :: StateGraph)
+
+class IsMsgSym (sym :: Symbol) (state :: StateGraph)
+
+class IsGuardSym (sym :: Symbol) (state :: StateGraph)
 
 --------------------------------------------------------------------------------
 --- Reflection instances
@@ -75,10 +84,10 @@ instance
     R.Transition _ _ tail = reflectType (Proxy @(MkTransition stateName msgName returns))
 
 instance (IsSymbol stateName) => Reflectable (MkReturn stateName) R.Return_ where
-  reflectType _ = Return (reflectSymbol (Proxy @stateName))
+  reflectType _ = Return Nothing (reflectSymbol (Proxy @stateName))
 
 instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnVia guardName stateName) Return_ where
-  reflectType _ = ReturnVia (reflectSymbol (Proxy @guardName)) (reflectSymbol (Proxy @stateName))
+  reflectType _ = Return (Just (reflectSymbol (Proxy @guardName))) (reflectSymbol (Proxy @stateName))
 
 --------------------------------------------------------------------------------
 --- Update implementation types

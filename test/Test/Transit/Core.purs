@@ -2,6 +2,7 @@ module Test.Transit.Core where
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -32,7 +33,7 @@ spec = do
         let ret = reflectType (Proxy @MyStateGraph)
         ret `shouldEqual`
           ( R.StateGraph
-              [ (R.Transition "TestState1" "TestMsg1" [ (R.Return "TestState2") ])
-              , (R.Transition "TestState2" "TestMsg2" [ (R.Return "TestState3") ])
+              [ (R.Transition "TestState1" "TestMsg1" [ (R.Return Nothing "TestState2") ])
+              , (R.Transition "TestState2" "TestMsg2" [ (R.Return Nothing "TestState3") ])
               ]
           )

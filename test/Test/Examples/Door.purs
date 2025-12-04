@@ -2,22 +2,24 @@ module Test.Examples.Door where
 
 import Prelude
 
+import Data.Array as Array
 import Data.Generic.Rep (class Generic)
+import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), Empty, Wrap, match, mkUpdateGeneric, return_, type (>|))
+import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return', return_)
 import Transit.Gen.Graphviz as TransitGraphviz
+import Transit.Reflection as R
 import Type.Function (type ($))
+import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
 --- Types
 --------------------------------------------------------------------------------
 
-data State
-  = DoorOpen
-  | DoorClosed
+data State = DoorOpen | DoorClosed
 
 data Msg = Close | Open
 
@@ -31,6 +33,12 @@ updateClassic state msg = case state, msg of
   DoorClosed, Open -> DoorOpen
   _, _ -> state
 
+updateClassic_flawed :: State -> Msg -> State
+updateClassic_flawed state msg = case state, msg of
+  DoorOpen, Close -> DoorClosed
+  DoorClosed, Open -> DoorClosed
+  _, _ -> state
+
 --------------------------------------------------------------------------------
 --- transit Approach
 --------------------------------------------------------------------------------
@@ -42,26 +50,21 @@ type DoorDSL =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return_ @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return_ @"DoorOpen")
+  (match @"DoorOpen" @"Close" \_ _ -> return' @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return' @"DoorOpen")
 
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
 
-mkTest :: (State -> Msg -> State) -> Spec Unit
-mkTest updateFn = do
-  describe "purescript-spec" do
-    it "awesome" do
-      updateFn DoorOpen Close `shouldEqual` DoorClosed
-      updateFn DoorOpen Open `shouldEqual` DoorOpen
-      updateFn DoorClosed Open `shouldEqual` DoorOpen
-      updateFn DoorClosed Close `shouldEqual` DoorClosed
-
 spec :: Spec Unit
 spec = do
-  mkTest updateClassic
-  mkTest update
+  describe "Dead ends" do
+    it "should be empty" do
+      let r = reflectType (Proxy @DoorDSL)
+      let states = R.getStates r
+      let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
+      deadEnds `shouldEqual` []
 
 --------------------------------------------------------------------------------
 --- State diagram generation
@@ -69,7 +72,7 @@ spec = do
 
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-graph.dot"
+  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door.dot"
 
 --------------------------------------------------------------------------------
 --- Instances
