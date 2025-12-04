@@ -3,11 +3,9 @@ module Test.Transit.Core where
 import Prelude
 
 import Data.Reflectable (reflectType)
-import Data.Time.Duration (Milliseconds(..))
-import Effect.Aff (delay)
-import Test.Spec (Spec, describe, it, pending)
+import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Core (MkReturn, MkReturnVia, MkStateGraph, MkTransition, Return, Return_(..), StateGraph, StateGraph_(..), Transition_(..))
+import Transit.Core (MkReturn, MkStateGraph, MkTransition, Return_(..), StateGraph, StateGraph_(..), Transition_(..))
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
 

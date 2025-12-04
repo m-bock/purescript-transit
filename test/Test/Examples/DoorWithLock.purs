@@ -1,4 +1,4 @@
-module Test.Examples.Door where
+module Test.Examples.DoorWithLock where
 
 import Prelude
 
@@ -18,8 +18,13 @@ import Type.Function (type ($))
 data State
   = DoorOpen
   | DoorClosed
+  | DoorLocked
 
-data Msg = Close | Open
+data Msg
+  = Close
+  | Open
+  | Lock
+  | Unlock
 
 --------------------------------------------------------------------------------
 --- TraditionalUpdate
@@ -29,6 +34,8 @@ updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
+  DoorClosed, Lock -> DoorLocked
+  DoorLocked, Unlock -> DoorClosed
   _, _ -> state
 
 --------------------------------------------------------------------------------
@@ -39,11 +46,15 @@ type DoorDSL =
   Wrap $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
+    :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
+    :* ("DoorLocked" :@ "Unlock" >| "DoorClosed")
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   (match @"DoorOpen" @"Close" \_ _ -> return_ @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return_ @"DoorOpen")
+  (match @"DoorClosed" @"Lock" \_ _ -> return_ @"DoorLocked")
+  (match @"DoorLocked" @"Unlock" \_ _ -> return_ @"DoorClosed")
 
 --------------------------------------------------------------------------------
 --- Tests
@@ -69,7 +80,7 @@ spec = do
 
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-graph.dot"
+  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-lock.dot"
 
 --------------------------------------------------------------------------------
 --- Instances

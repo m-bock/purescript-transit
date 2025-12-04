@@ -4,7 +4,10 @@ import Prelude
 
 import Effect (Effect)
 import Patchdown as Patchdown
-import Test.Example as Example
+import Test.Examples.ColorRing as Test.Examples.ColorRing
+import Test.Examples.Door as Test.Examples.Door
+import Test.Examples.DoorWithLock as Test.Examples.DoorWithLock
+import Test.Examples.DoorWithPin as Test.Examples.DoorWithPin
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Test.Transit.Core as Test.Transit.Core
@@ -12,6 +15,9 @@ import Test.Transit.Core as Test.Transit.Core
 main :: Effect Unit
 main = do
   runSpecAndExitProcess [ consoleReporter ] Test.Transit.Core.spec
-  Example.main
+  --Test.Examples.ColorRing.main
+  Test.Examples.Door.main
+  Test.Examples.DoorWithLock.main
+  --Test.Examples.DoorWithPin.main
   Patchdown.main
 

@@ -7,4 +7,7 @@ __Start__ -> DoorOpen [arrowsize = "0.7"]
 DoorOpen -> DoorClosed [label = <<b>Close</b>>, fontcolor = "#0e50a8", color = "#2f80ed", fontsize = 12, arrowsize = "0.7"]
 DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#f2994a", fontcolor = "#c8660e", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 DoorClosed -> DoorOpen [label = <<b>Open</b>>, fontcolor = "#c8660e", color = "#f2994a", fontsize = 12, arrowsize = "0.7"]
+DoorClosed -> DoorLocked [label = <<b>Lock</b>>, fontcolor = "#c8660e", color = "#f2994a", fontsize = 12, arrowsize = "0.7"]
+DoorLocked [shape = "box", label = <<b>DoorLocked</b>>, fontsize = 12, style = "filled", fillcolor = "#eb5757", fontcolor = "#c41717", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+DoorLocked -> DoorClosed [label = <<b>Unlock</b>>, fontcolor = "#c41717", color = "#eb5757", fontsize = 12, arrowsize = "0.7"]
 }

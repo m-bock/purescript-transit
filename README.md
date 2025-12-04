@@ -10,17 +10,59 @@ Type-Safe State Machines.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Transit](#transit)
+  - [Installation](#installation)
   - [A](#a)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Transit
 
+## Installation
+
+```bash
+spago install transit
+```
+
 ## A
 
 <img src="graphs/door-graph.svg" />
 
-<img src="graphs/color-test.svg" />
+<img src="graphs/door-with-lock.svg" />
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/Door.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+data State
+  = DoorOpen
+  | DoorClosed
+
+data Msg = Close | Open
+```
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/Door.purs
+pick:
+  - updateClassic
+-->
+
+```purescript
+updateClassic :: State -> Msg -> State
+updateClassic state msg = case state, msg of
+  DoorOpen, Close -> DoorClosed
+  DoorClosed, Open -> DoorOpen
+  _, _ -> state
+```
+
+<!-- PD_END -->
+
+---
 
 <img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
 

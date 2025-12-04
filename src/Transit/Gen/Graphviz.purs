@@ -21,41 +21,6 @@ import Transit.DotLang as D
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
--- colors :: Array { light :: Color, dark :: Color }
--- colors = map
---   ( \(light /\ dark) ->
---       { light: fromMaybe Color.black (Color.fromHexString light)
---       , dark: fromMaybe Color.black (Color.fromHexString dark)
---       }
---   )
---   [ "#2F80ED" /\ "#3A78E8"
---   , "#F2994A" /\ "#DB8D44"
---   , "#EB5757" /\ "#D95757"
---   , "#56CCF2" /\ "#52C4E8"
---   , "#A3E635" /\ "#91E134"
---   , "#9B51E0" /\ "#9C51E3"
---   , "#F2C94C" /\ "#DEBA3E"
---   , "#2DC653" /\ "#31BB5D"
---   , "#FF6B81" /\ "#E7677D"
---   , "#3A82F7" /\ "#467AF2"
---   , "#F66B0E" /\ "#E8751C"
---   , "#6FCF97" /\ "#66C88D"
---   , "#BB6BD9" /\ "#B268D6"
---   , "#2D9CDB" /\ "#359FDF"
---   , "#FF8FA3" /\ "#E88797"
---   , "#4C6EF5" /\ "#587AF7"
---   , "#FFC300" /\ "#E9B300"
---   , "#C471F5" /\ "#B66EF3"
---   , "#27AE60" /\ "#2AB76A"
---   , "#FF4D6D" /\ "#E54865"
---   , "#8B5CF6" /\ "#7C4DF2"
---   , "#FF8B3D" /\ "#E7823A"
---   , "#56CCF2" /\ "#52C4E8"
---   ]
-
--- getColor :: Int -> { light :: Color, dark :: Color }
--- getColor i = fromMaybe { light: Color.black, dark: Color.black } (colors !! i `mod` Array.length colors)
-
 mkGraphvizGraph :: Options -> StateGraph_ -> GraphvizGraph
 mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph $ join
   [ pure $ SecGlobal $
