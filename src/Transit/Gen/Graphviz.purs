@@ -4,9 +4,9 @@ import Prelude
 
 import Color (Color)
 import Color as Color
-import Data.Array (catMaybes, mapWithIndex, (!!))
+import Data.Array (catMaybes, concatMap, mapWithIndex, (!!))
 import Data.Array as Array
-import Data.Maybe (fromMaybe)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Reflectable (class Reflectable, reflectType)
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
@@ -14,7 +14,7 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Colors (getColor)
+import Transit.Colors (Colors, getColor)
 import Transit.Core (Return_(..), StateGraph_(..), Transition_(..))
 import Transit.DotLang (Edge(..), GraphvizGraph(..), Node(..), Section(..), rankDirTD, toText)
 import Transit.DotLang as D
@@ -65,21 +65,60 @@ mkNode sg i stateName =
             ]
         ]
       else []
-    , map getEdge
+    , concatMap getEdge
         (getOutgoingTransitions stateName sg)
     ]
   where
   color = (getColor i).light
 
   getEdge = case _ of
-    (Transition from msg [ Return to ]) -> SecEdge $ Edge from to
-      [ D.labelHtmlBold msg
-      , D.fontColor color.edgeFont
-      , D.color color.edgeColor
-      , D.fontSize 12
-      , D.arrowSize 0.7
+    (Transition from msg [ Return to ]) ->
+      [ SecEdge $ Edge from to
+          [ D.labelHtmlBold msg
+          , D.fontColor color.edgeFont
+          , D.color color.edgeColor
+          , D.fontSize 12
+          , D.arrowSize 0.7
+          ]
       ]
+    (Transition from msg returns) -> join
+      [ pure $ SecNode $ mkDecisionNode (from <> "__" <> msg) color
+      , map (mkMultiEdgeOut from msg) returns
+      , pure $ SecEdge $ mkEdge1 from (from <> "__" <> msg) color msg
+      ]
+
+  mkMultiEdgeOut from msg = case _ of
+    (Return to) -> SecEdge $ mkEdge2 (from <> "__" <> msg) to color Nothing
     _ -> unsafeCoerce "todo"
+
+mkEdge1 :: String -> String -> Colors -> String -> Edge
+mkEdge1 from to colors label = Edge from to
+  [ D.color colors.edgeColor
+  , D.fontColor colors.edgeFont
+  , D.fontSize 12
+  , D.arrowSize 0.7
+  , D.labelHtmlBold label
+  ]
+
+mkEdge2 :: String -> String -> Colors -> Maybe String -> Edge
+mkEdge2 from to colors mayLabel = Edge from to
+  $ catMaybes
+      [ pure $ D.color colors.edgeColor
+      , pure $ D.fontColor colors.edgeFont
+      , pure $ D.fontSize 12
+      , pure $ D.arrowSize 0.7
+      , map D.labelHtmlBold mayLabel
+      ]
+
+mkDecisionNode :: String -> Colors -> Node
+mkDecisionNode name colors = Node name
+  [ D.shapeDiamond
+  , D.labelHtmlBold "?"
+  , D.fontSize 12
+  , D.styleFilled
+  , D.fontColor colors.nodeFont
+  , D.fontNameArial
+  ]
 
 getOutgoingTransitions :: String -> StateGraph_ -> Array Transition_
 getOutgoingTransitions stateName (StateGraph transitions) =

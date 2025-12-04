@@ -29,6 +29,8 @@ spago install transit
 
 <img src="graphs/door-with-lock.svg" />
 
+<img src="graphs/door-with-pin.svg" />
+
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
 pick:

@@ -75,6 +75,9 @@ labelHtmlItalic label = Attr "label" (HtmlLabel $ "<i>" <> label <> "</i>")
 shapeBox :: Attr
 shapeBox = Attr "shape" (Value "box")
 
+shapeDiamond :: Attr
+shapeDiamond = Attr "shape" (Value "diamond")
+
 fontSize :: Int -> Attr
 fontSize size = Attr "fontsize" (ValueInt size)
 
