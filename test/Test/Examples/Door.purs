@@ -45,9 +45,9 @@ type DoorStateGraph = MkStateGraph
 
 -- :* ("DoorIsClosed" :@ "OpenTheDoor" :> "DoorIsOpen")
 
-data State = DoorIsOpen {} | DoorIsClosed { foo :: Int }
+data State = DoorIsOpen | DoorIsClosed
 
-data Msg = CloseTheDoor {} | OpenTheDoor {}
+data Msg = CloseTheDoor | OpenTheDoor
 
 derive instance Generic State _
 derive instance Generic Msg _
@@ -66,10 +66,10 @@ type Spec =
 update2 :: Msg -> State -> State
 update2 = build (mkUpdateGeneric @(Wrap Spec))
   ( match @"DoorIsOpen" @"CloseTheDoor" \msg state ->
-      return @"DoorIsClosed" { foo: 2 }
+      return @"DoorIsClosed" unit
   )
   ( match @"DoorIsClosed" @"OpenTheDoor" \msg state ->
-      return @"DoorIsOpen" {}
+      return @"DoorIsOpen" unit
   )
 
 --(unit /\ (match @"DoorIsOpen" @"CloseTheDoor" (\msg state -> return @"DoorIsClosed" (ReturnState { foo: 2 }))))

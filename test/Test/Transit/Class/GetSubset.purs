@@ -15,7 +15,7 @@ check = unit
 data D
   = Foo Int
   | Bar String
-  | Baz Boolean
+  | Baz
 
 derive instance Generic D _
 
