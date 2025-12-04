@@ -17,22 +17,52 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Safe.Coerce (coerce)
-import Transit.Core (Match(..), Return, ReturnState(..), ReturnStateVia(..), Return_(..))
+import Transit.Core (Match(..), ReturnState(..), ReturnStateVia(..))
 import Transit.DSL (class FromDSL)
-import Transit.DSL as Export
+import Transit.DSL (class FromDSL, class FromDSL1, class FromDSL2, class FromDSL3, type (:*), type (:?), type (:@), type (>|), AddOut, D, Empty, J, StateWithMsg, Wrap) as Export
 import Transit.MkUpdate (class MkUpdate, mkUpdate)
+import Transit.Tmp (class Build, build)
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
 
-mkUpdateGeneric :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> state -> msg -> state
-mkUpdateGeneric impl msg state = un Generically $ un Identity $ mkUpdate @spec impl (Generically msg) (Generically state)
+-- mkUpdateGeneric :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> state -> msg -> state
+-- mkUpdateGeneric impl msg state = un Generically $ un Identity $ mkUpdate @spec impl (Generically msg) (Generically state)
 
--- mkUpdateGeneric' :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> msg -> state -> state
--- mkUpdateGeneric' impl msg state = un Generically $ un Identity $ mkUpdate @spec impl (Generically msg) (Generically state)
+-- mkUpdateGenericM :: forall @spec m impl msg state. Applicative m => (MkUpdate spec m impl (Generically msg) (Generically state)) => impl -> state -> msg -> m state
+-- mkUpdateGenericM impl msg state = map (un Generically) $ mkUpdate @spec impl (Generically msg) (Generically state)
 
-mkUpdateGenericM :: forall @spec m impl msg state. Applicative m => (MkUpdate spec m impl (Generically msg) (Generically state)) => impl -> state -> msg -> m state
-mkUpdateGenericM impl msg state = map (un Generically) $ mkUpdate @spec impl (Generically msg) (Generically state)
+mkUpdateGenericM
+  :: forall @dsl spec m msg state xs a
+   . (Functor m)
+  => (FromDSL dsl spec)
+  => (Build xs (state -> msg -> m state) a)
+  => (MkUpdate spec m xs (Generically msg) (Generically state))
+  => a
+mkUpdateGenericM = build @xs f
+  where
+  f :: xs -> state -> msg -> m state
+  f impl state msg = map (un Generically) $ mkUpdate @spec @m @xs impl (Generically state) (Generically msg)
+
+mkUpdateGeneric
+  :: forall @dsl spec msg state xs a
+   . (FromDSL dsl spec)
+  => (Build xs (state -> msg -> state) a)
+  => (MkUpdate spec Identity xs (Generically msg) (Generically state))
+  => a
+mkUpdateGeneric = build @xs f
+  where
+  f :: xs -> state -> msg -> state
+  f impl state msg = un Identity $ map (un Generically) $ mkUpdate @spec @Identity @xs impl (Generically state) (Generically msg)
+
+-- class Mk dsl a where
+--   mkIt :: a
+
+-- instance (FromDSL dsl spec, Build xs (state -> msg -> m state) a, MkUpdate spec m xs msg state) => Mk dsl a where
+--   mkIt = build @xs (mkUpdate @spec @m @xs @msg @state)
+
+-- mkGeneric :: forall @spec @m @msg @state @xs a. (Build xs (state -> msg -> m state) a) => (MkUpdate spec m xs msg state) => a
+-- mkGeneric = build @xs (mkUpdate @spec @m @xs @msg @state)
 
 -- ---
 
