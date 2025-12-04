@@ -8,6 +8,8 @@ import Data.Newtype (class Newtype)
 import Data.Reflectable (class Reflectable, reflectType)
 import Data.Show.Generic (genericShow)
 import Data.Symbol (reflectSymbol)
+import Transit.Reflection (Return_(..))
+import Transit.Reflection as R
 import Type.Data.List (type (:>), Cons', List', Nil')
 import Type.Prelude (class IsSymbol, Proxy(..))
 
@@ -30,62 +32,29 @@ foreign import data MkReturn :: StateName -> Return
 foreign import data MkReturnVia :: GuardName -> StateName -> Return
 
 --------------------------------------------------------------------------------
---- Data types
---------------------------------------------------------------------------------
-
-type StateName_ = String
-type MsgName_ = String
-type GuardName_ = String
-
-newtype StateGraph_ = StateGraph (Array Transition_)
-
-data Transition_ = Transition StateName_ MsgName_ (Array Return_)
-
-data Return_
-  = Return StateName_
-  | ReturnVia GuardName_ StateName_
-
-derive instance Eq Return_
-derive instance Eq Transition_
-derive instance Eq StateGraph_
-
-derive instance Generic Return_ _
-derive instance Generic Transition_ _
-derive instance Generic StateGraph_ _
-
-instance Show Return_ where
-  show = genericShow
-
-instance Show Transition_ where
-  show = genericShow
-
-instance Show StateGraph_ where
-  show = genericShow
-
---------------------------------------------------------------------------------
 --- Reflection instances
 --------------------------------------------------------------------------------
 
-instance Reflectable (MkStateGraph Nil') StateGraph_ where
-  reflectType _ = StateGraph []
+instance Reflectable (MkStateGraph Nil') R.StateGraph_ where
+  reflectType _ = R.StateGraph []
 
 instance
-  ( Reflectable (MkStateGraph transitions) StateGraph_
-  , Reflectable transition Transition_
+  ( Reflectable (MkStateGraph transitions) R.StateGraph_
+  , Reflectable transition R.Transition_
   ) =>
-  Reflectable (MkStateGraph (transition :> transitions)) StateGraph_ where
+  Reflectable (MkStateGraph (transition :> transitions)) R.StateGraph_ where
 
-  reflectType _ = StateGraph (Array.cons head tail)
+  reflectType _ = R.StateGraph (Array.cons head tail)
     where
     head = reflectType (Proxy @transition)
-    (StateGraph tail) = reflectType (Proxy @(MkStateGraph transitions))
+    (R.StateGraph tail) = reflectType (Proxy @(MkStateGraph transitions))
 
 instance
   ( IsSymbol stateName
   , IsSymbol msgName
   ) =>
-  Reflectable (MkTransition stateName msgName Nil') Transition_ where
-  reflectType _ = Transition
+  Reflectable (MkTransition stateName msgName Nil') R.Transition_ where
+  reflectType _ = R.Transition
     (reflectSymbol (Proxy @stateName))
     (reflectSymbol (Proxy @msgName))
     []
@@ -93,19 +62,19 @@ instance
 instance
   ( IsSymbol stateName
   , IsSymbol msgName
-  , Reflectable (MkTransition stateName msgName returns) Transition_
-  , Reflectable ret Return_
+  , Reflectable (MkTransition stateName msgName returns) R.Transition_
+  , Reflectable ret R.Return_
   ) =>
-  Reflectable (MkTransition stateName msgName (Cons' ret returns)) Transition_ where
-  reflectType _ = Transition
+  Reflectable (MkTransition stateName msgName (Cons' ret returns)) R.Transition_ where
+  reflectType _ = R.Transition
     (reflectSymbol (Proxy @stateName))
     (reflectSymbol (Proxy @msgName))
     (Array.cons head tail)
     where
     head = reflectType (Proxy @ret)
-    Transition _ _ tail = reflectType (Proxy @(MkTransition stateName msgName returns))
+    R.Transition _ _ tail = reflectType (Proxy @(MkTransition stateName msgName returns))
 
-instance (IsSymbol stateName) => Reflectable (MkReturn stateName) Return_ where
+instance (IsSymbol stateName) => Reflectable (MkReturn stateName) R.Return_ where
   reflectType _ = Return (reflectSymbol (Proxy @stateName))
 
 instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnVia guardName stateName) Return_ where

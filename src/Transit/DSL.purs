@@ -1,7 +1,7 @@
 module Transit.DSL where
 
 import Data.Reflectable (class Reflectable, reflectType)
-import Transit.Core (StateGraph_)
+import Transit.Reflection (StateGraph_)
 import Transit.Core as C
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))

@@ -15,14 +15,15 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, getColor)
-import Transit.Core (Return_(..), StateGraph_(..), Transition_(..))
 import Transit.DotLang (Edge(..), GraphvizGraph(..), Node(..), Section(..), rankDirTD, toText)
 import Transit.DotLang as D
+import Transit.Reflection (Return_(..))
+import Transit.Reflection as R
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
-mkGraphvizGraph :: Options -> StateGraph_ -> GraphvizGraph
-mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph $ join
+mkGraphvizGraph :: Options -> R.StateGraph_ -> GraphvizGraph
+mkGraphvizGraph options sg@(R.StateGraph transitions) = GraphvizGraph $ join
   [ pure $ SecGlobal $
       D.GlobalAttrs
         [ D.rankDirTD
@@ -35,7 +36,7 @@ mkGraphvizGraph options sg@(StateGraph transitions) = GraphvizGraph $ join
   -- , getEdges sg
   ]
 
-mkNode :: StateGraph_ -> Int -> String -> Array Section
+mkNode :: R.StateGraph_ -> Int -> String -> Array Section
 mkNode sg i stateName =
   join
     [ pure $ SecNode $ Node stateName
@@ -72,7 +73,7 @@ mkNode sg i stateName =
   color = (getColor i).light
 
   getEdge = case _ of
-    (Transition from msg [ Return to ]) ->
+    (R.Transition from msg [ R.Return to ]) ->
       [ SecEdge $ Edge from to
           [ D.labelHtmlBold msg
           , D.fontColor color.edgeFont
@@ -81,14 +82,14 @@ mkNode sg i stateName =
           , D.arrowSize 0.7
           ]
       ]
-    (Transition from msg returns) -> join
+    (R.Transition from msg returns) -> join
       [ pure $ SecNode $ mkDecisionNode (from <> "__" <> msg) color
       , map (mkMultiEdgeOut from msg) returns
       , pure $ SecEdge $ mkEdge1 from (from <> "__" <> msg) color msg
       ]
 
   mkMultiEdgeOut from msg = case _ of
-    (Return to) -> SecEdge $ mkEdge2 (from <> "__" <> msg) to color Nothing
+    (R.Return to) -> SecEdge $ mkEdge2 (from <> "__" <> msg) to color Nothing
     _ -> unsafeCoerce "todo"
 
 mkEdge1 :: String -> String -> Colors -> String -> Edge
@@ -120,16 +121,16 @@ mkDecisionNode name colors = Node name
   , D.fontNameArial
   ]
 
-getOutgoingTransitions :: String -> StateGraph_ -> Array Transition_
-getOutgoingTransitions stateName (StateGraph transitions) =
-  Array.filter (\(Transition from _ _) -> from == stateName) transitions
+getOutgoingTransitions :: String -> R.StateGraph_ -> Array R.Transition_
+getOutgoingTransitions stateName (R.StateGraph transitions) =
+  Array.filter (\(R.Transition from _ _) -> from == stateName) transitions
 
-getEdges :: StateGraph_ -> Array Section
-getEdges (StateGraph transitions) =
+getEdges :: R.StateGraph_ -> Array Section
+getEdges (R.StateGraph transitions) =
   map getEdge transitions
   where
   getEdge = case _ of
-    (Transition from msg [ Return to ]) -> SecEdge $ Edge from to
+    (R.Transition from msg [ R.Return to ]) -> SecEdge $ Edge from to
       [ D.labelHtmlBold msg
       --, D.fontColor (Color.rgba' 0.0 0.5 0.94 1.0)
       , D.fontSize 12
@@ -138,18 +139,18 @@ getEdges (StateGraph transitions) =
       ]
     _ -> unsafeCoerce "todo"
 
-getStates :: StateGraph_ -> Array String
+getStates :: R.StateGraph_ -> Array String
 getStates sg =
   Array.nub $ Array.concat [ getFromStates sg, getToStates sg ]
 
-getFromStates :: StateGraph_ -> Array String
-getFromStates (StateGraph transitions) =
-  map (\(Transition stateName _ _) -> stateName) transitions
+getFromStates :: R.StateGraph_ -> Array String
+getFromStates (R.StateGraph transitions) =
+  map (\(R.Transition stateName _ _) -> stateName) transitions
 
-getToStates :: StateGraph_ -> Array String
-getToStates (StateGraph transitions) =
+getToStates :: R.StateGraph_ -> Array String
+getToStates (R.StateGraph transitions) =
   join $ map
-    ( \(Transition _ _ returns) -> map
+    ( \(R.Transition _ _ returns) -> map
         ( case _ of
             Return stateName -> stateName
             ReturnVia _ stateName -> stateName
@@ -173,7 +174,7 @@ defaultOptions =
   , globalLabelModifier: identity
   }
 
-writeToFile :: forall @spec. Reflectable spec StateGraph_ => (Options -> Options) -> FilePath -> Effect Unit
+writeToFile :: forall @spec. Reflectable spec R.StateGraph_ => (Options -> Options) -> FilePath -> Effect Unit
 writeToFile mkOptions path = do
   let reflected = reflectType (Proxy @spec)
   Console.log $ "Reflected: " <> show reflected
@@ -181,6 +182,6 @@ writeToFile mkOptions path = do
     (toText (mkGraphvizGraph (mkOptions defaultOptions) reflected))
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: forall @spec. Reflectable spec StateGraph_ => FilePath -> Effect Unit
+writeToFile_ :: forall @spec. Reflectable spec R.StateGraph_ => FilePath -> Effect Unit
 writeToFile_ = writeToFile @spec identity
 

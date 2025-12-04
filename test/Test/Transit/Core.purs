@@ -5,7 +5,9 @@ import Prelude
 import Data.Reflectable (reflectType)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Core (MkReturn, MkStateGraph, MkTransition, Return_(..), StateGraph, StateGraph_(..), Transition_(..))
+import Transit.Core (MkReturn, MkStateGraph, MkTransition, StateGraph)
+import Transit.Reflection (Return_(..))
+import Transit.Reflection as R
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
 
@@ -23,14 +25,14 @@ spec = do
     describe "Attributes" do
       it "awesome" do
         let ret = reflectType (Proxy @(MkStateGraph Nil'))
-        ret `shouldEqual` (StateGraph [])
+        ret `shouldEqual` (R.StateGraph [])
 
     describe "MyStateGraph" do
       it "should be equal to the reflected type" do
         let ret = reflectType (Proxy @MyStateGraph)
         ret `shouldEqual`
-          ( StateGraph
-              [ (Transition "TestState1" "TestMsg1" [ (Return "TestState2") ])
-              , (Transition "TestState2" "TestMsg2" [ (Return "TestState3") ])
+          ( R.StateGraph
+              [ (R.Transition "TestState1" "TestMsg1" [ (R.Return "TestState2") ])
+              , (R.Transition "TestState2" "TestMsg2" [ (R.Return "TestState3") ])
               ]
           )
