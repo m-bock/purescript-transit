@@ -25,13 +25,13 @@ import Transit.MkUpdate (class MkUpdate, mkUpdate)
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
 
-mkUpdateGeneric :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> msg -> state -> state
+mkUpdateGeneric :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> state -> msg -> state
 mkUpdateGeneric impl msg state = un Generically $ un Identity $ mkUpdate @spec impl (Generically msg) (Generically state)
 
 -- mkUpdateGeneric' :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> msg -> state -> state
 -- mkUpdateGeneric' impl msg state = un Generically $ un Identity $ mkUpdate @spec impl (Generically msg) (Generically state)
 
-mkUpdateGenericM :: forall @spec m impl msg state. Applicative m => (MkUpdate spec m impl (Generically msg) (Generically state)) => impl -> msg -> state -> m state
+mkUpdateGenericM :: forall @spec m impl msg state. Applicative m => (MkUpdate spec m impl (Generically msg) (Generically state)) => impl -> state -> msg -> m state
 mkUpdateGenericM impl msg state = map (un Generically) $ mkUpdate @spec impl (Generically msg) (Generically state)
 
 -- ---

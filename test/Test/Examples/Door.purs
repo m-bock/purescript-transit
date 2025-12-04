@@ -38,12 +38,12 @@ type Spec =
     :* ("DoorIsOpen" :@ "CloseTheDoor" >| "DoorIsClosed")
     :* ("DoorIsClosed" :@ "OpenTheDoor" >| "DoorIsOpen")
 
-update2 :: Msg -> State -> State
+update2 :: State -> Msg -> State
 update2 = build (mkUpdateGeneric @Spec)
-  ( match @"DoorIsOpen" @"CloseTheDoor" \msg state ->
+  ( match @"DoorIsOpen" @"CloseTheDoor" \state msg ->
       return_ @"DoorIsClosed"
   )
-  ( match @"DoorIsClosed" @"OpenTheDoor" \msg state ->
+  ( match @"DoorIsClosed" @"OpenTheDoor" \state msg ->
       return_ @"DoorIsOpen"
   )
 

@@ -115,7 +115,7 @@ instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnVia gu
 --- Update implementation types
 --------------------------------------------------------------------------------
 
-newtype Match (symState :: Symbol) (symMsg :: Symbol) msgIn stateIn stateOut = Match (msgIn -> stateIn -> stateOut)
+newtype Match (symState :: Symbol) (symMsg :: Symbol) stateIn msgIn stateOut = Match (stateIn -> msgIn -> stateOut)
 
 derive instance Newtype (Match symState symMsg msgIn stateIn stateOut) _
 
