@@ -13,8 +13,12 @@ Type-Safe State Machines.
   - [Installation](#installation)
   - [Example1: Door](#example1-door)
   - [Example2: Door with Lock](#example2-door-with-lock)
+  - [Generate State Diagrams](#generate-state-diagrams)
+  - [Generate Transition Tables](#generate-transition-tables)
   - [Example3: Door with Pin](#example3-door-with-pin)
-  - [Example4: Espresso Machine](#example4-espresso-machine)
+  - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
+  - [Type signatures in update functions](#type-signatures-in-update-functions)
+  - [Example5: Espresso Machine](#example5-espresso-machine)
   - [Tests](#tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -134,7 +138,7 @@ updateClassic state msg = case state, msg of
 
 <!-- PD_END -->
 
-The state diagram shows clearly the characteristics of the state machine. E.g. we see right away that the door can be opened and closed infinitely. In other words: There are no unwanted dead ends.
+The state diagram shows clearly the characteristics of the state machine. E.g. we see right away that the door can be opened and closed infinitely. In other words: There are no unwanted dead ends. Later we will see how to verify such properties with code.
 
 Unfortunately the state diagram and the actual implementation can easily get out of sync.
 
@@ -181,9 +185,13 @@ As you can see the type of the update function is exactly the same as the type o
 - Missing names of states and messages
 
 Indeed this is the only possible implementation of this particular state machine. Like for example there is only one possible way to implement the identity function.
-Later we see examples where there are multiple possible implementations.
+Later we see how to generate the state diagram from the spec.
 
-Moreover we can now generate the state diagram from the spec:
+## Example2: Door with Lock
+
+<img src="graphs/door-with-lock.svg" />
+
+## Generate State Diagrams
 
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
@@ -205,15 +213,19 @@ main = do
 
 <!-- PD_END -->
 
-## Example2: Door with Lock
-
-<img src="graphs/door-with-lock.svg" />
+## Generate Transition Tables
 
 ## Example3: Door with Pin
 
 <img src="graphs/door-with-pin.svg" />
 
-## Example4: Espresso Machine
+## Example4: Door with Pin and Alarm
+
+<img src="graphs/door-with-pin-and-alarm.svg" />
+
+## Type signatures in update functions
+
+## Example5: Espresso Machine
 
 <img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
 

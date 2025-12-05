@@ -7,7 +7,7 @@ import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), Empty, Wrap, match, mkUpdateGeneric, return_, type (>|))
+import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return', return_)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Type.Function (type ($))
 
@@ -51,10 +51,10 @@ type DoorDSL =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return_ @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return_ @"DoorOpen")
-  (match @"DoorClosed" @"Lock" \_ _ -> return_ @"DoorLocked")
-  (match @"DoorLocked" @"Unlock" \_ _ -> return_ @"DoorClosed")
+  (match @"DoorOpen" @"Close" \_ _ -> return' @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return' @"DoorOpen")
+  (match @"DoorClosed" @"Lock" \_ _ -> return' @"DoorLocked")
+  (match @"DoorLocked" @"Unlock" \_ _ -> return' @"DoorClosed")
 
 --------------------------------------------------------------------------------
 --- Tests
