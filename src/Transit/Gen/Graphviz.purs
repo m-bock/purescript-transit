@@ -82,8 +82,8 @@ mkNodeInit :: String -> Node
 mkNodeInit name = Node name
   [ D.shapeCircle
   , D.label ""
-  , D.width 0.2
-  , D.height 0.2
+  , D.width 0.15
+  , D.height 0.15
   , D.fixedSize true
   , D.styleFilled
   , D.fillColor (Color.rgb 140 140 140)

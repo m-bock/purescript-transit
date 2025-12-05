@@ -33,7 +33,8 @@ Let's have a look at the following state diagram:
 
 <img src="graphs/door.svg" />
 
-It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen` indicated by the grey arrow pointing to it. In PureScript types, we can represent this with the following data types:
+It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen` indicated by the grey arrow pointing to it.
+Another way to represent this is a transition table:
 
 <!-- PD_START:raw
 filePath: graphs/door.html
@@ -98,6 +99,8 @@ DoorOpen
 </tbody>
 </table><!-- PD_END -->
 
+In PureScript types, we can represent the states and messages of the state machine with the following data types:
+
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
 pick:
@@ -113,7 +116,7 @@ data Msg = Close | Open
 
 <!-- PD_END -->
 
-the classic approach to implement the state machine in pure functional programming is to write an update function that takes a state and a message and returns a new state. For example:
+The classic approach to implement the state transitions in pure functional programming is to write an update function that takes a state and a message and returns a new state. For example:
 
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
