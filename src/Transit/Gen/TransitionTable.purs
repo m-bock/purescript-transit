@@ -22,7 +22,12 @@ mkTable _ (R.StateGraph transitions) = TransitionTable $ concatMap mkTableRow tr
 
 mkTableRow :: R.Transition_ -> Array TableRow
 mkTableRow (R.Transition from msg returns) =
-  map (\(R.Return guard to) -> { fromState: from, msg: msg, guard: guard, toState: to }) returns
+  map
+    ( case _ of
+        R.Return to -> { fromState: from, msg: msg, guard: Nothing, toState: to }
+        R.ReturnVia guard to -> { fromState: from, msg: msg, guard: Just guard, toState: to }
+    )
+    returns
 
 tableToHtml :: TransitionTable -> Html.Node
 tableToHtml (TransitionTable rows) =

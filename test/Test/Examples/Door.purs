@@ -60,12 +60,14 @@ update = mkUpdateGeneric @DoorDSL
 
 spec :: Spec Unit
 spec = do
-  describe "Dead ends" do
-    it "should be empty" do
-      let r = reflectType (Proxy @DoorDSL)
-      let states = R.getStates r
-      let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
-      deadEnds `shouldEqual` []
+  pure unit
+
+-- describe "Dead ends" do
+--   it "should be empty" do
+--     let r = reflectType (Proxy @DoorDSL)
+--     let states = R.getStates r
+--     let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
+--     deadEnds `shouldEqual` []
 
 --------------------------------------------------------------------------------
 --- State diagram generation

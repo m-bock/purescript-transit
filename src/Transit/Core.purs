@@ -84,10 +84,10 @@ instance
     R.Transition _ _ tail = reflectType (Proxy @(MkTransition stateName msgName returns))
 
 instance (IsSymbol stateName) => Reflectable (MkReturn stateName) R.Return_ where
-  reflectType _ = Return Nothing (reflectSymbol (Proxy @stateName))
+  reflectType _ = Return (reflectSymbol (Proxy @stateName))
 
 instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnVia guardName stateName) Return_ where
-  reflectType _ = Return (Just (reflectSymbol (Proxy @guardName))) (reflectSymbol (Proxy @stateName))
+  reflectType _ = ReturnVia (reflectSymbol (Proxy @guardName)) (reflectSymbol (Proxy @stateName))
 
 --------------------------------------------------------------------------------
 --- Update implementation types
