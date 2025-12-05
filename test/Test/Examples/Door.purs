@@ -12,6 +12,7 @@ import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return', return_)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
+import Transit.Reflection (addMeta)
 import Transit.Reflection as R
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
@@ -73,8 +74,13 @@ spec = do
 
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.dot"
-  TransitTable.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.html"
+  let
+    g = reflectType (Proxy @DoorDSL) # addMeta
+      { name: "Door"
+      , description: "A door that can be opened and closed"
+      }
+  TransitGraphviz.writeToFile_ g "graphs/door.dot"
+  TransitTable.writeToFile_ g "graphs/door.html"
 
 --------------------------------------------------------------------------------
 --- Instances

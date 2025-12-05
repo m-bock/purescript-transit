@@ -45,7 +45,7 @@ class IsGuardSym (sym :: Symbol) (state :: StateGraph)
 --------------------------------------------------------------------------------
 
 instance Reflectable (MkStateGraph Nil') R.StateGraph_ where
-  reflectType _ = R.StateGraph []
+  reflectType _ = R.StateGraph Nothing []
 
 instance
   ( Reflectable (MkStateGraph transitions) R.StateGraph_
@@ -53,10 +53,10 @@ instance
   ) =>
   Reflectable (MkStateGraph (transition :> transitions)) R.StateGraph_ where
 
-  reflectType _ = R.StateGraph (Array.cons head tail)
+  reflectType _ = R.StateGraph Nothing (Array.cons head tail)
     where
     head = reflectType (Proxy @transition)
-    (R.StateGraph tail) = reflectType (Proxy @(MkStateGraph transitions))
+    (R.StateGraph _ tail) = reflectType (Proxy @(MkStateGraph transitions))
 
 instance
   ( IsSymbol stateName

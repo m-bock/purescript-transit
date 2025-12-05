@@ -26,13 +26,14 @@ spec = do
     describe "Attributes" do
       it "awesome" do
         let ret = reflectType (Proxy @(MkStateGraph Nil'))
-        ret `shouldEqual` (R.StateGraph [])
+        ret `shouldEqual` (R.StateGraph Nothing [])
 
     describe "MyStateGraph" do
       it "should be equal to the reflected type" do
         let ret = reflectType (Proxy @MyStateGraph)
         ret `shouldEqual`
           ( R.StateGraph
+              Nothing
               [ (R.Transition "TestState1" "TestMsg1" [ (R.Return Nothing "TestState2") ])
               , (R.Transition "TestState2" "TestMsg2" [ (R.Return Nothing "TestState3") ])
               ]

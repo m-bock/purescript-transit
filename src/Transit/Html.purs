@@ -29,6 +29,12 @@ tr = Node "tr"
 td :: Array Attribute -> Array Node -> Node
 td = Node "td"
 
+caption :: Array Attribute -> Array Node -> Node
+caption = Node "caption"
+
+attrStyle :: String -> Attribute
+attrStyle style = Attribute "style" style
+
 nodeToHtml :: Node -> String
 nodeToHtml = case _ of
   Node name attributes children -> Str.joinWith "\n"

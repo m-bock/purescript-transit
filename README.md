@@ -38,31 +38,41 @@ It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `O
 <!-- PD_START:raw
 filePath: graphs/door.html
 --><table >
+<caption style="text-align: left; font-weight: bold;">
+Transition Table
+</caption>
 <thead >
 <tr >
 <th >
 From State
 </th>
 <th >
+
+</th>
+<th >
 Message
 </th>
 <th >
-Guard
+
 </th>
 <th >
 To State
 </th>
 </tr>
 </thead>
+<tbody >
 <tr >
 <td >
 DoorOpen
+</td>
+<td >
+⟶
 </td>
 <td >
 Close
 </td>
 <td >
-
+⟶
 </td>
 <td >
 DoorClosed
@@ -73,15 +83,19 @@ DoorClosed
 DoorClosed
 </td>
 <td >
+⟶
+</td>
+<td >
 Open
 </td>
 <td >
-
+⟶
 </td>
 <td >
 DoorOpen
 </td>
 </tr>
+</tbody>
 </table><!-- PD_END -->
 
 <!-- PD_START:purs
@@ -177,8 +191,13 @@ pick:
 ```purescript
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.dot"
-  TransitTable.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.html"
+  let
+    g = reflectType (Proxy @DoorDSL) # addMeta
+      { name: "Door"
+      , description: "A door that can be opened and closed"
+      }
+  TransitGraphviz.writeToFile_ g "graphs/door.dot"
+  TransitTable.writeToFile_ g "graphs/door.html"
 ```
 
 <!-- PD_END -->
