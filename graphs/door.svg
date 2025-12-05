@@ -24,26 +24,26 @@
 <!-- DoorOpen&#45;&gt;DoorClosed -->
 <g id="edge2" class="edge">
 <title>DoorOpen&#45;&gt;DoorClosed</title>
-<path fill="none" stroke="#2f80ed" d="M24.66,-84.64C20.33,-79.43 16.3,-73.38 14,-67 10.9,-58.39 13.98,-49.63 19.14,-41.99"/>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="21.11,-43.44 23.41,-36.38 17.21,-40.46 21.11,-43.44"/>
+<path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M24.66,-84.64C20.33,-79.43 16.3,-73.38 14,-67 10.9,-58.39 13.98,-49.63 19.14,-41.99"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="21.11,-43.44 23.41,-36.38 17.21,-40.46 21.11,-43.44"/>
 <text text-anchor="start" x="14" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0e50a8">Close</text>
 </g>
 <!-- __Start__ -->
 <g id="node2" class="node">
 <title>__Start__</title>
-<ellipse fill="lightgrey" stroke="black" stroke-width="0" cx="43" cy="-165" rx="7" ry="7"/>
+<ellipse fill="#8c8c8c" stroke="black" stroke-width="0" cx="43" cy="-165" rx="7" ry="7"/>
 </g>
 <!-- __Start__&#45;&gt;DoorOpen -->
 <g id="edge1" class="edge">
 <title>__Start__&#45;&gt;DoorOpen</title>
-<path fill="none" stroke="black" d="M43,-157.58C43,-150.55 43,-138.87 43,-128.2"/>
-<polygon fill="black" stroke="black" points="45.45,-128.05 43,-121.05 40.55,-128.05 45.45,-128.05"/>
+<path fill="none" stroke="#8c8c8c" stroke-width="1.8" d="M43,-157.58C43,-150.55 43,-138.87 43,-128.2"/>
+<polygon fill="#8c8c8c" stroke="#8c8c8c" stroke-width="1.8" points="45.45,-128.05 43,-121.05 40.55,-128.05 45.45,-128.05"/>
 </g>
 <!-- DoorClosed&#45;&gt;DoorOpen -->
 <g id="edge3" class="edge">
 <title>DoorClosed&#45;&gt;DoorOpen</title>
-<path fill="none" stroke="#f2994a" d="M48.23,-36.27C50.39,-45.38 52.16,-56.76 51,-67 50.61,-70.46 50.01,-74.07 49.31,-77.61"/>
-<polygon fill="#f2994a" stroke="#f2994a" points="46.86,-77.32 47.77,-84.69 51.65,-78.37 46.86,-77.32"/>
+<path fill="none" stroke="#f2994a" stroke-width="1.8" d="M48.23,-36.27C50.39,-45.38 52.16,-56.76 51,-67 50.61,-70.46 50.01,-74.07 49.31,-77.61"/>
+<polygon fill="#f2994a" stroke="#f2994a" stroke-width="1.8" points="46.86,-77.32 47.77,-84.69 51.65,-78.37 46.86,-77.32"/>
 <text text-anchor="start" x="51" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">Open</text>
 </g>
 </g>

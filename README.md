@@ -11,7 +11,11 @@ Type-Safe State Machines.
 
 - [Transit](#transit)
   - [Installation](#installation)
-  - [A](#a)
+  - [Example1: Door](#example1-door)
+  - [Example2: Door with Lock](#example2-door-with-lock)
+  - [Example3: Door with Pin](#example3-door-with-pin)
+  - [Example4: Espresso Machine](#example4-espresso-machine)
+  - [Tests](#tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -29,14 +33,14 @@ Let's have a look at the following state diagram:
 
 <img src="graphs/door.svg" />
 
+It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen` indicated by the grey arrow pointing to it. In PureScript types, we can represent this with the following data types:
+
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
 pick:
   - State
   - Msg
 -->
-
-It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen`. In PureScript types, we can represent this with the following data types:
 
 ```purescript
 data State = DoorOpen | DoorClosed
@@ -129,6 +133,20 @@ main = do
 
 <!-- PD_END -->
 
+## Example2: Door with Lock
+
+<img src="graphs/door-with-lock.svg" />
+
+## Example3: Door with Pin
+
+<img src="graphs/door-with-pin.svg" />
+
+## Example4: Espresso Machine
+
+<img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
+
+## Tests
+
 We can be much more confident now that the state machine is correct.
 
 We can even go one step further and write tests to verify certain properties of the state machine. For example we can verify that there are no dead ends in the state machine:
@@ -151,16 +169,6 @@ spec = do
 ```
 
 <!-- PD_END -->
-
-## Example2: Door with Lock
-
-<img src="graphs/door-with-lock.svg" />
-
----
-
-<img src="graphs/door-with-pin.svg" />
-
-<img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
 
 ```purescript
 

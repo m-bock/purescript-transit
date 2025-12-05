@@ -2,9 +2,9 @@ digraph
 {
 rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12
 DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0e50a8", fontname = "Arial", labelloc = "c", penwidth = 0.0]
-__Start__ [shape = "circle", label = "", width = 0.2, height = 0.2, fixedsize = true, style = "filled", penwidth = 0.0]
-__Start__ -> DoorOpen [arrowsize = "0.7"]
-DoorOpen -> DoorClosed [label = <<b>Close</b>>, fontcolor = "#0e50a8", color = "#2f80ed", fontsize = 12, arrowsize = "0.7"]
+__Start__ [shape = "circle", label = "", width = 0.2, height = 0.2, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
+__Start__ -> DoorOpen [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
+DoorOpen -> DoorClosed [color = "#2f80ed", fontcolor = "#0e50a8", fontsize = 12, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
 DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#f2994a", fontcolor = "#c8660e", fontname = "Arial", labelloc = "c", penwidth = 0.0]
-DoorClosed -> DoorOpen [label = <<b>Open</b>>, fontcolor = "#c8660e", color = "#f2994a", fontsize = 12, arrowsize = "0.7"]
+DoorClosed -> DoorOpen [color = "#f2994a", fontcolor = "#c8660e", fontsize = 12, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
 }

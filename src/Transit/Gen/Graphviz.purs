@@ -51,19 +51,8 @@ mkNode sg i stateName =
         , D.penWidth 0.0
         ]
     , if i == 0 then
-        [ SecNode $ Node "__Start__"
-            [ D.shapeCircle
-            , D.label ""
-            , D.width 0.2
-            , D.height 0.2
-            , D.fixedSize true
-            , D.styleFilled
-            --  , D.fillColor (Color.rgba' 0.0 0.0 0.5 1.0)
-            , D.penWidth 0.0
-            ]
-        , SecEdge $ Edge "__Start__" stateName
-            [ D.arrowSize 0.7
-            ]
+        [ SecNode $ mkNodeInit "__Start__"
+        , SecEdge $ mkEdgeInit "__Start__" stateName
         ]
       else []
     , concatMap getEdge
@@ -74,42 +63,57 @@ mkNode sg i stateName =
 
   getEdge = case _ of
     (R.Transition from msg [ R.Return Nothing to ]) ->
-      [ SecEdge $ Edge from to
-          [ D.labelHtmlBold msg
-          , D.fontColor color.edgeFont
-          , D.color color.edgeColor
-          , D.fontSize 12
-          , D.arrowSize 0.7
-          ]
-      ]
+      [ SecEdge $ mkEdgeMsg from to color msg ]
     (R.Transition from msg returns) -> join
       [ pure $ SecNode $ mkDecisionNode (from <> "__" <> msg) color
       , map (mkMultiEdgeOut from msg) returns
-      , pure $ SecEdge $ mkEdge1 from (from <> "__" <> msg) color msg
+      , pure $ SecEdge $ mkEdgeMsg from (from <> "__" <> msg) color msg
       ]
 
   mkMultiEdgeOut from msg = case _ of
-    (R.Return Nothing to) -> SecEdge $ mkEdge2 (from <> "__" <> msg) to color Nothing
+    (R.Return Nothing to) -> SecEdge $ mkEdgeGuard (from <> "__" <> msg) to color Nothing
     _ -> unsafeCoerce "todo"
 
-mkEdge1 :: String -> String -> Colors -> String -> Edge
-mkEdge1 from to colors label = Edge from to
+mkNodeInit :: String -> Node
+mkNodeInit name = Node name
+  [ D.shapeCircle
+  , D.label ""
+  , D.width 0.2
+  , D.height 0.2
+  , D.fixedSize true
+  , D.styleFilled
+  , D.fillColor (Color.rgb 140 140 140)
+  , D.penWidth 0.0
+  ]
+
+mkEdgeMsg :: String -> String -> Colors -> String -> Edge
+mkEdgeMsg from to colors label = Edge from to
   [ D.color colors.edgeColor
   , D.fontColor colors.edgeFont
   , D.fontSize 12
   , D.arrowSize 0.7
   , D.labelHtmlBold label
+  , D.penWidth 1.8
   ]
 
-mkEdge2 :: String -> String -> Colors -> Maybe String -> Edge
-mkEdge2 from to colors mayLabel = Edge from to
+mkEdgeGuard :: String -> String -> Colors -> Maybe String -> Edge
+mkEdgeGuard from to colors mayLabel = Edge from to
   $ catMaybes
       [ pure $ D.color colors.edgeColor
       , pure $ D.fontColor colors.edgeFont
       , pure $ D.fontSize 12
       , pure $ D.arrowSize 0.7
       , map D.labelHtmlBold mayLabel
+      , pure $ D.penWidth 1.8
       ]
+
+mkEdgeInit :: String -> String -> Edge
+mkEdgeInit from to = Edge from to
+  [ D.color (Color.rgb 140 140 140)
+  , D.fontSize 12
+  , D.arrowSize 0.7
+  , D.penWidth 1.8
+  ]
 
 mkDecisionNode :: String -> Colors -> Node
 mkDecisionNode name colors = Node name
