@@ -20,6 +20,8 @@ Type-Safe State Machines.
   - [Type signatures in update functions](#type-signatures-in-update-functions)
   - [Example5: Espresso Machine](#example5-espresso-machine)
   - [Tests](#tests)
+  - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
+  - [Example 7: das-ist-das-haus-vom-ni-ko-laus](#example-7-das-ist-das-haus-vom-ni-ko-laus)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -253,6 +255,307 @@ spec = do
 ```
 
 <!-- PD_END -->
+
+## Monadic update functions
+
+## Example 6: Seven Bridges of Königsberg
+
+<img src="assets/bridges-koenigsberg.jpg" alt="Transit" />
+
+<!-- PD_START:purs
+filePath: test/Test/Examples/BridgesKoenigsberg.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+data State = LandA | LandB | LandC | LandD
+
+data Msg
+  = CrossBridge_a
+  | CrossBridge_b
+  | CrossBridge_c
+  | CrossBridge_d
+  | CrossBridge_e
+  | CrossBridge_f
+  | CrossBridge_g
+```
+
+<!-- PD_END -->
+
+<!-- PD_START:raw
+filePath: graphs/bridges-koenigsberg.html
+--><table >
+<caption style="text-align: left; font-weight: bold;">
+Transition Table
+</caption>
+<thead >
+<tr >
+<th >
+From State
+</th>
+<th >
+
+</th>
+<th >
+Message
+</th>
+<th >
+
+</th>
+<th >
+To State
+</th>
+</tr>
+</thead>
+<tbody >
+<tr >
+<td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_a
+</td>
+<td >
+⟶
+</td>
+<td >
+LandB
+</td>
+</tr>
+<tr >
+<td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_b
+</td>
+<td >
+⟶
+</td>
+<td >
+LandB
+</td>
+</tr>
+<tr >
+<td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_c
+</td>
+<td >
+⟶
+</td>
+<td >
+LandC
+</td>
+</tr>
+<tr >
+<td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_d
+</td>
+<td >
+⟶
+</td>
+<td >
+LandC
+</td>
+</tr>
+<tr >
+<td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_e
+</td>
+<td >
+⟶
+</td>
+<td >
+LandD
+</td>
+</tr>
+<tr >
+<td >
+LandB
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_a
+</td>
+<td >
+⟶
+</td>
+<td >
+LandA
+</td>
+</tr>
+<tr >
+<td >
+LandB
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_b
+</td>
+<td >
+⟶
+</td>
+<td >
+LandA
+</td>
+</tr>
+<tr >
+<td >
+LandB
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_f
+</td>
+<td >
+⟶
+</td>
+<td >
+LandD
+</td>
+</tr>
+<tr >
+<td >
+LandC
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_c
+</td>
+<td >
+⟶
+</td>
+<td >
+LandA
+</td>
+</tr>
+<tr >
+<td >
+LandC
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_d
+</td>
+<td >
+⟶
+</td>
+<td >
+LandA
+</td>
+</tr>
+<tr >
+<td >
+LandC
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_g
+</td>
+<td >
+⟶
+</td>
+<td >
+LandD
+</td>
+</tr>
+<tr >
+<td >
+LandD
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_e
+</td>
+<td >
+⟶
+</td>
+<td >
+LandA
+</td>
+</tr>
+<tr >
+<td >
+LandD
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_f
+</td>
+<td >
+⟶
+</td>
+<td >
+LandB
+</td>
+</tr>
+<tr >
+<td >
+LandD
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_g
+</td>
+<td >
+⟶
+</td>
+<td >
+LandC
+</td>
+</tr>
+</tbody>
+</table><!-- PD_END -->
+
+<img src="graphs/bridges-koenigsberg.svg" />
+
+## Example 7: das-ist-das-haus-vom-ni-ko-laus
+
+<img src="assets/haus-nikolaus.svg" alt="Transit" />
 
 ```purescript
 
