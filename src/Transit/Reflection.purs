@@ -14,12 +14,7 @@ type GuardName_ = String
 
 data Return_ = Return (Maybe GuardName_) StateName_
 
-data StateGraph_ = StateGraph (Maybe Meta) (Array Transition_)
-
-type Meta = { name :: String, description :: String }
-
-addMeta :: Meta -> StateGraph_ -> StateGraph_
-addMeta meta (StateGraph _ transitions) = StateGraph (Just meta) transitions
+data StateGraph_ = StateGraph (Array Transition_)
 
 data Transition_ = Transition StateName_ MsgName_ (Array Return_)
 
@@ -41,16 +36,16 @@ derive instance Generic StateGraph_ _
 derive instance Generic Return_ _
 
 getStates :: StateGraph_ -> Array StateName_
-getStates (StateGraph _ transitions) = Array.nub $ Array.concat [ fromStates, toStates ]
+getStates (StateGraph transitions) = Array.nub $ Array.concat [ fromStates, toStates ]
   where
   fromStates = map (\(Transition stateName _ _) -> stateName) transitions
   toStates = Array.concatMap (\(Transition _ _ returns) -> map (\(Return _ stateName) -> stateName) returns) transitions
 
 getOutgoing :: StateName_ -> StateGraph_ -> Array Transition_
-getOutgoing stateName (StateGraph _ transitions) =
+getOutgoing stateName (StateGraph transitions) =
   Array.filter (\(Transition from _ _) -> from == stateName) transitions
 
 getIncoming :: StateName_ -> StateGraph_ -> Array Transition_
-getIncoming stateName (StateGraph _ transitions) =
+getIncoming stateName (StateGraph transitions) =
   Array.filter (\(Transition _ _ returns) -> Array.any (\(Return _ to) -> to == stateName) returns) transitions
 

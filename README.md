@@ -20,8 +20,10 @@ Type-Safe State Machines.
   - [Type signatures in update functions](#type-signatures-in-update-functions)
   - [Example5: Espresso Machine](#example5-espresso-machine)
   - [Tests](#tests)
+  - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
   - [Example 7: das-ist-das-haus-vom-ni-ko-laus](#example-7-das-ist-das-haus-vom-ni-ko-laus)
+  - [Colors](#colors)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -205,10 +207,7 @@ pick:
 main :: Effect Unit
 main = do
   let
-    g = reflectType (Proxy @DoorDSL) # addMeta
-      { name: "Door"
-      , description: "A door that can be opened and closed"
-      }
+    g = reflectType (Proxy @DoorDSL)
   TransitGraphviz.writeToFile_ g "graphs/door.dot"
   TransitTable.writeToFile_ g "graphs/door.html"
 ```
@@ -556,6 +555,10 @@ LandC
 ## Example 7: das-ist-das-haus-vom-ni-ko-laus
 
 <img src="assets/haus-nikolaus.svg" alt="Transit" />
+
+## Colors
+
+---
 
 ```purescript
 

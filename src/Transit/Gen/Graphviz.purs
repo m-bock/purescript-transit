@@ -23,22 +23,17 @@ import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 mkGraphvizGraph :: Options -> R.StateGraph_ -> GraphvizGraph
-mkGraphvizGraph options sg@(R.StateGraph mayMeta transitions) = GraphvizGraph $ join
+mkGraphvizGraph options sg@(R.StateGraph transitions) = GraphvizGraph $ join
   [ pure $ SecGlobal $
       D.GlobalAttrs
         [ D.rankDirTD
         , D.fontNameArial
-        , D.labelHtmlBold title
+        , D.labelHtmlBold options.title
         , D.labelLocT
         , D.fontSize 12
         ]
   , join $ mapWithIndex (mkNode sg) (getStates sg)
-  -- , getEdges sg
   ]
-  where
-  { title } = case mayMeta of
-    Just meta -> { title: "State Diagram: " <> meta.name }
-    Nothing -> { title: "Untitled State Diagram" }
 
 mkNode :: R.StateGraph_ -> Int -> String -> Array Section
 mkNode sg i stateName =
@@ -130,11 +125,11 @@ mkDecisionNode name colors = Node name
   ]
 
 getOutgoingTransitions :: String -> R.StateGraph_ -> Array R.Transition_
-getOutgoingTransitions stateName (R.StateGraph _ transitions) =
+getOutgoingTransitions stateName (R.StateGraph transitions) =
   Array.filter (\(R.Transition from _ _) -> from == stateName) transitions
 
 getEdges :: R.StateGraph_ -> Array Section
-getEdges (R.StateGraph _ transitions) =
+getEdges (R.StateGraph transitions) =
   map getEdge transitions
   where
   getEdge = case _ of
@@ -152,11 +147,11 @@ getStates sg =
   Array.nub $ Array.concat [ getFromStates sg, getToStates sg ]
 
 getFromStates :: R.StateGraph_ -> Array String
-getFromStates (R.StateGraph _ transitions) =
+getFromStates (R.StateGraph transitions) =
   map (\(R.Transition stateName _ _) -> stateName) transitions
 
 getToStates :: R.StateGraph_ -> Array String
-getToStates (R.StateGraph _ transitions) =
+getToStates (R.StateGraph transitions) =
   join $ map
     ( \(R.Transition _ _ returns) -> map
         ( case _ of

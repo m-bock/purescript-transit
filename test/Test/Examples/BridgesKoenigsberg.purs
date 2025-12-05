@@ -2,18 +2,13 @@ module Test.Examples.BridgesKoenigsberg where
 
 import Prelude
 
-import Data.Array as Array
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return')
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
-import Transit.Reflection (addMeta)
-import Transit.Reflection as R
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -58,9 +53,9 @@ updateClassic state msg = case state, msg of
 
   _, _ -> state
 
--- --------------------------------------------------------------------------------
--- --- transit Approach
--- --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- transit Approach
+--------------------------------------------------------------------------------
 
 type BridgesTransitions =
   Wrap $ Empty
@@ -115,17 +110,14 @@ update = mkUpdateGeneric @BridgesTransitions
 --       let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
 --       deadEnds `shouldEqual` []
 
--- --------------------------------------------------------------------------------
--- --- State diagram generation
--- --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- State diagram generation
+--------------------------------------------------------------------------------
 
 main :: Effect Unit
 main = do
   let
-    g = reflectType (Proxy @BridgesTransitions) # addMeta
-      { name: "Bridges of Königsberg"
-      , description: ""
-      }
+    g = reflectType (Proxy @BridgesTransitions)
   TransitGraphviz.writeToFile_ g "graphs/bridges-koenigsberg.dot"
   TransitTable.writeToFile_ g "graphs/bridges-koenigsberg.html"
 

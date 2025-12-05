@@ -18,7 +18,7 @@ data TransitionTable = TransitionTable (Array TableRow)
 type TableRow = { fromState :: String, msg :: String, guard :: Maybe String, toState :: String }
 
 mkTable :: Options -> R.StateGraph_ -> TransitionTable
-mkTable _ (R.StateGraph _ transitions) = TransitionTable $ concatMap mkTableRow transitions
+mkTable _ (R.StateGraph transitions) = TransitionTable $ concatMap mkTableRow transitions
 
 mkTableRow :: R.Transition_ -> Array TableRow
 mkTableRow (R.Transition from msg returns) =

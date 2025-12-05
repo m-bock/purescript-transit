@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>State Diagram: Bridges of Königsberg</b>>;labelloc = "t";fontsize = 12
+rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12
 LandA [shape = "box", label = <<b>LandA</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0e50a8", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 __Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
 __Start__ -> LandA [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
