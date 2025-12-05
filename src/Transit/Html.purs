@@ -1,0 +1,45 @@
+module Transit.Html where
+
+import Prelude
+
+import Data.String as Str
+
+data Node = Node String (Array Attribute) (Array Node) | Text String
+
+data Attribute = Attribute String String
+
+text :: String -> Node
+text = Text
+
+table :: Array Attribute -> Array Node -> Node
+table = Node "table"
+
+thead :: Array Attribute -> Array Node -> Node
+thead = Node "thead"
+
+tbody :: Array Attribute -> Array Node -> Node
+tbody = Node "tbody"
+
+th :: Array Attribute -> Array Node -> Node
+th = Node "th"
+
+tr :: Array Attribute -> Array Node -> Node
+tr = Node "tr"
+
+td :: Array Attribute -> Array Node -> Node
+td = Node "td"
+
+nodeToHtml :: Node -> String
+nodeToHtml = case _ of
+  Node name attributes children -> Str.joinWith "\n"
+    [ "<" <> name <> " " <> attrsToHtml attributes <> ">"
+    , Str.joinWith "\n" (map nodeToHtml children)
+    , "</" <> name <> ">"
+    ]
+  Text text -> text
+
+attrsToHtml :: Array Attribute -> String
+attrsToHtml attributes = Str.joinWith " " (map attrToHtml attributes)
+
+attrToHtml :: Attribute -> String
+attrToHtml (Attribute name value) = name <> "=\"" <> value <> "\""

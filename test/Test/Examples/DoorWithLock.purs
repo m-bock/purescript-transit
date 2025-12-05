@@ -78,9 +78,9 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-main :: Effect Unit
-main = do
-  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-lock.dot"
+-- main :: Effect Unit
+-- main = do
+--   TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-lock.dot"
 
 --------------------------------------------------------------------------------
 --- Instances

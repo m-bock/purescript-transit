@@ -35,6 +35,55 @@ Let's have a look at the following state diagram:
 
 It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen` indicated by the grey arrow pointing to it. In PureScript types, we can represent this with the following data types:
 
+<!-- PD_START:raw
+filePath: graphs/door.html
+--><table >
+<thead >
+<tr >
+<th >
+From State
+</th>
+<th >
+Message
+</th>
+<th >
+Guard
+</th>
+<th >
+To State
+</th>
+</tr>
+</thead>
+<tr >
+<td >
+DoorOpen
+</td>
+<td >
+Close
+</td>
+<td >
+
+</td>
+<td >
+DoorClosed
+</td>
+</tr>
+<tr >
+<td >
+DoorClosed
+</td>
+<td >
+Open
+</td>
+<td >
+
+</td>
+<td >
+DoorOpen
+</td>
+</tr>
+</table><!-- PD_END -->
+
 <!-- PD_START:purs
 filePath: test/Test/Examples/Door.purs
 pick:
@@ -128,7 +177,8 @@ pick:
 ```purescript
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door.dot"
+  TransitGraphviz.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.dot"
+  TransitTable.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.html"
 ```
 
 <!-- PD_END -->

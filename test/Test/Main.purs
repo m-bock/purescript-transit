@@ -17,7 +17,7 @@ main = do
   runSpecAndExitProcess [ consoleReporter ] Test.Transit.Core.spec
   --Test.Examples.ColorRing.main
   Test.Examples.Door.main
-  Test.Examples.DoorWithLock.main
-  Test.Examples.DoorWithPin.main
+  --Test.Examples.DoorWithLock.main
+  --Test.Examples.DoorWithPin.main
   Patchdown.main
 

@@ -177,14 +177,12 @@ defaultOptions =
   , globalLabelModifier: identity
   }
 
-writeToFile :: forall @spec. Reflectable spec R.StateGraph_ => (Options -> Options) -> FilePath -> Effect Unit
-writeToFile mkOptions path = do
-  let reflected = reflectType (Proxy @spec)
-  Console.log $ "Reflected: " <> show reflected
+writeToFile :: R.StateGraph_ -> (Options -> Options) -> FilePath -> Effect Unit
+writeToFile sg mkOptions path = do
   FS.writeTextFile UTF8 path
-    (toText (mkGraphvizGraph (mkOptions defaultOptions) reflected))
+    (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: forall @spec. Reflectable spec R.StateGraph_ => FilePath -> Effect Unit
-writeToFile_ = writeToFile @spec identity
+writeToFile_ :: R.StateGraph_ -> FilePath -> Effect Unit
+writeToFile_ sg path = writeToFile sg identity path
 

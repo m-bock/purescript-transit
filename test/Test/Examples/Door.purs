@@ -11,6 +11,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return', return_)
 import Transit.Gen.Graphviz as TransitGraphviz
+import Transit.Gen.TransitionTable as TransitTable
 import Transit.Reflection as R
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
@@ -72,7 +73,8 @@ spec = do
 
 main :: Effect Unit
 main = do
-  TransitGraphviz.writeToFile_ @DoorDSL "graphs/door.dot"
+  TransitGraphviz.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.dot"
+  TransitTable.writeToFile_ (reflectType (Proxy @DoorDSL)) "graphs/door.html"
 
 --------------------------------------------------------------------------------
 --- Instances
