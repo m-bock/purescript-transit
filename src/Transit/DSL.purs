@@ -1,7 +1,6 @@
 module Transit.DSL
   ( type (:*)
   , AddMatch
-  , class FromDSL
   , type (:?)
   , type (:@)
   , type (>|)
@@ -16,7 +15,7 @@ module Transit.DSL
   ) where
 
 import Data.Reflectable (class Reflectable, reflectType)
-import Transit.Core (TransitCore_)
+import Transit.Core (class IsTransitSpec, TransitCore_)
 import Transit.Core as C
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
@@ -43,7 +42,7 @@ infixl 9 type WithGuard as :?
 
 ---
 
-instance (FromDSL (Transit dsl) o, Reflectable o TransitCore_) => Reflectable (Transit dsl) TransitCore_ where
+instance (IsTransitSpec (Transit dsl) o, Reflectable o TransitCore_) => Reflectable (Transit dsl) TransitCore_ where
   reflectType _ = reflectType (Proxy @o)
 
 ---
@@ -53,10 +52,7 @@ data Transit a
 
 data Empty
 
-class FromDSL :: forall k1 k2. k1 -> k2 -> Constraint
-class FromDSL dsl a | dsl -> a
-
-instance (FromDSL1 a a') => FromDSL (Transit a) a'
+instance (FromDSL1 a a') => IsTransitSpec (Transit a) a'
 
 class FromDSL1 :: forall k1 k2. k1 -> k2 -> Constraint
 class FromDSL1 dsl a | dsl -> a

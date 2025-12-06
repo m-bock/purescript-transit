@@ -1,13 +1,13 @@
 module Test.Transit.DSL where
 
 import Data.Unit (Unit, unit)
-import Transit.Core (MkTransitCore)
+import Transit.Core (class IsTransitSpec, MkTransitCore)
 import Transit.Core as C
-import Transit.DSL (class FromDSL, type (:*), type (:?), type (:@), type (>|), Empty, Transit)
+import Transit.DSL (type (:*), type (:?), type (:@), type (>|), Empty, Transit)
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($), APPLY)
 
-check :: forall @a @b. (FromDSL a b) => Unit
+check :: forall @a @b. (IsTransitSpec a b) => Unit
 check = unit
 
 -- test1 :: Unit

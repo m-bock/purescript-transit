@@ -136,3 +136,8 @@ derive instance Newtype (ReturnStateVia symGuard a) _
 newtype ReturnState a = ReturnState a
 
 derive instance Newtype (ReturnState a) _
+
+---
+
+class IsTransitSpec :: forall dsl a. dsl -> a -> Constraint
+class IsTransitSpec dsl a | dsl -> a

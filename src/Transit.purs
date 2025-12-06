@@ -17,18 +17,17 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Transit.Core (MatchImpl(..), ReturnState(..), ReturnStateVia(..))
-import Transit.DSL (class FromDSL)
+import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
+import Transit.CurryN (class CurryN, curryN)
 import Transit.DSL as Export
 import Transit.MkUpdate (class MkUpdate, mkUpdate)
-import Transit.CurryN (class CurryN, curryN)
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
 
 mkUpdateGenericM
   :: forall @dsl spec m msg state xs a
    . (Functor m)
-  => (FromDSL dsl spec)
+  => (IsTransitSpec dsl spec)
   => (CurryN xs (state -> msg -> m state) a)
   => (MkUpdate spec m xs (Generically msg) (Generically state))
   => a
@@ -39,7 +38,7 @@ mkUpdateGenericM = curryN @xs f
 
 mkUpdateGeneric
   :: forall @dsl spec msg state xs a
-   . (FromDSL dsl spec)
+   . (IsTransitSpec dsl spec)
   => (CurryN xs (state -> msg -> state) a)
   => (MkUpdate spec Identity xs (Generically msg) (Generically state))
   => a
