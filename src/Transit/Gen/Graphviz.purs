@@ -2,10 +2,12 @@ module Transit.Gen.Graphviz where
 
 import Prelude
 
-import Color (Color)
+import Color (Color, ColorSpace(..))
 import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex, (!!))
 import Data.Array as Array
+import Data.Map (Map)
+import Data.Map as Map
 import Data.Map.Internal (unsafeBalancedNode)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Reflectable (class Reflectable, reflectType)
@@ -16,7 +18,8 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Colors (Colors, getColor)
+import Transit.Colors (Colors, defLight, getColor)
+import Transit.Colors as Colors
 import Transit.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), rankDirTD, toText)
 import Transit.DotLang as D
 import Transit.Graph (NodeGroup, EdgeGroup)
@@ -30,8 +33,10 @@ import Unsafe.Coerce (unsafeCoerce)
 mkGraphvizGraph :: Options -> StateGraph -> GraphvizGraph
 mkGraphvizGraph options sg = GraphvizGraph $ join
   [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
-  , join $ mapWithIndex f $ Set.toUnfoldable $ Graph.getGrouped sg
+  , join $ mapWithIndex (f sg colorMap) $ Set.toUnfoldable $ Graph.getGrouped sg
   ]
+  where
+  colorMap = mkColorMap sg
 
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
@@ -42,18 +47,26 @@ mkGlobalAttrs options =
   , D.fontSize 12
   ]
 
-f :: Int -> NodeGroup Edge Node -> Array Section
-f i { fromNode, edges } = join
+type ColorMap = Map String Colors
+
+lookupColor :: String -> ColorMap -> Colors
+lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.lookup state colorMap
+
+mkColorMap :: StateGraph -> ColorMap
+mkColorMap sg = Map.fromFoldable $ mapWithIndex (\i node -> (node.state /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
+
+f :: StateGraph -> ColorMap -> Int -> NodeGroup Edge Node -> Array Section
+f sg colorMap i { fromNode, edges } = join
   [ pure $ SecNode $ mkStateNode colors fromNode
   , if i == 0 then
       [ SecNode $ mkInitNode "__Start__"
       , SecEdge $ mkInitEdge "__Start__" fromNode.state
       ]
     else []
-  , concatMap (g colors fromNode) $ Set.toUnfoldable edges
+  , concatMap (g sg colorMap fromNode) $ Set.toUnfoldable edges
   ]
   where
-  colors = (getColor i).light
+  colors = lookupColor fromNode.state colorMap
 
 mkStateNode :: Colors -> Node -> D.Node
 mkStateNode colors node = D.Node node.state
@@ -88,15 +101,39 @@ mkInitEdge from to = D.Edge from to
   , D.penWidth 1.8
   ]
 
-g :: Colors -> Node -> EdgeGroup Edge Node -> Array Section
-g colors fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
+g :: StateGraph -> ColorMap -> Node -> EdgeGroup Edge Node -> Array Section
+g sg colorMap fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
   [ toNode ] ->
-    [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colors edge.msg
-    ]
+    if (Graph.hasEdge { fromNode: toNode, edge: edge, toNode: fromNode } sg) then
+      ( if fromNode > toNode then
+          let
+            colorsTo = lookupColor toNode.state colorMap
+          in
+            [ SecEdge $ mkEdgeMsg fromNode.state toNode.state (defLight Color.black) edge.msg
+            ]
+        else []
+      )
+    else [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colorsFrom edge.msg ]
   _ -> join
-    [ pure $ SecNode $ mkDecisionNode fromNode.state colors
-    , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colors edge.msg ]) $ Set.toUnfoldable toNodes
+    [ pure $ SecNode $ mkDecisionNode fromNode.state colorsFrom
+    , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colorsFrom edge.msg ]) $ Set.toUnfoldable toNodes
     ]
+
+  where
+  colorsFrom = lookupColor fromNode.state colorMap
+
+mkUndirectedEdge :: String -> String -> Colors -> Colors -> String -> D.Edge
+mkUndirectedEdge from to fromColors toColors label = D.Edge from to
+  [ D.color (Color.mix RGB fromColors.edgeFont toColors.edgeFont 0.5)
+  , D.fontColor (Color.mix RGB fromColors.edgeFont toColors.edgeFont 0.5)
+  , D.fontSize 12
+  , D.labelHtmlBold label
+  , D.arrowSize 1.5
+  , D.penWidth 2.0
+  , D.dirBoth
+  , D.arrowHeadNone
+  , D.arrowTailNone
+  ]
 
 -- where
 -- getStates sg = Array.nub $ Array.concat [ getFromStates sg, getToStates sg ]

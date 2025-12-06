@@ -21,7 +21,7 @@ data Edge = Edge String String (Array Attr)
 
 data Attr = Attr String Value
 
-data Value = Value String | ValueColor Color | ValueInt Int | ValueNumber Number | ValueBoolean Boolean | HtmlLabel String
+data Value = Value String | ValueColors (Array Color) | ValueInt Int | ValueNumber Number | ValueBoolean Boolean | HtmlLabel String
 
 instance ToText GraphvizGraph where
   toText (GraphvizGraph sections) =
@@ -54,7 +54,7 @@ instance ToText Attr where
 
 instance ToText Value where
   toText (Value str) = "\"" <> str <> "\""
-  toText (ValueColor color) = "\"" <> Color.toHexString color <> "\""
+  toText (ValueColors colors) = "\"" <> (Str.joinWith ":" $ map Color.toHexString colors) <> "\""
   toText (ValueInt int) = show int
   toText (ValueNumber number) = show number
   toText (ValueBoolean boolean) = show boolean
@@ -103,13 +103,13 @@ fixedSize :: Boolean -> Attr
 fixedSize value = Attr "fixedsize" (ValueBoolean value)
 
 fillColor :: Color -> Attr
-fillColor color = Attr "fillcolor" (ValueColor color)
+fillColor color = Attr "fillcolor" (ValueColors [ color ])
 
 penWidth :: Number -> Attr
 penWidth size = Attr "penwidth" (ValueNumber size)
 
 fontColor :: Color -> Attr
-fontColor color = Attr "fontcolor" (ValueColor color)
+fontColor color = Attr "fontcolor" (ValueColors [ color ])
 
 labelLocC :: Attr
 labelLocC = Attr "labelloc" (Value "c")
@@ -118,4 +118,16 @@ labelLocT :: Attr
 labelLocT = Attr "labelloc" (Value "t")
 
 color :: Color -> Attr
-color color = Attr "color" (ValueColor color)
+color color = Attr "color" (ValueColors [ color ])
+
+colorMulti :: Array Color -> Attr
+colorMulti colors = Attr "color" (ValueColors colors)
+
+dirBoth :: Attr
+dirBoth = Attr "dir" (Value "both")
+
+arrowHeadNone :: Attr
+arrowHeadNone = Attr "arrowhead" (Value "none")
+
+arrowTailNone :: Attr
+arrowTailNone = Attr "arrowtail" (Value "none")
