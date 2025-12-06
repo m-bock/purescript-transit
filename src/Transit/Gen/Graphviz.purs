@@ -6,8 +6,10 @@ import Color (Color)
 import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex, (!!))
 import Data.Array as Array
+import Data.Map.Internal (unsafeBalancedNode)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Reflectable (class Reflectable, reflectType)
+import Data.Set as Set
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Effect.Class.Console as Console
@@ -15,13 +17,91 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, getColor)
-import Transit.DotLang (Edge(..), GraphvizGraph(..), Node(..), Section(..), rankDirTD, toText)
+import Transit.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), rankDirTD, toText)
 import Transit.DotLang as D
+import Transit.Graph (NodeGroup, EdgeGroup)
+import Transit.Graph as Graph
 import Transit.Reflection (Return_(..))
 import Transit.Reflection as R
-import Transit.StateGraph (StateGraph)
+import Transit.StateGraph (Edge, StateGraph, Node)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
+
+mkGraphvizGraph :: Options -> StateGraph -> GraphvizGraph
+mkGraphvizGraph options sg = GraphvizGraph $ join
+  [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
+  , join $ mapWithIndex f $ Set.toUnfoldable $ Graph.getGrouped sg
+  ]
+
+mkGlobalAttrs :: Options -> Array D.Attr
+mkGlobalAttrs options =
+  [ D.rankDirTD
+  , D.fontNameArial
+  , D.labelHtmlBold options.title
+  , D.labelLocT
+  , D.fontSize 12
+  ]
+
+f :: Int -> NodeGroup Edge Node -> Array Section
+f i { fromNode, edges } = join
+  [ pure $ SecNode $ mkStateNode colors fromNode
+  , if i == 0 then
+      [ SecNode $ mkInitNode "__Start__"
+      , SecEdge $ mkInitEdge "__Start__" fromNode.state
+      ]
+    else []
+  , concatMap (g colors fromNode) $ Set.toUnfoldable edges
+  ]
+  where
+  colors = (getColor i).light
+
+mkStateNode :: Colors -> Node -> D.Node
+mkStateNode colors node = D.Node node.state
+  [ D.shapeBox
+  , D.labelHtmlBold node.state
+  , D.fontSize 12
+  , D.styleFilled
+  , D.fillColor colors.nodeBg
+  , D.fontColor colors.nodeFont
+  , D.fontNameArial
+  , D.labelLocC
+  , D.penWidth 0.0
+  ]
+
+mkInitNode :: String -> D.Node
+mkInitNode name = D.Node name
+  [ D.shapeCircle
+  , D.label ""
+  , D.width 0.15
+  , D.height 0.15
+  , D.fixedSize true
+  , D.styleFilled
+  , D.fillColor (Color.rgb 140 140 140)
+  , D.penWidth 0.0
+  ]
+
+mkInitEdge :: String -> String -> D.Edge
+mkInitEdge from to = D.Edge from to
+  [ D.color (Color.rgb 140 140 140)
+  , D.fontSize 12
+  , D.arrowSize 0.7
+  , D.penWidth 1.8
+  ]
+
+g :: Colors -> Node -> EdgeGroup Edge Node -> Array Section
+g colors fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
+  [ toNode ] ->
+    [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colors edge.msg
+    ]
+  _ -> join
+    [ pure $ SecNode $ mkDecisionNode fromNode.state colors
+    , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colors edge.msg ]) $ Set.toUnfoldable toNodes
+    ]
+
+-- where
+-- getStates sg = Array.nub $ Array.concat [ getFromStates sg, getToStates sg ]
+-- getFromStates sg = Array.map (\(R.Transition stateName _ _) -> stateName) transitions
+-- getToStates sg = Array.map (\(R.Transition _ _ returns) -> Array.concatMap (\(R.Return stateName) -> [ stateName ]) returns) transitions
 
 -- mkGraphvizGraph :: Options -> R.StateGraph_ -> GraphvizGraph
 -- mkGraphvizGraph options sg@(R.StateGraph transitions) = GraphvizGraph $ join
@@ -74,56 +154,36 @@ import Unsafe.Coerce (unsafeCoerce)
 --     (R.Return to) -> SecEdge $ mkEdgeGuard (from <> "__" <> msg) to color Nothing
 --     _ -> unsafeCoerce "todo"
 
--- mkNodeInit :: String -> Node
--- mkNodeInit name = Node name
---   [ D.shapeCircle
---   , D.label ""
---   , D.width 0.15
---   , D.height 0.15
---   , D.fixedSize true
---   , D.styleFilled
---   , D.fillColor (Color.rgb 140 140 140)
---   , D.penWidth 0.0
---   ]
+mkEdgeMsg :: String -> String -> Colors -> String -> D.Edge
+mkEdgeMsg from to colors label = D.Edge from to
+  [ D.color colors.edgeColor
+  , D.fontColor colors.edgeFont
+  , D.fontSize 12
+  , D.arrowSize 0.7
+  , D.labelHtmlBold label
+  , D.penWidth 1.8
+  ]
 
--- mkEdgeMsg :: String -> String -> Colors -> String -> Edge
--- mkEdgeMsg from to colors label = Edge from to
---   [ D.color colors.edgeColor
---   , D.fontColor colors.edgeFont
---   , D.fontSize 12
---   , D.arrowSize 0.7
---   , D.labelHtmlBold label
---   , D.penWidth 1.8
---   ]
+mkEdgeGuard :: String -> String -> Colors -> Maybe String -> D.Edge
+mkEdgeGuard from to colors mayLabel = D.Edge from to
+  $ catMaybes
+      [ pure $ D.color colors.edgeColor
+      , pure $ D.fontColor colors.edgeFont
+      , pure $ D.fontSize 12
+      , pure $ D.arrowSize 0.7
+      , map D.labelHtmlBold mayLabel
+      , pure $ D.penWidth 1.8
+      ]
 
--- mkEdgeGuard :: String -> String -> Colors -> Maybe String -> Edge
--- mkEdgeGuard from to colors mayLabel = Edge from to
---   $ catMaybes
---       [ pure $ D.color colors.edgeColor
---       , pure $ D.fontColor colors.edgeFont
---       , pure $ D.fontSize 12
---       , pure $ D.arrowSize 0.7
---       , map D.labelHtmlBold mayLabel
---       , pure $ D.penWidth 1.8
---       ]
-
--- mkEdgeInit :: String -> String -> Edge
--- mkEdgeInit from to = Edge from to
---   [ D.color (Color.rgb 140 140 140)
---   , D.fontSize 12
---   , D.arrowSize 0.7
---   , D.penWidth 1.8
---   ]
-
--- mkDecisionNode :: String -> Colors -> Node
--- mkDecisionNode name colors = Node name
---   [ D.shapeDiamond
---   , D.labelHtmlBold "?"
---   , D.fontSize 12
---   , D.styleFilled
---   , D.fontColor colors.nodeFont
---   , D.fontNameArial
---   ]
+mkDecisionNode :: String -> Colors -> D.Node
+mkDecisionNode name colors = D.Node name
+  [ D.shapeDiamond
+  , D.labelHtmlBold "?"
+  , D.fontSize 12
+  , D.styleFilled
+  , D.fontColor colors.nodeFont
+  , D.fontNameArial
+  ]
 
 -- getOutgoingTransitions :: String -> R.StateGraph_ -> Array R.Transition_
 -- getOutgoingTransitions stateName (R.StateGraph transitions) =
@@ -179,17 +239,11 @@ defaultOptions =
   }
 
 writeToFile :: StateGraph -> (Options -> Options) -> FilePath -> Effect Unit
-writeToFile = unsafeCoerce "todo"
+writeToFile sg mkOptions path = do
+  FS.writeTextFile UTF8 path
+    (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
+  Console.log $ "Wrote graphviz graph to " <> path
 
 writeToFile_ :: StateGraph -> FilePath -> Effect Unit
-writeToFile_ sg path = unsafeCoerce "todo"
-
--- writeToFile :: R.StateGraph_ -> (Options -> Options) -> FilePath -> Effect Unit
--- writeToFile sg mkOptions path = do
---   FS.writeTextFile UTF8 path
---     (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
---   Console.log $ "Wrote graphviz graph to " <> path
-
--- writeToFile_ :: R.StateGraph_ -> FilePath -> Effect Unit
--- writeToFile_ sg path = writeToFile sg identity path
+writeToFile_ sg path = writeToFile sg identity path
 

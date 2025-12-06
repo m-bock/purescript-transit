@@ -7,6 +7,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
+import Effect.Class.Console as Console
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return')
@@ -77,6 +78,7 @@ main :: Effect Unit
 main = do
   let
     g = R.toGraph (reflectType (Proxy @DoorDSL))
+
   TransitGraphviz.writeToFile_ g "graphs/door.dot"
   TransitTable.writeToFile_ g "graphs/door.html"
 

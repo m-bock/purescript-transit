@@ -47,7 +47,7 @@ Another way to represent this is a transition table:
 <!-- PD_START:raw
 filePath: graphs/door.html
 --><table >
-<caption style="text-align: left; font-weight: bold;">
+<caption >
 Transition Table
 </caption>
 <thead >
@@ -207,7 +207,8 @@ pick:
 main :: Effect Unit
 main = do
   let
-    g = reflectType (Proxy @DoorDSL)
+    g = R.toGraph (reflectType (Proxy @DoorDSL))
+
   TransitGraphviz.writeToFile_ g "graphs/door.dot"
   TransitTable.writeToFile_ g "graphs/door.html"
 ```
@@ -283,7 +284,7 @@ data Msg
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
 --><table >
-<caption style="text-align: left; font-weight: bold;">
+<caption >
 Transition Table
 </caption>
 <thead >
@@ -325,74 +326,6 @@ LandB
 </tr>
 <tr >
 <td >
-LandA
-</td>
-<td >
-⟶
-</td>
-<td >
-CrossBridge_b
-</td>
-<td >
-⟶
-</td>
-<td >
-LandB
-</td>
-</tr>
-<tr >
-<td >
-LandA
-</td>
-<td >
-⟶
-</td>
-<td >
-CrossBridge_c
-</td>
-<td >
-⟶
-</td>
-<td >
-LandC
-</td>
-</tr>
-<tr >
-<td >
-LandA
-</td>
-<td >
-⟶
-</td>
-<td >
-CrossBridge_d
-</td>
-<td >
-⟶
-</td>
-<td >
-LandC
-</td>
-</tr>
-<tr >
-<td >
-LandA
-</td>
-<td >
-⟶
-</td>
-<td >
-CrossBridge_e
-</td>
-<td >
-⟶
-</td>
-<td >
-LandD
-</td>
-</tr>
-<tr >
-<td >
 LandB
 </td>
 <td >
@@ -410,6 +343,23 @@ LandA
 </tr>
 <tr >
 <td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_b
+</td>
+<td >
+⟶
+</td>
+<td >
+LandB
+</td>
+</tr>
+<tr >
+<td >
 LandB
 </td>
 <td >
@@ -427,19 +377,19 @@ LandA
 </tr>
 <tr >
 <td >
-LandB
+LandA
 </td>
 <td >
 ⟶
 </td>
 <td >
-CrossBridge_f
+CrossBridge_c
 </td>
 <td >
 ⟶
 </td>
 <td >
-LandD
+LandC
 </td>
 </tr>
 <tr >
@@ -461,6 +411,23 @@ LandA
 </tr>
 <tr >
 <td >
+LandA
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_d
+</td>
+<td >
+⟶
+</td>
+<td >
+LandC
+</td>
+</tr>
+<tr >
+<td >
 LandC
 </td>
 <td >
@@ -478,13 +445,13 @@ LandA
 </tr>
 <tr >
 <td >
-LandC
+LandA
 </td>
 <td >
 ⟶
 </td>
 <td >
-CrossBridge_g
+CrossBridge_e
 </td>
 <td >
 ⟶
@@ -512,6 +479,23 @@ LandA
 </tr>
 <tr >
 <td >
+LandB
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_f
+</td>
+<td >
+⟶
+</td>
+<td >
+LandD
+</td>
+</tr>
+<tr >
+<td >
 LandD
 </td>
 <td >
@@ -525,6 +509,23 @@ CrossBridge_f
 </td>
 <td >
 LandB
+</td>
+</tr>
+<tr >
+<td >
+LandC
+</td>
+<td >
+⟶
+</td>
+<td >
+CrossBridge_g
+</td>
+<td >
+⟶
+</td>
+<td >
+LandD
 </td>
 </tr>
 <tr >
