@@ -4,19 +4,28 @@ import Prelude
 
 import Data.Array as Array
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 import Transit.Graph (Graph)
-import Unsafe.Coerce (unsafeCoerce)
+import Transit.Graph as Graph
+import Transit.StateGraph (StateGraph)
+import Data.Set (Set)
+import Data.Set as Set
 
 ---
 
-type Edge = { msg :: String, guard :: Maybe String }
-
-type Node = { state :: String }
-
-toGraph :: StateGraph_ -> Graph Edge Node
-toGraph = unsafeCoerce "todo"
+toGraph :: StateGraph_ -> StateGraph
+toGraph (StateGraph transitions) = Graph.fromEdges
+  $ Set.fromFoldable
+  $ Array.concatMap
+      ( \(Transition from msg returns) -> map
+          ( case _ of
+              Return to -> { fromNode: { state: from }, toNode: { state: to }, edge: { msg, guard: Nothing } }
+              ReturnVia guard to -> { fromNode: { state: from }, toNode: { state: to }, edge: { msg, guard: Just guard } }
+          )
+          returns
+      )
+      transitions
 
 ----
 

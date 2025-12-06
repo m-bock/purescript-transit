@@ -76,7 +76,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    g = reflectType (Proxy @DoorDSL)
+    g = R.toGraph (reflectType (Proxy @DoorDSL))
   TransitGraphviz.writeToFile_ g "graphs/door.dot"
   TransitTable.writeToFile_ g "graphs/door.html"
 

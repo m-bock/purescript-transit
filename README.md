@@ -256,6 +256,8 @@ spec = do
 
 <img src="assets/bridges-koenigsberg.jpg" alt="Transit" />
 
+<img src="assets/bridges-koenigsberg-undirected-graph.svg" />
+
 <!-- PD_START:purs
 filePath: test/Test/Examples/BridgesKoenigsberg.purs
 pick:
