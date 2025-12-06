@@ -7,7 +7,7 @@ import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec)
-import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return')
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return')
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
@@ -43,7 +43,7 @@ updateClassic_flawed state msg = case state, msg of
 --------------------------------------------------------------------------------
 
 type DoorDSL =
-  Wrap $ Empty
+  Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 

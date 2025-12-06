@@ -7,7 +7,7 @@ import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return, return_)
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, return_)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Type.Function (type ($))
 
@@ -47,7 +47,7 @@ updateClassic state msg = case state, msg of
 --------------------------------------------------------------------------------
 
 type DoorDSL =
-  Wrap $ Empty
+  Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
     :* ("DoorClosed" :@ "Lock" >| "DoorLocked")

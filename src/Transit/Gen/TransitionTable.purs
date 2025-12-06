@@ -31,9 +31,9 @@ mkRow connection = Html.tr []
   , Html.td [] [ Html.text "⟶" ]
   , Html.td []
       [ Html.text
-          ( connection.edge.msg <> case connection.edge.guard of
-              Just guard -> "?" <> guard
-              Nothing -> ""
+          ( case connection.edge.guard of
+              Just guard -> connection.edge.msg <> " ? " <> guard
+              Nothing -> connection.edge.msg
           )
       ]
   , Html.td [] [ Html.text "⟶" ]

@@ -3,7 +3,7 @@ module Test.Transit.DSL where
 import Data.Unit (Unit, unit)
 import Transit.Core (MkTransitCore)
 import Transit.Core as C
-import Transit.DSL (class FromDSL, type (:*), type (:?), type (:@), type (>|), Empty, Wrap)
+import Transit.DSL (class FromDSL, type (:*), type (:?), type (:@), type (>|), Empty, Transit)
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($), APPLY)
 
@@ -14,7 +14,7 @@ check = unit
 -- test1 = check @C @(C.MkStateGraph Nil')
 
 type In =
-  Wrap $ Empty
+  Transit $ Empty
     :*
       ( "State1" :@ "Msg1"
           >| ("guard" :? "State2")

@@ -156,7 +156,7 @@ pick:
 
 ```purescript
 type DoorDSL =
-  Wrap $ Empty
+  Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```

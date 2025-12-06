@@ -6,11 +6,9 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Effect.Class.Console as Console
-import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return')
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return')
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
-import Transit.Graph as Graph
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
@@ -61,7 +59,7 @@ updateClassic state msg = case state, msg of
 --------------------------------------------------------------------------------
 
 type BridgesTransitions =
-  Wrap $ Empty
+  Transit $ Empty
     :* ("LandA" :@ "CrossBridge_a" >| "LandB")
     :* ("LandA" :@ "CrossBridge_b" >| "LandB")
     :* ("LandA" :@ "CrossBridge_c" >| "LandC")

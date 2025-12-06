@@ -6,3 +6,8 @@
 - rename DSL
 - make tl vars consistent (spec/impl)
 - cleanup Transit module
+- explicit exports everywhere
+- cleanup imports
+- implement dark/light theme chart generation
+- rename FromDSL1/FromDSL2...
+- rename FromDSL to IsTransitSpec

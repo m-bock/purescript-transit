@@ -23,7 +23,7 @@ import Data.Variant as V
 import Prim.Row as Row
 import Transit.Core (MatchImpl(..), ReturnState(..), ReturnStateVia(..))
 import Transit.DSL (class FromDSL)
-import Transit.DSL (class FromDSL, class FromDSL1, class FromDSL2, class FromDSL3, type (:*), type (:?), type (:@), type (>|), AddOut, D, Empty, J, StateWithMsg, Wrap) as Export
+import Transit.DSL as Export
 import Transit.MkUpdate (class MkUpdate, mkUpdate)
 import Transit.Tmp (class Build, build)
 import Transit.Util (Generically(..))

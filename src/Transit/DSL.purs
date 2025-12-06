@@ -1,4 +1,19 @@
-module Transit.DSL where
+module Transit.DSL
+  ( type (:*)
+  , AddMatch
+  , class FromDSL
+  , type (:?)
+  , type (:@)
+  , type (>|)
+  , class FromDSL1
+  , class FromDSL2
+  , class FromDSL3
+  , Empty
+  , Transit
+  , StateWithMsg
+  , WithGuard
+  , AddOut
+  ) where
 
 import Data.Reflectable (class Reflectable, reflectType)
 import Transit.Core (TransitCore_)
@@ -6,10 +21,10 @@ import Transit.Core as C
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
 
-data D :: forall k1 k2. k1 -> k2 -> Type
-data D a b
+data AddMatch :: forall k1 k2. k1 -> k2 -> Type
+data AddMatch a b
 
-infixr 0 type D as :*
+infixr 0 type AddMatch as :*
 
 data StateWithMsg :: forall k1 k2. k1 -> k2 -> Type
 data StateWithMsg a b
@@ -21,27 +36,27 @@ data AddOut a b
 
 infixl 5 type AddOut as >|
 
-data J :: forall k1 k2. k1 -> k2 -> Type
-data J a b
+data WithGuard :: forall k1 k2. k1 -> k2 -> Type
+data WithGuard a b
 
-infixl 9 type J as :?
+infixl 9 type WithGuard as :?
 
 ---
 
-instance (FromDSL (Wrap dsl) o, Reflectable o TransitCore_) => Reflectable (Wrap dsl) TransitCore_ where
+instance (FromDSL (Transit dsl) o, Reflectable o TransitCore_) => Reflectable (Transit dsl) TransitCore_ where
   reflectType _ = reflectType (Proxy @o)
 
 ---
 
-data Wrap :: forall k. k -> Type
-data Wrap a
+data Transit :: forall k. k -> Type
+data Transit a
 
 data Empty
 
 class FromDSL :: forall k1 k2. k1 -> k2 -> Constraint
 class FromDSL dsl a | dsl -> a
 
-instance (FromDSL1 a a') => FromDSL (Wrap a) a'
+instance (FromDSL1 a a') => FromDSL (Transit a) a'
 
 class FromDSL1 :: forall k1 k2. k1 -> k2 -> Constraint
 class FromDSL1 dsl a | dsl -> a

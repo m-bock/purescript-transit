@@ -1,17 +1,9 @@
 module Test.Examples.ColorRing where
 
-import Prelude
-
-import Data.Generic.Rep (class Generic)
-import Data.Show.Generic (genericShow)
-import Effect (Effect)
-import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), Empty, Wrap, match, mkUpdateGeneric, return_, type (>|))
-import Transit.Gen.Graphviz as TransitGraphviz
+import Transit (type (:*), type (:@), type (>|), Empty, Transit)
 import Type.Function (type ($))
 
-type ColorTest = Wrap $ Empty
+type ColorTest = Transit $ Empty
   :* ("StateA" :@ "MsgA" >| "StateB")
   :* ("StateB" :@ "MsgB" >| "StateC")
   :* ("StateC" :@ "MsgC" >| "StateD")
