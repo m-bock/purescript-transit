@@ -11,7 +11,7 @@ import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGen
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
 import Transit.Graph as Graph
-import Transit.Reflection as R
+import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -120,9 +120,7 @@ update = mkUpdateGeneric @BridgesTransitions
 main :: Effect Unit
 main = do
   let
-    g = R.toGraph (reflectType (Proxy @BridgesTransitions))
-
-  Console.log $ show (Graph.getGrouped g)
+    g = mkStateGraph (reflectType (Proxy @BridgesTransitions))
 
   TransitGraphviz.writeToFile_ g "graphs/bridges-koenigsberg.dot"
   TransitTable.writeToFile_ g "graphs/bridges-koenigsberg.html"

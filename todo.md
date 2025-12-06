@@ -1,3 +1,8 @@
 - Find better name for FilterRow
 - Find better name for Empty/Wrap
 - remove return\_ and return'
+- Cleanup DSL module
+- implement classes in core module
+- rename DSL
+- make tl vars consistent (spec/impl)
+- cleanup Transit module

@@ -207,7 +207,7 @@ pick:
 main :: Effect Unit
 main = do
   let
-    g = R.toGraph (reflectType (Proxy @DoorDSL))
+    g = mkStateGraph (reflectType (Proxy @DoorDSL))
 
   TransitGraphviz.writeToFile_ g "graphs/door.dot"
   TransitTable.writeToFile_ g "graphs/door.html"

@@ -21,14 +21,13 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Transit.Core (Match(..), ReturnState(..), ReturnStateVia(..))
+import Transit.Core (MatchImpl(..), ReturnState(..), ReturnStateVia(..))
 import Transit.DSL (class FromDSL)
 import Transit.DSL (class FromDSL, class FromDSL1, class FromDSL2, class FromDSL3, type (:*), type (:?), type (:@), type (>|), AddOut, D, Empty, J, StateWithMsg, Wrap) as Export
 import Transit.MkUpdate (class MkUpdate, mkUpdate)
 import Transit.Tmp (class Build, build)
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
-import Unsafe.Coerce (unsafeCoerce)
 
 -- mkUpdateGeneric :: forall @dsl spec impl msg state. (FromDSL dsl spec) => (MkUpdate spec Identity impl (Generically msg) (Generically state)) => impl -> state -> msg -> state
 -- mkUpdateGeneric impl msg state = un Generically $ un Identity $ mkUpdate @spec impl (Generically msg) (Generically state)
@@ -70,8 +69,8 @@ mkUpdateGeneric = build @xs f
 
 -- ---
 
-match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> Match symState symMsg msgIn stateIn stateOut
-match f = Match f
+match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg msgIn stateIn stateOut
+match f = MatchImpl f
 
 -- ---
 

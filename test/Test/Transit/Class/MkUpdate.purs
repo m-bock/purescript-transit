@@ -2,17 +2,14 @@ module Test.Transit.Class.MkUpdate where
 
 import Prelude
 
-import Data.Function (($))
 import Data.Generic.Rep (class Generic)
 import Data.Identity (Identity)
-import Data.Tuple (Tuple)
 import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
-import Transit.Core (Match, MkReturn, MkReturnVia, MkStateGraph, MkTransition, ReturnState, ReturnStateVia, StateGraph)
+import Transit.Core (MatchImpl, MkMatch, MkReturn, MkReturnVia, MkTransitCore, ReturnState, ReturnStateVia, TransitCore)
 import Transit.MkUpdate (class MkUpdate)
 import Transit.Util (Generically)
 import Type.Data.List (type (:>), Nil')
-import Type.Function (type ($))
 
 check :: forall @spec @m @impl @msg @state. (MkUpdate spec m impl msg state) => Unit
 check = unit
@@ -27,26 +24,26 @@ derive instance Generic TestMsg _
 
 test1 :: Unit
 test1 = check
-  @(MkStateGraph Nil')
+  @(MkTransitCore Nil')
   @Identity
   @Unit
   @(Generically TestMsg)
   @(Generically TestState)
 
-type MyStateGraph :: StateGraph
-type MyStateGraph = MkStateGraph
-  ( (MkTransition "TestState1" "TestMsg1" (MkReturn "TestState2" :> Nil'))
-      :> (MkTransition "TestState2" "TestMsg2" (MkReturnVia "foo" "TestState3" :> MkReturn "TestState1" :> Nil'))
+type MyStateGraph :: TransitCore
+type MyStateGraph = MkTransitCore
+  ( (MkMatch "TestState1" "TestMsg1" (MkReturn "TestState2" :> Nil'))
+      :> (MkMatch "TestState2" "TestMsg2" (MkReturnVia "foo" "TestState3" :> MkReturn "TestState1" :> Nil'))
       :> Nil'
   )
 
-type T1 = Match "TestState1" "TestMsg1" Int Int
+type T1 = MatchImpl "TestState1" "TestMsg1" Int Int
   ( Variant
       ( "TestState2" :: ReturnState String
       )
   )
 
-type T2 = Match "TestState2" "TestMsg2" String String
+type T2 = MatchImpl "TestState2" "TestMsg2" String String
   ( Variant
       ( "TestState1" :: ReturnState Int
       , "TestState3" :: ReturnStateVia "foo" Boolean

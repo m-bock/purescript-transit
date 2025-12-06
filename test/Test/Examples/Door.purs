@@ -2,18 +2,15 @@ module Test.Examples.Door where
 
 import Prelude
 
-import Data.Array as Array
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Effect.Class.Console as Console
-import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
+import Test.Spec (Spec)
 import Transit (type (:*), type (:@), type (>|), Empty, Wrap, match, mkUpdateGeneric, return')
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
-import Transit.Reflection as R
+import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -77,7 +74,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    g = R.toGraph (reflectType (Proxy @DoorDSL))
+    g = mkStateGraph (reflectType (Proxy @DoorDSL))
 
   TransitGraphviz.writeToFile_ g "graphs/door.dot"
   TransitTable.writeToFile_ g "graphs/door.html"

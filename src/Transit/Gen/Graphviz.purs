@@ -24,8 +24,6 @@ import Transit.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), rankDir
 import Transit.DotLang as D
 import Transit.Graph (NodeGroup, EdgeGroup)
 import Transit.Graph as Graph
-import Transit.Reflection (Return_(..))
-import Transit.Reflection as R
 import Transit.StateGraph (Edge, StateGraph, Node)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)

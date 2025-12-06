@@ -1,7 +1,7 @@
 module Test.Transit.DSL where
 
 import Data.Unit (Unit, unit)
-import Transit.Core (MkStateGraph)
+import Transit.Core (MkTransitCore)
 import Transit.Core as C
 import Transit.DSL (class FromDSL, type (:*), type (:?), type (:@), type (>|), Empty, Wrap)
 import Type.Data.List (type (:>), Nil')
@@ -32,10 +32,10 @@ infixr 1 type APPLY as $$
 --:* ("State2" :@ "Msg2" >| "State3")
 --:* ("State3" :@ "Msg3" >| "State1")
 
-type Out = MkStateGraph
-  ( C.MkTransition "State1" "Msg1" (C.MkReturn "State3" :> C.MkReturnVia "guard" "State2" :> Nil')
-      :> C.MkTransition "State2" "Msg2" (C.MkReturn "State3" :> Nil')
-      :> C.MkTransition "State2" "Msg2" (C.MkReturn "State3" :> Nil')
+type Out = MkTransitCore
+  ( (C.MkMatch "State1" "Msg1" (C.MkReturn "State3" :> C.MkReturnVia "guard" "State2" :> Nil'))
+      :> (C.MkMatch "State2" "Msg2" (C.MkReturn "State3" :> Nil'))
+      :> (C.MkMatch "State2" "Msg2" (C.MkReturn "State3" :> Nil'))
       :> Nil'
   )
 
