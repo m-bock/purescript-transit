@@ -11,3 +11,8 @@
 - implement dark/light theme chart generation
 - rename FromDSL1/FromDSL2...
 - rename FromDSL to IsTransitSpec
+- Add haus/nikolaus example
+- Add option to graphviz renderer to pass string for global graph attributes
+- Add variant usage
+
+- publish to pursuit

@@ -176,8 +176,8 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return' @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return' @"DoorOpen")
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
 <!-- PD_END -->
@@ -555,6 +555,8 @@ LandC
 <img src="assets/haus-nikolaus.svg" alt="Transit" />
 
 ## Colors
+
+<img src="graphs/color-ring.svg" alt="Transit" />
 
 ---
 

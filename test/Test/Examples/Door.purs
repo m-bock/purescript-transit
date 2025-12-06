@@ -1,4 +1,4 @@
-module Test.Examples.Door where
+module Test.Examples.Door (main, spec) where
 
 import Prelude
 
@@ -7,7 +7,7 @@ import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return')
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
@@ -49,8 +49,8 @@ type DoorDSL =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return' @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return' @"DoorOpen")
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
 --------------------------------------------------------------------------------
 --- Tests

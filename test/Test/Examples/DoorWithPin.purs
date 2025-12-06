@@ -1,4 +1,4 @@
-module Test.Examples.DoorWithPin where
+module Test.Examples.DoorWithPin (main, spec) where
 
 import Prelude
 
@@ -7,8 +7,7 @@ import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, return_)
-import Transit.Gen.Graphviz as TransitGraphviz
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Type.Function (type ($))
 
 --------------------------------------------------------------------------------
@@ -60,17 +59,17 @@ type DoorDSL =
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   ( match @"DoorOpen" @"Close" \_ _ ->
-      return_ @"DoorClosed"
+      return @"DoorClosed"
   )
   ( match @"DoorClosed" @"Open" \_ _ ->
-      return_ @"DoorOpen"
+      return @"DoorOpen"
   )
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { pin: msg.newPin }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        return_ @"DoorClosed"
+        return @"DoorClosed"
       else
         return @"DoorLocked" { pin: state.pin }
   )
@@ -97,9 +96,10 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
--- main :: Effect Unit
--- main = do
---   TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-pin.dot"
+main :: Effect Unit
+main = do
+  --TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-pin.dot"
+  pure unit
 
 --------------------------------------------------------------------------------
 --- Instances

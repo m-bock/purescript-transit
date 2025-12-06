@@ -8,6 +8,7 @@ import Test.Examples.ColorRing as Test.Examples.ColorRing
 import Test.Examples.Door as Test.Examples.Door
 import Test.Examples.DoorWithLock as Test.Examples.DoorWithLock
 import Test.Examples.DoorWithPin as Test.Examples.DoorWithPin
+import Test.Examples.ColorRing as Test.Examples.ColorRing
 import Test.Examples.BridgesKoenigsberg as Test.Examples.BridgesKoenigsberg
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
@@ -21,5 +22,7 @@ main = do
   --Test.Examples.DoorWithLock.main
   --Test.Examples.DoorWithPin.main
   Test.Examples.BridgesKoenigsberg.main
+  Test.Examples.ColorRing.main
+
   Patchdown.main
 

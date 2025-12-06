@@ -1,4 +1,4 @@
-module Test.Examples.BridgesKoenigsberg where
+module Test.Examples.BridgesKoenigsberg (main) where
 
 import Prelude
 
@@ -6,7 +6,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return')
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Gen.Graphviz as TransitGraphviz
 import Transit.Gen.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
@@ -80,23 +80,23 @@ type BridgesTransitions =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @BridgesTransitions
-  (match @"LandA" @"CrossBridge_a" \_ _ -> return' @"LandB")
-  (match @"LandA" @"CrossBridge_b" \_ _ -> return' @"LandB")
-  (match @"LandA" @"CrossBridge_c" \_ _ -> return' @"LandC")
-  (match @"LandA" @"CrossBridge_d" \_ _ -> return' @"LandC")
-  (match @"LandA" @"CrossBridge_e" \_ _ -> return' @"LandD")
+  (match @"LandA" @"CrossBridge_a" \_ _ -> return @"LandB")
+  (match @"LandA" @"CrossBridge_b" \_ _ -> return @"LandB")
+  (match @"LandA" @"CrossBridge_c" \_ _ -> return @"LandC")
+  (match @"LandA" @"CrossBridge_d" \_ _ -> return @"LandC")
+  (match @"LandA" @"CrossBridge_e" \_ _ -> return @"LandD")
 
-  (match @"LandB" @"CrossBridge_a" \_ _ -> return' @"LandA")
-  (match @"LandB" @"CrossBridge_b" \_ _ -> return' @"LandA")
-  (match @"LandB" @"CrossBridge_f" \_ _ -> return' @"LandD")
+  (match @"LandB" @"CrossBridge_a" \_ _ -> return @"LandA")
+  (match @"LandB" @"CrossBridge_b" \_ _ -> return @"LandA")
+  (match @"LandB" @"CrossBridge_f" \_ _ -> return @"LandD")
 
-  (match @"LandC" @"CrossBridge_c" \_ _ -> return' @"LandA")
-  (match @"LandC" @"CrossBridge_d" \_ _ -> return' @"LandA")
-  (match @"LandC" @"CrossBridge_g" \_ _ -> return' @"LandD")
+  (match @"LandC" @"CrossBridge_c" \_ _ -> return @"LandA")
+  (match @"LandC" @"CrossBridge_d" \_ _ -> return @"LandA")
+  (match @"LandC" @"CrossBridge_g" \_ _ -> return @"LandD")
 
-  (match @"LandD" @"CrossBridge_e" \_ _ -> return' @"LandA")
-  (match @"LandD" @"CrossBridge_f" \_ _ -> return' @"LandB")
-  (match @"LandD" @"CrossBridge_g" \_ _ -> return' @"LandC")
+  (match @"LandD" @"CrossBridge_e" \_ _ -> return @"LandA")
+  (match @"LandD" @"CrossBridge_f" \_ _ -> return @"LandB")
+  (match @"LandD" @"CrossBridge_g" \_ _ -> return @"LandC")
 
 -- --------------------------------------------------------------------------------
 -- --- Tests

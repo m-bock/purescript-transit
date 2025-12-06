@@ -1,4 +1,4 @@
-module Test.Examples.DoorWithLock where
+module Test.Examples.DoorWithLock (main, spec) where
 
 import Prelude
 
@@ -7,8 +7,7 @@ import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return', return_)
-import Transit.Gen.Graphviz as TransitGraphviz
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Type.Function (type ($))
 
 --------------------------------------------------------------------------------
@@ -51,10 +50,10 @@ type DoorDSL =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return' @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return' @"DoorOpen")
-  (match @"DoorClosed" @"Lock" \_ _ -> return' @"DoorLocked")
-  (match @"DoorLocked" @"Unlock" \_ _ -> return' @"DoorClosed")
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
+  (match @"DoorClosed" @"Lock" \_ _ -> return @"DoorLocked")
+  (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
 
 --------------------------------------------------------------------------------
 --- Tests
@@ -78,9 +77,10 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
--- main :: Effect Unit
--- main = do
---   TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-lock.dot"
+main :: Effect Unit
+main = do
+  --TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-lock.dot"
+  pure unit
 
 --------------------------------------------------------------------------------
 --- Instances
