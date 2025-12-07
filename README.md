@@ -95,8 +95,6 @@ While this approach works, it has some drawbacks:
 - The compiler won't catch missing transitions or invalid state/message combinations
 - You need to manually ensure all cases are handled correctly
 
-The state diagram clearly shows the characteristics of the state machine—for example, we can see that the door can be opened and closed infinitely, with no dead ends. However, there's no guarantee that the code matches the diagram.
-
 ### The Transit Approach
 
 With the transit library, we take a different approach. First, we define a type-level specification of the state machine:
