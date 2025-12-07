@@ -1,4 +1,4 @@
-module Test.Transit.CurryN
+module Test.Transit.Class.CurryN
   ( spec
   ) where
 

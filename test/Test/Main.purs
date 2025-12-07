@@ -6,9 +6,9 @@ import Effect (Effect)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Test.Transit as Test.Transit
+import Test.Transit.Class.CurryN as Test.Transit.Class.CurryN
 import Test.Transit.Colors as Test.Transit.Colors
 import Test.Transit.Core as Test.Transit.Core
-import Test.Transit.CurryN as Test.Transit.CurryN
 import Test.Transit.Data.DotLang as Test.Transit.Data.DotLang
 import Test.Transit.Data.Graph as Test.Transit.Data.Graph
 import Test.Transit.Data.Html as Test.Transit.Data.Html
@@ -21,9 +21,9 @@ main :: Effect Unit
 main = do
   runSpecAndExitProcess [ consoleReporter ] do
     Test.Transit.spec
+    Test.Transit.Class.CurryN.spec
     Test.Transit.Colors.spec
     Test.Transit.Core.spec
-    Test.Transit.CurryN.spec
     Test.Transit.Data.DotLang.spec
     Test.Transit.Data.Graph.spec
     Test.Transit.Data.Html.spec
