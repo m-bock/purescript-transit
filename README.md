@@ -343,7 +343,132 @@ Since both the state diagram and transition table are generated from the same gr
 
 ## Example3: Door with Pin
 
+Now let's add a PIN code to our door lock. This introduces two important concepts: **states with data** and **conditional transitions**.
+
 <img src="graphs/door-with-pin.svg" />
+
+In this example, the `DoorLocked` state stores a PIN code, and the `Unlock` message includes the entered PIN. The unlock operation can succeed (transitioning to `DoorClosed`) or fail (staying in `DoorLocked`), depending on whether the entered PIN matches the stored one.
+
+Notice the diamond node in the state diagram—this represents a conditional transition where the outcome depends on runtime data.
+
+The transition table shows both possible outcomes:
+
+<!-- PD_START:raw
+filePath: graphs/door-with-pin.html
+--><table><caption>Door with Pin</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? pin matches</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? pin doesn't match</td><td>⟶</td><td>DoorLocked</td></tr></tbody></table><!-- PD_END -->
+
+The PureScript types now include data in both states and messages:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+data State
+  = DoorOpen
+  | DoorClosed
+  | DoorLocked { pin :: String }
+
+data Msg
+  = Close
+  | Open
+  | Lock { newPin :: String }
+  | Unlock { enteredPin :: String }
+```
+
+<!-- PD_END -->
+
+### The Classic Approach
+
+The classic update function now needs to handle state and message data:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - updateClassic
+-->
+
+```purescript
+updateClassic :: State -> Msg -> State
+updateClassic state msg = case state, msg of
+  DoorOpen, Close -> DoorClosed
+  DoorClosed, Open -> DoorOpen
+  DoorClosed, Lock { newPin } -> DoorLocked { pin: newPin }
+  DoorLocked { pin }, Unlock { enteredPin } ->
+    if pin == enteredPin then
+      DoorClosed
+    else
+      DoorLocked { pin }
+  _, _ -> state
+```
+
+<!-- PD_END -->
+
+### The Transit Approach
+
+In the DSL specification, we express conditional transitions by listing multiple possible target states:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - DoorDSL
+-->
+
+```purescript
+type DoorDSL =
+  Transit $ Empty
+    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
+    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
+    :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
+    :*
+      ( "DoorLocked" :@ "Unlock"
+          >| "DoorClosed"
+          >| "DoorLocked"
+      )
+```
+
+<!-- PD_END -->
+
+The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
+
+The update function now has access to both the current state and the message data, allowing you to implement the conditional logic:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdateGeneric @DoorDSL
+  ( match @"DoorOpen" @"Close" \_ _ ->
+      return @"DoorClosed"
+  )
+  ( match @"DoorClosed" @"Open" \_ _ ->
+      return @"DoorOpen"
+  )
+  ( match @"DoorClosed" @"Lock" \_ msg ->
+      return @"DoorLocked" { pin: msg.newPin }
+  )
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      if state.pin == msg.enteredPin then
+        return @"DoorClosed"
+      else
+        return @"DoorLocked" { pin: state.pin }
+  )
+```
+
+<!-- PD_END -->
+
+The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
+
+- 🔴 You can only return states that are valid targets for that transition
+- 🔴 You handle all required transitions
+- 🟢 The conditional logic is type-safe
 
 ## Example4: Door with Pin and Alarm
 
