@@ -3,12 +3,17 @@ module Test.Examples.DoorWithLock (main, spec) where
 import Prelude
 
 import Data.Generic.Rep (class Generic)
+import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Generators.Graphviz as TransitGraphviz
+import Transit.Generators.TransitionTable as TransitTable
+import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
+import Type.Proxy (Proxy(..))
 
 --------------------------------------------------------------------------------
 --- Types
@@ -79,8 +84,11 @@ spec = do
 
 main :: Effect Unit
 main = do
-  --TransitGraphviz.writeToFile_ @DoorDSL "graphs/door-with-lock.dot"
-  pure unit
+  let
+    g = mkStateGraph (reflectType (Proxy @DoorDSL))
+
+  TransitGraphviz.writeToFile (_ { title = "Door with Lock" }) g "graphs/door-with-lock.dot"
+  TransitTable.writeToFile (_ { title = "Door with Lock" }) g "graphs/door-with-lock.html"
 
 --------------------------------------------------------------------------------
 --- Instances

@@ -16,6 +16,8 @@ Type-Safe State Machines.
     - [The Transit Approach](#the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
   - [Example2: Door with Lock](#example2-door-with-lock)
+    - [The Classic Approach](#the-classic-approach-1)
+    - [The Transit Approach](#the-transit-approach-1)
   - [Generate State Diagrams](#generate-state-diagrams)
   - [Generate Transition Tables](#generate-transition-tables)
   - [Example3: Door with Pin](#example3-door-with-pin)
@@ -165,7 +167,7 @@ The transition table shows all valid transitions:
 
 <!-- PD_START:raw
 filePath: graphs/door-with-lock.html
---><table><caption>Door with Lock</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Door with Lock</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
 
 The PureScript types extend the previous example:
 
