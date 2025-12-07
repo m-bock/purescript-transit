@@ -115,13 +115,12 @@ pick:
   - State
   - Msg
 -->
-
-```purescript
-data State = DoorOpen | DoorClosed
-
-data Msg = Close | Open
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/Door.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 The classic approach to implement the state transitions in pure functional programming is to write an update function that takes a state and a message and returns a new state. For example:
@@ -131,15 +130,12 @@ filePath: test/Test/Examples/Door.purs
 pick:
   - updateClassic
 -->
-
-```purescript
-updateClassic :: State -> Msg -> State
-updateClassic state msg = case state, msg of
-  DoorOpen, Close -> DoorClosed
-  DoorClosed, Open -> DoorOpen
-  _, _ -> state
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/Door.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 The state diagram shows clearly the characteristics of the state machine. E.g. we see right away that the door can be opened and closed infinitely. In other words: There are no unwanted dead ends. Later we will see how to verify such properties with code.
@@ -153,14 +149,12 @@ filePath: test/Test/Examples/Door.purs
 pick:
   - DoorDSL
 -->
-
-```purescript
-type DoorDSL =
-  Transit $ Empty
-    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
-    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/Door.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 This fully specifies the state machine. Based on this spec we can now an update function which only allows implementations legal state transitions. For example:
@@ -172,14 +166,12 @@ filePath: test/Test/Examples/Door.purs
 pick:
   - update
 -->
-
-```purescript
-update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/Door.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 As you can see the type of the update function is exactly the same as the type of the update function we wrote in the classic approach. The most interesting part here is what would _not_ compile:
@@ -202,17 +194,12 @@ filePath: test/Test/Examples/Door.purs
 pick:
   - main
 -->
-
-```purescript
-main :: Effect Unit
-main = do
-  let
-    g = mkStateGraph (reflectType (Proxy @DoorDSL))
-
-  TransitGraphviz.writeToFile_ g "graphs/door.dot"
-  TransitTable.writeToFile_ g "graphs/door.html"
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/Door.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 ## Generate Transition Tables
@@ -242,13 +229,12 @@ filePath: test/Test/Examples/Door.purs
 pick:
   - spec
 -->
-
-```purescript
-spec :: Spec Unit
-spec = do
-  pure unit
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/Door.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 ## Monadic update functions
@@ -265,20 +251,12 @@ pick:
   - State
   - Msg
 -->
-
-```purescript
-data State = LandA | LandB | LandC | LandD
-
-data Msg
-  = CrossBridge_a
-  | CrossBridge_b
-  | CrossBridge_c
-  | CrossBridge_d
-  | CrossBridge_e
-  | CrossBridge_f
-  | CrossBridge_g
-```
-
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### ENOENT: no such file or directory, open 'test/Test/Examples/BridgesKoenigsberg.purs'
+> 
+> <br>
 <!-- PD_END -->
 
 <!-- PD_START:raw
