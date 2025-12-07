@@ -271,6 +271,10 @@ This becomes even more valuable as state machines grow in complexity.
 
 ## Generate State Diagrams
 
+One of the key benefits of transit is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
+
+To generate a state diagram, you use `mkStateGraph` to create a graph from your DSL specification, then write it to a Graphviz `.dot` file:
+
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
@@ -288,6 +292,22 @@ main = do
 ```
 
 <!-- PD_END -->
+
+The `mkStateGraph` function extracts the state machine structure from your DSL type using `reflectType`. The resulting graph can then be written to a Graphviz `.dot` file using `TransitGraphviz.writeToFile`.
+
+To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
+
+```bash
+dot -Tsvg graphs/door.dot -o graphs/door.svg
+```
+
+Or for PNG:
+
+```bash
+dot -Tpng graphs/door.dot -o graphs/door.png
+```
+
+Since the diagram is generated from the same DSL specification used to create the type-safe update function, any changes to your state machine are automatically reflected in both the code and the diagram. This eliminates the common problem of documentation getting out of sync with implementation.
 
 ## Generate Transition Tables
 
