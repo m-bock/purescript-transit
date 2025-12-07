@@ -1,4 +1,7 @@
-module Transit.Class.FilterRow where
+module Transit.Class.FilterRow
+  ( class FilterRow
+  , filterRow
+  ) where
 
 import Prelude
 

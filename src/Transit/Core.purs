@@ -139,5 +139,7 @@ derive instance Newtype (ReturnState a) _
 
 ---
 
-class IsTransitSpec :: forall dsl a. dsl -> a -> Constraint
-class IsTransitSpec dsl a | dsl -> a
+class IsTransitSpec :: forall spec. spec -> TransitCore -> Constraint
+class IsTransitSpec spec core | spec -> core
+
+instance IsTransitSpec (MkTransitCore xs) (MkTransitCore xs)

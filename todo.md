@@ -1,18 +1,23 @@
-- [ ] Find better name for FilterRow
-- [ ] Find better name for Empty/Wrap
-- [x] remove return\_ and return'
+- [ ] explicit exports everywhere
+- [ ] Add option to graphviz renderer to pass string for global graph attributes
 - [ ] Cleanup DSL module
 - [ ] rename FromDSL1/FromDSL2...
-- [ ] rename FromDSL to IsTransitSpec
-- [ ] implement classes in core module
-- [x] rename DSL
+
+---
+
 - [ ] make tl vars consistent (spec/impl)
+- [ ] Find better name for FilterRow
+- [ ] Find better name for Empty/Wrap
 - [ ] cleanup Transit module
-- [ ] explicit exports everywhere
-- [ ] cleanup imports
+
+---
+
 - [ ] implement dark/light theme chart generation
 - [ ] Add haus/nikolaus example
-- [ ] Add option to graphviz renderer to pass string for global graph attributes
+- [ ] implement classes in core module
 - [ ] Add variant usage
 
+---
+
+- [ ] cleanup imports
 - [ ] publish to pursuit
