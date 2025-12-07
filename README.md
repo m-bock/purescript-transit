@@ -12,6 +12,9 @@ Type-Safe State Machines.
 - [Transit](#transit)
   - [Installation](#installation)
   - [Example1: Door](#example1-door)
+    - [The Classic Approach](#the-classic-approach)
+    - [The Transit Approach](#the-transit-approach)
+    - [Compile-Time Safety](#compile-time-safety)
   - [Example2: Door with Lock](#example2-door-with-lock)
   - [Generate State Diagrams](#generate-state-diagrams)
   - [Generate Transition Tables](#generate-transition-tables)
@@ -37,18 +40,19 @@ spago install transit
 
 ## Example1: Door
 
-Let's have a look at the following state diagram:
+Let's start with a simple door state machine. Here's its state diagram:
 
 <img src="graphs/door.svg" />
 
-It has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). Initial state is `DoorOpen` indicated by the grey arrow pointing to it.
+This state machine has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). The initial state is `DoorOpen`, indicated by the grey arrow pointing to it.
+
 Another way to represent this is a transition table:
 
 <!-- PD_START:raw
 filePath: graphs/door.html
 --><table><caption>Door</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
 
-In PureScript types, we can represent the states and messages of the state machine with the following data types:
+In PureScript, we represent the states and messages with simple data types:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -65,7 +69,9 @@ data Msg = Close | Open
 
 <!-- PD_END -->
 
-The classic approach to implement the state transitions in pure functional programming is to write an update function that takes a state and a message and returns a new state. For example:
+### The Classic Approach
+
+The traditional way to implement state transitions is to write an update function that takes a state and a message and returns a new state:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -83,11 +89,17 @@ updateClassic state msg = case state, msg of
 
 <!-- PD_END -->
 
-The state diagram shows clearly the characteristics of the state machine. E.g. we see right away that the door can be opened and closed infinitely. In other words: There are no unwanted dead ends. Later we will see how to verify such properties with code.
+While this approach works, it has some drawbacks:
 
-Unfortunately the state diagram and the actual implementation can easily get out of sync.
+- The state diagram and implementation can easily get out of sync
+- The compiler won't catch missing transitions or invalid state/message combinations
+- You need to manually ensure all cases are handled correctly
 
-With the transit library we take a slightly different approach. We define first a type level specification of the state machine. It looks like this:
+The state diagram clearly shows the characteristics of the state machine—for example, we can see that the door can be opened and closed infinitely, with no dead ends. However, there's no guarantee that the code matches the diagram.
+
+### The Transit Approach
+
+With the transit library, we take a different approach. First, we define a type-level specification of the state machine:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -104,9 +116,9 @@ type DoorDSL =
 
 <!-- PD_END -->
 
-This fully specifies the state machine. Based on this spec we can now an update function which only allows implementations legal state transitions. For example:
+This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
-<!-- PD_END -->
+This type-level specification fully defines the state machine. Based on this spec, we can now create an update function that the compiler ensures only allows legal state transitions:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -123,19 +135,25 @@ update = mkUpdateGeneric @DoorDSL
 
 <!-- PD_END -->
 
-As you can see the type of the update function is exactly the same as the type of the update function we wrote in the classic approach. The most interesting part here is what would _not_ compile:
+Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
+
+### Compile-Time Safety
+
+The type system ensures that your implementation matches the specification. The following will **not** compile:
 
 - 🔴 Missing a match line for a state transition
 - 🔴 Matching on illegal state/message combinations
 - 🔴 Returning illegal states
 - 🔴 Misspelled names of states and messages
 
+Conversely, the compiler guarantees:
+
 - 🟢 All matches are covered
 - 🟢 Each match is on the correct state/message combination
 - 🟢 Each match returns the correct state
-- 🟢 All symbols (type level strings) are spelled correctly
+- 🟢 All symbols (type-level strings) are spelled correctly
 
-Later we see how to generate the state diagram from the spec.
+Later we'll see how to generate the state diagram directly from the spec, ensuring it always stays in sync with the code.
 
 ## Example2: Door with Lock
 
