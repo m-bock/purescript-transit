@@ -1,4 +1,19 @@
-module Transit.Html where
+module Transit.Html
+  ( Node(..)
+  , Attribute(..)
+  , text
+  , table
+  , thead
+  , tbody
+  , th
+  , tr
+  , td
+  , caption
+  , attrStyle
+  , nodeToHtml
+  , attrsToHtml
+  , attrToHtml
+  ) where
 
 import Prelude
 

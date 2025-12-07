@@ -1,4 +1,12 @@
-module Transit.GetSubset where
+module Transit.GetSubset
+  ( class GetSubset
+  , getSubset
+  , SingleOrNoField
+  , Opts
+  , class Util
+  , getField
+  , getField'
+  ) where
 
 import Prelude
 

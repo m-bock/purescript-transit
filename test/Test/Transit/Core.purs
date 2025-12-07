@@ -1,4 +1,6 @@
-module Test.Transit.Core where
+module Test.Transit.Core
+  ( spec
+  ) where
 
 import Prelude
 

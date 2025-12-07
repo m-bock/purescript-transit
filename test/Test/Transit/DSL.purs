@@ -1,4 +1,7 @@
-module Test.Transit.DSL where
+module Test.Transit.DSL
+  ( check
+  , test2
+  ) where
 
 import Data.Unit (Unit, unit)
 import Transit.Core (class IsTransitSpec, MkTransitCore)

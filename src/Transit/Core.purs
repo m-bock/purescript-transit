@@ -1,4 +1,28 @@
-module Transit.Core where
+module Transit.Core
+  ( StateName
+  , MsgName
+  , GuardName
+  , TransitCore
+  , MkTransitCore
+  , Match
+  , MkMatch
+  , Return
+  , MkReturn
+  , MkReturnVia
+  , class IsStateSym
+  , class IsMsgSym
+  , class IsGuardSym
+  , StateName_
+  , MsgName_
+  , GuardName_
+  , Return_(..)
+  , TransitCore_(..)
+  , Match_(..)
+  , MatchImpl(..)
+  , ReturnStateVia(..)
+  , ReturnState(..)
+  , class IsTransitSpec
+  ) where
 
 import Prelude
 

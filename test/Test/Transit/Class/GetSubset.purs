@@ -1,4 +1,8 @@
-module Test.Transit.Class.GetSubset where
+module Test.Transit.Class.GetSubset
+  ( check
+  , test1
+  , test2
+  ) where
 
 import Prelude
 

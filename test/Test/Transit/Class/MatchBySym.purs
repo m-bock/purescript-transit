@@ -1,4 +1,9 @@
-module Test.Transit.Class.MatchBySym where
+module Test.Transit.Class.MatchBySym
+  ( check
+  , test1
+  , test2
+  , test3
+  ) where
 
 import Prelude
 

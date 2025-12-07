@@ -1,4 +1,11 @@
-module Transit.Colors where
+module Transit.Colors
+  ( defLight
+  , defDark
+  , colors
+  , getColor
+  , ThemedColors
+  , Colors
+  ) where
 
 import Prelude
 

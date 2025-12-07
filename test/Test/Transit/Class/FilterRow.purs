@@ -1,4 +1,8 @@
-module Test.Transit.Class.FilterRow where
+module Test.Transit.Class.FilterRow
+  ( check
+  , test1
+  , test2
+  ) where
 
 import Prelude
 

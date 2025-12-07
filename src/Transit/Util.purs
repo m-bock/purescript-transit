@@ -1,4 +1,6 @@
-module Transit.Util where
+module Transit.Util
+  ( Generically(..)
+  ) where
 
 import Prelude
 

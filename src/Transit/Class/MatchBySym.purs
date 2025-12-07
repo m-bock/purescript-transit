@@ -1,4 +1,8 @@
-module Transit.Class.MatchBySym where
+module Transit.Class.MatchBySym
+  ( class MatchBySym
+  , matchBySym
+  , matchBySym2
+  ) where
 
 import Prelude
 

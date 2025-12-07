@@ -1,4 +1,10 @@
-module Transit.Gen.Graphviz where
+module Transit.Gen.Graphviz
+  ( mkGraphvizGraph
+  , Options
+  , defaultOptions
+  , writeToFile
+  , writeToFile_
+  ) where
 
 import Prelude
 

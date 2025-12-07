@@ -1,4 +1,7 @@
-module Transit.MkUpdate where
+module Transit.MkUpdate
+  ( class MkUpdate
+  , mkUpdate
+  ) where
 
 import Prelude
 

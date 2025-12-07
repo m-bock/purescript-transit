@@ -1,4 +1,7 @@
-module Transit.CurryN where
+module Transit.CurryN
+  ( class CurryN
+  , curryN
+  ) where
 
 import Prelude
 

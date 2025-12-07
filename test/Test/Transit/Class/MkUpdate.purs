@@ -1,4 +1,8 @@
-module Test.Transit.Class.MkUpdate where
+module Test.Transit.Class.MkUpdate
+  ( check
+  , test1
+  , test2
+  ) where
 
 import Prelude
 

@@ -1,4 +1,38 @@
-module Transit.DotLang where
+module Transit.DotLang
+  ( class ToText
+  , toText
+  , Section(..)
+  , GraphvizGraph(..)
+  , GlobalAttrs(..)
+  , Node(..)
+  , Edge(..)
+  , Attr(..)
+  , Value(..)
+  , rankDirTD
+  , fontNameArial
+  , labelHtmlBold
+  , labelHtmlItalic
+  , shapeBox
+  , shapeDiamond
+  , fontSize
+  , styleFilled
+  , arrowSize
+  , shapeCircle
+  , label
+  , width
+  , height
+  , fixedSize
+  , fillColor
+  , penWidth
+  , fontColor
+  , labelLocC
+  , labelLocT
+  , color
+  , colorMulti
+  , dirBoth
+  , arrowHeadNone
+  , arrowTailNone
+  ) where
 
 import Prelude
 

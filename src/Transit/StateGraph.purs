@@ -1,4 +1,9 @@
-module Transit.StateGraph where
+module Transit.StateGraph
+  ( Edge
+  , Node
+  , StateGraph
+  , mkStateGraph
+  ) where
 
 import Prelude
 
