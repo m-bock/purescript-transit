@@ -4,10 +4,31 @@ module Test.Transit.StateGraph
 
 import Prelude
 
-import Test.Spec (Spec, describe)
+import Data.Maybe (Maybe(..))
+import Data.Set as Set
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
+import Transit.Core (Match_(..), Return_(..), TransitCore_(..))
+import Transit.Graph as Graph
+import Transit.StateGraph (mkStateGraph)
 
 spec :: Spec Unit
 spec = do
   describe "Transit.StateGraph" do
-    pure unit
-
+    describe "complex state graph" do
+      it "creates a complex state graph" do
+        let
+          transitCore = TransitCore
+            [ Match "State1" "Msg1" [ Return "State2" ]
+            , Match "State2" "Msg2" [ Return "State3", Return "State1" ]
+            , Match "State3" "Msg3" [ Return "State1", ReturnVia "Guard1" "State2", ReturnVia "Guard2" "State3" ]
+            ]
+          graph = mkStateGraph transitCore
+        Graph.getConnections graph `shouldEqual` Set.fromFoldable
+          [ { fromNode: { state: "State1" }, toNode: { state: "State2" }, edge: { msg: "Msg1", guard: Nothing } }
+          , { fromNode: { state: "State2" }, toNode: { state: "State3" }, edge: { msg: "Msg2", guard: Nothing } }
+          , { fromNode: { state: "State2" }, toNode: { state: "State1" }, edge: { msg: "Msg2", guard: Nothing } }
+          , { fromNode: { state: "State3" }, toNode: { state: "State1" }, edge: { msg: "Msg3", guard: Nothing } }
+          , { fromNode: { state: "State3" }, toNode: { state: "State2" }, edge: { msg: "Msg3", guard: Just "Guard1" } }
+          , { fromNode: { state: "State3" }, toNode: { state: "State3" }, edge: { msg: "Msg3", guard: Just "Guard2" } }
+          ]

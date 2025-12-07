@@ -3,13 +3,13 @@ module Transit.Graph
   , Graph
   , NodeGroup
   , EdgeGroup
-  , fromEdges
+  , fromConnections
   , getGrouped
   , getIncomingEdges
   , getNodes
   , getOutgoingEdges
   , hasEdge
-  , getEdges
+  , getConnections
   , hasEulerCircle
   , hasEulerTrail
   ) where
@@ -19,11 +19,9 @@ import Prelude
 import Data.Array as Array
 import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Array.NonEmpty as NEA
-import Data.Generic.Rep (class Generic)
 import Data.Int as Int
 import Data.Set (Set)
 import Data.Set as Set
-import Data.Show.Generic (genericShow)
 
 type Connection e n = { fromNode :: n, edge :: e, toNode :: n }
 
@@ -45,11 +43,11 @@ getGrouped (Graph xs) = Set.fromFoldable $ map f $ Array.groupAllBy (\a b -> a.f
 
 newtype Graph e n = Graph (Set (Connection e n)) -- directed, cyclic, multiedge
 
-fromEdges :: forall e n. Set (Connection e n) -> Graph e n
-fromEdges edges = Graph edges
+fromConnections :: forall e n. Set (Connection e n) -> Graph e n
+fromConnections edges = Graph edges
 
-getEdges :: forall e n. Graph e n -> Set (Connection e n)
-getEdges (Graph xs) = xs
+getConnections :: forall e n. Graph e n -> Set (Connection e n)
+getConnections (Graph xs) = xs
 
 getNodes :: forall e n. Ord n => Graph e n -> Set n
 getNodes (Graph xs) = Set.fromFoldable $ Array.concatMap (\{ fromNode, toNode } -> [ fromNode, toNode ]) (Set.toUnfoldable xs)

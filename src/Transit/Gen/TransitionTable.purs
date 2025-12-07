@@ -22,7 +22,7 @@ toHtml :: Options -> StateGraph -> Html.Node
 toHtml _ sg = Html.table []
   [ Html.caption [] [ Html.text "Transition Table" ]
   , Html.thead [] [ mkHeader ]
-  , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getEdges sg
+  , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getConnections sg
   ]
 
 mkRow :: Connection Edge Node -> Html.Node

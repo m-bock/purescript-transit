@@ -21,7 +21,7 @@ type Node = { state :: String }
 type StateGraph = Graph Edge Node
 
 mkStateGraph :: TransitCore_ -> StateGraph
-mkStateGraph (TransitCore transitions) = Graph.fromEdges
+mkStateGraph (TransitCore transitions) = Graph.fromConnections
   $ Set.fromFoldable
   $ Array.concatMap
       ( \(Match from msg returns) -> map
