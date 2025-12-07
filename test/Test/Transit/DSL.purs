@@ -1,6 +1,10 @@
 module Test.Transit.DSL
   ( check
+  , test1
   , test2
+  , test3
+  , test4
+  , test5
   ) where
 
 import Data.Unit (Unit, unit)
@@ -8,66 +12,143 @@ import Transit.Core (class IsTransitSpec, MkTransitCore)
 import Transit.Core as C
 import Transit.DSL (type (:*), type (:?), type (:@), type (>|), Empty, Transit)
 import Type.Data.List (type (:>), Nil')
-import Type.Function (type ($), APPLY)
+import Type.Function (type ($))
 
 check :: forall @a @b. (IsTransitSpec a b) => Unit
 check = unit
 
--- test1 :: Unit
--- test1 = check @C @(C.MkStateGraph Nil')
+--------------------------------------------------------------------------------
+-- Test 1: Empty DSL
+--------------------------------------------------------------------------------
 
-type In =
+test1 :: Unit
+test1 = check @Test1In @Test1Out
+
+type Test1In = Transit $ Empty
+
+type Test1Out = MkTransitCore Nil'
+
+--------------------------------------------------------------------------------
+-- Test 2: Multiple transitions
+--------------------------------------------------------------------------------
+
+test2 :: Unit
+test2 = check @Test2In @Test2Out
+
+type Test2In =
   Transit $ Empty
-    :*
-      ( "State1" :@ "Msg1"
-          >| ("guard" :? "State2")
-          >| "State3"
-      )
+    :* ("State3" :@ "Msg3" >| "State3")
     :* ("State2" :@ "Msg2" >| "State3")
-    :* ("State2" :@ "Msg2" >| "State3")
+    :* ("State3" :@ "Msg3" >| "State3")
 
---  :* ("State2" :@ "Msg2")
-
-infixr 1 type APPLY as $$
-
---:* ("State3" :@ "Msg3")
-
---:* ("State2" :@ "Msg2" >| "State3")
---:* ("State3" :@ "Msg3" >| "State1")
-
-type Out = MkTransitCore
-  ( (C.MkMatch "State1" "Msg1" (C.MkReturn "State3" :> C.MkReturnVia "guard" "State2" :> Nil'))
+type Test2Out = MkTransitCore
+  ( (C.MkMatch "State3" "Msg3" (C.MkReturn "State3" :> Nil'))
       :> (C.MkMatch "State2" "Msg2" (C.MkReturn "State3" :> Nil'))
-      :> (C.MkMatch "State2" "Msg2" (C.MkReturn "State3" :> Nil'))
+      :> (C.MkMatch "State3" "Msg3" (C.MkReturn "State3" :> Nil'))
       :> Nil'
   )
 
-test2 :: Unit
-test2 = check @In @Out
+--------------------------------------------------------------------------------
+-- Test 3: Transition with multiple return states
+--------------------------------------------------------------------------------
 
--- test1 :: Unit
--- test1 = check @MkStateSpec @(MkStateGraph Nil')
+test3 :: Unit
+test3 = check @Test3In @Test3Out
 
--- type Test2DSL = MkStateSpec
---   :* ("State1" :@ "Msg1" :> "State2")
---   :* ("State2" :@ "Msg2" :> "State3" :| "State1")
---   :* ("State3" :@ "Msg3" :> "State1" :| "State2" :| "State4")
+type Test3In =
+  Transit $ Empty
+    :*
+      ( "State1" :@ "Msg1"
+          >| "State3"
+          >| "State2"
+          >| "State1"
+      )
 
--- type Test2StateGraph = MkStateGraph
---   ( Nil'
---       :<
---         ( MkTransition "State1" "Msg1"
---             (Nil' :< MkReturn "State2")
---         )
---       :<
---         ( MkTransition "State2" "Msg2"
---             (Nil' :< MkReturn "State3" :< MkReturn "State1")
---         )
---       :<
---         ( MkTransition "State3" "Msg3"
---             (Nil' :< MkReturn "State1" :< MkReturn "State2" :< MkReturn "State4")
---         )
---   )
+type Test3Out = MkTransitCore
+  ( (C.MkMatch "State1" "Msg1" (C.MkReturn "State1" :> C.MkReturn "State2" :> C.MkReturn "State3" :> Nil'))
+      :> Nil'
+  )
 
--- test2 :: Unit
--- test2 = check @Test2DSL @Test2StateGraph
+--------------------------------------------------------------------------------
+-- Test 4: Transition with guards
+--------------------------------------------------------------------------------
+
+test4 :: Unit
+test4 = check @Test4In @Test4Out
+
+type Test4In =
+  Transit $ Empty
+    :* ("State1" :@ "Msg1" >| ("guard" :? "State2"))
+
+type Test4Out = MkTransitCore
+  ( (C.MkMatch "State1" "Msg1" (C.MkReturnVia "guard" "State2" :> Nil'))
+      :> Nil'
+  )
+
+--------------------------------------------------------------------------------
+-- Test 5: Full complex test
+--------------------------------------------------------------------------------
+
+test5 :: Unit
+test5 = check @Test5In @Test5Out
+
+type Test5In =
+  Transit $ Empty
+    :*
+      ( "State1" :@ "Msg1"
+          >| ("guard" :? "State3")
+          >| "State2"
+          >| "State1"
+      )
+
+    :*
+      ( "State2" :@ "Msg2"
+          >| "State3"
+          >| "State2"
+          >| "State1"
+      )
+    :*
+      ( "State3" :@ "Msg3"
+          >| ("guardC" :? "State3")
+          >| ("guardB" :? "State2")
+          >| ("guardA" :? "State1")
+      )
+
+    :*
+      ("State3" :@ "Msg3" >| "State1")
+
+    :*
+      ("State3" :@ "Msg3" >| ("guard" :? "State1"))
+
+type Test5Out = MkTransitCore
+  ( ( C.MkMatch "State1" "Msg1"
+        ( C.MkReturn "State1"
+            :> C.MkReturn "State2"
+            :> C.MkReturnVia "guard" "State3"
+            :> Nil'
+        )
+    )
+      :>
+        ( C.MkMatch "State2" "Msg2"
+            ( C.MkReturn "State1"
+                :> C.MkReturn "State2"
+                :> C.MkReturn "State3"
+                :> Nil'
+            )
+        )
+      :>
+        ( C.MkMatch "State3" "Msg3"
+            ( C.MkReturnVia "guardA" "State1"
+                :> C.MkReturnVia "guardB" "State2"
+                :> C.MkReturnVia "guardC" "State3"
+                :> Nil'
+            )
+        )
+      :>
+        ( C.MkMatch "State3" "Msg3" (C.MkReturn "State1" :> Nil')
+        )
+      :>
+        ( C.MkMatch "State3" "Msg3" (C.MkReturnVia "guard" "State1" :> Nil')
+        )
+      :> Nil'
+  )

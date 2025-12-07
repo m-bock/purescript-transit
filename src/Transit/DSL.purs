@@ -57,7 +57,9 @@ instance (FromDSL1 a a') => IsTransitSpec (Transit a) a'
 class FromDSL1 :: forall k1 k2. k1 -> k2 -> Constraint
 class FromDSL1 dsl a | dsl -> a
 
-instance (FromDSL1 xs (C.MkTransitCore ys)) => FromDSL1 (Empty :* xs) (C.MkTransitCore (ys))
+instance FromDSL1 Empty (C.MkTransitCore Nil')
+
+else instance (FromDSL1 xs (C.MkTransitCore ys)) => FromDSL1 (Empty :* xs) (C.MkTransitCore (ys))
 
 else instance (FromDSL2 x t, FromDSL1 xs (C.MkTransitCore ys)) => FromDSL1 (x :* xs) (C.MkTransitCore (t :> ys))
 

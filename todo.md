@@ -1,6 +1,7 @@
 - [x] explicit exports everywhere
 - [x] Add option to graphviz renderer to pass string for global graph attributes
 - [ ] Cleanup DSL module
+  - [x] revamp commented tests in Test.Transit.DSL module.
 - [ ] rename FromDSL1/FromDSL2...
 
 ---
@@ -21,3 +22,10 @@
 
 - [ ] cleanup imports
 - [ ] publish to pursuit
+
+---
+
+General AI guideline:
+
+- always run `npx spago build` to check if changes compile, edit until it compiles.
+- always run `npx spago test` to check if tests pass, edit until they pass.
