@@ -19,8 +19,8 @@ import Transit.Data.Html as Html
 import Transit.StateGraph (Edge, StateGraph, Node)
 
 toHtml :: Options -> StateGraph -> Html.Node
-toHtml _ sg = Html.table []
-  [ Html.caption [] [ Html.text "Transition Table" ]
+toHtml options sg = Html.table []
+  [ Html.caption [] [ Html.text options.title ]
   , Html.thead [] [ mkHeader ]
   , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getConnections sg
   ]

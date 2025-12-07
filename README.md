@@ -184,11 +184,16 @@ update = mkUpdateGeneric @DoorDSL
 
 As you can see the type of the update function is exactly the same as the type of the update function we wrote in the classic approach. The most interesting part here is what would _not_ compile:
 
-- Missing a match line for a state transition
-- Returning illegal states
-- Missing names of states and messages
+- 🔴 Missing a match line for a state transition
+- 🔴 Matching on illegal state/message combinations
+- 🔴 Returning illegal states
+- 🔴 Misspelled names of states and messages
 
-Indeed this is the only possible implementation of this particular state machine. Like for example there is only one possible way to implement the identity function.
+- 🟢 All matches are covered
+- 🟢 Each match is on the correct state/message combination
+- 🟢 Each match returns the correct state
+- 🟢 All symbols (type level strings) are spelled correctly
+
 Later we see how to generate the state diagram from the spec.
 
 ## Example2: Door with Lock
