@@ -4,9 +4,9 @@ module Transit.DSL
   , type (:?)
   , type (:@)
   , type (>|)
-  , class FromDSL1
-  , class FromDSL2
-  , class FromDSL3
+  , class ToTransitCore
+  , class ToMatch
+  , class ToReturn
   , Empty
   , Transit
   , StateWithMsg
@@ -52,30 +52,30 @@ data Transit a
 
 data Empty
 
-instance (FromDSL1 a a') => IsTransitSpec (Transit a) a'
+instance (ToTransitCore a a') => IsTransitSpec (Transit a) a'
 
-class FromDSL1 :: forall k1 k2. k1 -> k2 -> Constraint
-class FromDSL1 dsl a | dsl -> a
+class ToTransitCore :: forall k. k -> C.TransitCore -> Constraint
+class ToTransitCore dsl a | dsl -> a
 
-instance FromDSL1 Empty (C.MkTransitCore Nil')
+instance ToTransitCore Empty (C.MkTransitCore Nil')
 
-else instance (FromDSL1 xs (C.MkTransitCore ys)) => FromDSL1 (Empty :* xs) (C.MkTransitCore (ys))
+else instance (ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCore (ys))
 
-else instance (FromDSL2 x t, FromDSL1 xs (C.MkTransitCore ys)) => FromDSL1 (x :* xs) (C.MkTransitCore (t :> ys))
+else instance (ToMatch x t, ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (x :* xs) (C.MkTransitCore (t :> ys))
 
-else instance (FromDSL2 x t) => FromDSL1 x (C.MkTransitCore (t :> Nil'))
+else instance (ToMatch x t) => ToTransitCore x (C.MkTransitCore (t :> Nil'))
 
-class FromDSL2 :: forall k1 k2. k1 -> k2 -> Constraint
-class FromDSL2 dsl a | dsl -> a
+class ToMatch :: forall k. k -> C.Match -> Constraint
+class ToMatch dsl a | dsl -> a
 
-instance (FromDSL2 x (C.MkMatch s m xs), FromDSL3 y y') => FromDSL2 (x >| y) (C.MkMatch s m (y' :> xs))
+instance (ToMatch x (C.MkMatch s m xs), ToReturn y y') => ToMatch (x >| y) (C.MkMatch s m (y' :> xs))
 
-instance FromDSL2 (x :@ y) (C.MkMatch x y Nil')
+instance ToMatch (x :@ y) (C.MkMatch x y Nil')
 
-class FromDSL3 :: forall k1 k2. k1 -> k2 -> Constraint
-class FromDSL3 dsl a | dsl -> a
+class ToReturn :: forall k. k -> C.Return -> Constraint
+class ToReturn dsl a | dsl -> a
 
-instance FromDSL3 (g :? s) (C.MkReturnVia g s)
+instance ToReturn (g :? s) (C.MkReturnVia g s)
 
-else instance FromDSL3 s (C.MkReturn s)
+else instance ToReturn s (C.MkReturn s)
 
