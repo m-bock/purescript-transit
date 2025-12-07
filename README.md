@@ -155,7 +155,117 @@ Later we'll see how to generate the state diagram directly from the spec, ensuri
 
 ## Example2: Door with Lock
 
+Now let's extend our door example by adding a lock mechanism. Here's the enhanced state diagram:
+
 <img src="graphs/door-with-lock.svg" />
+
+This state machine extends the simple door with a third state (`DoorLocked`) and two additional messages (`Lock` and `Unlock`). Notice that you can only lock the door when it's closed, and unlocking returns you to the closed state (not open). This is a common pattern in real-world state machines where certain operations are only valid in specific states.
+
+The transition table shows all valid transitions:
+
+<!-- PD_START:raw
+filePath: graphs/door-with-lock.html
+--><table><caption>Door with Lock</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
+
+The PureScript types extend the previous example:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithLock.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+data State
+  = DoorOpen
+  | DoorClosed
+  | DoorLocked
+
+data Msg
+  = Close
+  | Open
+  | Lock
+  | Unlock
+```
+
+<!-- PD_END -->
+
+### The Classic Approach
+
+The classic update function now handles more cases:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithLock.purs
+pick:
+  - updateClassic
+-->
+
+```purescript
+updateClassic :: State -> Msg -> State
+updateClassic state msg = case state, msg of
+  DoorOpen, Close -> DoorClosed
+  DoorClosed, Open -> DoorOpen
+  DoorClosed, Lock -> DoorLocked
+  DoorLocked, Unlock -> DoorClosed
+  _, _ -> state
+```
+
+<!-- PD_END -->
+
+As the state machine grows, the classic approach becomes more error-prone. You need to remember:
+
+- Which messages are valid in which states
+- What the next state should be for each transition
+- To handle all edge cases (like trying to lock an open door)
+
+### The Transit Approach
+
+With transit, we extend the DSL specification to include the new transitions:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithLock.purs
+pick:
+  - DoorDSL
+-->
+
+```purescript
+type DoorDSL =
+  Transit $ Empty
+    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
+    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
+    :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
+    :* ("DoorLocked" :@ "Unlock" >| "DoorClosed")
+```
+
+<!-- PD_END -->
+
+The update function now includes all four transitions, and the compiler ensures each one is correctly implemented:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithLock.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdateGeneric @DoorDSL
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
+  (match @"DoorClosed" @"Lock" \_ _ -> return @"DoorLocked")
+  (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
+```
+
+<!-- PD_END -->
+
+The type system prevents common mistakes:
+
+- 🔴 Trying to match `DoorOpen` with `Lock` (invalid transition)
+- 🔴 Returning `DoorOpen` from the `Unlock` handler (wrong target state)
+- 🔴 Forgetting to handle the `Lock` transition
+
+This becomes even more valuable as state machines grow in complexity.
 
 ## Generate State Diagrams
 
