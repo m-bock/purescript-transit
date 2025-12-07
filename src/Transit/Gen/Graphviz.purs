@@ -13,7 +13,7 @@ import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Map (Map)
 import Data.Map as Map
-import Data.Maybe (Maybe, fromMaybe)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Set as Set
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
@@ -32,6 +32,9 @@ import Transit.StateGraph (Edge, StateGraph, Node)
 mkGraphvizGraph :: Options -> StateGraph -> GraphvizGraph
 mkGraphvizGraph options sg = GraphvizGraph $ join
   [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
+  , case options.globalAttrsRaw of
+      Just raw -> [ SecGlobalRaw raw ]
+      Nothing -> []
   , join $ mapWithIndex (f sg colorMap) $ Set.toUnfoldable $ Graph.getGrouped sg
   ]
   where
@@ -167,6 +170,7 @@ type Options =
   , nodeLabelModifier :: String -> String
   , edgeLabelModifier :: String -> String
   , globalLabelModifier :: String -> String
+  , globalAttrsRaw :: Maybe String
   }
 
 defaultOptions :: Options
@@ -175,6 +179,7 @@ defaultOptions =
   , nodeLabelModifier: identity
   , edgeLabelModifier: identity
   , globalLabelModifier: identity
+  , globalAttrsRaw: Nothing
   }
 
 writeToFile :: StateGraph -> (Options -> Options) -> FilePath -> Effect Unit

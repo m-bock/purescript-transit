@@ -1,5 +1,5 @@
 - [x] explicit exports everywhere
-- [ ] Add option to graphviz renderer to pass string for global graph attributes
+- [x] Add option to graphviz renderer to pass string for global graph attributes
 - [ ] Cleanup DSL module
 - [ ] rename FromDSL1/FromDSL2...
 
