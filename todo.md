@@ -3,7 +3,7 @@
 - [x] revamp commented tests in Test.Transit.DSL module.
 - [ ] Cleanup DSL module: Transit.DSL
   - [x] rename FromDSL1/FromDSL2.... Chose better names!
-  - [ ] Add section comments (like e.g. in Test.Transit.DSL module)
+  - [x] Add section comments (like e.g. in Test.Transit.DSL module)
 
 ---
 
