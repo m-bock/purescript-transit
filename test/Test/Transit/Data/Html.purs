@@ -1,4 +1,4 @@
-module Test.Transit.Html
+module Test.Transit.Data.Html
   ( spec
   ) where
 

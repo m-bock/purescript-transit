@@ -1,4 +1,4 @@
-module Test.Transit.Graph
+module Test.Transit.Data.DotLang
   ( spec
   ) where
 
@@ -8,6 +8,6 @@ import Test.Spec (Spec, describe)
 
 spec :: Spec Unit
 spec = do
-  describe "Transit.Data.Graph" do
+  describe "Transit.Data.DotLang" do
     pure unit
 
