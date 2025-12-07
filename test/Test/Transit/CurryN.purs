@@ -8,6 +8,6 @@ import Test.Spec (Spec, describe)
 
 spec :: Spec Unit
 spec = do
-  describe "Transit.CurryN" do
+  describe "Transit.Class.CurryN" do
     pure unit
 

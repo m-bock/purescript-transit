@@ -9,7 +9,7 @@ import Data.Set as Set
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Core (Match_(..), Return_(..), TransitCore_(..))
-import Transit.Graph as Graph
+import Transit.Data.Graph as Graph
 import Transit.StateGraph (mkStateGraph)
 
 spec :: Spec Unit

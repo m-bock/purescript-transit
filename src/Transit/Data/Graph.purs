@@ -1,4 +1,4 @@
-module Transit.Graph
+module Transit.Data.Graph
   ( Connection
   , Graph
   , NodeGroup
@@ -10,8 +10,7 @@ module Transit.Graph
   , getOutgoingEdges
   , hasEdge
   , getConnections
-  , hasEulerCircle
-  , hasEulerTrail
+  , isUndirected
   ) where
 
 import Prelude
@@ -43,6 +42,9 @@ getGrouped (Graph xs) = Set.fromFoldable $ map f $ Array.groupAllBy (\a b -> a.f
 
 newtype Graph e n = Graph (Set (Connection e n)) -- directed, cyclic, multiedge
 
+instance (Show e, Show n) => Show (Graph e n) where
+  show (Graph xs) = show xs
+
 fromConnections :: forall e n. Set (Connection e n) -> Graph e n
 fromConnections edges = Graph edges
 
@@ -65,18 +67,3 @@ isUndirected g =
   in
     Array.all (\node -> (getOutgoingEdges node g) == (getIncomingEdges node g)) (Set.toUnfoldable nodes)
 
-hasEulerCircle :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-hasEulerCircle g = isUndirected g && countOddOutgoingEdges g == 0
-
-hasEulerTrail :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-hasEulerTrail g = isUndirected g && (countOddOutgoingEdges g == 0 || countOddOutgoingEdges g == 2)
-
-countOddOutgoingEdges :: forall e n. Ord n => Ord e => Graph e n -> Int
-countOddOutgoingEdges g =
-  let
-    nodes = getNodes g
-  in
-    Array.length $ Array.filter (\node -> Int.odd $ Set.size (getOutgoingEdges node g)) (Set.toUnfoldable nodes)
-
-instance (Show e, Show n) => Show (Graph e n) where
-  show (Graph xs) = show xs

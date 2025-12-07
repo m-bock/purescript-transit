@@ -11,8 +11,8 @@ import Data.Array as Array
 import Data.Maybe (Maybe(..))
 import Data.Set as Set
 import Transit.Core (Return_(..), TransitCore_(..), Match_(..))
-import Transit.Graph (Graph)
-import Transit.Graph as Graph
+import Transit.Data.Graph (Graph)
+import Transit.Data.Graph as Graph
 
 type Edge = { msg :: String, guard :: Maybe String }
 

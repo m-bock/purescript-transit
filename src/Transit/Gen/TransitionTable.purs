@@ -13,9 +13,9 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Graph as Graph
-import Transit.Graph (Connection)
-import Transit.Html as Html
+import Transit.Data.Graph as Graph
+import Transit.Data.Graph (Connection)
+import Transit.Data.Html as Html
 import Transit.StateGraph (Edge, StateGraph, Node)
 
 toHtml :: Options -> StateGraph -> Html.Node

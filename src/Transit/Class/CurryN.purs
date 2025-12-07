@@ -1,4 +1,4 @@
-module Transit.CurryN
+module Transit.Class.CurryN
   ( class CurryN
   , curryN
   ) where

@@ -1,4 +1,4 @@
-module Transit.DotLang
+module Transit.Data.DotLang
   ( class ToText
   , toText
   , Section(..)

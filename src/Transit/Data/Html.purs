@@ -1,4 +1,4 @@
-module Transit.Html
+module Transit.Data.Html
   ( Node(..)
   , Attribute(..)
   , text

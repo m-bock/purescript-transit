@@ -23,10 +23,10 @@ import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, defLight, getColor)
 import Transit.Colors as Colors
-import Transit.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
-import Transit.DotLang as D
-import Transit.Graph (NodeGroup, EdgeGroup)
-import Transit.Graph as Graph
+import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
+import Transit.Data.DotLang as D
+import Transit.Data.Graph (NodeGroup, EdgeGroup)
+import Transit.Data.Graph as Graph
 import Transit.StateGraph (Edge, StateGraph, Node)
 
 mkGraphvizGraph :: Options -> StateGraph -> GraphvizGraph
