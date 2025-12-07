@@ -1,4 +1,4 @@
-module Test.Transit.Gen.Graphviz
+module Test.Transit.Generators.TransitionTable
   ( spec
   ) where
 
@@ -8,6 +8,6 @@ import Test.Spec (Spec, describe)
 
 spec :: Spec Unit
 spec = do
-  describe "Transit.Gen.Graphviz" do
+  describe "Transit.Generators.TransitionTable" do
     pure unit
 

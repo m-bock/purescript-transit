@@ -16,8 +16,8 @@ import Test.Transit.Colors as Test.Transit.Colors
 import Test.Transit.Core as Test.Transit.Core
 import Test.Transit.CurryN as Test.Transit.CurryN
 import Test.Transit.DotLang as Test.Transit.DotLang
-import Test.Transit.Gen.Graphviz as Test.Transit.Gen.Graphviz
-import Test.Transit.Gen.TransitionTable as Test.Transit.Gen.TransitionTable
+import Test.Transit.Generators.Graphviz as Test.Transit.Generators.Graphviz
+import Test.Transit.Generators.TransitionTable as Test.Transit.Generators.TransitionTable
 import Test.Transit.Graph as Test.Transit.Graph
 import Test.Transit.Html as Test.Transit.Html
 import Test.Transit.StateGraph as Test.Transit.StateGraph
@@ -31,8 +31,8 @@ main = do
     Test.Transit.Core.spec
     Test.Transit.CurryN.spec
     Test.Transit.DotLang.spec
-    Test.Transit.Gen.Graphviz.spec
-    Test.Transit.Gen.TransitionTable.spec
+    Test.Transit.Generators.Graphviz.spec
+    Test.Transit.Generators.TransitionTable.spec
     Test.Transit.Graph.spec
     Test.Transit.Html.spec
     Test.Transit.StateGraph.spec

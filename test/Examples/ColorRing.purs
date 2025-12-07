@@ -5,7 +5,7 @@ import Prelude
 import Data.Reflectable (reflectType)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit)
-import Transit.Gen.Graphviz as TransitGraphviz
+import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))

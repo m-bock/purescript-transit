@@ -1,4 +1,4 @@
-module Transit.Gen.Graphviz
+module Transit.Generators.Graphviz
   ( mkGraphvizGraph
   , Options
   , defaultOptions

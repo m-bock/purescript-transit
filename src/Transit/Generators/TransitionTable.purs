@@ -1,4 +1,4 @@
-module Transit.Gen.TransitionTable
+module Transit.Generators.TransitionTable
   ( toHtml
   , writeToFile
   , writeToFile_

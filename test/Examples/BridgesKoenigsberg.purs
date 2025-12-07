@@ -7,8 +7,8 @@ import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
-import Transit.Gen.Graphviz as TransitGraphviz
-import Transit.Gen.TransitionTable as TransitTable
+import Transit.Generators.Graphviz as TransitGraphviz
+import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
