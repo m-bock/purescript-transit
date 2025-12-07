@@ -276,7 +276,7 @@ One of the key benefits of transit is that you can generate state diagrams direc
 To generate a state diagram, you use `mkStateGraph` to create a graph from your DSL specification, then write it to a Graphviz `.dot` file:
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/GenerateStateDiagrams.purs
 pick:
   - main
 -->
@@ -285,10 +285,9 @@ pick:
 main :: Effect Unit
 main = do
   let
-    g = mkStateGraph (reflectType (Proxy @DoorDSL))
+    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
 
-  TransitGraphviz.writeToFile (_ { title = "Door" }) g "graphs/door.dot"
-  TransitTable.writeToFile (_ { title = "Door" }) g "graphs/door.html"
+  TransitGraphviz.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.dot"
 ```
 
 <!-- PD_END -->

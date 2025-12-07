@@ -1,4 +1,4 @@
-module Test.Examples.Door (main, spec) where
+module Test.Examples.Door (main, spec, DoorDSL) where
 
 import Prelude
 
@@ -74,10 +74,10 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    g = mkStateGraph (reflectType (Proxy @DoorDSL))
+    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
 
-  TransitGraphviz.writeToFile (_ { title = "Door" }) g "graphs/door.dot"
-  TransitTable.writeToFile (_ { title = "Door" }) g "graphs/door.html"
+  TransitGraphviz.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.dot"
+  TransitTable.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.html"
 
 --------------------------------------------------------------------------------
 --- Instances
