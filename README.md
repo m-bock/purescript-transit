@@ -48,7 +48,7 @@ Another way to represent this is a transition table:
 filePath: graphs/door.html
 --><table >
 <caption >
-Transition Table
+Door
 </caption>
 <thead >
 <tr >
@@ -290,7 +290,7 @@ data Msg
 filePath: graphs/bridges-koenigsberg.html
 --><table >
 <caption >
-Transition Table
+Untitled
 </caption>
 <thead >
 <tr >
