@@ -76,8 +76,8 @@ main = do
   let
     g = mkStateGraph (reflectType (Proxy @DoorDSL))
 
-  TransitGraphviz.writeToFile_ g "graphs/door.dot"
-  TransitTable.writeToFile_ g "graphs/door.html"
+  TransitGraphviz.writeToFile (_ { title = "Door" }) g "graphs/door.dot"
+  TransitTable.writeToFile (_ { title = "Door" }) g "graphs/door.html"
 
 --------------------------------------------------------------------------------
 --- Instances

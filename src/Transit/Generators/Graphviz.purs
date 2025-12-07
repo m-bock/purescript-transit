@@ -167,27 +167,21 @@ mkDecisionNode name colors = D.Node name
 
 type Options =
   { title :: String
-  , nodeLabelModifier :: String -> String
-  , edgeLabelModifier :: String -> String
-  , globalLabelModifier :: String -> String
   , globalAttrsRaw :: Maybe String
   }
 
 defaultOptions :: Options
 defaultOptions =
   { title: "Untitled"
-  , nodeLabelModifier: identity
-  , edgeLabelModifier: identity
-  , globalLabelModifier: identity
   , globalAttrsRaw: Nothing
   }
 
-writeToFile :: StateGraph -> (Options -> Options) -> FilePath -> Effect Unit
-writeToFile sg mkOptions path = do
+writeToFile :: (Options -> Options) -> StateGraph -> FilePath -> Effect Unit
+writeToFile mkOptions sg path = do
   FS.writeTextFile UTF8 path
     (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
   Console.log $ "Wrote graphviz graph to " <> path
 
 writeToFile_ :: StateGraph -> FilePath -> Effect Unit
-writeToFile_ sg path = writeToFile sg identity path
+writeToFile_ sg path = writeToFile identity sg path
 

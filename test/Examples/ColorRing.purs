@@ -2,6 +2,7 @@ module Test.Examples.ColorRing where
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit)
@@ -43,5 +44,11 @@ main = do
   let
     stateGraph = mkStateGraph (reflectType (Proxy @ColorsFSM))
 
-  -- graph [layout=sfdp, overlap=false, K=2.5, repulsiveforce=4, splines=true]
-  TransitGraphviz.writeToFile_ stateGraph "graphs/color-ring.dot"
+  TransitGraphviz.writeToFile
+    ( _
+        { title = "Color Ring"
+        , globalAttrsRaw = Just "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
+        }
+    )
+    stateGraph
+    "graphs/color-ring.dot"

@@ -3,9 +3,6 @@ module Test.Main (main) where
 import Prelude
 
 import Effect (Effect)
-import Test.Examples.BridgesKoenigsberg as Test.Examples.BridgesKoenigsberg
-import Test.Examples.ColorRing as Test.Examples.ColorRing
-import Test.Examples.Door as Test.Examples.Door
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Test.Transit as Test.Transit
@@ -34,9 +31,3 @@ main = do
     Test.Transit.Html.spec
     Test.Transit.StateGraph.spec
     Test.Transit.Util.spec
-  --Test.Examples.ColorRing.main
-  Test.Examples.Door.main
-  --Test.Examples.DoorWithLock.main
-  --Test.Examples.DoorWithPin.main
-  Test.Examples.BridgesKoenigsberg.main
-  Test.Examples.ColorRing.main

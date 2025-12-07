@@ -58,11 +58,11 @@ defaultOptions =
   { title: "Untitled"
   }
 
-writeToFile :: StateGraph -> (Options -> Options) -> FilePath -> Effect Unit
-writeToFile sg mkOptions path = do
+writeToFile :: (Options -> Options) -> StateGraph -> FilePath -> Effect Unit
+writeToFile mkOptions sg path = do
   FS.writeTextFile UTF8 path
     (Html.nodeToHtml $ toHtml (mkOptions defaultOptions) sg)
   Console.log $ "Wrote graphviz graph to " <> path
 
 writeToFile_ :: StateGraph -> FilePath -> Effect Unit
-writeToFile_ sg path = writeToFile sg identity path
+writeToFile_ sg path = writeToFile identity sg path

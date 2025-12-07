@@ -43,7 +43,11 @@ import Data.String as Str
 class ToText a where
   toText :: a -> String
 
-data Section = SecNode Node | SecEdge Edge | SecGlobal GlobalAttrs | SecGlobalRaw String
+data Section
+  = SecNode Node
+  | SecEdge Edge
+  | SecGlobal GlobalAttrs
+  | SecGlobalRaw String
 
 newtype GraphvizGraph = GraphvizGraph (Array Section)
 
@@ -55,7 +59,13 @@ data Edge = Edge String String (Array Attr)
 
 data Attr = Attr String Value
 
-data Value = Value String | ValueColors (Array Color) | ValueInt Int | ValueNumber Number | ValueBoolean Boolean | HtmlLabel String
+data Value
+  = Value String
+  | ValueColors (Array Color)
+  | ValueInt Int
+  | ValueNumber Number
+  | ValueBoolean Boolean
+  | HtmlLabel String
 
 instance ToText GraphvizGraph where
   toText (GraphvizGraph sections) =
