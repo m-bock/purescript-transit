@@ -316,6 +316,31 @@ Since the diagram is generated from the same DSL specification used to create th
 
 ## Generate Transition Tables
 
+In addition to state diagrams, you can also generate transition tables from the same graph data structure. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
+
+The process is identical to generating state diagrams—you use the same `mkStateGraph` function to create the graph, but then use `TransitTable.writeToFile` instead:
+
+<!-- PD_START:purs
+filePath: test/Examples/GenerateTransitionTables.purs
+pick:
+  - main
+-->
+
+```purescript
+main :: Effect Unit
+main = do
+  let
+    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
+
+  TransitTable.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.html"
+```
+
+<!-- PD_END -->
+
+This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
+
+Since both the state diagram and transition table are generated from the same graph data structure, they're guaranteed to be consistent with each other and with your type-level specification.
+
 ## Example3: Door with Pin
 
 <img src="graphs/door-with-pin.svg" />
