@@ -11,7 +11,7 @@ import Data.Identity (Identity)
 import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
 import Transit.Core (MatchImpl, MkMatch, MkReturn, MkReturnVia, MkTransitCore, ReturnState, ReturnStateVia, TransitCore)
-import Transit.MkUpdate (class MkUpdate)
+import Transit.Class.MkUpdate (class MkUpdate)
 import Transit.Util (Generically)
 import Type.Data.List (type (:>), Nil')
 

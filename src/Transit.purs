@@ -20,7 +20,7 @@ import Prim.Row as Row
 import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
 import Transit.CurryN (class CurryN, curryN)
 import Transit.DSL as Export
-import Transit.MkUpdate (class MkUpdate, mkUpdate)
+import Transit.Class.MkUpdate (class MkUpdate, mkUpdate)
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
 

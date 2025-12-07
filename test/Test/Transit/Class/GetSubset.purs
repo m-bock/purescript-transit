@@ -9,7 +9,7 @@ import Prelude
 import Data.Generic.Rep (class Generic)
 import Data.Variant (Variant)
 import Transit.Core (MkReturn, MkReturnVia, ReturnState, ReturnStateVia)
-import Transit.GetSubset (class GetSubset)
+import Transit.Class.GetSubset (class GetSubset)
 import Transit.Util (Generically)
 import Type.Data.List (Cons', Nil')
 

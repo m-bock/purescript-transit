@@ -1,4 +1,4 @@
-module Transit.GetSubset
+module Transit.Class.GetSubset
   ( class GetSubset
   , getSubset
   , SingleOrNoField

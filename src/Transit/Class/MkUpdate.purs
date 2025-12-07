@@ -1,4 +1,4 @@
-module Transit.MkUpdate
+module Transit.Class.MkUpdate
   ( class MkUpdate
   , mkUpdate
   ) where
@@ -8,7 +8,7 @@ import Prelude
 import Data.Tuple.Nested (type (/\), (/\))
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
 import Transit.Core (MatchImpl(..), MkMatch, MkTransitCore, TransitCore)
-import Transit.GetSubset (class GetSubset, getSubset)
+import Transit.Class.GetSubset (class GetSubset, getSubset)
 import Type.Data.List (type (:>), Nil')
 
 class MkUpdate (spec :: TransitCore) m impl msg state | spec msg state m -> impl where
