@@ -1,8 +1,9 @@
 - [x] explicit exports everywhere
 - [x] Add option to graphviz renderer to pass string for global graph attributes
-- [ ] Cleanup DSL module
-  - [x] revamp commented tests in Test.Transit.DSL module.
-- [ ] rename FromDSL1/FromDSL2...
+- [x] revamp commented tests in Test.Transit.DSL module.
+- [ ] Cleanup DSL module: Transit.DSL
+  - [ ] rename FromDSL1/FromDSL2.... Chose better names!
+  - [ ] Add section comments (like e.g. in Test.Transit.DSL module)
 
 ---
 
