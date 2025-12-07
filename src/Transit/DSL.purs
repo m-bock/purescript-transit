@@ -75,7 +75,7 @@ class ToTransitCore dsl a | dsl -> a
 
 instance ToTransitCore Empty (C.MkTransitCore Nil')
 
-else instance (ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCore (ys))
+else instance (ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCore ys)
 
 else instance (ToMatch x t, ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (x :* xs) (C.MkTransitCore (t :> ys))
 
