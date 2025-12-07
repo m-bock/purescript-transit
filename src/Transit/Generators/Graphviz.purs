@@ -25,7 +25,7 @@ import Transit.Colors (Colors, defLight, getColor)
 import Transit.Colors as Colors
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
-import Transit.Data.Graph (NodeGroup, EdgeGroup)
+import Transit.Data.Graph (NodeInfo, EdgeInfo)
 import Transit.Data.Graph as Graph
 import Transit.StateGraph (Edge, StateGraph, Node)
 
@@ -57,7 +57,7 @@ lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.looku
 mkColorMap :: StateGraph -> ColorMap
 mkColorMap sg = Map.fromFoldable $ mapWithIndex (\i node -> (node.state /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
 
-f :: StateGraph -> ColorMap -> Int -> NodeGroup Edge Node -> Array Section
+f :: StateGraph -> ColorMap -> Int -> NodeInfo Edge Node -> Array Section
 f sg colorMap i { fromNode, edges } = join
   [ pure $ SecNode $ mkStateNode colors fromNode
   , if i == 0 then
@@ -103,7 +103,7 @@ mkInitEdge from to = D.Edge from to
   , D.penWidth 1.8
   ]
 
-g :: StateGraph -> ColorMap -> Node -> EdgeGroup Edge Node -> Array Section
+g :: StateGraph -> ColorMap -> Node -> EdgeInfo Edge Node -> Array Section
 g sg colorMap fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
   [ toNode ] ->
     if (Graph.hasEdge { fromNode: toNode, edge: edge, toNode: fromNode } sg) then

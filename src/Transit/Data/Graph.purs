@@ -1,8 +1,8 @@
 module Transit.Data.Graph
   ( Connection
   , Graph
-  , NodeGroup
-  , EdgeGroup
+  , NodeInfo
+  , EdgeInfo
   , fromConnections
   , getGrouped
   , getIncomingEdges
@@ -18,27 +18,26 @@ import Prelude
 import Data.Array as Array
 import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Array.NonEmpty as NEA
-import Data.Int as Int
 import Data.Set (Set)
 import Data.Set as Set
 
 type Connection e n = { fromNode :: n, edge :: e, toNode :: n }
 
-type EdgeGroup e n = { edge :: e, toNodes :: Set n }
+type EdgeInfo e n = { edge :: e, toNodes :: Set n }
 
-type NodeGroup e n = { fromNode :: n, edges :: Set (EdgeGroup e n) }
+type NodeInfo e n = { fromNode :: n, edges :: Set (EdgeInfo e n) }
 
 hasEdge :: forall e n. Ord e => Ord n => Connection e n -> Graph e n -> Boolean
 hasEdge e (Graph xs) = Set.member e xs
 
-getGrouped :: forall e n. Ord n => Ord e => Graph e n -> Set (NodeGroup e n)
+getGrouped :: forall e n. Ord n => Ord e => Graph e n -> Set (NodeInfo e n)
 getGrouped (Graph xs) = Set.fromFoldable $ map f $ Array.groupAllBy (\a b -> a.fromNode `compare` b.fromNode) $ Set.toUnfoldable xs
   where
-  f :: NonEmptyArray (Connection e n) -> NodeGroup e n
-  f xs = { fromNode: (NEA.head xs).fromNode, edges: Set.fromFoldable $ map g $ Array.groupAllBy (\a b -> a.edge `compare` b.edge) $ NEA.toArray xs }
+  f :: NonEmptyArray (Connection e n) -> NodeInfo e n
+  f conns = { fromNode: (NEA.head conns).fromNode, edges: Set.fromFoldable $ map g $ Array.groupAllBy (\a b -> a.edge `compare` b.edge) $ NEA.toArray conns }
 
-  g :: NonEmptyArray (Connection e n) -> EdgeGroup e n
-  g xs = { edge: (NEA.head xs).edge, toNodes: Set.fromFoldable $ map (\{ toNode } -> toNode) $ NEA.toArray xs }
+  g :: NonEmptyArray (Connection e n) -> EdgeInfo e n
+  g conns = { edge: (NEA.head conns).edge, toNodes: Set.fromFoldable $ map (\{ toNode } -> toNode) $ NEA.toArray conns }
 
 newtype Graph e n = Graph (Set (Connection e n)) -- directed, cyclic, multiedge
 
