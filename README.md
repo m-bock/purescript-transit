@@ -21,6 +21,8 @@ Type-Safe State Machines.
   - [Generate State Diagrams](#generate-state-diagrams)
   - [Generate Transition Tables](#generate-transition-tables)
   - [Example3: Door with Pin](#example3-door-with-pin)
+    - [The Classic Approach](#the-classic-approach-2)
+    - [The Transit Approach](#the-transit-approach-2)
   - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
   - [Type signatures in update functions](#type-signatures-in-update-functions)
   - [Example5: Espresso Machine](#example5-espresso-machine)
@@ -355,7 +357,7 @@ The transition table shows both possible outcomes:
 
 <!-- PD_START:raw
 filePath: graphs/door-with-pin.html
---><table><caption>Door with Pin</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? pin matches</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? pin doesn't match</td><td>⟶</td><td>DoorLocked</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Door with Pin</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorLocked</td></tr></tbody></table><!-- PD_END -->
 
 The PureScript types now include data in both states and messages:
 
