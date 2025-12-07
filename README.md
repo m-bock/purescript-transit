@@ -292,7 +292,13 @@ main = do
 
 <!-- PD_END -->
 
-The `mkStateGraph` function extracts the state machine structure from your DSL type using `reflectType`. The resulting graph can then be written to a Graphviz `.dot` file using `TransitGraphviz.writeToFile`.
+The process works in three steps:
+
+1. `reflectType` converts your type-level DSL specification to a term-level equivalent
+2. `mkStateGraph` transforms that into a general-purpose graph data structure
+3. `TransitGraphviz.writeToFile` uses the graph data structure to render a Graphviz `.dot` file
+
+This separation allows the same graph data structure to be used by different renderers (like the transition table generator).
 
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
