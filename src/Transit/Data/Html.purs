@@ -11,12 +11,12 @@ module Transit.Data.Html
   , caption
   , attrStyle
   , nodeToHtml
-  , attrsToHtml
-  , attrToHtml
   ) where
 
 import Prelude
 
+import Data.Generic.Rep (class Generic)
+import Data.Show.Generic (genericShow)
 import Data.String as Str
 
 data Node = Node String (Array Attribute) (Array Node) | Text String
@@ -53,6 +53,7 @@ attrStyle style = Attribute "style" style
 nodeToHtml :: Node -> String
 nodeToHtml = case _ of
   Node name [] [] -> "<" <> name <> " />"
+  Node name attributes [] -> "<" <> name <> " " <> attrsToHtml attributes <> " />"
   Node name [] children -> "<" <> name <> ">" <> Str.joinWith "" (map nodeToHtml children) <> "</" <> name <> ">"
   Node name attributes children -> Str.joinWith ""
     [ "<" <> name <> " " <> attrsToHtml attributes <> ">"
@@ -66,3 +67,15 @@ attrsToHtml attributes = Str.joinWith " " (map attrToHtml attributes)
 
 attrToHtml :: Attribute -> String
 attrToHtml (Attribute name value) = name <> "=\"" <> value <> "\""
+
+derive instance Generic Node _
+derive instance Generic Attribute _
+
+derive instance Eq Node
+derive instance Eq Attribute
+
+instance Show Node where
+  show x = genericShow x
+
+instance Show Attribute where
+  show = genericShow
