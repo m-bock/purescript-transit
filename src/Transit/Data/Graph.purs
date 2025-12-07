@@ -62,7 +62,7 @@ getIncomingEdges node (Graph xs) = Set.filter (\{ toNode } -> toNode == node) xs
 isUndirected :: forall e n. Ord n => Ord e => Graph e n -> Boolean
 isUndirected g =
   let
-    nodes = getNodes g
+    connections = getConnections g
   in
-    Array.all (\node -> (getOutgoingEdges node g) == (getIncomingEdges node g)) (Set.toUnfoldable nodes)
+    Array.all (\conn -> hasEdge { fromNode: conn.toNode, edge: conn.edge, toNode: conn.fromNode } g) (Set.toUnfoldable connections)
 
