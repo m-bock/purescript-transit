@@ -15,22 +15,18 @@ import Data.Array as Array
 import Data.Map (Map)
 import Data.Map as Map
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Set as Set
 import Data.Tuple.Nested ((/\))
-import Debug (spy, spyWith)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Colors (Colors, defLight, getColor)
+import Transit.Colors (Colors, getColor)
 import Transit.Colors as Colors
-import Transit.Core (Match_(..), MsgName_, Return, Return_(..), StateName_, TransitCore, TransitCore_, getMatchesForState, getStateNames)
+import Transit.Core (Match_(..), MsgName_, Return_(..), StateName_, TransitCore_, getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
-import Transit.Data.Graph as Graph
-import Transit.StateGraph (Edge, Node, StateGraph(..))
-import Unsafe.Coerce (unsafeCoerce)
+import Transit.StateGraph (Node)
 
 mkGraphvizGraph :: Options -> TransitCore_ -> GraphvizGraph
 mkGraphvizGraph options transit =
@@ -39,51 +35,54 @@ mkGraphvizGraph options transit =
     , case options.globalAttrsRaw of
         Just raw -> [ SecGlobalRaw raw ]
         Nothing -> []
-    --, join $ mapWithIndex (mkNode sg colorMap) $ spyWith "nodes" show $ Set.toUnfoldable $ Graph.getGrouped g
-    , join $ mapWithIndex (h colorMap transit) $ getStateNames transit
+    , join $ mapWithIndex (mkStateSections colorMap transit options) $ getStateNames transit
     ]
   where
   colorMap = mkColorMap transit
 
-h :: ColorMap -> TransitCore_ -> Int -> StateName_ -> Array D.Section
-h colorMap transit i stateName = join
+mkStateSections :: ColorMap -> TransitCore_ -> Options -> Int -> StateName_ -> Array D.Section
+mkStateSections colorMap transit options i stateName = join
   [ pure $ SecNode $ mkStateNode colors stateName
   , if i == 0 then
       [ SecNode $ mkInitNode "__Start__"
       , SecEdge $ mkInitEdge "__Start__" stateName
       ]
     else []
-  , Array.concatMap (f colors) $ getMatchesForState stateName transit
+  , Array.concatMap (mkMatchSections colors options) $ getMatchesForState stateName transit
   ]
   where
   colors = lookupColor stateName colorMap
 
-f :: Colors -> Match_ -> Array D.Section
-f colors (Match from msg returns) = case returns of
+mkMatchSections :: Colors -> Options -> Match_ -> Array D.Section
+mkMatchSections colors options (Match from msg returns) = case returns of
   [ Return to ] -> [ SecEdge $ mkEdgeMsg from to colors msg ]
-  manyReturns -> if true then gg from msg colors manyReturns else gg' from msg colors manyReturns
+  manyReturns ->
+    if options.useDecisionNodes then
+      mkDecisionNodeSections from msg colors manyReturns
+    else
+      mkDirectEdges from msg colors manyReturns
 
-gg' :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
-gg' from msg colors returns = Array.concatMap
+mkDirectEdges :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
+mkDirectEdges from msg colors returns = Array.concatMap
   ( case _ of
       Return to -> [ SecEdge $ mkEdgeMsg from to colors msg ]
       ReturnVia guard to -> [ SecEdge $ mkEdgeMsg from to colors (msg <> " ? " <> guard) ]
   )
   returns
 
-gg :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
-gg from msg colors manyReturns =
+mkDecisionNodeSections :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
+mkDecisionNodeSections from msg colors manyReturns =
   let
     decisionNode = "decision_" <> from <> "_" <> msg
   in
     join
       [ pure $ SecNode $ mkDecisionNode decisionNode colors
       , pure $ SecEdge $ mkEdgeMsg from decisionNode colors msg
-      , concatMap (g decisionNode colors) manyReturns
+      , concatMap (mkDecisionEdges decisionNode colors) manyReturns
       ]
 
-g :: String -> Colors -> Return_ -> Array D.Section
-g decisionNode colors = case _ of
+mkDecisionEdges :: String -> Colors -> Return_ -> Array D.Section
+mkDecisionEdges decisionNode colors = case _ of
   Return to -> [ SecEdge $ mkEdgeGuard decisionNode to colors Nothing ]
   ReturnVia guard to -> [ SecEdge $ mkEdgeGuard decisionNode to colors (Just guard) ]
 
@@ -104,19 +103,6 @@ lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.looku
 mkColorMap :: TransitCore_ -> ColorMap
 mkColorMap transit =
   Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ getStateNames transit
-
--- mkNode :: StateGraph -> ColorMap -> Int -> NodeInfo Edge Node -> Array Section
--- mkNode sg@(StateGraph meta g) colorMap i { fromNode, edges } = join
---   [ pure $ SecNode $ mkStateNode colors fromNode
---   , if Array.elem fromNode meta.entryPoints then
---       [ SecNode $ mkInitNode "__Start__"
---       , SecEdge $ mkInitEdge "__Start__" fromNode
---       ]
---     else []
---   --  , concatMap (mkEdge sg colorMap fromNode) $ Set.toUnfoldable edges
---   ]
---   where
---   colors = lookupColor fromNode colorMap
 
 mkStateNode :: Colors -> Node -> D.Node
 mkStateNode colors node = D.Node node
@@ -150,29 +136,6 @@ mkInitEdge from to = D.Edge from to
   , D.arrowSize 0.7
   , D.penWidth 1.8
   ]
-
--- mkEdge :: StateGraph -> ColorMap -> Node -> EdgeInfo Edge Node -> Array Section
--- mkEdge (StateGraph _ sg) colorMap fromNode { edge, toNode } = case Set.toUnfoldable toNodes of
---   [ toNode ] ->
---     if (Graph.hasEdge { fromNode: toNode, edge: edge, toNode: fromNode } sg) then
---       ( if fromNode > toNode then
---           [ --SecEdge $ mkEdgeMsg fromNode toNode (defLight Color.black) edge.msg
---           ]
---         else []
---       )
---     else [ SecEdge $ mkEdgeMsg fromNode toNode colorsFrom edge.msg ]
---   manyNodes ->
---     let
---       decisionNode = "decision_" <> fromNode <> "_" <> edge.msg
---     in
---       join
---         [ pure $ SecNode $ mkDecisionNode decisionNode colorsFrom
---         , pure $ SecEdge $ mkEdgeMsg fromNode decisionNode colorsFrom edge.msg
---         , concatMap (\toNode -> [ SecEdge $ mkEdgeGuard decisionNode toNode colorsFrom Nothing ]) manyNodes
---         ]
-
---   where
---   colorsFrom = lookupColor fromNode colorMap
 
 mkUndirectedEdge :: String -> String -> Colors -> Colors -> String -> D.Edge
 mkUndirectedEdge from to fromColors toColors label = D.Edge from to
@@ -226,12 +189,14 @@ mkDecisionNode name colors = D.Node name
 type Options =
   { title :: String
   , globalAttrsRaw :: Maybe String
+  , useDecisionNodes :: Boolean
   }
 
 defaultOptions :: Options
 defaultOptions =
   { title: "Untitled"
   , globalAttrsRaw: Nothing
+  , useDecisionNodes: true
   }
 
 writeToFile :: (Options -> Options) -> TransitCore_ -> FilePath -> Effect Unit
