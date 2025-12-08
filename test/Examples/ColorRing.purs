@@ -42,7 +42,7 @@ type ColorsFSM = Transit $ Empty
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @ColorsFSM))
+    transit = reflectType (Proxy @ColorsFSM)
 
   TransitGraphviz.writeToFile
     ( _
@@ -50,5 +50,5 @@ main = do
         , globalAttrsRaw = Just "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
         }
     )
-    stateGraph
+    transit
     "graphs/color-ring.dot"

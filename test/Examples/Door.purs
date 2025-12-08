@@ -10,7 +10,6 @@ import Test.Spec (Spec)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -74,10 +73,10 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
+    transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.dot"
-  TransitTable.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.html"
+  TransitGraphviz.writeToFile (_ { title = "Door" }) transit "graphs/door.dot"
+  TransitTable.writeToFile (_ { title = "Door" }) transit "graphs/door.html"
 
 --------------------------------------------------------------------------------
 --- Instances

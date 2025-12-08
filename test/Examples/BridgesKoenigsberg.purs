@@ -118,10 +118,10 @@ update = mkUpdateGeneric @BridgesTransitions
 main :: Effect Unit
 main = do
   let
-    g = mkStateGraph (reflectType (Proxy @BridgesTransitions))
+    transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile_ g "graphs/bridges-koenigsberg.dot"
-  TransitTable.writeToFile_ g "graphs/bridges-koenigsberg.html"
+  TransitGraphviz.writeToFile_ transit "graphs/bridges-koenigsberg.dot"
+  TransitTable.writeToFile_ transit "graphs/bridges-koenigsberg.html"
 
 --------------------------------------------------------------------------------
 --- Instances

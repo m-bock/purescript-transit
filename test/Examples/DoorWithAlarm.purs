@@ -12,7 +12,6 @@ import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate
 import Transit.DSL (type (:?))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 import Effect.Class.Console as Console
@@ -102,10 +101,10 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
+    transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile (_ { title = "Door with Alarm" }) stateGraph "graphs/door-with-alarm.dot"
-  TransitTable.writeToFile (_ { title = "Door with Alarm" }) stateGraph "graphs/door-with-alarm.html"
+  TransitGraphviz.writeToFile (_ { title = "Door with Alarm" }) transit "graphs/door-with-alarm.dot"
+  TransitTable.writeToFile (_ { title = "Door with Alarm" }) transit "graphs/door-with-alarm.html"
 
 --------------------------------------------------------------------------------
 --- Instances

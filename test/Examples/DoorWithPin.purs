@@ -9,7 +9,6 @@ import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
-import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 import Transit.Generators.Graphviz as TransitGraphviz
