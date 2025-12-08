@@ -6,8 +6,8 @@ import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit)
+import Transit.Core (TransitCore_)
 import Transit.Generators.Graphviz as TransitGraphviz
-import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
@@ -42,7 +42,8 @@ type ColorsFSM = Transit $ Empty
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @ColorsFSM))
+    transit :: TransitCore_
+    transit = reflectType (Proxy @ColorsFSM)
 
   TransitGraphviz.writeToFile
     ( _
@@ -50,5 +51,5 @@ main = do
         , globalAttrsRaw = Just "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
         }
     )
-    stateGraph
+    transit
     "graphs/color-ring.dot"

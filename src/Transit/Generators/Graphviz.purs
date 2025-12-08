@@ -23,22 +23,26 @@ import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, defLight, getColor)
 import Transit.Colors as Colors
+import Transit.Core (TransitCore_)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
 import Transit.Data.Graph (NodeInfo, EdgeInfo)
 import Transit.Data.Graph as Graph
 import Transit.StateGraph (Edge, StateGraph, Node)
+import Unsafe.Coerce (unsafeCoerce)
 
-mkGraphvizGraph :: Options -> StateGraph -> GraphvizGraph
-mkGraphvizGraph options sg = GraphvizGraph $ join
-  [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
-  , case options.globalAttrsRaw of
-      Just raw -> [ SecGlobalRaw raw ]
-      Nothing -> []
-  , join $ mapWithIndex (mkNode sg colorMap) $ Set.toUnfoldable $ Graph.getGrouped sg
-  ]
-  where
-  colorMap = mkColorMap sg
+mkGraphvizGraph :: Options -> TransitCore_ -> GraphvizGraph
+mkGraphvizGraph options sg = unsafeCoerce ""
+
+-- GraphvizGraph $ join
+--   [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
+--   , case options.globalAttrsRaw of
+--       Just raw -> [ SecGlobalRaw raw ]
+--       Nothing -> []
+--   , join $ mapWithIndex (mkNode sg colorMap) $ Set.toUnfoldable $ Graph.getGrouped sg
+--   ]
+--   where
+--   colorMap = mkColorMap sg
 
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
@@ -176,12 +180,12 @@ defaultOptions =
   , globalAttrsRaw: Nothing
   }
 
-writeToFile :: (Options -> Options) -> StateGraph -> FilePath -> Effect Unit
+writeToFile :: (Options -> Options) -> TransitCore_ -> FilePath -> Effect Unit
 writeToFile mkOptions sg path = do
   FS.writeTextFile UTF8 path
     (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: StateGraph -> FilePath -> Effect Unit
+writeToFile_ :: TransitCore_ -> FilePath -> Effect Unit
 writeToFile_ sg path = writeToFile identity sg path
 

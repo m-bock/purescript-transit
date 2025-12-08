@@ -277,7 +277,7 @@ This becomes even more valuable as state machines grow in complexity.
 
 One of the key benefits of transit is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
 
-To generate a state diagram, you use `mkStateGraph` to create a graph from your DSL specification, then write it to a Graphviz `.dot` file:
+To generate a state diagram, you pass your DSL specification directly to `TransitGraphviz.writeToFile`:
 
 <!-- PD_START:purs
 filePath: test/Examples/GenerateStateDiagrams.purs
@@ -289,20 +289,17 @@ pick:
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
+    transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.dot"
+  TransitGraphviz.writeToFile (_ { title = "Door" }) transit "graphs/door.dot"
 ```
 
 <!-- PD_END -->
 
-The process works in three steps:
+The process works in two steps:
 
 1. `reflectType` converts your type-level DSL specification to a term-level equivalent
-2. `mkStateGraph` transforms that into a general-purpose graph data structure
-3. `TransitGraphviz.writeToFile` uses the graph data structure to render a Graphviz `.dot` file
-
-This separation allows the same graph data structure to be used by different renderers (like the transition table generator).
+2. `TransitGraphviz.writeToFile` uses the transit specification to render a Graphviz `.dot` file
 
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
@@ -320,9 +317,9 @@ Since the diagram is generated from the same DSL specification used to create th
 
 ## Generate Transition Tables
 
-In addition to state diagrams, you can also generate transition tables from the same graph data structure. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
+In addition to state diagrams, you can also generate transition tables from the same transit specification. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
 
-The process is identical to generating state diagrams—you use the same `mkStateGraph` function to create the graph, but then use `TransitTable.writeToFile` instead:
+The process is identical to generating state diagrams—you pass your DSL specification directly to `TransitTable.writeToFile`:
 
 <!-- PD_START:purs
 filePath: test/Examples/GenerateTransitionTables.purs
@@ -334,16 +331,16 @@ pick:
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
+    transit = reflectType (Proxy @DoorDSL)
 
-  TransitTable.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.html"
+  TransitTable.writeToFile (_ { title = "Door" }) transit "graphs/door.html"
 ```
 
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
 
-Since both the state diagram and transition table are generated from the same graph data structure, they're guaranteed to be consistent with each other and with your type-level specification.
+Since both the state diagram and transition table are generated from the same transit specification, they're guaranteed to be consistent with each other and with your type-level specification.
 
 ## Example3: Door with Pin
 

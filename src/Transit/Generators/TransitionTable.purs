@@ -13,17 +13,21 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Data.Graph as Graph
+import Transit.Core (TransitCore_)
 import Transit.Data.Graph (Connection)
+import Transit.Data.Graph as Graph
 import Transit.Data.Html as Html
 import Transit.StateGraph (Edge, StateGraph, Node)
+import Unsafe.Coerce (unsafeCoerce)
 
-toHtml :: Options -> StateGraph -> Html.Node
-toHtml options sg = Html.table []
-  [ Html.caption [] [ Html.text options.title ]
-  , Html.thead [] [ mkHeader ]
-  , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getConnections sg
-  ]
+toHtml :: Options -> TransitCore_ -> Html.Node
+toHtml options sg = unsafeCoerce ""
+
+-- Html.table []
+--   [ Html.caption [] [ Html.text options.title ]
+--   , Html.thead [] [ mkHeader ]
+--   , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getConnections sg
+--   ]
 
 mkRow :: Connection Edge Node -> Html.Node
 mkRow connection = Html.tr []
@@ -58,11 +62,11 @@ defaultOptions =
   { title: "Untitled"
   }
 
-writeToFile :: (Options -> Options) -> StateGraph -> FilePath -> Effect Unit
+writeToFile :: (Options -> Options) -> TransitCore_ -> FilePath -> Effect Unit
 writeToFile mkOptions sg path = do
   FS.writeTextFile UTF8 path
     (Html.nodeToHtml $ toHtml (mkOptions defaultOptions) sg)
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: StateGraph -> FilePath -> Effect Unit
+writeToFile_ :: TransitCore_ -> FilePath -> Effect Unit
 writeToFile_ sg path = writeToFile identity sg path

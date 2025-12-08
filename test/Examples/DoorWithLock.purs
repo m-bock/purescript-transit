@@ -9,9 +9,9 @@ import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Core (TransitCore_)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
@@ -85,10 +85,11 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    g = mkStateGraph (reflectType (Proxy @DoorDSL))
+    transit :: TransitCore_
+    transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile (_ { title = "Door with Lock" }) g "graphs/door-with-lock.dot"
-  TransitTable.writeToFile (_ { title = "Door with Lock" }) g "graphs/door-with-lock.html"
+  TransitGraphviz.writeToFile (_ { title = "Door with Lock" }) transit "graphs/door-with-lock.dot"
+  TransitTable.writeToFile (_ { title = "Door with Lock" }) transit "graphs/door-with-lock.html"
 
 --------------------------------------------------------------------------------
 --- Instances
