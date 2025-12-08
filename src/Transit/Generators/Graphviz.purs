@@ -61,10 +61,31 @@ h colorMap transit i stateName = join
 f :: Colors -> Match_ -> Array D.Section
 f colors (Match from msg returns) = case returns of
   [ Return to ] -> [ SecEdge $ mkEdgeMsg from to colors msg ]
-  _ -> []
+  manyReturns -> if true then gg from msg colors manyReturns else gg' from msg colors manyReturns
 
-g :: StateName_ -> MsgName_ -> Return_ -> Array D.Section
-g _ _ _ = []
+gg' :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
+gg' from msg colors returns = Array.concatMap
+  ( case _ of
+      Return to -> [ SecEdge $ mkEdgeMsg from to colors msg ]
+      ReturnVia guard to -> [ SecEdge $ mkEdgeMsg from to colors (msg <> " ? " <> guard) ]
+  )
+  returns
+
+gg :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
+gg from msg colors manyReturns =
+  let
+    decisionNode = "decision_" <> from <> "_" <> msg
+  in
+    join
+      [ pure $ SecNode $ mkDecisionNode decisionNode colors
+      , pure $ SecEdge $ mkEdgeMsg from decisionNode colors msg
+      , concatMap (g decisionNode colors) manyReturns
+      ]
+
+g :: String -> Colors -> Return_ -> Array D.Section
+g decisionNode colors = case _ of
+  Return to -> [ SecEdge $ mkEdgeGuard decisionNode to colors Nothing ]
+  ReturnVia guard to -> [ SecEdge $ mkEdgeGuard decisionNode to colors (Just guard) ]
 
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
