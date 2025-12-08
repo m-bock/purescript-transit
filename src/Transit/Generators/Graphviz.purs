@@ -114,10 +114,15 @@ mkEdge (StateGraph _ sg) colorMap fromNode { edge, toNodes } = case Set.toUnfold
         else []
       )
     else [ SecEdge $ mkEdgeMsg fromNode toNode colorsFrom edge.msg ]
-  _ -> join
-    [ pure $ SecNode $ mkDecisionNode fromNode colorsFrom
-    , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg fromNode toNode colorsFrom edge.msg ]) $ Set.toUnfoldable toNodes
-    ]
+  manyNodes ->
+    let
+      decisionNode = "decision_" <> fromNode <> "_" <> edge.msg
+    in
+      join
+        [ pure $ SecNode $ mkDecisionNode decisionNode colorsFrom
+        , pure $ SecEdge $ mkEdgeMsg fromNode decisionNode colorsFrom edge.msg
+        , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg decisionNode toNode colorsFrom edge.msg ]) manyNodes
+        ]
 
   where
   colorsFrom = lookupColor fromNode colorMap
