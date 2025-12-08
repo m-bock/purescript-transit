@@ -14,6 +14,8 @@ import Type.Data.List (type (:>), Nil')
 class MkUpdate (spec :: TransitCore) m impl msg state | spec msg state m -> impl where
   mkUpdate :: impl -> state -> msg -> m state
 
+data No = No
+
 instance (Monad m) => MkUpdate (MkTransitCore Nil') m Unit msg state where
   mkUpdate _ state _ = pure state
 

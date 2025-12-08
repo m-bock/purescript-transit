@@ -47,6 +47,7 @@ foreign import data TransitCore :: Type
 foreign import data MkTransitCore :: List' Match -> TransitCore
 
 foreign import data Match :: Type
+
 foreign import data MkMatch :: StateName -> MsgName -> List' Return -> Match
 
 foreign import data Return :: Type
