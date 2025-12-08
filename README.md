@@ -27,7 +27,6 @@ Type-Safe State Machines.
     - [The Classic Approach](#the-classic-approach-3)
     - [The Transit Approach](#the-transit-approach-3)
   - [Type signatures in update functions](#type-signatures-in-update-functions)
-  - [Example5: Espresso Machine](#example5-espresso-machine)
   - [Tests](#tests)
   - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
@@ -612,10 +611,6 @@ Labeled transitions are particularly valuable when you have complex conditional 
 
 ## Type signatures in update functions
 
-## Example5: Espresso Machine
-
-<img src="graphs/espresso-machine-state-diagram.svg" alt="Transit" />
-
 ## Tests
 
 We can be much more confident now that the state machine is correct.
@@ -679,35 +674,3 @@ filePath: graphs/bridges-koenigsberg.html
 ## Colors
 
 <img src="graphs/color-ring.svg" alt="Transit" />
-
----
-
-```purescript
-
-
-type Temperature = Number
-type WaterLevel = Number
-
-data State
-  = Idle
-  | Heating { targetTemp :: Temperature }
-  | Ready   { waterLevel :: WaterLevel, temp :: Temperature }
-  | Brewing { seconds :: Int }
-  | Error { message :: String }
-  | Done
-
-
-
-data Msg
-  = PowerOn { targetTemp :: Temperature }
-  | TempReached { temp :: Temperature }
-  | StartBrew { pumpOK :: Boolean, waterLevel :: WaterLevel }
-  | BrewTick { deltaSeconds :: Int }   -- <— new
-  | BrewComplete
-  | SensorErrorDetected { message :: String }
-  | RefillDone { waterAdded :: WaterLevel }
-  | PowerOff
-  | Reset
-
-
-```
