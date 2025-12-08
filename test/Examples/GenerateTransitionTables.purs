@@ -5,15 +5,14 @@ import Prelude
 import Data.Reflectable (reflectType)
 import Effect (Effect)
 import Test.Examples.Door (DoorDSL)
-import Transit.Core (TransitCore_)
 import Transit.Generators.TransitionTable as TransitTable
+import Transit.StateGraph (mkStateGraph)
 import Type.Prelude (Proxy(..))
 
 main :: Effect Unit
 main = do
   let
-    transit :: TransitCore_
-    transit = reflectType (Proxy @DoorDSL)
+    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
 
-  TransitTable.writeToFile (_ { title = "Door" }) transit "graphs/door.html"
+  TransitTable.writeToFile (_ { title = "Door" }) stateGraph "graphs/door.html"
 

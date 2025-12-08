@@ -7,9 +7,9 @@ import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
-import Transit.Core (TransitCore_)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
+import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -118,11 +118,10 @@ update = mkUpdateGeneric @BridgesTransitions
 main :: Effect Unit
 main = do
   let
-    transit :: TransitCore_
-    transit = reflectType (Proxy @BridgesTransitions)
+    g = mkStateGraph (reflectType (Proxy @BridgesTransitions))
 
-  TransitGraphviz.writeToFile_ transit "graphs/bridges-koenigsberg.dot"
-  TransitTable.writeToFile_ transit "graphs/bridges-koenigsberg.html"
+  TransitGraphviz.writeToFile_ g "graphs/bridges-koenigsberg.dot"
+  TransitTable.writeToFile_ g "graphs/bridges-koenigsberg.html"
 
 --------------------------------------------------------------------------------
 --- Instances
