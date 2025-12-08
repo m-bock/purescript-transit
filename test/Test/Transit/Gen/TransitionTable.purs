@@ -11,3 +11,4 @@ spec = do
   describe "Transit.Gen.TransitionTable" do
     pure unit
 
+

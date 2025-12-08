@@ -16,6 +16,8 @@ import Test.Transit.Generators.Graphviz as Test.Transit.Generators.Graphviz
 import Test.Transit.Generators.TransitionTable as Test.Transit.Generators.TransitionTable
 import Test.Transit.StateGraph as Test.Transit.StateGraph
 import Test.Transit.Util as Test.Transit.Util
+import Test.Transit.Class.GetSubset as Test.Transit.Class.GetSubset
+import Test.Transit.Class.MatchBySym as Test.Transit.Class.MatchBySym
 
 main :: Effect Unit
 main = do
@@ -31,3 +33,5 @@ main = do
     Test.Transit.Generators.TransitionTable.spec
     Test.Transit.StateGraph.spec
     Test.Transit.Util.spec
+    Test.Transit.Class.GetSubset.spec
+    Test.Transit.Class.MatchBySym.spec

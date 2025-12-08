@@ -73,3 +73,4 @@ spec = do
         nodeToHtml html `shouldEqual` "<table style=\"border: 1px solid black\"><tr><td>Cell</td></tr></table>"
 
 
+
