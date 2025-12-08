@@ -25,7 +25,7 @@ import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, defLight, getColor)
 import Transit.Colors as Colors
-import Transit.Core (TransitCore, TransitCore_)
+import Transit.Core (Match_(..), MsgName_, Return, Return_(..), StateName_, TransitCore, TransitCore_, getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
 import Transit.Data.Graph as Graph
@@ -33,17 +33,38 @@ import Transit.StateGraph (Edge, Node, StateGraph(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 mkGraphvizGraph :: Options -> TransitCore_ -> GraphvizGraph
-mkGraphvizGraph options _ = unsafeCoerce ""
+mkGraphvizGraph options transit =
+  GraphvizGraph $ join
+    [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
+    , case options.globalAttrsRaw of
+        Just raw -> [ SecGlobalRaw raw ]
+        Nothing -> []
+    --, join $ mapWithIndex (mkNode sg colorMap) $ spyWith "nodes" show $ Set.toUnfoldable $ Graph.getGrouped g
+    , join $ mapWithIndex (h colorMap transit) $ getStateNames transit
+    ]
+  where
+  colorMap = mkColorMap transit
 
--- GraphvizGraph $ join
---   [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
---   , case options.globalAttrsRaw of
---       Just raw -> [ SecGlobalRaw raw ]
---       Nothing -> []
---   , join $ mapWithIndex (mkNode sg colorMap) $ spyWith "nodes" show $ Set.toUnfoldable $ Graph.getGrouped g
---   ]
---   where
---   colorMap = mkColorMap sg
+h :: ColorMap -> TransitCore_ -> Int -> StateName_ -> Array D.Section
+h colorMap transit i stateName = join
+  [ pure $ SecNode $ mkStateNode colors stateName
+  , if i == 0 then
+      [ SecNode $ mkInitNode "__Start__"
+      , SecEdge $ mkInitEdge "__Start__" stateName
+      ]
+    else []
+  , Array.concatMap (f colors) $ getMatchesForState stateName transit
+  ]
+  where
+  colors = lookupColor stateName colorMap
+
+f :: Colors -> Match_ -> Array D.Section
+f colors (Match from msg returns) = case returns of
+  [ Return to ] -> [ SecEdge $ mkEdgeMsg from to colors msg ]
+  _ -> []
+
+g :: StateName_ -> MsgName_ -> Return_ -> Array D.Section
+g _ _ _ = []
 
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
@@ -59,8 +80,9 @@ type ColorMap = Map String Colors
 lookupColor :: String -> ColorMap -> Colors
 lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.lookup state colorMap
 
-mkColorMap :: StateGraph -> ColorMap
-mkColorMap (StateGraph _ sg) = Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
+mkColorMap :: TransitCore_ -> ColorMap
+mkColorMap transit =
+  Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ getStateNames transit
 
 -- mkNode :: StateGraph -> ColorMap -> Int -> NodeInfo Edge Node -> Array Section
 -- mkNode sg@(StateGraph meta g) colorMap i { fromNode, edges } = join

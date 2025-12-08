@@ -6,43 +6,46 @@ module Transit.Generators.TransitionTable
 
 import Prelude
 
+import Data.Array as Array
 import Data.Maybe (Maybe(..))
-import Data.Set as Set
 import Effect (Effect)
 import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Core (TransitCore_)
-import Transit.Data.Graph (Connection)
-import Transit.Data.Graph as Graph
+import Transit.Core (Match_(..), MsgName_, Return_(..), StateName_, TransitCore_(..))
 import Transit.Data.Html as Html
-import Transit.StateGraph (Edge, Node, StateGraph(..))
-import Unsafe.Coerce (unsafeCoerce)
 
 toHtml :: Options -> TransitCore_ -> Html.Node
-toHtml options _ = unsafeCoerce ""
-
--- Html.table []
---   [ Html.caption [] [ Html.text options.title ]
---   , Html.thead [] [ mkHeader ]
---   , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getConnections sg
---   ]
-
-mkRow :: Connection Edge Node -> Html.Node
-mkRow connection = Html.tr []
-  [ Html.td [] [ Html.text connection.fromNode ]
-  , Html.td [] [ Html.text "⟶" ]
-  , Html.td []
-      [ Html.text
-          ( case connection.edge.guard of
-              Just guard -> connection.edge.msg <> " ? " <> guard
-              Nothing -> connection.edge.msg
-          )
-      ]
-  , Html.td [] [ Html.text "⟶" ]
-  , Html.td [] [ Html.text connection.toNode ]
+toHtml options (TransitCore matches) = Html.table []
+  [ Html.caption [] [ Html.text options.title ]
+  , Html.thead [] [ mkHeader ]
+  , Html.tbody [] $ Array.concatMap mkMatch matches
   ]
+
+mkMatch :: Match_ -> Array Html.Node
+mkMatch (Match from msg returns) =
+  map (mkReturn from msg) returns
+
+mkReturn :: StateName_ -> MsgName_ -> Return_ -> Html.Node
+mkReturn fromState msg ret =
+  Html.tr []
+    [ Html.td [] [ Html.text fromState ]
+    , Html.td [] [ Html.text "⟶" ]
+    , Html.td []
+        [ Html.text
+            ( case guard of
+                Just guard -> msg <> " ? " <> guard
+                Nothing -> msg
+            )
+        ]
+    , Html.td [] [ Html.text "⟶" ]
+    , Html.td [] [ Html.text toState ]
+    ]
+  where
+  { toState, guard } = case ret of
+    Return to -> { toState: to, guard: Nothing }
+    ReturnVia guard to -> { toState: to, guard: Just guard }
 
 mkHeader :: Html.Node
 mkHeader = Html.tr []

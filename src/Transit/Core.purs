@@ -1,27 +1,29 @@
 module Transit.Core
-  ( StateName
-  , MsgName
-  , GuardName
-  , TransitCore
-  , MkTransitCore
+  ( GuardName
+  , GuardName_
   , Match
+  , MatchImpl(..)
+  , Match_(..)
   , MkMatch
-  , Return
   , MkReturn
   , MkReturnVia
-  , class IsStateSym
-  , class IsMsgSym
-  , class IsGuardSym
-  , StateName_
+  , MkTransitCore
+  , MsgName
   , MsgName_
-  , GuardName_
-  , Return_(..)
-  , TransitCore_(..)
-  , Match_(..)
-  , MatchImpl(..)
-  , ReturnStateVia(..)
+  , Return
   , ReturnState(..)
+  , ReturnStateVia(..)
+  , Return_(..)
+  , StateName
+  , StateName_
+  , TransitCore
+  , TransitCore_(..)
+  , class IsGuardSym
+  , class IsMsgSym
+  , class IsStateSym
   , class IsTransitSpec
+  , getMatchesForState
+  , getStateNames
   ) where
 
 import Prelude
@@ -168,3 +170,19 @@ class IsTransitSpec :: forall spec. spec -> TransitCore -> Constraint
 class IsTransitSpec spec core | spec -> core
 
 instance IsTransitSpec (MkTransitCore xs) (MkTransitCore xs)
+
+---
+
+getStateNames :: TransitCore_ -> Array StateName_
+getStateNames (TransitCore matches) = Array.nub $ Array.concatMap
+  ( \(Match from _ returns) -> [ from ] <> map
+      ( case _ of
+          Return to -> to
+          ReturnVia _ to -> to
+      )
+      returns
+  )
+  matches
+
+getMatchesForState :: StateName_ -> TransitCore_ -> Array Match_
+getMatchesForState stateName (TransitCore matches) = Array.filter (\(Match from _ _) -> from == stateName) matches

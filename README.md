@@ -171,7 +171,7 @@ The transition table shows all valid transitions:
 
 <!-- PD_START:raw
 filePath: graphs/door-with-lock.html
---><table><caption>Door with Lock</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Door with Lock</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
 
 The PureScript types extend the previous example:
 
@@ -356,7 +356,7 @@ The transition table shows both possible outcomes:
 
 <!-- PD_START:raw
 filePath: graphs/door-with-pin.html
---><table><caption>Door with Pin</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorLocked</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Door with Pin</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
 
 The PureScript types now include data in both states and messages:
 
@@ -487,7 +487,7 @@ The transition table shows all possible outcomes:
 
 <!-- PD_START:raw
 filePath: graphs/door-with-alarm.html
---><table><caption>Door with Alarm</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? TooManyAttempts</td><td>⟶</td><td>Alarm</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Door with Alarm</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? TooManyAttempts</td><td>⟶</td><td>Alarm</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
 
 The PureScript types extend the previous example with an alarm state and attempt tracking:
 
@@ -668,7 +668,7 @@ data Msg
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
---><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandA</td><td>⟶</td><td>CrossBridge_a</td><td>⟶</td><td>LandB</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_a</td><td>⟶</td><td>LandA</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_b</td><td>⟶</td><td>LandB</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_b</td><td>⟶</td><td>LandA</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_c</td><td>⟶</td><td>LandC</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_c</td><td>⟶</td><td>LandA</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_d</td><td>⟶</td><td>LandC</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_d</td><td>⟶</td><td>LandA</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_e</td><td>⟶</td><td>LandD</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_e</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_f</td><td>⟶</td><td>LandD</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_f</td><td>⟶</td><td>LandB</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_g</td><td>⟶</td><td>LandD</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandA</td><td>⟶</td><td>CrossBridge_a</td><td>⟶</td><td>LandB</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_b</td><td>⟶</td><td>LandB</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_c</td><td>⟶</td><td>LandC</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_d</td><td>⟶</td><td>LandC</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_e</td><td>⟶</td><td>LandD</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_a</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_b</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_f</td><td>⟶</td><td>LandD</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_c</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_d</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_g</td><td>⟶</td><td>LandD</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_e</td><td>⟶</td><td>LandA</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_f</td><td>⟶</td><td>LandB</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
 
 <img src="graphs/bridges-koenigsberg.svg" />
 
