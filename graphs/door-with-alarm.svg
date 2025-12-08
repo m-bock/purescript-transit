@@ -66,7 +66,7 @@
 <text text-anchor="start" x="61" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">Lock</text>
 </g>
 <!-- DoorLocked&#45;&gt;Alarm -->
-<g id="edge6" class="edge">
+<g id="edge7" class="edge">
 <title>DoorLocked&#45;&gt;Alarm</title>
 <path fill="none" stroke="#eb5757" stroke-width="1.8" d="M86.6,-169.8C94.94,-157.45 106.26,-140.66 115.39,-127.13"/>
 <polygon fill="#eb5757" stroke="#eb5757" stroke-width="1.8" points="117.53,-128.35 119.41,-121.18 113.47,-125.61 117.53,-128.35"/>
@@ -78,6 +78,13 @@
 <path fill="none" stroke="#eb5757" stroke-width="1.8" d="M30.79,-173.98C20.6,-168.81 11,-161.71 5,-152 -0.45,-143.18 3.77,-134.12 11.07,-126.28"/>
 <polygon fill="#eb5757" stroke="#eb5757" stroke-width="1.8" points="13.17,-127.66 16.54,-121.06 9.79,-124.12 13.17,-127.66"/>
 <text text-anchor="start" x="5" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c41717">Unlock</text>
+</g>
+<!-- DoorLocked&#45;&gt;DoorLocked -->
+<g id="edge6" class="edge">
+<title>DoorLocked&#45;&gt;DoorLocked</title>
+<path fill="none" stroke="#eb5757" stroke-width="1.8" d="M119.02,-195.72C129.37,-195.08 137,-192.51 137,-188 137,-184.62 132.71,-182.32 126.2,-181.12"/>
+<polygon fill="#eb5757" stroke="#eb5757" stroke-width="1.8" points="126.26,-178.66 119.02,-180.28 125.69,-183.53 126.26,-178.66"/>
+<text text-anchor="start" x="137" y="-185.9" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c41717">Unlock</text>
 </g>
 </g>
 </svg>

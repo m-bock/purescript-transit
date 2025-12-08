@@ -104,10 +104,10 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    stateGraph = mkStateGraph (reflectType (Proxy @DoorDSL))
+    transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile (_ { title = "Door with Pin" }) stateGraph "graphs/door-with-pin.dot"
-  TransitTable.writeToFile (_ { title = "Door with Pin" }) stateGraph "graphs/door-with-pin.html"
+  TransitGraphviz.writeToFile (_ { title = "Door with Pin" }) transit "graphs/door-with-pin.dot"
+  TransitTable.writeToFile (_ { title = "Door with Pin" }) transit "graphs/door-with-pin.html"
 
 --------------------------------------------------------------------------------
 --- Instances

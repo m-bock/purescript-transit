@@ -108,8 +108,11 @@ instance ToText Value where
 rankDirTD :: Attr
 rankDirTD = Attr "rankdir" (Value "TD")
 
+
+
 fontNameArial :: Attr
 fontNameArial = Attr "fontname" (Value "Arial")
+
 
 labelHtmlBold :: String -> Attr
 labelHtmlBold label = Attr "label" (HtmlLabel $ "<b>" <> label <> "</b>")

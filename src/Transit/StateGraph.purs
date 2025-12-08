@@ -9,8 +9,10 @@ import Prelude
 
 import Data.Array as Array
 import Data.Array.NonEmpty (mapWithIndex)
+import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Set as Set
+import Data.Show.Generic (genericShow)
 import Transit.Core (Return_(..), TransitCore_(..), Match_(..))
 import Transit.Data.Graph (Graph, mapGraph)
 import Transit.Data.Graph as Graph
@@ -20,6 +22,11 @@ type Edge = { msg :: String, guard :: Maybe String }
 type Node = String
 
 data StateGraph = StateGraph { entryPoints :: Array Node } (Graph Edge Node)
+
+derive instance Generic StateGraph _
+
+instance Show StateGraph where
+  show = genericShow
 
 mkStateGraph :: TransitCore_ -> StateGraph
 mkStateGraph (TransitCore transitions) =

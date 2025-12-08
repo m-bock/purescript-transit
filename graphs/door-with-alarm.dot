@@ -11,5 +11,6 @@ DoorClosed -> DoorLocked [color = "#f2994a", fontcolor = "#c8660e", fontsize = 1
 DoorClosed -> DoorOpen [color = "#f2994a", fontcolor = "#c8660e", fontsize = 12, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
 DoorLocked [shape = "box", label = <<b>DoorLocked</b>>, fontsize = 12, style = "filled", fillcolor = "#eb5757", fontcolor = "#c41717", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 DoorLocked -> DoorClosed [color = "#eb5757", fontcolor = "#c41717", fontsize = 12, arrowsize = "0.7", label = <<b>Unlock</b>>, penwidth = 1.8]
+DoorLocked -> DoorLocked [color = "#eb5757", fontcolor = "#c41717", fontsize = 12, arrowsize = "0.7", label = <<b>Unlock</b>>, penwidth = 1.8]
 DoorLocked -> Alarm [color = "#eb5757", fontcolor = "#c41717", fontsize = 12, arrowsize = "0.7", label = <<b>Unlock</b>>, penwidth = 1.8]
 }

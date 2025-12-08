@@ -15,6 +15,7 @@ import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
+import Effect.Class.Console as Console
 
 --------------------------------------------------------------------------------
 --- Types
