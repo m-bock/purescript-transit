@@ -609,6 +609,18 @@ Labeled transitions are particularly valuable when you have complex conditional 
 
 ## Monadic update functions
 
+So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
+
+For these cases, transit provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad` (commonly `Effect`, `Aff`, or `ReaderT`).
+
+The key differences from pure update functions are:
+
+1. **Use `mkUpdateGenericM` instead of `mkUpdateGeneric`** - This tells transit you want a monadic update function
+2. **Use `matchM` instead of `match`** - This allows your handlers to return values in the monadic context
+3. **Type signature includes the monad** - Instead of `State -> Msg -> State`, you get `State -> Msg -> m State`
+
+Here's an example that adds logging to state transitions:
+
 <!-- PD_START:purs
 filePath: test/Examples/Monadic.purs
 pick:
@@ -637,6 +649,8 @@ update = mkUpdateGenericM @DoorDSL
 ```
 
 <!-- PD_END -->
+
+Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
 
 ## Example 6: Seven Bridges of Königsberg
 

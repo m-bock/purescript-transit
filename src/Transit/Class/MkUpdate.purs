@@ -16,7 +16,7 @@ class MkUpdate (spec :: TransitCoreTL) m impl msg state | spec msg state m -> im
 
 data No = No
 
-instance (Monad m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
+instance (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
   mkUpdate _ state _ = pure state
 
 instance
