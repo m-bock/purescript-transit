@@ -26,8 +26,6 @@ Type-Safe State Machines.
   - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
     - [The Classic Approach](#the-classic-approach-3)
     - [The Transit Approach](#the-transit-approach-3)
-  - [Type signatures in update functions](#type-signatures-in-update-functions)
-  - [Tests](#tests)
   - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
   - [Example 7: das-ist-das-haus-vom-ni-ko-laus](#example-7-das-ist-das-haus-vom-ni-ko-laus)
@@ -609,29 +607,36 @@ The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state
 
 Labeled transitions are particularly valuable when you have complex conditional logic with multiple possible outcomes, as they provide both type safety and clear documentation of the state machine's behavior.
 
-## Type signatures in update functions
-
-## Tests
-
-We can be much more confident now that the state machine is correct.
-
-We can even go one step further and write tests to verify certain properties of the state machine. For example we can verify that there are no dead ends in the state machine:
+## Monadic update functions
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/Monadic.purs
 pick:
-  - spec
+  - update
 -->
 
 ```purescript
-spec :: Spec Unit
-spec = do
-  pure unit
+update :: State -> Msg -> Effect State
+update = mkUpdateGenericM @DoorDSL
+  ( matchM @"DoorOpen" @"Close" \_ _ -> do
+      Console.log "You just closed the door"
+      pure $ return @"DoorClosed"
+  )
+  ( matchM @"DoorClosed" @"Open" \_ _ -> do
+      Console.log "You just opened the door"
+      pure $ return @"DoorOpen"
+  )
+  ( matchM @"DoorClosed" @"Lock" \_ _ -> do
+      Console.log "You just locked the door"
+      pure $ return @"DoorLocked"
+  )
+  ( matchM @"DoorLocked" @"Unlock" \_ _ -> do
+      Console.log "You just unlocked the door"
+      pure $ return @"DoorClosed"
+  )
 ```
 
 <!-- PD_END -->
-
-## Monadic update functions
 
 ## Example 6: Seven Bridges of Königsberg
 

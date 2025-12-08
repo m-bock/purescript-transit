@@ -29,13 +29,13 @@ instance
   MkUpdate
     (MkTransitCoreTL ((MkMatchTL symStateIn symMsg returns) :> rest1))
     m
-    (MatchImpl symStateIn symMsg stateIn msgIn stateOut /\ rest2)
+    (MatchImpl symStateIn symMsg m stateIn msgIn stateOut /\ rest2)
     msg
     state
   where
   mkUpdate (MatchImpl fn /\ rest) state msg =
     matchBySym2 @symStateIn @symMsg
-      (\s m -> pure $ getSubset @returns $ fn s m)
+      (\s m -> getSubset @returns <$> fn s m)
       (\_ -> mkUpdate @(MkTransitCoreTL rest1) rest state msg)
       state
       msg

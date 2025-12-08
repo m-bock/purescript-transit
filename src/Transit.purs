@@ -3,6 +3,7 @@ module Transit
   , mkUpdateGeneric
   , mkUpdateGenericM
   , match
+  , matchM
   , return
   , returnVia
   , class Return
@@ -47,8 +48,11 @@ mkUpdateGeneric = curryN @xs f
   f :: xs -> state -> msg -> state
   f impl state msg = un Identity $ map (un Generically) $ mkUpdate @spec @Identity @xs impl (Generically state) (Generically msg)
 
-match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg msgIn stateIn stateOut
-match f = MatchImpl f
+match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg Identity msgIn stateIn stateOut
+match f = MatchImpl (\msg state -> pure $ f msg state)
+
+matchM :: forall @symState @symMsg m msgIn stateIn stateOut. (msgIn -> stateIn -> m stateOut) -> MatchImpl symState symMsg m msgIn stateIn stateOut
+matchM f = MatchImpl (\msg state -> f msg state)
 
 class Return (sym :: Symbol) a where
   return :: a

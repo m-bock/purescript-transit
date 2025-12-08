@@ -114,8 +114,8 @@ spec = do
       let
         update :: Generically State -> Generically Msg -> Identity (Generically State)
         update = mkUpdate @MyStateGraph @Identity
-          ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> V.inj (Proxy @"State2") (ReturnState "42"))
-              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> V.inj (Proxy @"State1") (ReturnState 99))
+          ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (ReturnState "42"))
+              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (ReturnState 99))
               /\ unit
           )
 
