@@ -25,10 +25,10 @@ spec = do
             ]
           graph = mkStateGraph transitCore
         Graph.getConnections graph `shouldEqual` Set.fromFoldable
-          [ { fromNode: { state: "State1" }, toNode: { state: "State2" }, edge: { msg: "Msg1", guard: Nothing } }
-          , { fromNode: { state: "State2" }, toNode: { state: "State3" }, edge: { msg: "Msg2", guard: Nothing } }
-          , { fromNode: { state: "State2" }, toNode: { state: "State1" }, edge: { msg: "Msg2", guard: Nothing } }
-          , { fromNode: { state: "State3" }, toNode: { state: "State1" }, edge: { msg: "Msg3", guard: Nothing } }
-          , { fromNode: { state: "State3" }, toNode: { state: "State2" }, edge: { msg: "Msg3", guard: Just "Guard1" } }
-          , { fromNode: { state: "State3" }, toNode: { state: "State3" }, edge: { msg: "Msg3", guard: Just "Guard2" } }
+          [ { fromNode: "State1", toNode: "State2", edge: { msg: "Msg1", guard: Nothing } }
+          , { fromNode: "State2", toNode: "State3", edge: { msg: "Msg2", guard: Nothing } }
+          , { fromNode: "State2", toNode: "State1", edge: { msg: "Msg2", guard: Nothing } }
+          , { fromNode: "State3", toNode: "State1", edge: { msg: "Msg3", guard: Nothing } }
+          , { fromNode: "State3", toNode: "State2", edge: { msg: "Msg3", guard: Just "Guard1" } }
+          , { fromNode: "State3", toNode: "State3", edge: { msg: "Msg3", guard: Just "Guard2" } }
           ]

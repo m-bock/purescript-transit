@@ -10,6 +10,7 @@ module Transit.Data.Graph
   , getOutgoingEdges
   , hasEdge
   , getConnections
+  , mapGraph
   , isUndirected
   ) where
 
@@ -31,8 +32,15 @@ hasEdge :: forall e n. Ord e => Ord n => Connection e n -> Graph e n -> Boolean
 hasEdge e (Graph xs) = Set.member e xs
 
 getGrouped :: forall e n. Ord n => Ord e => Graph e n -> Set (NodeInfo e n)
-getGrouped (Graph xs) = Set.fromFoldable $ map f $ Array.groupAllBy (\a b -> a.fromNode `compare` b.fromNode) $ Set.toUnfoldable xs
+getGrouped graph@(Graph xs) =
+  Set.union nodesWithOutgoingEdges deadEnds
   where
+  deadEnds = getNodes graph
+    # Set.filter (\n -> Set.size (getOutgoingEdges n graph) == 0)
+    # Set.map (\n -> { fromNode: n, edges: Set.empty })
+
+  nodesWithOutgoingEdges = Set.fromFoldable $ map f $ Array.groupAllBy (\a b -> a.fromNode `compare` b.fromNode) $ Set.toUnfoldable xs
+
   f :: NonEmptyArray (Connection e n) -> NodeInfo e n
   f conns = { fromNode: (NEA.head conns).fromNode, edges: Set.fromFoldable $ map g $ Array.groupAllBy (\a b -> a.edge `compare` b.edge) $ NEA.toArray conns }
 
@@ -43,6 +51,9 @@ newtype Graph e n = Graph (Set (Connection e n)) -- directed, cyclic, multiedge
 
 instance (Show e, Show n) => Show (Graph e n) where
   show (Graph xs) = show xs
+
+mapGraph :: forall e n e' n'. Ord e' => Ord n' => (e -> e') -> (n -> n') -> Graph e n -> Graph e' n'
+mapGraph f g (Graph xs) = Graph $ Set.map (\conn -> { fromNode: g conn.fromNode, edge: f conn.edge, toNode: g conn.toNode }) xs
 
 fromConnections :: forall e n. Set (Connection e n) -> Graph e n
 fromConnections edges = Graph edges

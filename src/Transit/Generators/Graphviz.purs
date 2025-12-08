@@ -55,25 +55,25 @@ lookupColor :: String -> ColorMap -> Colors
 lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.lookup state colorMap
 
 mkColorMap :: StateGraph -> ColorMap
-mkColorMap sg = Map.fromFoldable $ mapWithIndex (\i node -> (node.state /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
+mkColorMap sg = Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
 
 mkNode :: StateGraph -> ColorMap -> Int -> NodeInfo Edge Node -> Array Section
 mkNode sg colorMap i { fromNode, edges } = join
   [ pure $ SecNode $ mkStateNode colors fromNode
   , if i == 0 then
       [ SecNode $ mkInitNode "__Start__"
-      , SecEdge $ mkInitEdge "__Start__" fromNode.state
+      , SecEdge $ mkInitEdge "__Start__" fromNode
       ]
     else []
-  , concatMap (mkEdge sg colorMap fromNode) $ Set.toUnfoldable edges
+  -- , concatMap (mkEdge sg colorMap fromNode) $ Set.toUnfoldable edges
   ]
   where
-  colors = lookupColor fromNode.state colorMap
+  colors = lookupColor fromNode colorMap
 
 mkStateNode :: Colors -> Node -> D.Node
-mkStateNode colors node = D.Node node.state
+mkStateNode colors node = D.Node node
   [ D.shapeBox
-  , D.labelHtmlBold node.state
+  , D.labelHtmlBold node
   , D.fontSize 12
   , D.styleFilled
   , D.fillColor colors.nodeBg
@@ -108,18 +108,18 @@ mkEdge sg colorMap fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
   [ toNode ] ->
     if (Graph.hasEdge { fromNode: toNode, edge: edge, toNode: fromNode } sg) then
       ( if fromNode > toNode then
-          [ SecEdge $ mkEdgeMsg fromNode.state toNode.state (defLight Color.black) edge.msg
+          [ SecEdge $ mkEdgeMsg fromNode toNode (defLight Color.black) edge.msg
           ]
         else []
       )
-    else [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colorsFrom edge.msg ]
+    else [ SecEdge $ mkEdgeMsg fromNode toNode colorsFrom edge.msg ]
   _ -> join
-    [ pure $ SecNode $ mkDecisionNode fromNode.state colorsFrom
-    , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg fromNode.state toNode.state colorsFrom edge.msg ]) $ Set.toUnfoldable toNodes
+    [ pure $ SecNode $ mkDecisionNode fromNode colorsFrom
+    , concatMap (\toNode -> [ SecEdge $ mkEdgeMsg fromNode toNode colorsFrom edge.msg ]) $ Set.toUnfoldable toNodes
     ]
 
   where
-  colorsFrom = lookupColor fromNode.state colorMap
+  colorsFrom = lookupColor fromNode colorMap
 
 mkUndirectedEdge :: String -> String -> Colors -> Colors -> String -> D.Edge
 mkUndirectedEdge from to fromColors toColors label = D.Edge from to

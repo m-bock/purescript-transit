@@ -27,7 +27,7 @@ toHtml options sg = Html.table []
 
 mkRow :: Connection Edge Node -> Html.Node
 mkRow connection = Html.tr []
-  [ Html.td [] [ Html.text connection.fromNode.state ]
+  [ Html.td [] [ Html.text connection.fromNode ]
   , Html.td [] [ Html.text "⟶" ]
   , Html.td []
       [ Html.text
@@ -37,7 +37,7 @@ mkRow connection = Html.tr []
           )
       ]
   , Html.td [] [ Html.text "⟶" ]
-  , Html.td [] [ Html.text connection.toNode.state ]
+  , Html.td [] [ Html.text connection.toNode ]
   ]
 
 mkHeader :: Html.Node

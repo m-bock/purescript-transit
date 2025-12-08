@@ -24,6 +24,8 @@ Type-Safe State Machines.
     - [The Classic Approach](#the-classic-approach-2)
     - [The Transit Approach](#the-transit-approach-2)
   - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
+    - [The Classic Approach](#the-classic-approach-3)
+    - [The Transit Approach](#the-transit-approach-3)
   - [Type signatures in update functions](#type-signatures-in-update-functions)
   - [Example5: Espresso Machine](#example5-espresso-machine)
   - [Tests](#tests)
@@ -474,7 +476,142 @@ The match handlers receive both the current state and the message, giving you ac
 
 ## Example4: Door with Pin and Alarm
 
-<img src="graphs/door-with-pin-and-alarm.svg" />
+Now let's extend the door with PIN by adding an alarm system that triggers after too many failed unlock attempts. This introduces **labeled conditional transitions**, which allow you to document the different conditions that lead to different states.
+
+<img src="graphs/door-with-alarm.svg" />
+
+In this example, the `DoorLocked` state now tracks the number of failed unlock attempts. When unlocking:
+
+- If the PIN is correct, the door transitions to `DoorClosed`
+- If the PIN is incorrect but attempts < 3, it stays in `DoorLocked` with an incremented attempt counter
+- If the PIN is incorrect and attempts >= 3, it transitions to `Alarm` state
+
+The transition table shows all possible outcomes:
+
+<!-- PD_START:raw
+filePath: graphs/door-with-alarm.html
+--><table><caption>Door with Alarm</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? TooManyAttempts</td><td>⟶</td><td>Alarm</td></tr></tbody></table><!-- PD_END -->
+
+The PureScript types extend the previous example with an alarm state and attempt tracking:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+data State
+  = DoorOpen
+  | DoorClosed
+  | DoorLocked { pin :: String, attempts :: Int }
+  | Alarm
+
+data Msg
+  = Close
+  | Open
+  | Lock { newPin :: String }
+  | Unlock { enteredPin :: String }
+```
+
+<!-- PD_END -->
+
+### The Classic Approach
+
+The classic update function now handles the attempt counter and alarm condition:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - updateClassic
+-->
+
+```purescript
+updateClassic :: State -> Msg -> State
+updateClassic state msg = case state, msg of
+  DoorOpen, Close -> DoorClosed
+  DoorClosed, Open -> DoorOpen
+  DoorClosed, Lock { newPin } -> DoorLocked { pin: newPin, attempts: 0 }
+  DoorLocked { pin, attempts }, Unlock { enteredPin } ->
+    if pin == enteredPin then
+      DoorClosed
+    else if attempts < 3 then
+      DoorLocked { pin, attempts: attempts + 1 }
+    else
+      Alarm
+  _, _ -> state
+```
+
+<!-- PD_END -->
+
+### The Transit Approach
+
+With transit, we use **labeled conditional transitions** to document the different conditions. The `:?` operator allows you to label each possible outcome:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - DoorDSL
+-->
+
+```purescript
+type DoorDSL =
+  Transit $ Empty
+    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
+    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
+    :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
+    :*
+      ( "DoorLocked" :@ "Unlock"
+          >| ("PinCorrect" :? "DoorClosed")
+          >| ("PinIncorrect" :? "DoorLocked")
+          >| ("TooManyAttempts" :? "Alarm")
+      )
+```
+
+<!-- PD_END -->
+
+The syntax `("PinCorrect" :? "DoorClosed")` labels the transition path, making it clear in the specification what condition leads to which state. This is especially useful when you have multiple conditional transitions from the same state/message pair.
+
+The update function uses `returnVia` instead of `return` to specify which labeled path to take:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdateGeneric @DoorDSL
+  ( match @"DoorOpen" @"Close" \_ _ ->
+      return @"DoorClosed"
+  )
+  ( match @"DoorClosed" @"Open" \_ _ ->
+      return @"DoorOpen"
+  )
+  ( match @"DoorClosed" @"Lock" \_ msg ->
+      return @"DoorLocked" { pin: msg.newPin, attempts: 0 }
+  )
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      if state.pin == msg.enteredPin then
+        returnVia @"PinCorrect" @"DoorClosed"
+      else if state.attempts < 3 then
+        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin, attempts: state.attempts + 1 }
+      else
+        returnVia @"TooManyAttempts" @"Alarm"
+  )
+```
+
+<!-- PD_END -->
+
+The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
+
+- 🔴 You can only use labels that are defined in the DSL specification
+- 🔴 Each label must map to the correct target state
+- 🟢 The labels make the code self-documenting—it's immediately clear which condition leads to which state
+
+Labeled transitions are particularly valuable when you have complex conditional logic with multiple possible outcomes, as they provide both type safety and clear documentation of the state machine's behavior.
 
 ## Type signatures in update functions
 
