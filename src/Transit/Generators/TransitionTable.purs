@@ -13,13 +13,13 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Data.Graph as Graph
 import Transit.Data.Graph (Connection)
+import Transit.Data.Graph as Graph
 import Transit.Data.Html as Html
-import Transit.StateGraph (Edge, StateGraph, Node)
+import Transit.StateGraph (Edge, Node, StateGraph(..))
 
 toHtml :: Options -> StateGraph -> Html.Node
-toHtml options sg = Html.table []
+toHtml options (StateGraph _ sg) = Html.table []
   [ Html.caption [] [ Html.text options.title ]
   , Html.thead [] [ mkHeader ]
   , Html.tbody [] $ map mkRow $ Set.toUnfoldable $ Graph.getConnections sg

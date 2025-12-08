@@ -10,7 +10,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Core (Match_(..), Return_(..), TransitCore_(..))
 import Transit.Data.Graph as Graph
-import Transit.StateGraph (mkStateGraph)
+import Transit.StateGraph (StateGraph(..), mkStateGraph)
 
 spec :: Spec Unit
 spec = do
@@ -23,7 +23,7 @@ spec = do
             , Match "State2" "Msg2" [ Return "State3", Return "State1" ]
             , Match "State3" "Msg3" [ Return "State1", ReturnVia "Guard1" "State2", ReturnVia "Guard2" "State3" ]
             ]
-          graph = mkStateGraph transitCore
+          StateGraph _ graph = mkStateGraph transitCore
         Graph.getConnections graph `shouldEqual` Set.fromFoldable
           [ { fromNode: "State1", toNode: "State2", edge: { msg: "Msg1", guard: Nothing } }
           , { fromNode: "State2", toNode: "State3", edge: { msg: "Msg2", guard: Nothing } }

@@ -11,6 +11,7 @@ import Prelude
 import Color (ColorSpace(..))
 import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
+import Data.Array as Array
 import Data.Map (Map)
 import Data.Map as Map
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -27,15 +28,15 @@ import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), to
 import Transit.Data.DotLang as D
 import Transit.Data.Graph (NodeInfo, EdgeInfo)
 import Transit.Data.Graph as Graph
-import Transit.StateGraph (Edge, StateGraph, Node)
+import Transit.StateGraph (Edge, Node, StateGraph(..))
 
 mkGraphvizGraph :: Options -> StateGraph -> GraphvizGraph
-mkGraphvizGraph options sg = GraphvizGraph $ join
+mkGraphvizGraph options sg@(StateGraph _ g) = GraphvizGraph $ join
   [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
   , case options.globalAttrsRaw of
       Just raw -> [ SecGlobalRaw raw ]
       Nothing -> []
-  , join $ mapWithIndex (mkNode sg colorMap) $ Set.toUnfoldable $ Graph.getGrouped sg
+  , join $ mapWithIndex (mkNode sg colorMap) $ Set.toUnfoldable $ Graph.getGrouped g
   ]
   where
   colorMap = mkColorMap sg
@@ -55,17 +56,17 @@ lookupColor :: String -> ColorMap -> Colors
 lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.lookup state colorMap
 
 mkColorMap :: StateGraph -> ColorMap
-mkColorMap sg = Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
+mkColorMap (StateGraph _ sg) = Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ Set.toUnfoldable $ Graph.getNodes sg
 
 mkNode :: StateGraph -> ColorMap -> Int -> NodeInfo Edge Node -> Array Section
-mkNode sg colorMap i { fromNode, edges } = join
+mkNode sg@(StateGraph meta g) colorMap i { fromNode, edges } = join
   [ pure $ SecNode $ mkStateNode colors fromNode
-  , if i == 0 then
+  , if Array.elem fromNode meta.entryPoints then
       [ SecNode $ mkInitNode "__Start__"
       , SecEdge $ mkInitEdge "__Start__" fromNode
       ]
     else []
-  -- , concatMap (mkEdge sg colorMap fromNode) $ Set.toUnfoldable edges
+  , concatMap (mkEdge sg colorMap fromNode) $ Set.toUnfoldable edges
   ]
   where
   colors = lookupColor fromNode colorMap
@@ -104,7 +105,7 @@ mkInitEdge from to = D.Edge from to
   ]
 
 mkEdge :: StateGraph -> ColorMap -> Node -> EdgeInfo Edge Node -> Array Section
-mkEdge sg colorMap fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
+mkEdge (StateGraph _ sg) colorMap fromNode { edge, toNodes } = case Set.toUnfoldable toNodes of
   [ toNode ] ->
     if (Graph.hasEdge { fromNode: toNode, edge: edge, toNode: fromNode } sg) then
       ( if fromNode > toNode then
