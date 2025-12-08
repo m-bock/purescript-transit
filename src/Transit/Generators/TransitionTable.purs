@@ -13,21 +13,21 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Core (Match_(..), MsgName_, Return_(..), StateName_, TransitCore_(..))
+import Transit.Core (Match(..), Return(..), TransitCore(..))
 import Transit.Data.Html as Html
 
-toHtml :: Options -> TransitCore_ -> Html.Node
+toHtml :: Options -> TransitCore -> Html.Node
 toHtml options (TransitCore matches) = Html.table []
   [ Html.caption [] [ Html.text options.title ]
   , Html.thead [] [ mkHeader ]
   , Html.tbody [] $ Array.concatMap mkMatch matches
   ]
 
-mkMatch :: Match_ -> Array Html.Node
+mkMatch :: Match -> Array Html.Node
 mkMatch (Match from msg returns) =
   map (mkReturn from msg) returns
 
-mkReturn :: StateName_ -> MsgName_ -> Return_ -> Html.Node
+mkReturn :: String -> String -> Return -> Html.Node
 mkReturn fromState msg ret =
   Html.tr []
     [ Html.td [] [ Html.text fromState ]
@@ -65,11 +65,11 @@ defaultOptions =
   { title: "Untitled"
   }
 
-writeToFile :: (Options -> Options) -> TransitCore_ -> FilePath -> Effect Unit
+writeToFile :: (Options -> Options) -> TransitCore -> FilePath -> Effect Unit
 writeToFile mkOptions sg path = do
   FS.writeTextFile UTF8 path
     (Html.nodeToHtml $ toHtml (mkOptions defaultOptions) sg)
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: TransitCore_ -> FilePath -> Effect Unit
+writeToFile_ :: TransitCore -> FilePath -> Effect Unit
 writeToFile_ sg path = writeToFile identity sg path

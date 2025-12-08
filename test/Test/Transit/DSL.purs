@@ -8,7 +8,7 @@ module Test.Transit.DSL
   ) where
 
 import Data.Unit (Unit, unit)
-import Transit.Core (class IsTransitSpec, MkTransitCore)
+import Transit.Core (class IsTransitSpec, MkTransitCoreTL)
 import Transit.Core as C
 import Transit.DSL (type (:*), type (:?), type (:@), type (>|), Empty, Transit)
 import Type.Data.List (type (:>), Nil')
@@ -26,7 +26,7 @@ test1 = check @Test1In @Test1Out
 
 type Test1In = Transit $ Empty
 
-type Test1Out = MkTransitCore Nil'
+type Test1Out = MkTransitCoreTL Nil'
 
 --------------------------------------------------------------------------------
 -- Test 2: Multiple transitions
@@ -41,10 +41,10 @@ type Test2In =
     :* ("State2" :@ "Msg2" >| "State3")
     :* ("State3" :@ "Msg3" >| "State3")
 
-type Test2Out = MkTransitCore
-  ( (C.MkMatch "State3" "Msg3" (C.MkReturn "State3" :> Nil'))
-      :> (C.MkMatch "State2" "Msg2" (C.MkReturn "State3" :> Nil'))
-      :> (C.MkMatch "State3" "Msg3" (C.MkReturn "State3" :> Nil'))
+type Test2Out = MkTransitCoreTL
+  ( (C.MkMatchTL "State3" "Msg3" (C.MkReturnTL "State3" :> Nil'))
+      :> (C.MkMatchTL "State2" "Msg2" (C.MkReturnTL "State3" :> Nil'))
+      :> (C.MkMatchTL "State3" "Msg3" (C.MkReturnTL "State3" :> Nil'))
       :> Nil'
   )
 
@@ -64,8 +64,8 @@ type Test3In =
           >| "State1"
       )
 
-type Test3Out = MkTransitCore
-  ( (C.MkMatch "State1" "Msg1" (C.MkReturn "State1" :> C.MkReturn "State2" :> C.MkReturn "State3" :> Nil'))
+type Test3Out = MkTransitCoreTL
+  ( (C.MkMatchTL "State1" "Msg1" (C.MkReturnTL "State1" :> C.MkReturnTL "State2" :> C.MkReturnTL "State3" :> Nil'))
       :> Nil'
   )
 
@@ -80,8 +80,8 @@ type Test4In =
   Transit $ Empty
     :* ("State1" :@ "Msg1" >| ("guard" :? "State2"))
 
-type Test4Out = MkTransitCore
-  ( (C.MkMatch "State1" "Msg1" (C.MkReturnVia "guard" "State2" :> Nil'))
+type Test4Out = MkTransitCoreTL
+  ( (C.MkMatchTL "State1" "Msg1" (C.MkReturnViaTL "guard" "State2" :> Nil'))
       :> Nil'
   )
 
@@ -120,35 +120,35 @@ type Test5In =
     :*
       ("State3" :@ "Msg3" >| ("guard" :? "State1"))
 
-type Test5Out = MkTransitCore
-  ( ( C.MkMatch "State1" "Msg1"
-        ( C.MkReturn "State1"
-            :> C.MkReturn "State2"
-            :> C.MkReturnVia "guard" "State3"
+type Test5Out = MkTransitCoreTL
+  ( ( C.MkMatchTL "State1" "Msg1"
+        ( C.MkReturnTL "State1"
+            :> C.MkReturnTL "State2"
+            :> C.MkReturnViaTL "guard" "State3"
             :> Nil'
         )
     )
       :>
-        ( C.MkMatch "State2" "Msg2"
-            ( C.MkReturn "State1"
-                :> C.MkReturn "State2"
-                :> C.MkReturn "State3"
+        ( C.MkMatchTL "State2" "Msg2"
+            ( C.MkReturnTL "State1"
+                :> C.MkReturnTL "State2"
+                :> C.MkReturnTL "State3"
                 :> Nil'
             )
         )
       :>
-        ( C.MkMatch "State3" "Msg3"
-            ( C.MkReturnVia "guardA" "State1"
-                :> C.MkReturnVia "guardB" "State2"
-                :> C.MkReturnVia "guardC" "State3"
+        ( C.MkMatchTL "State3" "Msg3"
+            ( C.MkReturnViaTL "guardA" "State1"
+                :> C.MkReturnViaTL "guardB" "State2"
+                :> C.MkReturnViaTL "guardC" "State3"
                 :> Nil'
             )
         )
       :>
-        ( C.MkMatch "State3" "Msg3" (C.MkReturn "State1" :> Nil')
+        ( C.MkMatchTL "State3" "Msg3" (C.MkReturnTL "State1" :> Nil')
         )
       :>
-        ( C.MkMatch "State3" "Msg3" (C.MkReturnVia "guard" "State1" :> Nil')
+        ( C.MkMatchTL "State3" "Msg3" (C.MkReturnViaTL "guard" "State1" :> Nil')
         )
       :> Nil'
   )

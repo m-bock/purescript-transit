@@ -8,7 +8,7 @@ import Data.Maybe (Maybe(..))
 import Data.Set as Set
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Core (Match_(..), Return_(..), TransitCore_(..))
+import Transit.Core (Match(..), Return(..), TransitCore(..))
 import Transit.Data.Graph as Graph
 import Transit.StateGraph (StateGraph(..), mkStateGraph)
 

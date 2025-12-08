@@ -21,7 +21,7 @@ import Prim.RowList (class RowToList, RowList)
 import Prim.RowList as RL
 import Record as Record
 import Transit.Class.FilterRow (class FilterRow, filterRow)
-import Transit.Core (Return)
+import Transit.Core (ReturnTL)
 import Transit.Util (Generically(..))
 import Type.Data.List (List')
 import Type.Equality (class TypeEquals)
@@ -31,7 +31,7 @@ import Unsafe.Coerce (unsafeCoerce)
 ---
 
 class
-  GetSubset (syms :: List' Return) ty a
+  GetSubset (syms :: List' ReturnTL) ty a
   | syms ty -> a
   where
   getSubset :: a -> ty

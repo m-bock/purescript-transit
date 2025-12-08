@@ -13,7 +13,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
-import Transit.Core (Return_(..), TransitCore_(..), Match_(..))
+import Transit.Core (Return(..), TransitCore(..), Match(..))
 import Transit.Data.Graph (Graph, mapGraph)
 import Transit.Data.Graph as Graph
 
@@ -28,7 +28,7 @@ derive instance Generic StateGraph _
 instance Show StateGraph where
   show = genericShow
 
-mkStateGraph :: TransitCore_ -> StateGraph
+mkStateGraph :: TransitCore -> StateGraph
 mkStateGraph (TransitCore transitions) =
   let
     entryPoints = fromMaybe [] $ map (\(Match from _ _) -> [ from ]) $ Array.head transitions

@@ -13,7 +13,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.GetSubset (class GetSubset, getSubset)
-import Transit.Core (MkReturn, MkReturnVia, Return, ReturnState(..), ReturnStateVia(..))
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ReturnState(..), ReturnStateVia(..))
 import Transit.Util (Generically(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
@@ -38,7 +38,7 @@ derive instance Eq D
 instance Show D where
   show = genericShow
 
-type Test1A = Nil' :: List' Return
+type Test1A = Nil' :: List' ReturnTL
 type Test1B = Generically D
 type Test1C = Variant ()
 
@@ -49,7 +49,7 @@ test1 = check @Test1A @Test1B @Test1C
 -- TL Test 2
 --------------------------------------------------------------------------------
 
-type Test2A = MkReturn "Foo" :> MkReturnVia "Tansition" "Bar" :> Nil'
+type Test2A = MkReturnTL "Foo" :> MkReturnViaTL "Tansition" "Bar" :> Nil'
 type Test2B = Generically D
 type Test2C = Variant
   ( "Foo" :: ReturnState Int
@@ -63,7 +63,7 @@ test2 = check @Test2A @Test2B @Test2C
 -- Spec
 --------------------------------------------------------------------------------
 
-type L1 = MkReturn "Foo" :> MkReturn "Baz" :> MkReturnVia "Guard1" "Qux" :> Nil'
+type L1 = MkReturnTL "Foo" :> MkReturnTL "Baz" :> MkReturnViaTL "Guard1" "Qux" :> Nil'
 
 spec :: Spec Unit
 spec = do

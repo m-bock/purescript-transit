@@ -15,7 +15,7 @@ module Transit.DSL
   ) where
 
 import Data.Reflectable (class Reflectable, reflectType)
-import Transit.Core (class IsTransitSpec, TransitCore_)
+import Transit.Core (class IsTransitSpec, TransitCore)
 import Transit.Core as C
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
@@ -52,7 +52,7 @@ infixl 9 type WithGuard as :?
 -- Reflection instance
 --------------------------------------------------------------------------------
 
-instance (IsTransitSpec (Transit dsl) o, Reflectable o TransitCore_) => Reflectable (Transit dsl) TransitCore_ where
+instance (IsTransitSpec (Transit dsl) o, Reflectable o TransitCore) => Reflectable (Transit dsl) TransitCore where
   reflectType _ = reflectType (Proxy @o)
 
 --------------------------------------------------------------------------------
@@ -70,36 +70,36 @@ instance (ToTransitCore a a') => IsTransitSpec (Transit a) a'
 -- ToTransitCore class and instances
 --------------------------------------------------------------------------------
 
-class ToTransitCore :: forall k. k -> C.TransitCore -> Constraint
+class ToTransitCore :: forall k. k -> C.TransitCoreTL -> Constraint
 class ToTransitCore dsl a | dsl -> a
 
-instance ToTransitCore Empty (C.MkTransitCore Nil')
+instance ToTransitCore Empty (C.MkTransitCoreTL Nil')
 
-else instance (ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCore ys)
+else instance (ToTransitCore xs (C.MkTransitCoreTL ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCoreTL ys)
 
-else instance (ToMatch x t, ToTransitCore xs (C.MkTransitCore ys)) => ToTransitCore (x :* xs) (C.MkTransitCore (t :> ys))
+else instance (ToMatch x t, ToTransitCore xs (C.MkTransitCoreTL ys)) => ToTransitCore (x :* xs) (C.MkTransitCoreTL (t :> ys))
 
-else instance (ToMatch x t) => ToTransitCore x (C.MkTransitCore (t :> Nil'))
+else instance (ToMatch x t) => ToTransitCore x (C.MkTransitCoreTL (t :> Nil'))
 
 --------------------------------------------------------------------------------
 -- ToMatch class and instances
 --------------------------------------------------------------------------------
 
-class ToMatch :: forall k. k -> C.Match -> Constraint
+class ToMatch :: forall k. k -> C.MatchTL -> Constraint
 class ToMatch dsl a | dsl -> a
 
-instance (ToMatch x (C.MkMatch s m xs), ToReturn y y') => ToMatch (x >| y) (C.MkMatch s m (y' :> xs))
+instance (ToMatch x (C.MkMatchTL s m xs), ToReturn y y') => ToMatch (x >| y) (C.MkMatchTL s m (y' :> xs))
 
-instance ToMatch (x :@ y) (C.MkMatch x y Nil')
+instance ToMatch (x :@ y) (C.MkMatchTL x y Nil')
 
 --------------------------------------------------------------------------------
 -- ToReturn class and instances
 --------------------------------------------------------------------------------
 
-class ToReturn :: forall k. k -> C.Return -> Constraint
+class ToReturn :: forall k. k -> C.ReturnTL -> Constraint
 class ToReturn dsl a | dsl -> a
 
-instance ToReturn (g :? s) (C.MkReturnVia g s)
+instance ToReturn (g :? s) (C.MkReturnViaTL g s)
 
-else instance ToReturn s (C.MkReturn s)
+else instance ToReturn s (C.MkReturnTL s)
 

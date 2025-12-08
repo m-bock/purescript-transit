@@ -1,23 +1,20 @@
 module Transit.Core
   ( GuardName
-  , GuardName_
-  , Match
+  , Match(..)
   , MatchImpl(..)
-  , Match_(..)
-  , MkMatch
-  , MkReturn
-  , MkReturnVia
-  , MkTransitCore
+  , MatchTL
+  , MkMatchTL
+  , MkReturnTL
+  , MkReturnViaTL
+  , MkTransitCoreTL
   , MsgName
-  , MsgName_
-  , Return
+  , Return(..)
   , ReturnState(..)
   , ReturnStateVia(..)
-  , Return_(..)
+  , ReturnTL
   , StateName
-  , StateName_
-  , TransitCore
-  , TransitCore_(..)
+  , TransitCore(..)
+  , TransitCoreTL
   , class IsGuardSym
   , class IsMsgSym
   , class IsStateSym
@@ -45,83 +42,79 @@ type StateName = Symbol
 type MsgName = Symbol
 type GuardName = Symbol
 
-foreign import data TransitCore :: Type
-foreign import data MkTransitCore :: List' Match -> TransitCore
+foreign import data TransitCoreTL :: Type
+foreign import data MkTransitCoreTL :: List' MatchTL -> TransitCoreTL
 
-foreign import data Match :: Type
+foreign import data MatchTL :: Type
 
-foreign import data MkMatch :: StateName -> MsgName -> List' Return -> Match
+foreign import data MkMatchTL :: StateName -> MsgName -> List' ReturnTL -> MatchTL
 
-foreign import data Return :: Type
-foreign import data MkReturn :: StateName -> Return
-foreign import data MkReturnVia :: GuardName -> StateName -> Return
+foreign import data ReturnTL :: Type
+foreign import data MkReturnTL :: StateName -> ReturnTL
+foreign import data MkReturnViaTL :: GuardName -> StateName -> ReturnTL
 
 --------------------------------------------------------------------------------
 --- Classes
 --------------------------------------------------------------------------------
 
-class IsStateSym (sym :: Symbol) (state :: TransitCore)
+class IsStateSym (sym :: Symbol) (state :: TransitCoreTL)
 
-class IsMsgSym (sym :: Symbol) (state :: TransitCore)
+class IsMsgSym (sym :: Symbol) (state :: TransitCoreTL)
 
-class IsGuardSym (sym :: Symbol) (state :: TransitCore)
+class IsGuardSym (sym :: Symbol) (state :: TransitCoreTL)
 
 --------------------------------------------------------------------------------
 --- Reflection types
 --------------------------------------------------------------------------------
 
-type StateName_ = String
-type MsgName_ = String
-type GuardName_ = String
+data Return
+  = Return String
+  | ReturnVia String String
 
-data Return_
-  = Return StateName_
-  | ReturnVia GuardName_ StateName_
+data TransitCore = TransitCore (Array Match)
 
-data TransitCore_ = TransitCore (Array Match_)
+data Match = Match String String (Array Return)
 
-data Match_ = Match StateName_ MsgName_ (Array Return_)
-
-instance Show Match_ where
+instance Show Match where
   show = genericShow
 
-instance Show TransitCore_ where
+instance Show TransitCore where
   show = genericShow
 
-instance Show Return_ where
+instance Show Return where
   show = genericShow
 
-derive instance Eq Match_
-derive instance Eq TransitCore_
-derive instance Eq Return_
+derive instance Eq Match
+derive instance Eq TransitCore
+derive instance Eq Return
 
-derive instance Generic Match_ _
-derive instance Generic TransitCore_ _
-derive instance Generic Return_ _
+derive instance Generic Match _
+derive instance Generic TransitCore _
+derive instance Generic Return _
 
 --------------------------------------------------------------------------------
 --- Reflection instances
 --------------------------------------------------------------------------------
 
-instance Reflectable (MkTransitCore Nil') TransitCore_ where
+instance Reflectable (MkTransitCoreTL Nil') TransitCore where
   reflectType _ = TransitCore []
 
 instance
-  ( Reflectable (MkTransitCore transitions) TransitCore_
-  , Reflectable transition Match_
+  ( Reflectable (MkTransitCoreTL transitions) TransitCore
+  , Reflectable transition Match
   ) =>
-  Reflectable (MkTransitCore (transition :> transitions)) TransitCore_ where
+  Reflectable (MkTransitCoreTL (transition :> transitions)) TransitCore where
 
   reflectType _ = TransitCore (Array.cons head tail)
     where
     head = reflectType (Proxy @transition)
-    (TransitCore tail) = reflectType (Proxy @(MkTransitCore transitions))
+    (TransitCore tail) = reflectType (Proxy @(MkTransitCoreTL transitions))
 
 instance
   ( IsSymbol stateName
   , IsSymbol msgName
   ) =>
-  Reflectable (MkMatch stateName msgName Nil') Match_ where
+  Reflectable (MkMatchTL stateName msgName Nil') Match where
   reflectType _ = Match
     (reflectSymbol (Proxy @stateName))
     (reflectSymbol (Proxy @msgName))
@@ -130,22 +123,22 @@ instance
 instance
   ( IsSymbol stateName
   , IsSymbol msgName
-  , Reflectable (MkMatch stateName msgName returns) Match_
-  , Reflectable ret Return_
+  , Reflectable (MkMatchTL stateName msgName returns) Match
+  , Reflectable ret Return
   ) =>
-  Reflectable (MkMatch stateName msgName (Cons' ret returns)) Match_ where
+  Reflectable (MkMatchTL stateName msgName (Cons' ret returns)) Match where
   reflectType _ = Match
     (reflectSymbol (Proxy @stateName))
     (reflectSymbol (Proxy @msgName))
     (Array.cons head tail)
     where
     head = reflectType (Proxy @ret)
-    Match _ _ tail = reflectType (Proxy @(MkMatch stateName msgName returns))
+    Match _ _ tail = reflectType (Proxy @(MkMatchTL stateName msgName returns))
 
-instance (IsSymbol stateName) => Reflectable (MkReturn stateName) Return_ where
+instance (IsSymbol stateName) => Reflectable (MkReturnTL stateName) Return where
   reflectType _ = Return (reflectSymbol (Proxy @stateName))
 
-instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnVia guardName stateName) Return_ where
+instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnViaTL guardName stateName) Return where
   reflectType _ = ReturnVia (reflectSymbol (Proxy @guardName)) (reflectSymbol (Proxy @stateName))
 
 --------------------------------------------------------------------------------
@@ -166,14 +159,14 @@ derive instance Newtype (ReturnState a) _
 
 ---
 
-class IsTransitSpec :: forall spec. spec -> TransitCore -> Constraint
+class IsTransitSpec :: forall spec. spec -> TransitCoreTL -> Constraint
 class IsTransitSpec spec core | spec -> core
 
-instance IsTransitSpec (MkTransitCore xs) (MkTransitCore xs)
+instance IsTransitSpec (MkTransitCoreTL xs) (MkTransitCoreTL xs)
 
 ---
 
-getStateNames :: TransitCore_ -> Array StateName_
+getStateNames :: TransitCore -> Array String
 getStateNames (TransitCore matches) = Array.nub $ Array.concatMap
   ( \(Match from _ returns) -> [ from ] <> map
       ( case _ of
@@ -184,5 +177,5 @@ getStateNames (TransitCore matches) = Array.nub $ Array.concatMap
   )
   matches
 
-getMatchesForState :: StateName_ -> TransitCore_ -> Array Match_
+getMatchesForState :: String -> TransitCore -> Array Match
 getMatchesForState stateName (TransitCore matches) = Array.filter (\(Match from _ _) -> from == stateName) matches

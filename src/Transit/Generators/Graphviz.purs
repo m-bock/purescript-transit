@@ -23,12 +23,12 @@ import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, getColor)
 import Transit.Colors as Colors
-import Transit.Core (Match_(..), MsgName_, Return_(..), StateName_, TransitCore_, getMatchesForState, getStateNames)
+import Transit.Core (Match(..), Return(..), TransitCore, getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
 import Transit.StateGraph (Node)
 
-mkGraphvizGraph :: Options -> TransitCore_ -> GraphvizGraph
+mkGraphvizGraph :: Options -> TransitCore -> GraphvizGraph
 mkGraphvizGraph options transit =
   GraphvizGraph $ join
     [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
@@ -40,7 +40,7 @@ mkGraphvizGraph options transit =
   where
   colorMap = mkColorMap transit
 
-mkStateSections :: ColorMap -> TransitCore_ -> Options -> Int -> StateName_ -> Array D.Section
+mkStateSections :: ColorMap -> TransitCore -> Options -> Int -> String -> Array D.Section
 mkStateSections colorMap transit options i stateName = join
   [ pure $ SecNode $ mkStateNode colors stateName
   , if i == 0 then
@@ -53,7 +53,7 @@ mkStateSections colorMap transit options i stateName = join
   where
   colors = lookupColor stateName colorMap
 
-mkMatchSections :: Colors -> Options -> Match_ -> Array D.Section
+mkMatchSections :: Colors -> Options -> Match -> Array D.Section
 mkMatchSections colors options (Match from msg returns) = case returns of
   [ Return to ] -> [ SecEdge $ mkEdgeMsg from to colors msg ]
   manyReturns ->
@@ -62,7 +62,7 @@ mkMatchSections colors options (Match from msg returns) = case returns of
     else
       mkDirectEdges from msg colors manyReturns
 
-mkDirectEdges :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
+mkDirectEdges :: String -> String -> Colors -> Array Return -> Array D.Section
 mkDirectEdges from msg colors returns = Array.concatMap
   ( case _ of
       Return to -> [ SecEdge $ mkEdgeMsg from to colors msg ]
@@ -70,7 +70,7 @@ mkDirectEdges from msg colors returns = Array.concatMap
   )
   returns
 
-mkDecisionNodeSections :: StateName_ -> MsgName_ -> Colors -> Array Return_ -> Array D.Section
+mkDecisionNodeSections :: String -> String -> Colors -> Array Return -> Array D.Section
 mkDecisionNodeSections from msg colors manyReturns =
   let
     decisionNode = "decision_" <> from <> "_" <> msg
@@ -81,7 +81,7 @@ mkDecisionNodeSections from msg colors manyReturns =
       , concatMap (mkDecisionEdges decisionNode colors) manyReturns
       ]
 
-mkDecisionEdges :: String -> Colors -> Return_ -> Array D.Section
+mkDecisionEdges :: String -> Colors -> Return -> Array D.Section
 mkDecisionEdges decisionNode colors = case _ of
   Return to -> [ SecEdge $ mkEdgeGuard decisionNode to colors Nothing ]
   ReturnVia guard to -> [ SecEdge $ mkEdgeGuard decisionNode to colors (Just guard) ]
@@ -100,7 +100,7 @@ type ColorMap = Map String Colors
 lookupColor :: String -> ColorMap -> Colors
 lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.lookup state colorMap
 
-mkColorMap :: TransitCore_ -> ColorMap
+mkColorMap :: TransitCore -> ColorMap
 mkColorMap transit =
   Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ getStateNames transit
 
@@ -199,12 +199,12 @@ defaultOptions =
   , useDecisionNodes: true
   }
 
-writeToFile :: (Options -> Options) -> TransitCore_ -> FilePath -> Effect Unit
+writeToFile :: (Options -> Options) -> TransitCore -> FilePath -> Effect Unit
 writeToFile mkOptions sg path = do
   FS.writeTextFile UTF8 path
     (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: TransitCore_ -> FilePath -> Effect Unit
+writeToFile_ :: TransitCore -> FilePath -> Effect Unit
 writeToFile_ sg path = writeToFile identity sg path
 

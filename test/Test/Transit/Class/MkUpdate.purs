@@ -15,7 +15,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdate)
-import Transit.Core (MatchImpl(..), MkMatch, MkReturn, MkReturnVia, MkTransitCore, ReturnState(..), ReturnStateVia, TransitCore)
+import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkReturnViaTL, MkTransitCoreTL, ReturnState(..), ReturnStateVia, TransitCoreTL)
 import Transit.Util (Generically(..))
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($))
@@ -100,10 +100,10 @@ instance Show State where
 instance Show Msg where
   show = genericShow
 
-type MyStateGraph :: TransitCore
-type MyStateGraph = MkTransitCore
-  ( Id $ (MkMatch "State1" "Msg1" (MkReturn "State2" :> Nil'))
-      :> (MkMatch "State2" "Msg2" (MkReturn "State1" :> Nil'))
+type MyStateGraph :: TransitCoreTL
+type MyStateGraph = MkTransitCoreTL
+  ( Id $ (MkMatchTL "State1" "Msg1" (MkReturnTL "State2" :> Nil'))
+      :> (MkMatchTL "State2" "Msg2" (MkReturnTL "State1" :> Nil'))
       :> Nil'
   )
 
