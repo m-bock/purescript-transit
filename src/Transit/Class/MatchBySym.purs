@@ -7,7 +7,13 @@ module Transit.Class.MatchBySym
 import Prelude
 
 import Data.Generic.Rep (class Generic, Argument(..), Constructor(..), NoArguments(..), Sum(..), from)
+import Data.Symbol (class IsSymbol)
+import Data.Variant (Variant)
+import Data.Variant as V
+import Prim.Row as Row
 import Transit.Util (Generically(..))
+import Type.Prelude (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
 
 class
   MatchBySym (sym :: Symbol) ty a
@@ -31,6 +37,9 @@ else instance MatchBySym sym (Constructor sym2 b) a where
 instance (MatchBySym sym t1 a, MatchBySym sym t2 a) => MatchBySym sym (Sum t1 t2) a where
   matchBySym onMatch onDefault (Inl x) = matchBySym @sym onMatch onDefault x
   matchBySym onMatch onDefault (Inr x) = matchBySym @sym onMatch onDefault x
+
+instance (Row.Cons sym a r1 r2, IsSymbol sym) => MatchBySym sym (Variant r2) a where
+  matchBySym onMatch onDefault = V.on (Proxy @sym) onMatch (\_ -> onDefault unit)
 
 matchBySym2 :: forall @sym1 @sym2 a1 b1 a2 b2 z. MatchBySym sym1 a1 b1 => MatchBySym sym2 a2 b2 => (b1 -> b2 -> z) -> (Unit -> z) -> a1 -> a2 -> z
 matchBySym2 f z x1 x2 =

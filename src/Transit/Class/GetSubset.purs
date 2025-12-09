@@ -38,6 +38,40 @@ class
 
 ---
 
+type Opts = SingleOrNoField /\ ArgsToRecord NoTransform
+
+instance
+  ( GenericVariantLike Opts t r
+  , FilterRow syms r r' r2'
+  , Row.Union r2' rx r
+  ) =>
+  GetSubset syms (Generically t) (Variant r') where
+  getSubset v = Generically z
+    where
+    z :: t
+    z = genericFromVariant (Proxy @Opts) $ y
+
+    y :: Variant r
+    y = V.expand x
+
+    x :: Variant r2'
+    x = filterRow @syms @r v
+
+instance
+  ( FilterRow syms r r' r2'
+  , Row.Union r2' rx r
+  ) =>
+  GetSubset syms (Variant r) (Variant r') where
+  getSubset v = y
+    where
+    y :: Variant r
+    y = V.expand x
+
+    x :: Variant r2'
+    x = filterRow @syms @r v
+
+---
+
 data SingleOrNoField
 
 instance
@@ -59,25 +93,3 @@ instance Util RL.Nil () Unit where
 instance Util (RL.Cons "1" a RL.Nil) ("1" :: a) a where
   getField r = Record.get (Proxy :: _ "1") r
   getField' x = Record.insert (Proxy :: _ "1") x {}
-
----
-
-type Opts = SingleOrNoField /\ ArgsToRecord NoTransform
-
-instance
-  ( GenericVariantLike Opts t r
-  , FilterRow syms r r' r2'
-  , Row.Union r2' rx r
-  ) =>
-  GetSubset syms (Generically t) (Variant r') where
-  getSubset v = Generically z
-    where
-    z :: t
-    z = genericFromVariant (Proxy @Opts) $ y
-
-    y :: Variant r
-    y = V.expand x
-
-    x :: Variant r2'
-    x = filterRow @syms @r v
-

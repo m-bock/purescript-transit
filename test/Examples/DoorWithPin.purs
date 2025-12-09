@@ -1,4 +1,4 @@
-module Test.Examples.DoorWithPin (main, spec) where
+module Test.Examples.DoorWithPin (main, spec, DoorDSL, State(..), Msg(..)) where
 
 import Prelude
 

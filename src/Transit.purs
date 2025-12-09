@@ -4,6 +4,7 @@ module Transit
   , mkUpdateGenericM
   , match
   , matchM
+  , mkUpdate
   , return
   , returnVia
   , class Return
@@ -21,7 +22,8 @@ import Prim.Row as Row
 import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.DSL as Export
-import Transit.Class.MkUpdate (class MkUpdate, mkUpdate)
+import Transit.Class.MkUpdate (class MkUpdate)
+import Transit.Class.MkUpdate as MU
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
 
@@ -35,7 +37,7 @@ mkUpdateGenericM
 mkUpdateGenericM = curryN @xs f
   where
   f :: xs -> state -> msg -> m state
-  f impl state msg = map (un Generically) $ mkUpdate @spec @m @xs impl (Generically state) (Generically msg)
+  f impl state msg = map (un Generically) $ MU.mkUpdate @spec @m @xs impl (Generically state) (Generically msg)
 
 mkUpdateGeneric
   :: forall @dsl spec msg state xs a
@@ -46,7 +48,18 @@ mkUpdateGeneric
 mkUpdateGeneric = curryN @xs f
   where
   f :: xs -> state -> msg -> state
-  f impl state msg = un Identity $ map (un Generically) $ mkUpdate @spec @Identity @xs impl (Generically state) (Generically msg)
+  f impl state msg = un Identity $ map (un Generically) $ MU.mkUpdate @spec @Identity @xs impl (Generically state) (Generically msg)
+
+mkUpdate
+  :: forall @dsl spec msg state xs a
+   . (IsTransitSpec dsl spec)
+  => (CurryN xs (state -> msg -> state) a)
+  => (MkUpdate spec Identity xs msg state)
+  => a
+mkUpdate = curryN @xs f
+  where
+  f :: xs -> state -> msg -> state
+  f impl state msg = un Identity $ MU.mkUpdate @spec @Identity @xs impl state msg
 
 match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg Identity msgIn stateIn stateOut
 match f = MatchImpl (\msg state -> pure $ f msg state)
