@@ -29,8 +29,7 @@ Type-Safe State Machines.
   - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
-  - [Example 7: das-ist-das-haus-vom-ni-ko-laus](#example-7-das-ist-das-haus-vom-ni-ko-laus)
-  - [Colors](#colors)
+  - [Example 7: This is the house of Santa Claus](#example-7-this-is-the-house-of-santa-claus)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
