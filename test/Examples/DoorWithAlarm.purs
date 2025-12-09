@@ -6,15 +6,16 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
+import Effect.Class.Console as Console
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, returnVia)
 import Transit.DSL (type (:?))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
+import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
-import Effect.Class.Console as Console
 
 --------------------------------------------------------------------------------
 --- Types
@@ -42,12 +43,14 @@ updateClassic state msg = case state, msg of
   DoorClosed, Open -> DoorOpen
   DoorClosed, Lock { newPin } -> DoorLocked { pin: newPin, attempts: 0 }
   DoorLocked { pin, attempts }, Unlock { enteredPin } ->
-    if pin == enteredPin then
-      DoorClosed
-    else if attempts < 3 then
-      DoorLocked { pin, attempts: attempts + 1 }
-    else
-      Alarm
+    let
+      pinCorrect = pin == enteredPin
+      attemptsExceeded = attempts >= 3
+    in
+      case pinCorrect, attemptsExceeded of
+        true, _ -> DoorClosed
+        false, true -> DoorLocked { pin, attempts: attempts + 1 }
+        false, false -> Alarm
   _, _ -> state
 
 --------------------------------------------------------------------------------
@@ -74,16 +77,24 @@ update = mkUpdateGeneric @DoorDSL
   ( match @"DoorClosed" @"Open" \_ _ ->
       return @"DoorOpen"
   )
-  ( match @"DoorClosed" @"Lock" \_ msg ->
-      return @"DoorLocked" { pin: msg.newPin, attempts: 0 }
+  ( match @"DoorClosed" @"Lock" \_ msg -> return @"DoorLocked"
+      { pin: msg.newPin
+      , attempts: 0
+      }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
-      if state.pin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed"
-      else if state.attempts < 3 then
-        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin, attempts: state.attempts + 1 }
-      else
-        returnVia @"TooManyAttempts" @"Alarm"
+      let
+        pinCorrect = state.pin == msg.enteredPin
+        attemptsExceeded = state.attempts >= 3
+      in
+        case pinCorrect, attemptsExceeded of
+          true, _ -> returnVia @"PinCorrect" @"DoorClosed"
+          false, true -> returnVia @"PinIncorrect" @"DoorLocked"
+            { pin: state.pin
+            , attempts: state.attempts + 1
+            }
+          false, false -> returnVia @"TooManyAttempts" @"Alarm"
+
   )
 
 --------------------------------------------------------------------------------

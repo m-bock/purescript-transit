@@ -6,12 +6,18 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
+import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
+import Test.Spec (Spec)
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
+import Test.Spec.Reporter.Console (consoleReporter)
 
 --------------------------------------------------------------------------------
 --- Types
@@ -108,36 +114,35 @@ update = mkUpdateGeneric @BridgesTransitions
 -- --- Tests
 -- --------------------------------------------------------------------------------
 
--- spec :: Spec Unit
--- spec = do
---   describe "Dead ends" do
---     it "should be empty" do
---       let r = reflectType (Proxy @DoorDSL)
---       let states = R.getStates r
---       let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
---       deadEnds `shouldEqual` []
+spec :: Spec Unit
+spec = do
+  describe "Dead ends" do
+    it "should be empty" do
+      let transit = reflectType (Proxy @BridgesTransitions)
+      let graph = mkStateGraph transit
+      hasEulerCircle graph `shouldEqual` false
+      hasEulerTrail graph `shouldEqual` false
 
 --------------------------------------------------------------------------------
 --- State diagram generation
 --------------------------------------------------------------------------------
-
-graphOptions :: TransitGraphviz.Options -> TransitGraphviz.Options
-graphOptions opts = opts
-  { useUndirectedEdges = true
-  }
-
-tableOptions :: TransitTable.Options -> TransitTable.Options
-tableOptions opts = opts
-  { useUndirectedEdges = true
-  }
 
 main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile graphOptions transit "graphs/bridges-koenigsberg.dot"
-  TransitTable.writeToFile tableOptions transit "graphs/bridges-koenigsberg.html"
+  TransitGraphviz.writeToFile
+    (_ { useUndirectedEdges = true })
+    transit
+    "graphs/bridges-koenigsberg.dot"
+
+  TransitTable.writeToFile
+    (_ { useUndirectedEdges = true })
+    transit
+    "graphs/bridges-koenigsberg.html"
+
+  runSpecAndExitProcess [ consoleReporter ] spec
 
 --------------------------------------------------------------------------------
 --- Instances
