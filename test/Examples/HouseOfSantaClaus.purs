@@ -2,6 +2,8 @@ module Test.Examples.HouseOfSantaClaus (main) where
 
 import Prelude
 
+import Data.Array as Array
+import Data.Foldable (foldl)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
@@ -126,49 +128,29 @@ update = mkUpdateGeneric @TransitSantaClaus
 -- --- Tests
 -- --------------------------------------------------------------------------------
 
+walk :: Array Msg
+walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
+
 spec :: Spec Unit
 spec = do
-  describe "Dead ends" do
-    it "should be empty" do
+  describe ".." do
+    it "..." do
       let transit = reflectType (Proxy @TransitSantaClaus)
       let graph = mkStateGraph transit
-      -- Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
-      -- Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
-      -- Set.size (Graph.getOutgoingEdges "LandC" graph) `shouldEqual` 3
-      -- Set.size (Graph.getOutgoingEdges "LandD" graph) `shouldEqual` 3
-      -- hasEulerCircle graph `shouldEqual` false
-      -- hasEulerTrail graph `shouldEqual` false
+
+      let walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
+
+      Array.length (Array.nub walk) `shouldEqual` 8
+
+      foldl update N_1 walk `shouldEqual` N_2
+
+      hasEulerCircle graph `shouldEqual` false
+      hasEulerTrail graph `shouldEqual` true
       pure unit
 
 --------------------------------------------------------------------------------
 --- State diagram generation
 --------------------------------------------------------------------------------
-
--- // Nodes
--- N_1 [shape = "box", label = <<b>N_1</b>>, fontsize = 12,
---      style = "filled", fillcolor = "#2f80ed", fontcolor = "#0e50a8",
---      fontname = "Arial", labelloc = "c", penwidth = 0.0,
---      pos="0,0!"];      // bottom-left
-
--- N_2 [shape = "box", label = <<b>N_2</b>>, fontsize = 12,
---      style = "filled", fillcolor = "#f2994a", fontcolor = "#c8660e",
---      fontname = "Arial", labelloc = "c", penwidth = 0.0,
---      pos="2,0!"];      // bottom-right
-
--- N_3 [shape = "box", label = <<b>N_3</b>>, fontsize = 12,
---      style = "filled", fillcolor = "#eb5757", fontcolor = "#c41717",
---      fontname = "Arial", labelloc = "c", penwidth = 0.0,
---      pos="2,2!"];      // top-right (square)
-
--- N_4 [shape = "box", label = <<b>N_4</b>>, fontsize = 12,
---      style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114",
---      fontname = "Arial", labelloc = "c", penwidth = 0.0,
---      pos="0,2!"];      // top-left (square)
-
--- N_5 [shape = "box", label = <<b>N_5</b>>, fontsize = 12,
---      style = "filled", fillcolor = "#56ccf2", fontcolor = "#10a3d2",
---      fontname = "Arial", labelloc = "c", penwidth = 0.0,
---      pos="1,3!"];      // roof tip
 
 main :: Effect Unit
 main = do
@@ -204,6 +186,8 @@ main = do
 
 derive instance Eq State
 derive instance Eq Msg
+
+derive instance Ord Msg
 
 derive instance Generic State _
 derive instance Generic Msg _
