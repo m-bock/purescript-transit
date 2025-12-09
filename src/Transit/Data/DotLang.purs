@@ -32,6 +32,7 @@ module Transit.Data.DotLang
   , shapeDiamond
   , styleFilled
   , toText
+  , Raw
   , width
   ) where
 
@@ -39,11 +40,14 @@ import Prelude
 
 import Color (Color)
 import Color as Color
+import Data.Maybe (Maybe(..))
 import Data.String as Str
 import Transit.Data.Html as Html
 
 class ToText a where
   toText :: a -> String
+
+type Raw = String
 
 data Section
   = SecNode Node
@@ -55,7 +59,7 @@ newtype GraphvizGraph = GraphvizGraph (Array Section)
 
 newtype GlobalAttrs = GlobalAttrs (Array Attr)
 
-data Node = Node String (Array Attr)
+data Node = Node String (Maybe Raw) (Array Attr)
 
 data Edge = Edge String String (Array Attr)
 
@@ -85,7 +89,12 @@ instance ToText Section where
   toText (SecGlobalRaw str) = str
 
 instance ToText Node where
-  toText (Node stateName attrs) = stateName <> " [" <> toText attrs <> "]"
+  toText (Node stateName raw attrs) = stateName <> " ["
+    <> case raw of
+      Just raw -> raw <> ","
+      Nothing -> ""
+    <> toText attrs
+    <> "]"
 
 instance ToText Edge where
   toText (Edge from to attrs) = from <> " -> " <> to <> " [" <> toText attrs <> "]"

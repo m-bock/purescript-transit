@@ -4,20 +4,22 @@ import Prelude
 
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
+import Data.Set as Set
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
 import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Reporter.Console (consoleReporter)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Data.Graph as Graph
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
-import Test.Spec.Runner.Node (runSpecAndExitProcess)
-import Test.Spec.Reporter.Console (consoleReporter)
 
 --------------------------------------------------------------------------------
 --- Types
@@ -120,6 +122,10 @@ spec = do
     it "should be empty" do
       let transit = reflectType (Proxy @BridgesTransitions)
       let graph = mkStateGraph transit
+      Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
+      Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
+      Set.size (Graph.getOutgoingEdges "LandC" graph) `shouldEqual` 3
+      Set.size (Graph.getOutgoingEdges "LandD" graph) `shouldEqual` 3
       hasEulerCircle graph `shouldEqual` false
       hasEulerTrail graph `shouldEqual` false
 

@@ -5,6 +5,7 @@ module Test.Transit.Data.DotLang
 import Prelude
 
 import Color (rgb)
+import Data.Maybe (Maybe(..))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Data.DotLang as DL
@@ -64,15 +65,16 @@ spec = do
 
     describe "ToText Node" do
       it "converts Node with no attributes" do
-        DL.toText (DL.Node "State1" []) `shouldEqual` "State1 []"
+        DL.toText (DL.Node "State1" Nothing []) `shouldEqual` "State1 []"
 
       it "converts Node with single attribute" do
-        DL.toText (DL.Node "State1" [ DL.Attr "label" (DL.Value "State 1") ])
+        DL.toText (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])
           `shouldEqual` "State1 [label = \"State 1\"]"
 
       it "converts Node with multiple attributes" do
         DL.toText
           ( DL.Node "State1"
+              Nothing
               [ DL.Attr "label" (DL.Value "State 1")
               , DL.Attr "shape" (DL.Value "box")
               ]
@@ -115,7 +117,7 @@ spec = do
 
     describe "ToText Section" do
       it "converts SecNode" do
-        DL.toText (DL.SecNode (DL.Node "State1" [ DL.Attr "label" (DL.Value "State 1") ]))
+        DL.toText (DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ]))
           `shouldEqual` "State1 [label = \"State 1\"]"
 
       it "converts SecEdge" do
@@ -138,7 +140,7 @@ spec = do
       it "converts graph with single node" do
         DL.toText
           ( DL.GraphvizGraph
-              [ DL.SecNode (DL.Node "State1" [])
+              [ DL.SecNode (DL.Node "State1" Nothing [])
               ]
           )
           `shouldEqual` "digraph \n{\nState1 []\n}"
@@ -147,7 +149,7 @@ spec = do
         DL.toText
           ( DL.GraphvizGraph
               [ DL.SecGlobal (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ])
-              , DL.SecNode (DL.Node "State1" [ DL.Attr "label" (DL.Value "State 1") ])
+              , DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])
               , DL.SecEdge (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ])
               ]
           )

@@ -42,7 +42,7 @@ mkGraphvizGraph options transit =
 
 mkStateSections :: ColorMap -> TransitCore -> Options -> Int -> String -> Array D.Section
 mkStateSections colorMap transit options i stateName = join
-  [ pure $ SecNode $ mkStateNode colors stateName
+  [ pure $ SecNode $ mkStateNode options colors stateName
   , if i == 0 then
       [ SecNode $ mkInitNode "__Start__"
       , SecEdge $ mkInitEdge "__Start__" stateName
@@ -118,8 +118,8 @@ mkColorMap :: TransitCore -> ColorMap
 mkColorMap transit =
   Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ getStateNames transit
 
-mkStateNode :: Colors -> StateNode -> D.Node
-mkStateNode colors node = D.Node node
+mkStateNode :: Options -> Colors -> StateNode -> D.Node
+mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
   [ D.shapeBox
   , D.labelHtmlBold node
   , D.fontSize 12
@@ -132,7 +132,7 @@ mkStateNode colors node = D.Node node
   ]
 
 mkInitNode :: String -> D.Node
-mkInitNode name = D.Node name
+mkInitNode name = D.Node name Nothing
   [ D.shapeCircle
   , D.label ""
   , D.width 0.15
@@ -186,7 +186,7 @@ mkEdgeGuard from to colors mayLabel = D.Edge from to
       ]
 
 mkDecisionNode :: String -> Colors -> D.Node
-mkDecisionNode name colors = D.Node name
+mkDecisionNode name colors = D.Node name Nothing
   [ D.shapeDiamond
   , D.label "?"
   , D.fontSize 12
@@ -202,6 +202,7 @@ mkDecisionNode name colors = D.Node name
 type Options =
   { title :: String
   , globalAttrsRaw :: Maybe String
+  , nodeAttrsRaw :: Maybe (String -> String)
   , useDecisionNodes :: Boolean
   , useUndirectedEdges :: Boolean
   }
@@ -210,6 +211,7 @@ defaultOptions :: Options
 defaultOptions =
   { title: "Untitled"
   , globalAttrsRaw: Nothing
+  , nodeAttrsRaw: Nothing
   , useDecisionNodes: true
   , useUndirectedEdges: false
   }

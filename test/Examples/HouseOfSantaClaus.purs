@@ -1,0 +1,215 @@
+module Test.Examples.HouseOfSantaClaus (main) where
+
+import Prelude
+
+import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
+import Data.Reflectable (reflectType)
+import Data.Set as Set
+import Data.Show.Generic (genericShow)
+import Effect (Effect)
+import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
+import Test.Spec (Spec)
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Reporter.Console (consoleReporter)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Data.Graph as Graph
+import Transit.Generators.Graphviz as TransitGraphviz
+import Transit.Generators.TransitionTable as TransitTable
+import Transit.StateGraph (mkStateGraph)
+import Type.Function (type ($))
+import Type.Prelude (Proxy(..))
+
+--------------------------------------------------------------------------------
+--- Types
+--------------------------------------------------------------------------------
+
+data State = N_1 | N_2 | N_3 | N_4 | N_5
+data Msg
+  = E_a
+  | E_b
+  | E_c
+  | E_d
+  | E_e
+  | E_f
+  | E_g
+  | E_h
+
+-- --------------------------------------------------------------------------------
+-- --- TraditionalUpdate
+-- --------------------------------------------------------------------------------
+
+updateClassic :: State -> Msg -> State
+updateClassic state msg = case state, msg of
+  N_1, E_a -> N_2
+  N_2, E_a -> N_1
+
+  N_2, E_b -> N_3
+  N_3, E_b -> N_2
+
+  N_3, E_c -> N_5
+  N_5, E_c -> N_3
+
+  N_5, E_d -> N_4
+  N_4, E_d -> N_5
+
+  N_4, E_e -> N_1
+  N_1, E_e -> N_4
+
+  N_1, E_f -> N_3
+  N_3, E_f -> N_1
+
+  N_2, E_g -> N_4
+  N_4, E_g -> N_2
+
+  _, _ -> state
+
+--------------------------------------------------------------------------------
+--- transit Approach
+--------------------------------------------------------------------------------
+
+type TransitSantaClaus =
+  Transit $ Empty
+    :* ("N_1" :@ "E_a" >| "N_2")
+    :* ("N_2" :@ "E_a" >| "N_1")
+
+    :* ("N_2" :@ "E_b" >| "N_3")
+    :* ("N_3" :@ "E_b" >| "N_2")
+
+    :* ("N_3" :@ "E_c" >| "N_5")
+    :* ("N_5" :@ "E_c" >| "N_3")
+
+    :* ("N_5" :@ "E_d" >| "N_4")
+    :* ("N_4" :@ "E_d" >| "N_5")
+
+    :* ("N_4" :@ "E_e" >| "N_1")
+    :* ("N_1" :@ "E_e" >| "N_4")
+
+    :* ("N_1" :@ "E_f" >| "N_3")
+    :* ("N_3" :@ "E_f" >| "N_1")
+
+    :* ("N_2" :@ "E_g" >| "N_4")
+    :* ("N_4" :@ "E_g" >| "N_2")
+
+    :* ("N_3" :@ "E_h" >| "N_4")
+    :* ("N_4" :@ "E_h" >| "N_3")
+
+update :: State -> Msg -> State
+update = mkUpdateGeneric @TransitSantaClaus
+  (match @"N_1" @"E_a" \_ _ -> return @"N_2")
+  (match @"N_2" @"E_a" \_ _ -> return @"N_1")
+
+  (match @"N_2" @"E_b" \_ _ -> return @"N_3")
+  (match @"N_3" @"E_b" \_ _ -> return @"N_2")
+
+  (match @"N_3" @"E_c" \_ _ -> return @"N_5")
+  (match @"N_5" @"E_c" \_ _ -> return @"N_3")
+
+  (match @"N_5" @"E_d" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_d" \_ _ -> return @"N_5")
+
+  (match @"N_4" @"E_e" \_ _ -> return @"N_1")
+  (match @"N_1" @"E_e" \_ _ -> return @"N_4")
+
+  (match @"N_1" @"E_f" \_ _ -> return @"N_3")
+  (match @"N_3" @"E_f" \_ _ -> return @"N_1")
+
+  (match @"N_2" @"E_g" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_g" \_ _ -> return @"N_2")
+
+  (match @"N_3" @"E_h" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_h" \_ _ -> return @"N_3")
+
+-- --------------------------------------------------------------------------------
+-- --- Tests
+-- --------------------------------------------------------------------------------
+
+spec :: Spec Unit
+spec = do
+  describe "Dead ends" do
+    it "should be empty" do
+      let transit = reflectType (Proxy @TransitSantaClaus)
+      let graph = mkStateGraph transit
+      -- Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
+      -- Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
+      -- Set.size (Graph.getOutgoingEdges "LandC" graph) `shouldEqual` 3
+      -- Set.size (Graph.getOutgoingEdges "LandD" graph) `shouldEqual` 3
+      -- hasEulerCircle graph `shouldEqual` false
+      -- hasEulerTrail graph `shouldEqual` false
+      pure unit
+
+--------------------------------------------------------------------------------
+--- State diagram generation
+--------------------------------------------------------------------------------
+
+-- // Nodes
+-- N_1 [shape = "box", label = <<b>N_1</b>>, fontsize = 12,
+--      style = "filled", fillcolor = "#2f80ed", fontcolor = "#0e50a8",
+--      fontname = "Arial", labelloc = "c", penwidth = 0.0,
+--      pos="0,0!"];      // bottom-left
+
+-- N_2 [shape = "box", label = <<b>N_2</b>>, fontsize = 12,
+--      style = "filled", fillcolor = "#f2994a", fontcolor = "#c8660e",
+--      fontname = "Arial", labelloc = "c", penwidth = 0.0,
+--      pos="2,0!"];      // bottom-right
+
+-- N_3 [shape = "box", label = <<b>N_3</b>>, fontsize = 12,
+--      style = "filled", fillcolor = "#eb5757", fontcolor = "#c41717",
+--      fontname = "Arial", labelloc = "c", penwidth = 0.0,
+--      pos="2,2!"];      // top-right (square)
+
+-- N_4 [shape = "box", label = <<b>N_4</b>>, fontsize = 12,
+--      style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114",
+--      fontname = "Arial", labelloc = "c", penwidth = 0.0,
+--      pos="0,2!"];      // top-left (square)
+
+-- N_5 [shape = "box", label = <<b>N_5</b>>, fontsize = 12,
+--      style = "filled", fillcolor = "#56ccf2", fontcolor = "#10a3d2",
+--      fontname = "Arial", labelloc = "c", penwidth = 0.0,
+--      pos="1,3!"];      // roof tip
+
+main :: Effect Unit
+main = do
+  let
+    transit = reflectType (Proxy @TransitSantaClaus)
+
+  TransitGraphviz.writeToFile
+    ( _
+        { useUndirectedEdges = true
+        , nodeAttrsRaw = Just \node -> case node of
+            "N_1" -> "pos=\"0,0!\""
+            "N_2" -> "pos=\"2,0!\""
+            "N_3" -> "pos=\"2,2!\""
+            "N_4" -> "pos=\"0,2!\""
+            "N_5" -> "pos=\"1,3!\""
+            _ -> ""
+        , globalAttrsRaw = Just "layout=neato"
+        }
+    )
+    transit
+    "graphs/house-of-santa-claus.dot"
+
+  TransitTable.writeToFile
+    (_ { useUndirectedEdges = true })
+    transit
+    "graphs/house-of-santa-claus.html"
+
+  runSpecAndExitProcess [ consoleReporter ] spec
+
+--------------------------------------------------------------------------------
+--- Instances
+--------------------------------------------------------------------------------
+
+derive instance Eq State
+derive instance Eq Msg
+
+derive instance Generic State _
+derive instance Generic Msg _
+
+instance Show State where
+  show = genericShow
+
+instance Show Msg where
+  show = genericShow

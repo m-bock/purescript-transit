@@ -801,6 +801,10 @@ spec = do
     it "should be empty" do
       let transit = reflectType (Proxy @BridgesTransitions)
       let graph = mkStateGraph transit
+      Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
+      Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
+      Set.size (Graph.getOutgoingEdges "LandC" graph) `shouldEqual` 3
+      Set.size (Graph.getOutgoingEdges "LandD" graph) `shouldEqual` 3
       hasEulerCircle graph `shouldEqual` false
       hasEulerTrail graph `shouldEqual` false
 
@@ -851,6 +855,48 @@ In the next example, we'll see a graph that **does** have an Eulerian trail, dem
 ## Example 7: das-ist-das-haus-vom-ni-ko-laus
 
 <img src="assets/haus-nikolaus.svg" alt="Transit" />
+
+<!-- PD_START:purs
+filePath: test/Examples/HouseOfSantaClaus.purs
+pick:
+  - TransitSantaClaus
+-->
+
+```purescript
+type TransitSantaClaus =
+  Transit $ Empty
+    :* ("N_1" :@ "E_a" >| "N_2")
+    :* ("N_2" :@ "E_a" >| "N_1")
+
+    :* ("N_2" :@ "E_b" >| "N_3")
+    :* ("N_3" :@ "E_b" >| "N_2")
+
+    :* ("N_3" :@ "E_c" >| "N_5")
+    :* ("N_5" :@ "E_c" >| "N_3")
+
+    :* ("N_5" :@ "E_d" >| "N_4")
+    :* ("N_4" :@ "E_d" >| "N_5")
+
+    :* ("N_4" :@ "E_e" >| "N_1")
+    :* ("N_1" :@ "E_e" >| "N_4")
+
+    :* ("N_1" :@ "E_f" >| "N_3")
+    :* ("N_3" :@ "E_f" >| "N_1")
+
+    :* ("N_2" :@ "E_g" >| "N_4")
+    :* ("N_4" :@ "E_g" >| "N_2")
+
+    :* ("N_3" :@ "E_h" >| "N_4")
+    :* ("N_4" :@ "E_h" >| "N_3")
+```
+
+<!-- PD_END -->
+
+<!-- PD_START:raw
+filePath: graphs/house-of-santa-claus.html
+--><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
+
+<img src="graphs/house-of-santa-claus.svg"  />
 
 ## Colors
 

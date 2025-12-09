@@ -10,6 +10,7 @@ import Test.Examples.ColorRing as Test.Examples.ColorRing
 import Test.Examples.DoorWithLock as Test.Examples.DoorWithLock
 import Test.Examples.DoorWithPin as Test.Examples.DoorWithPin
 import Test.Examples.DoorWithAlarm as Test.Examples.DoorWithAlarm
+import Test.Examples.HouseOfSantaClaus as Test.Examples.HouseOfSantaClaus
 
 main :: Effect Unit
 main = do
@@ -18,6 +19,7 @@ main = do
   Test.Examples.DoorWithPin.main
   Test.Examples.DoorWithAlarm.main
   Test.Examples.BridgesKoenigsberg.main
+  Test.Examples.HouseOfSantaClaus.main
   Test.Examples.ColorRing.main
 
   Patchdown.main
