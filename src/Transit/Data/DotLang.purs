@@ -1,37 +1,38 @@
 module Transit.Data.DotLang
-  ( class ToText
-  , toText
-  , Section(..)
-  , GraphvizGraph(..)
-  , GlobalAttrs(..)
-  , Node(..)
+  ( Attr(..)
   , Edge(..)
-  , Attr(..)
+  , GlobalAttrs(..)
+  , GraphvizGraph(..)
+  , Node(..)
+  , Section(..)
   , Value(..)
-  , rankDirTD
-  , fontNameArial
-  , labelHtmlBold
-  , labelHtmlItalic
-  , shapeBox
-  , shapeDiamond
-  , fontSize
-  , styleFilled
+  , arrowHeadNone
   , arrowSize
-  , shapeCircle
-  , label
-  , width
-  , height
-  , fixedSize
-  , fillColor
-  , penWidth
-  , fontColor
-  , labelLocC
-  , labelLocT
+  , arrowTailNone
+  , class ToText
   , color
   , colorMulti
   , dirBoth
-  , arrowHeadNone
-  , arrowTailNone
+  , fillColor
+  , fixedSize
+  , fontColor
+  , fontNameArial
+  , fontSize
+  , height
+  , label
+  , labelHtml
+  , labelHtmlBold
+  , labelHtmlItalic
+  , labelLocC
+  , labelLocT
+  , penWidth
+  , rankDirTD
+  , shapeBox
+  , shapeCircle
+  , shapeDiamond
+  , styleFilled
+  , toText
+  , width
   ) where
 
 import Prelude
@@ -39,6 +40,7 @@ import Prelude
 import Color (Color)
 import Color as Color
 import Data.String as Str
+import Transit.Data.Html as Html
 
 class ToText a where
   toText :: a -> String
@@ -108,11 +110,11 @@ instance ToText Value where
 rankDirTD :: Attr
 rankDirTD = Attr "rankdir" (Value "TD")
 
-
-
 fontNameArial :: Attr
 fontNameArial = Attr "fontname" (Value "Arial")
 
+labelHtml :: Html.Node -> Attr
+labelHtml node = Attr "label" (HtmlLabel $ Html.nodeToHtml node)
 
 labelHtmlBold :: String -> Attr
 labelHtmlBold label = Attr "label" (HtmlLabel $ "<b>" <> label <> "</b>")

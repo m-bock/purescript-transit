@@ -20,13 +20,13 @@ import Type.Prelude (Proxy(..))
 data State = LandA | LandB | LandC | LandD
 
 data Msg
-  = CrossBridge_a
-  | CrossBridge_b
-  | CrossBridge_c
-  | CrossBridge_d
-  | CrossBridge_e
-  | CrossBridge_f
-  | CrossBridge_g
+  = Cross_a
+  | Cross_b
+  | Cross_c
+  | Cross_d
+  | Cross_e
+  | Cross_f
+  | Cross_g
 
 -- --------------------------------------------------------------------------------
 -- --- TraditionalUpdate
@@ -34,23 +34,23 @@ data Msg
 
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
-  LandA, CrossBridge_a -> LandB
-  LandA, CrossBridge_b -> LandB
-  LandA, CrossBridge_c -> LandC
-  LandA, CrossBridge_d -> LandC
-  LandA, CrossBridge_e -> LandD
+  LandA, Cross_a -> LandB
+  LandA, Cross_b -> LandB
+  LandA, Cross_c -> LandC
+  LandA, Cross_d -> LandC
+  LandA, Cross_e -> LandD
 
-  LandB, CrossBridge_a -> LandA
-  LandB, CrossBridge_b -> LandA
-  LandB, CrossBridge_f -> LandD
+  LandB, Cross_a -> LandA
+  LandB, Cross_b -> LandA
+  LandB, Cross_f -> LandD
 
-  LandC, CrossBridge_c -> LandA
-  LandC, CrossBridge_d -> LandA
-  LandC, CrossBridge_g -> LandD
+  LandC, Cross_c -> LandA
+  LandC, Cross_d -> LandA
+  LandC, Cross_g -> LandD
 
-  LandD, CrossBridge_e -> LandA
-  LandD, CrossBridge_f -> LandB
-  LandD, CrossBridge_g -> LandC
+  LandD, Cross_e -> LandA
+  LandD, Cross_f -> LandB
+  LandD, Cross_g -> LandC
 
   _, _ -> state
 
@@ -60,43 +60,49 @@ updateClassic state msg = case state, msg of
 
 type BridgesTransitions =
   Transit $ Empty
-    :* ("LandA" :@ "CrossBridge_a" >| "LandB")
-    :* ("LandA" :@ "CrossBridge_b" >| "LandB")
-    :* ("LandA" :@ "CrossBridge_c" >| "LandC")
-    :* ("LandA" :@ "CrossBridge_d" >| "LandC")
-    :* ("LandA" :@ "CrossBridge_e" >| "LandD")
+    :* ("LandA" :@ "Cross_a" >| "LandB")
+    :* ("LandB" :@ "Cross_a" >| "LandA")
 
-    :* ("LandB" :@ "CrossBridge_a" >| "LandA")
-    :* ("LandB" :@ "CrossBridge_b" >| "LandA")
-    :* ("LandB" :@ "CrossBridge_f" >| "LandD")
+    :* ("LandA" :@ "Cross_b" >| "LandB")
+    :* ("LandB" :@ "Cross_b" >| "LandA")
 
-    :* ("LandC" :@ "CrossBridge_c" >| "LandA")
-    :* ("LandC" :@ "CrossBridge_d" >| "LandA")
-    :* ("LandC" :@ "CrossBridge_g" >| "LandD")
+    :* ("LandA" :@ "Cross_c" >| "LandC")
+    :* ("LandC" :@ "Cross_c" >| "LandA")
 
-    :* ("LandD" :@ "CrossBridge_e" >| "LandA")
-    :* ("LandD" :@ "CrossBridge_f" >| "LandB")
-    :* ("LandD" :@ "CrossBridge_g" >| "LandC")
+    :* ("LandA" :@ "Cross_d" >| "LandC")
+    :* ("LandC" :@ "Cross_d" >| "LandA")
+
+    :* ("LandA" :@ "Cross_e" >| "LandD")
+    :* ("LandD" :@ "Cross_e" >| "LandA")
+
+    :* ("LandB" :@ "Cross_f" >| "LandD")
+    :* ("LandD" :@ "Cross_f" >| "LandB")
+
+    :* ("LandC" :@ "Cross_g" >| "LandD")
+    :* ("LandD" :@ "Cross_g" >| "LandC")
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @BridgesTransitions
-  (match @"LandA" @"CrossBridge_a" \_ _ -> return @"LandB")
-  (match @"LandA" @"CrossBridge_b" \_ _ -> return @"LandB")
-  (match @"LandA" @"CrossBridge_c" \_ _ -> return @"LandC")
-  (match @"LandA" @"CrossBridge_d" \_ _ -> return @"LandC")
-  (match @"LandA" @"CrossBridge_e" \_ _ -> return @"LandD")
+  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
 
-  (match @"LandB" @"CrossBridge_a" \_ _ -> return @"LandA")
-  (match @"LandB" @"CrossBridge_b" \_ _ -> return @"LandA")
-  (match @"LandB" @"CrossBridge_f" \_ _ -> return @"LandD")
+  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
 
-  (match @"LandC" @"CrossBridge_c" \_ _ -> return @"LandA")
-  (match @"LandC" @"CrossBridge_d" \_ _ -> return @"LandA")
-  (match @"LandC" @"CrossBridge_g" \_ _ -> return @"LandD")
+  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
 
-  (match @"LandD" @"CrossBridge_e" \_ _ -> return @"LandA")
-  (match @"LandD" @"CrossBridge_f" \_ _ -> return @"LandB")
-  (match @"LandD" @"CrossBridge_g" \_ _ -> return @"LandC")
+  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA")
+
+  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA")
+
+  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB")
+
+  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
 
 -- --------------------------------------------------------------------------------
 -- --- Tests
@@ -115,13 +121,23 @@ update = mkUpdateGeneric @BridgesTransitions
 --- State diagram generation
 --------------------------------------------------------------------------------
 
+graphOptions :: TransitGraphviz.Options -> TransitGraphviz.Options
+graphOptions opts = opts
+  { useUndirectedEdges = true
+  }
+
+tableOptions :: TransitTable.Options -> TransitTable.Options
+tableOptions opts = opts
+  { useUndirectedEdges = true
+  }
+
 main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile (_ { useUndirectedEdges = true }) transit "graphs/bridges-koenigsberg.dot"
-  TransitTable.writeToFile_ transit "graphs/bridges-koenigsberg.html"
+  TransitGraphviz.writeToFile graphOptions transit "graphs/bridges-koenigsberg.dot"
+  TransitTable.writeToFile tableOptions transit "graphs/bridges-koenigsberg.html"
 
 --------------------------------------------------------------------------------
 --- Instances

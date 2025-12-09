@@ -26,7 +26,7 @@ import Transit.Colors as Colors
 import Transit.Core (Match(..), Return(..), TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
-import Transit.StateGraph (Node)
+import Transit.StateGraph (StateNode)
 
 mkGraphvizGraph :: Options -> TransitCore -> GraphvizGraph
 mkGraphvizGraph options transit =
@@ -56,8 +56,8 @@ mkStateSections colorMap transit options i stateName = join
 mkMatchSections :: Colors -> TransitCore -> Options -> Match -> Array D.Section
 mkMatchSections colors transit options (Match from msg returns) = case returns of
   [ Return to ] ->
-    if options.useUndirectedEdges then
-      if (drawUnidirectionalEdge from to msg transit) then
+    if options.useUndirectedEdges && hasComplementaryEdge from to msg transit then
+      if isCanonicalFirst from to then
         [ SecEdge $ mkUndirectedEdge from to msg ]
       else
         []
@@ -69,10 +69,12 @@ mkMatchSections colors transit options (Match from msg returns) = case returns o
     else
       mkDirectEdges from msg colors manyReturns
 
-drawUnidirectionalEdge :: String -> String -> String -> TransitCore -> Boolean
-drawUnidirectionalEdge from to msg (TransitCore matches) = (from > to) &&
-  ( Array.any (\(Match from' msg' returns') -> from' == to && msg' == msg && returns' == [ Return from ]) matches
-  )
+isCanonicalFirst :: String -> String -> Boolean
+isCanonicalFirst from to = (from > to)
+
+hasComplementaryEdge :: String -> String -> String -> TransitCore -> Boolean
+hasComplementaryEdge from to msg (TransitCore matches) =
+  Array.any (\(Match from' msg' returns') -> from' == to && msg' == msg && returns' == [ Return from ]) matches
 
 mkDirectEdges :: String -> String -> Colors -> Array Return -> Array D.Section
 mkDirectEdges from msg colors returns = Array.concatMap
@@ -116,7 +118,7 @@ mkColorMap :: TransitCore -> ColorMap
 mkColorMap transit =
   Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ getStateNames transit
 
-mkStateNode :: Colors -> Node -> D.Node
+mkStateNode :: Colors -> StateNode -> D.Node
 mkStateNode colors node = D.Node node
   [ D.shapeBox
   , D.labelHtmlBold node
@@ -158,8 +160,7 @@ mkUndirectedEdge from to label = D.Edge from to
   , D.arrowSize 1.5
   , D.penWidth 2.0
   , D.dirBoth
-  , D.arrowHeadNone
-  , D.arrowTailNone
+  , D.arrowSize 0.7
   ]
 
 mkEdgeMsg :: String -> String -> Colors -> String -> D.Edge
