@@ -2,23 +2,10 @@ module Test.Examples.Signatures (update) where
 
 import Prelude
 
-import Data.Generic.Rep (class Generic)
-import Data.Reflectable (reflectType)
-import Data.Show.Generic (genericShow)
 import Data.Variant (Variant)
-import Effect (Effect)
-import Effect.Class.Console as Console
 import Test.Examples.DoorWithAlarm (Msg, State, DoorDSL)
-import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, returnVia)
+import Transit (match, mkUpdateGeneric)
 import Transit.Core (ReturnState, ReturnStateVia)
-import Transit.DSL (type (:?))
-import Transit.Generators.Graphviz as TransitGraphviz
-import Transit.Generators.TransitionTable as TransitTable
-import Transit.StateGraph (mkStateGraph)
-import Type.Function (type ($))
-import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 --------------------------------------------------------------------------------

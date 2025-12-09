@@ -26,6 +26,8 @@ Type-Safe State Machines.
   - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
     - [The Classic Approach](#the-classic-approach-3)
     - [The Transit Approach](#the-transit-approach-3)
+  - [Type signatures](#type-signatures)
+  - [Variants](#variants)
   - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
@@ -616,6 +618,94 @@ The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state
 - 🟢 The labels make the code self-documenting—it's immediately clear which condition leads to which state
 
 Labeled transitions are particularly valuable when you have complex conditional logic with multiple possible outcomes, as they provide both type safety and clear documentation of the state machine's behavior.
+
+## Type signatures
+
+<!-- PD_START:purs
+filePath: test/Examples/Signatures.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdateGeneric @DoorDSL
+  ( match @"DoorOpen" @"Close"
+      ( \(state :: Unit) (msg :: Unit) ->
+          unsafeCoerce "todo"
+            :: Variant ("DoorClosed" :: ReturnState Unit)
+      )
+  )
+  ( match @"DoorClosed" @"Open"
+      ( \(state :: Unit) (msg :: Unit) ->
+          unsafeCoerce "todo"
+            :: Variant ("DoorOpen" :: ReturnState Unit)
+      )
+  )
+  ( match @"DoorClosed" @"Lock"
+      ( \(state :: Unit) (msg :: { newPin :: String }) ->
+          unsafeCoerce "todo"
+            :: Variant ("DoorLocked" :: ReturnState { attempts :: Int, pin :: String })
+      )
+  )
+  ( match @"DoorLocked" @"Unlock"
+      ( \(state :: { attempts :: Int, pin :: String }) (msg :: { enteredPin :: String }) ->
+          unsafeCoerce "todo"
+            :: Variant
+                 ( "Alarm" :: ReturnStateVia "TooManyAttempts" Unit
+                 , "DoorClosed" :: ReturnStateVia "PinCorrect" Unit
+                 , "DoorLocked" :: ReturnStateVia "PinIncorrect" { attempts :: Int, pin :: String }
+                 )
+      )
+  )
+```
+
+<!-- PD_END -->
+
+## Variants
+
+<!-- PD_START:purs
+filePath: test/Examples/Variants.purs
+pick:
+  - State
+  - Msg
+  - update
+-->
+
+```purescript
+type State = Variant
+  ( "DoorOpen" :: Unit
+  , "DoorClosed" :: Unit
+  , "DoorLocked" :: { pin :: String }
+  )
+
+type Msg = Variant
+  ( "Close" :: Unit
+  , "Open" :: Unit
+  , "Lock" :: { newPin :: String }
+  , "Unlock" :: { enteredPin :: String }
+  )
+
+update :: State -> Msg -> State
+update = mkUpdate @DoorDSL
+  ( match @"DoorOpen" @"Close" \_ _ ->
+      return @"DoorClosed"
+  )
+  ( match @"DoorClosed" @"Open" \_ _ ->
+      return @"DoorOpen"
+  )
+  ( match @"DoorClosed" @"Lock" \_ msg ->
+      return @"DoorLocked" { pin: msg.newPin }
+  )
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      if state.pin == msg.enteredPin then
+        return @"DoorClosed"
+      else
+        return @"DoorLocked" { pin: state.pin }
+  )
+```
+
+<!-- PD_END -->
 
 ## Monadic update functions
 
