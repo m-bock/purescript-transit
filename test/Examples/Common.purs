@@ -23,4 +23,6 @@ countOddOutgoingEdges g =
   let
     nodes = Graph.getNodes g
   in
-    Array.length $ Array.filter (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g)) (Set.toUnfoldable nodes)
+    Array.length $ Array.filter
+      (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g))
+      (Set.toUnfoldable nodes)

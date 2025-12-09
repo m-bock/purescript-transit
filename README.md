@@ -778,10 +778,57 @@ countOddOutgoingEdges g =
   let
     nodes = Graph.getNodes g
   in
-    Array.length $ Array.filter (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g)) (Set.toUnfoldable nodes)
+    Array.length $ Array.filter
+      (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g))
+      (Set.toUnfoldable nodes)
 ```
 
 <!-- PD_END -->
+
+To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - spec
+  - main
+-->
+
+```purescript
+spec :: Spec Unit
+spec = do
+  describe "Dead ends" do
+    it "should be empty" do
+      let transit = reflectType (Proxy @BridgesTransitions)
+      let graph = mkStateGraph transit
+      hasEulerCircle graph `shouldEqual` false
+      hasEulerTrail graph `shouldEqual` false
+
+main :: Effect Unit
+main = do
+  let
+    transit = reflectType (Proxy @BridgesTransitions)
+
+  TransitGraphviz.writeToFile
+    (_ { useUndirectedEdges = true })
+    transit
+    "graphs/bridges-koenigsberg.dot"
+
+  TransitTable.writeToFile
+    (_ { useUndirectedEdges = true })
+    transit
+    "graphs/bridges-koenigsberg.html"
+
+  runSpecAndExitProcess [ consoleReporter ] spec
+```
+
+<!-- PD_END -->
+
+The key steps are:
+
+1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesTransitions)` converts the type-level DSL to a term-level representation
+2. **Convert to a graph**: `mkStateGraph transit` transforms the transit specification into a `StateGraph`—a general-purpose graph data structure
+3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
 
