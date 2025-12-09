@@ -852,9 +852,27 @@ This example demonstrates that transit's value extends far beyond state machine 
 
 In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how transit can help verify and understand graph properties beyond simple state machines.
 
-## Example 7: das-ist-das-haus-vom-ni-ko-laus
+## Example 7: This is the house of Santa Claus
+
+[AI: in german, this is the house of Santa Claus, more common, thus explain]
 
 <img src="assets/das-haus-vom-nikolaus-solution.webp" />
+
+<table>
+  <tr>
+    <th>Syllable</th>
+    <th>German</th>
+    <th>English</th>
+  </tr>
+  <tr><td>1</td><td>das</td> <td>This</td></tr>
+  <tr><td>2</td><td>ist</td> <td>is</td></tr>
+  <tr><td>3</td><td>das</td> <td>the</td></tr>
+  <tr><td>4</td><td>Haus</td> <td>house</td></tr>
+  <tr><td>5</td><td>vom</td> <td>of</td></tr>
+  <tr><td>6</td><td>Ni-</td> <td>San-</td></tr>
+  <tr><td>7</td><td>ko-</td> <td>ta</td></tr>
+  <tr><td>8</td><td>laus</td> <td>Claus</td></tr>
+</table>
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
