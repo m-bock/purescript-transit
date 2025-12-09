@@ -23,7 +23,7 @@ import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Transit.Colors (Colors, getColor)
 import Transit.Colors as Colors
-import Transit.Core (Match(..), Return(..), TransitCore, getMatchesForState, getStateNames)
+import Transit.Core (Match(..), Return(..), TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
 import Transit.StateGraph (Node)
@@ -48,19 +48,31 @@ mkStateSections colorMap transit options i stateName = join
       , SecEdge $ mkInitEdge "__Start__" stateName
       ]
     else []
-  , Array.concatMap (mkMatchSections colors options) $ getMatchesForState stateName transit
+  , Array.concatMap (mkMatchSections colors transit options) $ getMatchesForState stateName transit
   ]
   where
   colors = lookupColor stateName colorMap
 
-mkMatchSections :: Colors -> Options -> Match -> Array D.Section
-mkMatchSections colors options (Match from msg returns) = case returns of
-  [ Return to ] -> [ SecEdge $ mkEdgeMsg from to colors msg ]
+mkMatchSections :: Colors -> TransitCore -> Options -> Match -> Array D.Section
+mkMatchSections colors transit options (Match from msg returns) = case returns of
+  [ Return to ] ->
+    if options.useUndirectedEdges then
+      if (drawUnidirectionalEdge from to msg transit) then
+        [ SecEdge $ mkUndirectedEdge from to msg ]
+      else
+        []
+    else
+      [ SecEdge $ mkEdgeMsg from to colors msg ]
   manyReturns ->
     if options.useDecisionNodes then
       mkDecisionNodeSections from msg colors manyReturns
     else
       mkDirectEdges from msg colors manyReturns
+
+drawUnidirectionalEdge :: String -> String -> String -> TransitCore -> Boolean
+drawUnidirectionalEdge from to msg (TransitCore matches) = (from > to) &&
+  ( Array.any (\(Match from' msg' returns') -> from' == to && msg' == msg && returns' == [ Return from ]) matches
+  )
 
 mkDirectEdges :: String -> String -> Colors -> Array Return -> Array D.Section
 mkDirectEdges from msg colors returns = Array.concatMap
@@ -137,10 +149,10 @@ mkInitEdge from to = D.Edge from to
   , D.penWidth 1.8
   ]
 
-mkUndirectedEdge :: String -> String -> Colors -> Colors -> String -> D.Edge
-mkUndirectedEdge from to fromColors toColors label = D.Edge from to
-  [ D.color (Color.mix RGB fromColors.edgeFont toColors.edgeFont 0.5)
-  , D.fontColor (Color.mix RGB fromColors.edgeFont toColors.edgeFont 0.5)
+mkUndirectedEdge :: String -> String -> String -> D.Edge
+mkUndirectedEdge from to label = D.Edge from to
+  [ D.color (Color.rgb 140 140 140)
+  , D.fontColor (Color.rgb 140 140 140)
   , D.fontSize 12
   , D.labelHtmlBold label
   , D.arrowSize 1.5
@@ -190,6 +202,7 @@ type Options =
   { title :: String
   , globalAttrsRaw :: Maybe String
   , useDecisionNodes :: Boolean
+  , useUndirectedEdges :: Boolean
   }
 
 defaultOptions :: Options
@@ -197,6 +210,7 @@ defaultOptions =
   { title: "Untitled"
   , globalAttrsRaw: Nothing
   , useDecisionNodes: true
+  , useUndirectedEdges: false
   }
 
 writeToFile :: (Options -> Options) -> TransitCore -> FilePath -> Effect Unit

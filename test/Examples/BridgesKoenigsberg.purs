@@ -120,7 +120,7 @@ main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile_ transit "graphs/bridges-koenigsberg.dot"
+  TransitGraphviz.writeToFile (_ { useUndirectedEdges = true }) transit "graphs/bridges-koenigsberg.dot"
   TransitTable.writeToFile_ transit "graphs/bridges-koenigsberg.html"
 
 --------------------------------------------------------------------------------
