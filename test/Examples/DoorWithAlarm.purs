@@ -1,4 +1,4 @@
-module Test.Examples.DoorWithAlarm (main, spec) where
+module Test.Examples.DoorWithAlarm (main, spec, DoorDSL, State(..), Msg(..)) where
 
 import Prelude
 

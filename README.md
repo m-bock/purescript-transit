@@ -854,7 +854,7 @@ In the next example, we'll see a graph that **does** have an Eulerian trail, dem
 
 ## Example 7: das-ist-das-haus-vom-ni-ko-laus
 
-<img src="assets/haus-nikolaus.svg" alt="Transit" />
+<img src="assets/das-haus-vom-nikolaus-solution.webp" />
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
@@ -897,7 +897,3 @@ filePath: graphs/house-of-santa-claus.html
 --><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
 
 <img src="graphs/house-of-santa-claus.svg"  />
-
-## Colors
-
-<img src="graphs/color-ring.svg" alt="Transit" />
