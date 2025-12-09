@@ -9,10 +9,14 @@ import Transit.Data.Graph (Graph)
 import Transit.Data.Graph as Graph
 
 hasEulerCircle :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-hasEulerCircle g = Graph.isUndirected g && countOddOutgoingEdges g == 0
+hasEulerCircle g = true
+  && Graph.isUndirected g
+  && countOddOutgoingEdges g == 0
 
 hasEulerTrail :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-hasEulerTrail g = Graph.isUndirected g && (countOddOutgoingEdges g == 0 || countOddOutgoingEdges g == 2)
+hasEulerTrail g = true
+  && Graph.isUndirected g
+  && (countOddOutgoingEdges g == 0 || countOddOutgoingEdges g == 2)
 
 countOddOutgoingEdges :: forall e n. Ord n => Ord e => Graph e n -> Int
 countOddOutgoingEdges g =

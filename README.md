@@ -28,6 +28,7 @@ Type-Safe State Machines.
     - [The Transit Approach](#the-transit-approach-3)
   - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
+    - [Graph Analysis](#graph-analysis)
   - [Example 7: das-ist-das-haus-vom-ni-ko-laus](#example-7-das-ist-das-haus-vom-ni-ko-laus)
   - [Colors](#colors)
 
@@ -654,9 +655,18 @@ Each handler can now perform side effects (like logging) before returning the ne
 
 ## Example 6: Seven Bridges of Königsberg
 
-<img src="assets/bridges-koenigsberg.jpg" alt="Transit" />
+So far, we've seen how transit helps you build type-safe state machines and generate state diagrams and transition tables. But the power of transit extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
-<img src="assets/bridges-koenigsberg-undirected-graph.svg" />
+This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler was asked whether it was possible to walk through the city of Königsberg (now Kaliningrad) crossing each of its seven bridges exactly once and returning to the starting point. Euler's solution to this problem laid the foundation for graph theory.
+
+The problem can be modeled as a graph where:
+
+- **Nodes** represent the four land areas (A, B, C, and D)
+- **Edges** represent the seven bridges connecting them
+
+<img src="assets/bridges-koenigsberg.jpg" />
+
+While transit is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -669,22 +679,117 @@ pick:
 data State = LandA | LandB | LandC | LandD
 
 data Msg
-  = CrossBridge_a
-  | CrossBridge_b
-  | CrossBridge_c
-  | CrossBridge_d
-  | CrossBridge_e
-  | CrossBridge_f
-  | CrossBridge_g
+  = Cross_a
+  | Cross_b
+  | Cross_c
+  | Cross_d
+  | Cross_e
+  | Cross_f
+  | Cross_g
+```
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - BridgesTransitions
+-->
+
+```purescript
+type BridgesTransitions =
+  Transit $ Empty
+    :* ("LandA" :@ "Cross_a" >| "LandB")
+    :* ("LandB" :@ "Cross_a" >| "LandA")
+
+    :* ("LandA" :@ "Cross_b" >| "LandB")
+    :* ("LandB" :@ "Cross_b" >| "LandA")
+
+    :* ("LandA" :@ "Cross_c" >| "LandC")
+    :* ("LandC" :@ "Cross_c" >| "LandA")
+
+    :* ("LandA" :@ "Cross_d" >| "LandC")
+    :* ("LandC" :@ "Cross_d" >| "LandA")
+
+    :* ("LandA" :@ "Cross_e" >| "LandD")
+    :* ("LandD" :@ "Cross_e" >| "LandA")
+
+    :* ("LandB" :@ "Cross_f" >| "LandD")
+    :* ("LandD" :@ "Cross_f" >| "LandB")
+
+    :* ("LandC" :@ "Cross_g" >| "LandD")
+    :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
 
 <!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
---><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandA</td><td>⟶</td><td>CrossBridge_a</td><td>⟶</td><td>LandB</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_b</td><td>⟶</td><td>LandB</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_c</td><td>⟶</td><td>LandC</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_d</td><td>⟶</td><td>LandC</td></tr><tr><td>LandA</td><td>⟶</td><td>CrossBridge_e</td><td>⟶</td><td>LandD</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_a</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_b</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟶</td><td>CrossBridge_f</td><td>⟶</td><td>LandD</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_c</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_d</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟶</td><td>CrossBridge_g</td><td>⟶</td><td>LandD</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_e</td><td>⟶</td><td>LandA</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_f</td><td>⟶</td><td>LandB</td></tr><tr><td>LandD</td><td>⟶</td><td>CrossBridge_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
+
+The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
 <img src="graphs/bridges-koenigsberg.svg" />
+
+### Graph Analysis
+
+The real power of transit becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the transit specification into a `StateGraph`—a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
+
+Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
+
+Euler's theorem states that:
+
+- An undirected graph has an Eulerian circuit if and only if it is connected and has zero vertices of odd degree
+- An undirected graph has an Eulerian trail if and only if it is connected and has exactly zero or two vertices of odd degree
+
+We can check these conditions using helper functions from the `Test.Examples.Common` module:
+
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - hasEulerCircle
+  - hasEulerTrail
+  - countOddOutgoingEdges
+-->
+
+```purescript
+hasEulerCircle :: forall e n. Ord n => Ord e => Graph e n -> Boolean
+hasEulerCircle g = true
+  && Graph.isUndirected g
+  && countOddOutgoingEdges g == 0
+
+hasEulerTrail :: forall e n. Ord n => Ord e => Graph e n -> Boolean
+hasEulerTrail g = true
+  && Graph.isUndirected g
+  && (countOddOutgoingEdges g == 0 || countOddOutgoingEdges g == 2)
+
+countOddOutgoingEdges :: forall e n. Ord n => Ord e => Graph e n -> Int
+countOddOutgoingEdges g =
+  let
+    nodes = Graph.getNodes g
+  in
+    Array.length $ Array.filter (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g)) (Set.toUnfoldable nodes)
+```
+
+<!-- PD_END -->
+
+These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
+
+- **LandA** has 5 bridges (odd)
+- **LandB** has 3 bridges (odd)
+- **LandC** has 3 bridges (odd)
+- **LandD** has 3 bridges (odd)
+
+Since all four vertices have an odd degree, the graph has **4 vertices with odd degree**. According to Euler's theorem, this means:
+
+- ❌ The graph does **not** have an Eulerian circuit (would require 0 odd-degree vertices)
+- ❌ The graph does **not** have an Eulerian trail (would require 0 or 2 odd-degree vertices)
+
+This confirms Euler's original conclusion: it's impossible to walk through Königsberg crossing each bridge exactly once.
+
+This example demonstrates that transit's value extends far beyond state machine documentation. By reflecting the type-level specification to a term-level graph data structure, you gain access to a rich ecosystem of graph algorithms and analysis tools. The same DSL that ensures compile-time correctness for your state transitions can also power runtime graph analysis, pathfinding, cycle detection, and more.
+
+In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how transit can help verify and understand graph properties beyond simple state machines.
 
 ## Example 7: das-ist-das-haus-vom-ni-ko-laus
 
