@@ -7,26 +7,26 @@
 <svg width="212pt" height="437pt"
  viewBox="0.00 0.00 212.46 437.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 433)">
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-433 208.46,-433 208.46,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-433 208.46,-433 208.46,4 -4,4"/>
 <text text-anchor="start" x="56.23" y="-416.4" font-family="Arial" font-weight="bold" font-size="12.00">Door with Alarm</text>
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
 <polygon fill="#2f80ed" stroke="black" stroke-width="0" points="150.46,-360 74.46,-360 74.46,-324 150.46,-324 150.46,-360"/>
-<text text-anchor="start" x="82.46" y="-339.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0e50a8">DoorOpen</text>
+<text text-anchor="start" x="82.46" y="-339.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">DoorOpen</text>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
 <title>DoorClosed</title>
 <polygon fill="#f2994a" stroke="black" stroke-width="0" points="155.46,-275 69.46,-275 69.46,-239 155.46,-239 155.46,-275"/>
-<text text-anchor="start" x="77.46" y="-254.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8660e">DoorClosed</text>
+<text text-anchor="start" x="77.46" y="-254.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b0590d">DoorClosed</text>
 </g>
 <!-- DoorOpen&#45;&gt;DoorClosed -->
 <g id="edge2" class="edge">
 <title>DoorOpen&#45;&gt;DoorClosed</title>
 <path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M94.13,-323.64C89.79,-318.43 85.76,-312.38 83.46,-306 80.36,-297.39 83.45,-288.63 88.6,-280.99"/>
 <polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="90.57,-282.44 92.87,-275.38 86.68,-279.46 90.57,-282.44"/>
-<text text-anchor="start" x="83.46" y="-297.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0e50a8">Close</text>
+<text text-anchor="start" x="83.46" y="-297.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#115bbf">Close</text>
 </g>
 <!-- __Start__ -->
 <g id="node2" class="node">
@@ -44,7 +44,7 @@
 <title>DoorClosed&#45;&gt;DoorOpen</title>
 <path fill="none" stroke="#f2994a" stroke-width="1.8" d="M117.69,-275.27C119.86,-284.38 121.62,-295.76 120.46,-306 120.07,-309.46 119.47,-313.07 118.77,-316.61"/>
 <polygon fill="#f2994a" stroke="#f2994a" stroke-width="1.8" points="116.33,-316.32 117.23,-323.69 121.11,-317.37 116.33,-316.32"/>
-<text text-anchor="start" x="120.46" y="-297.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">Open</text>
+<text text-anchor="start" x="120.46" y="-297.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#e07210">Open</text>
 </g>
 <!-- DoorLocked -->
 <g id="node4" class="node">
@@ -57,7 +57,7 @@
 <title>DoorClosed&#45;&gt;DoorLocked</title>
 <path fill="none" stroke="#f2994a" stroke-width="1.8" d="M104.17,-238.8C98.27,-226.56 90.28,-209.96 83.79,-196.5"/>
 <polygon fill="#f2994a" stroke="#f2994a" stroke-width="1.8" points="85.99,-195.42 80.74,-190.18 81.57,-197.55 85.99,-195.42"/>
-<text text-anchor="start" x="95.46" y="-212.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">Lock</text>
+<text text-anchor="start" x="95.46" y="-212.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#e07210">Lock</text>
 </g>
 <!-- decision_DoorLocked_Unlock -->
 <g id="node5" class="node">
@@ -90,7 +90,7 @@
 <g id="node6" class="node">
 <title>Alarm</title>
 <polygon fill="#56ccf2" stroke="black" stroke-width="0" points="101.46,-36 47.46,-36 47.46,0 101.46,0 101.46,-36"/>
-<text text-anchor="start" x="57.46" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#10a3d2">Alarm</text>
+<text text-anchor="start" x="57.46" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0d7ea2">Alarm</text>
 </g>
 <!-- decision_DoorLocked_Unlock&#45;&gt;Alarm -->
 <g id="edge6" class="edge">

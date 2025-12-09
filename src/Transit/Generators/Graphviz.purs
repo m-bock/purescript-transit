@@ -21,7 +21,7 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Colors (Colors, getColor)
+import Transit.Colors
 import Transit.Colors as Colors
 import Transit.Core (Match(..), Return(..), TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
@@ -38,7 +38,7 @@ mkGraphvizGraph options transit =
     , join $ mapWithIndex (mkStateSections colorMap transit options) $ getStateNames transit
     ]
   where
-  colorMap = mkColorMap transit
+  colorMap = mkColorMap options.theme transit
 
 mkStateSections :: ColorMap -> TransitCore -> Options -> Int -> String -> Array D.Section
 mkStateSections colorMap transit options i stateName = join
@@ -53,7 +53,7 @@ mkStateSections colorMap transit options i stateName = join
   where
   colors = lookupColor stateName colorMap
 
-mkMatchSections :: Colors -> TransitCore -> Options -> Match -> Array D.Section
+mkMatchSections :: ColorHarmony -> TransitCore -> Options -> Match -> Array D.Section
 mkMatchSections colors transit options (Match from msg returns) = case returns of
   [ Return to ] ->
     if options.useUndirectedEdges && hasComplementaryEdge from to msg transit then
@@ -76,7 +76,7 @@ hasComplementaryEdge :: String -> String -> String -> TransitCore -> Boolean
 hasComplementaryEdge from to msg (TransitCore matches) =
   Array.any (\(Match from' msg' returns') -> from' == to && msg' == msg && returns' == [ Return from ]) matches
 
-mkDirectEdges :: String -> String -> Colors -> Array Return -> Array D.Section
+mkDirectEdges :: String -> String -> ColorHarmony -> Array Return -> Array D.Section
 mkDirectEdges from msg colors returns = Array.concatMap
   ( case _ of
       Return to -> [ SecEdge $ mkEdgeMsg from to colors msg ]
@@ -84,7 +84,7 @@ mkDirectEdges from msg colors returns = Array.concatMap
   )
   returns
 
-mkDecisionNodeSections :: String -> String -> Colors -> Array Return -> Array D.Section
+mkDecisionNodeSections :: String -> String -> ColorHarmony -> Array Return -> Array D.Section
 mkDecisionNodeSections from msg colors manyReturns =
   let
     decisionNode = "decision_" <> from <> "_" <> msg
@@ -95,7 +95,7 @@ mkDecisionNodeSections from msg colors manyReturns =
       , concatMap (mkDecisionEdges decisionNode colors) manyReturns
       ]
 
-mkDecisionEdges :: String -> Colors -> Return -> Array D.Section
+mkDecisionEdges :: String -> ColorHarmony -> Return -> Array D.Section
 mkDecisionEdges decisionNode colors = case _ of
   Return to -> [ SecEdge $ mkEdgeGuard decisionNode to colors Nothing ]
   ReturnVia guard to -> [ SecEdge $ mkEdgeGuard decisionNode to colors (Just guard) ]
@@ -107,18 +107,19 @@ mkGlobalAttrs options =
   , D.labelHtmlBold options.title
   , D.labelLocT
   , D.fontSize 12
+  , D.bgColor options.theme.bgColor
   ]
 
-type ColorMap = Map String Colors
+type ColorMap = Map String ColorHarmony
 
-lookupColor :: String -> ColorMap -> Colors
-lookupColor state colorMap = fromMaybe (Colors.defLight Color.black) $ Map.lookup state colorMap
+lookupColor :: String -> ColorMap -> ColorHarmony
+lookupColor state colorMap = fromMaybe (Colors.defaultColorHarmony) $ Map.lookup state colorMap
 
-mkColorMap :: TransitCore -> ColorMap
-mkColorMap transit =
-  Map.fromFoldable $ mapWithIndex (\i node -> (node /\ (getColor i).light)) $ getStateNames transit
+mkColorMap :: Theme -> TransitCore -> ColorMap
+mkColorMap theme transit =
+  Map.fromFoldable $ mapWithIndex (\i node -> (node /\ getColorHarmony theme i)) $ getStateNames transit
 
-mkStateNode :: Options -> Colors -> StateNode -> D.Node
+mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
 mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
   [ D.shapeBox
   , D.labelHtmlBold node
@@ -163,7 +164,7 @@ mkUndirectedEdge from to label = D.Edge from to
   , D.arrowSize 0.7
   ]
 
-mkEdgeMsg :: String -> String -> Colors -> String -> D.Edge
+mkEdgeMsg :: String -> String -> ColorHarmony -> String -> D.Edge
 mkEdgeMsg from to colors label = D.Edge from to
   [ D.color colors.edgeColor
   , D.fontColor colors.edgeFont
@@ -173,7 +174,7 @@ mkEdgeMsg from to colors label = D.Edge from to
   , D.penWidth 1.8
   ]
 
-mkEdgeGuard :: String -> String -> Colors -> Maybe String -> D.Edge
+mkEdgeGuard :: String -> String -> ColorHarmony -> Maybe String -> D.Edge
 mkEdgeGuard from to colors mayLabel = D.Edge from to
   $ catMaybes
       [ pure $ D.color colors.edgeColor
@@ -185,7 +186,7 @@ mkEdgeGuard from to colors mayLabel = D.Edge from to
       , pure $ D.penWidth 1.0
       ]
 
-mkDecisionNode :: String -> Colors -> D.Node
+mkDecisionNode :: String -> ColorHarmony -> D.Node
 mkDecisionNode name colors = D.Node name Nothing
   [ D.shapeDiamond
   , D.label "?"
@@ -201,6 +202,7 @@ mkDecisionNode name colors = D.Node name Nothing
 
 type Options =
   { title :: String
+  , theme :: Theme
   , globalAttrsRaw :: Maybe String
   , nodeAttrsRaw :: Maybe (String -> String)
   , useDecisionNodes :: Boolean
@@ -210,6 +212,7 @@ type Options =
 defaultOptions :: Options
 defaultOptions =
   { title: "Untitled"
+  , theme: themeLight
   , globalAttrsRaw: Nothing
   , nodeAttrsRaw: Nothing
   , useDecisionNodes: true

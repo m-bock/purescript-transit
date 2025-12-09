@@ -4,11 +4,13 @@ module Transit.Data.DotLang
   , GlobalAttrs(..)
   , GraphvizGraph(..)
   , Node(..)
+  , Raw
   , Section(..)
   , Value(..)
   , arrowHeadNone
   , arrowSize
   , arrowTailNone
+  , bgColor
   , class ToText
   , color
   , colorMulti
@@ -32,7 +34,6 @@ module Transit.Data.DotLang
   , shapeDiamond
   , styleFilled
   , toText
-  , Raw
   , width
   ) where
 
@@ -190,3 +191,6 @@ arrowHeadNone = Attr "arrowhead" (Value "none")
 
 arrowTailNone :: Attr
 arrowTailNone = Attr "arrowtail" (Value "none")
+
+bgColor :: Color -> Attr
+bgColor color = Attr "bgcolor" (ValueColors [ color ])

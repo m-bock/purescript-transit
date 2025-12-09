@@ -7,26 +7,26 @@
 <svg width="95pt" height="198pt"
  viewBox="0.00 0.00 95.00 198.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 194)">
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-194 91,-194 91,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-194 91,-194 91,4 -4,4"/>
 <text text-anchor="start" x="29" y="-177.4" font-family="Arial" font-weight="bold" font-size="12.00">Door</text>
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
 <polygon fill="#2f80ed" stroke="black" stroke-width="0" points="81,-121 5,-121 5,-85 81,-85 81,-121"/>
-<text text-anchor="start" x="13" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0e50a8">DoorOpen</text>
+<text text-anchor="start" x="13" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">DoorOpen</text>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
 <title>DoorClosed</title>
 <polygon fill="#f2994a" stroke="black" stroke-width="0" points="86,-36 0,-36 0,0 86,0 86,-36"/>
-<text text-anchor="start" x="8" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8660e">DoorClosed</text>
+<text text-anchor="start" x="8" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b0590d">DoorClosed</text>
 </g>
 <!-- DoorOpen&#45;&gt;DoorClosed -->
 <g id="edge2" class="edge">
 <title>DoorOpen&#45;&gt;DoorClosed</title>
 <path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M24.66,-84.64C20.33,-79.43 16.3,-73.38 14,-67 10.9,-58.39 13.98,-49.63 19.14,-41.99"/>
 <polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="21.11,-43.44 23.41,-36.38 17.21,-40.46 21.11,-43.44"/>
-<text text-anchor="start" x="14" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#0e50a8">Close</text>
+<text text-anchor="start" x="14" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#115bbf">Close</text>
 </g>
 <!-- __Start__ -->
 <g id="node2" class="node">
@@ -44,7 +44,7 @@
 <title>DoorClosed&#45;&gt;DoorOpen</title>
 <path fill="none" stroke="#f2994a" stroke-width="1.8" d="M48.23,-36.27C50.39,-45.38 52.16,-56.76 51,-67 50.61,-70.46 50.01,-74.07 49.31,-77.61"/>
 <polygon fill="#f2994a" stroke="#f2994a" stroke-width="1.8" points="46.86,-77.32 47.77,-84.69 51.65,-78.37 46.86,-77.32"/>
-<text text-anchor="start" x="51" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c8660e">Open</text>
+<text text-anchor="start" x="51" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#e07210">Open</text>
 </g>
 </g>
 </svg>
