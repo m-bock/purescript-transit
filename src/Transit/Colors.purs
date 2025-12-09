@@ -5,40 +5,25 @@ import Prelude
 import Color (Color)
 import Color as Color
 import Data.Array ((!!))
-import Data.Array as Array
 import Data.Bounded.Generic (genericBottom, genericTop)
 import Data.Enum (class Enum, enumFromTo)
 import Data.Enum.Generic (genericPred, genericSucc)
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (fromJust, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Data.Show.Generic (genericShow)
-import Data.Tuple.Nested ((/\))
-import Partial.Unsafe (unsafePartial)
-import Unsafe.Coerce (unsafeCoerce)
 
 data BaseColor
-  = OceanBlue
-  | SunsetOrange
-  | VividRed
-  | AquaBlue
-  | SpringGreen
-  | RoyalPurple
-  | GoldenYellow
-  | MintTeal
-  | RosePink
-  | DeepAzure
-  | AmberOrange
-  | SoftTurquoise
-  | VioletPurple
-  | SkyCyan
-  | CandyPink
-  | ElectricBlue
+  = SpringGreen
   | LemonYellow
+  | OceanBlue
+  | CoralPink
+  | MintTeal
+  | AquaBlue
+  | SunsetOrange
   | MagentaGlow
   | OliveGreen
-  | CoralPink
-  | Lavender
-  | Tangerine
+  | VividRed
+  | SkyCyan
 
 derive instance Eq BaseColor
 derive instance Ord BaseColor
@@ -60,43 +45,16 @@ allBaseColors = enumFromTo bottom top
 baseColorToColor :: BaseColor -> Color
 baseColorToColor = case _ of
   OceanBlue -> Color.hsl 214.4 0.841 0.557
-  SunsetOrange -> Color.hsl 28.2 0.866 0.620
-  VividRed -> Color.hsl 0.0 0.787 0.631
   AquaBlue -> Color.hsl 194.6 0.857 0.643
   SpringGreen -> Color.hsl 82.7 0.780 0.555
-  RoyalPurple -> Color.hsl 275.8 0.684 0.592
-  GoldenYellow -> Color.hsl 48.0 0.867 0.620
   MintTeal -> Color.hsl 147.6 0.628 0.471
-  RosePink -> Color.hsl 351.3 1.000 0.718
-  DeepAzure -> Color.hsl 218.2 0.920 0.602
-  AmberOrange -> Color.hsl 23.6 0.949 0.500
-  SoftTurquoise -> Color.hsl 152.1 0.558 0.631
-  VioletPurple -> Color.hsl 277.0 0.578 0.643
-  SkyCyan -> Color.hsl 203.2 0.709 0.514
-  CandyPink -> Color.hsl 349.3 1.000 0.784
-  ElectricBlue -> Color.hsl 227.0 0.890 0.625
   LemonYellow -> Color.hsl 46.8 1.000 0.500
-  MagentaGlow -> Color.hsl 279.3 0.857 0.690
-  OliveGreen -> Color.hsl 151.0 0.635 0.410
+  SunsetOrange -> Color.hsl 28.2 0.866 0.620
+  VividRed -> Color.hsl 0.0 0.787 0.631
   CoralPink -> Color.hsl 345.5 1.000 0.661
-  Lavender -> Color.hsl 263.4 0.904 0.661
-  Tangerine -> Color.hsl 26.6 1.000 0.610
-
-mkDefaultColorHarmonyLight :: Color -> ColorHarmony
-mkDefaultColorHarmonyLight color =
-  { nodeBg: color
-  , nodeFont: Color.darken 0.2 color
-  , edgeFont: Color.darken 0.2 color
-  , edgeColor: color
-  }
-
-mkDefaultColorHarmonyDark :: Color -> ColorHarmony
-mkDefaultColorHarmonyDark color =
-  { nodeBg: color
-  , nodeFont: Color.darken 0.2 color
-  , edgeFont: Color.lighten 0.2 color
-  , edgeColor: color
-  }
+  SkyCyan -> Color.hsl 203.2 0.709 0.514 -- if kept
+  MagentaGlow -> Color.hsl 279.3 0.857 0.690 -- if kept
+  OliveGreen -> Color.hsl 151.0 0.635 0.410
 
 x :: BaseColor -> Color -> ColorHarmony
 x = case _ of
@@ -112,56 +70,60 @@ x = case _ of
     , edgeFont: Color.darken 0.15 color
     , edgeColor: color
     }
-  VividRed -> mkDefaultColorHarmonyLight
+  VividRed -> \color ->
+    { nodeBg: color
+    , nodeFont: Color.darken 0.2 color
+    , edgeFont: Color.darken 0.2 color
+    , edgeColor: color
+    }
   AquaBlue -> \color ->
     { nodeBg: color
     , nodeFont: Color.darken 0.3 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
-  SpringGreen -> mkDefaultColorHarmonyLight
-  RoyalPurple -> mkDefaultColorHarmonyLight
-  GoldenYellow -> \color ->
+  SpringGreen -> \color ->
     { nodeBg: color
-    , nodeFont: Color.darken 0.3 color
+    , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
-  MintTeal -> mkDefaultColorHarmonyLight
-  RosePink -> \color ->
+  MintTeal -> \color ->
     { nodeBg: color
-    , nodeFont: Color.darken 0.3 color
-    , edgeFont: Color.darken 0.15 color
-    , edgeColor: color
-    }
-  DeepAzure -> mkDefaultColorHarmonyLight
-  AmberOrange -> mkDefaultColorHarmonyLight
-  SoftTurquoise -> \color ->
-    { nodeBg: color
-    , nodeFont: Color.darken 0.3 color
+    , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
-  VioletPurple -> mkDefaultColorHarmonyLight
-  SkyCyan -> mkDefaultColorHarmonyLight
-  CandyPink -> mkDefaultColorHarmonyLight
-  ElectricBlue -> mkDefaultColorHarmonyLight
+  SkyCyan -> \color ->
+    { nodeBg: color
+    , nodeFont: Color.darken 0.2 color
+    , edgeFont: Color.darken 0.2 color
+    , edgeColor: color
+    }
   LemonYellow -> \color ->
     { nodeBg: color
     , nodeFont: Color.darken 0.15 color
     , edgeFont: Color.darken 0.1 color
     , edgeColor: color
     }
-  MagentaGlow -> mkDefaultColorHarmonyLight
-  OliveGreen -> mkDefaultColorHarmonyLight
+  MagentaGlow -> \color ->
+    { nodeBg: color
+    , nodeFont: Color.darken 0.2 color
+    , edgeFont: Color.darken 0.2 color
+    , edgeColor: color
+    }
+  OliveGreen -> \color ->
+    { nodeBg: color
+    , nodeFont: Color.darken 0.2 color
+    , edgeFont: Color.darken 0.2 color
+    , edgeColor: color
+    }
   CoralPink -> \color ->
     { nodeBg: color
     , nodeFont: Color.darken 0.3 color
     , edgeFont: Color.darken 0.15 color
     , edgeColor: color
     }
-  Lavender -> mkDefaultColorHarmonyLight
-  Tangerine -> mkDefaultColorHarmonyLight
 
 y :: BaseColor -> Color -> ColorHarmony
 y bc = case bc of
@@ -171,32 +133,66 @@ y bc = case bc of
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
-  SunsetOrange -> mkDefaultColorHarmonyDark
-  VividRed -> mkDefaultColorHarmonyDark
-  AquaBlue -> mkDefaultColorHarmonyDark
-  SpringGreen -> mkDefaultColorHarmonyDark
-  RoyalPurple -> mkDefaultColorHarmonyDark
-  GoldenYellow -> mkDefaultColorHarmonyDark
-  MintTeal -> mkDefaultColorHarmonyDark
-  RosePink -> mkDefaultColorHarmonyDark
-  DeepAzure -> mkDefaultColorHarmonyDark
-  AmberOrange -> mkDefaultColorHarmonyDark
-  SoftTurquoise -> mkDefaultColorHarmonyDark
-  VioletPurple -> mkDefaultColorHarmonyDark
-  SkyCyan -> mkDefaultColorHarmonyDark
-  CandyPink -> mkDefaultColorHarmonyDark
-  ElectricBlue -> mkDefaultColorHarmonyDark
-  LemonYellow -> mkDefaultColorHarmonyDark
-  MagentaGlow -> mkDefaultColorHarmonyDark
-  OliveGreen -> mkDefaultColorHarmonyDark
+  SunsetOrange -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  VividRed -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  AquaBlue -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  SpringGreen -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  MintTeal -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  SkyCyan -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  LemonYellow -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  MagentaGlow -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
+  OliveGreen -> \color ->
+    { nodeBg: color
+    , nodeFont: (x bc color).nodeFont
+    , edgeFont: Color.lighten 0.2 color
+    , edgeColor: color
+    }
   CoralPink -> \color ->
     { nodeBg: color
     , nodeFont: (x bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
-  Lavender -> mkDefaultColorHarmonyDark
-  Tangerine -> mkDefaultColorHarmonyDark
 
 mkDefaultNodeBg :: BaseColor -> Color -> Color
 mkDefaultNodeBg _ = Color.darken 0.2

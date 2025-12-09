@@ -12,8 +12,8 @@
 <!-- LandA -->
 <g id="node1" class="node">
 <title>LandA</title>
-<polygon fill="#2f80ed" stroke="black" stroke-width="0" points="145,-36 90,-36 90,0 145,0 145,-36"/>
-<text text-anchor="start" x="98" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">LandA</text>
+<polygon fill="#a3e635" stroke="black" stroke-width="0" points="145,-36 90,-36 90,0 145,0 145,-36"/>
+<text text-anchor="start" x="98" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#6ca114">LandA</text>
 </g>
 <!-- __Start__ -->
 <g id="node2" class="node">
@@ -29,8 +29,8 @@
 <!-- LandB -->
 <g id="node3" class="node">
 <title>LandB</title>
-<polygon fill="#f2994a" stroke="black" stroke-width="0" points="178,-121 123,-121 123,-85 178,-85 178,-121"/>
-<text text-anchor="start" x="131" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b0590d">LandB</text>
+<polygon fill="#ffc700" stroke="black" stroke-width="0" points="178,-121 123,-121 123,-85 178,-85 178,-121"/>
+<text text-anchor="start" x="131" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b38b00">LandB</text>
 </g>
 <!-- LandB&#45;&gt;LandA -->
 <g id="edge2" class="edge">
@@ -51,8 +51,8 @@
 <!-- LandC -->
 <g id="node4" class="node">
 <title>LandC</title>
-<polygon fill="#eb5757" stroke="black" stroke-width="0" points="258,-121 203,-121 203,-85 258,-85 258,-121"/>
-<text text-anchor="start" x="211" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c41717">LandC</text>
+<polygon fill="#2f80ed" stroke="black" stroke-width="0" points="258,-121 203,-121 203,-85 258,-85 258,-121"/>
+<text text-anchor="start" x="211" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">LandC</text>
 </g>
 <!-- LandC&#45;&gt;LandA -->
 <g id="edge4" class="edge">
@@ -73,8 +73,8 @@
 <!-- LandD -->
 <g id="node5" class="node">
 <title>LandD</title>
-<polygon fill="#56ccf2" stroke="black" stroke-width="0" points="178,-206 123,-206 123,-170 178,-170 178,-206"/>
-<text text-anchor="start" x="131" y="-185.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0d7ea2">LandD</text>
+<polygon fill="#ff527c" stroke="black" stroke-width="0" points="178,-206 123,-206 123,-170 178,-170 178,-206"/>
+<text text-anchor="start" x="131" y="-185.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b8002c">LandD</text>
 </g>
 <!-- LandD&#45;&gt;LandA -->
 <g id="edge6" class="edge">

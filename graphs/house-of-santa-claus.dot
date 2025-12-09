@@ -2,18 +2,18 @@ digraph
 {
 rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff"
 layout=neato
-N_1 [pos="0,0!",shape = "box", label = <<b>N_1</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+N_1 [pos="0,0!",shape = "box", label = <<b>N_1</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 __Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
 __Start__ -> N_1 [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
-N_2 [pos="2,0!",shape = "box", label = <<b>N_2</b>>, fontsize = 12, style = "filled", fillcolor = "#f2994a", fontcolor = "#b0590d", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+N_2 [pos="2,0!",shape = "box", label = <<b>N_2</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 N_2 -> N_1 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_a</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
-N_3 [pos="2,2!",shape = "box", label = <<b>N_3</b>>, fontsize = 12, style = "filled", fillcolor = "#eb5757", fontcolor = "#c41717", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+N_3 [pos="2,2!",shape = "box", label = <<b>N_3</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 N_3 -> N_2 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_b</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 N_3 -> N_1 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_f</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
-N_5 [pos="1,3!",shape = "box", label = <<b>N_5</b>>, fontsize = 12, style = "filled", fillcolor = "#56ccf2", fontcolor = "#0d7ea2", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+N_5 [pos="1,3!",shape = "box", label = <<b>N_5</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 N_5 -> N_3 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_c</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 N_5 -> N_4 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_d</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
-N_4 [pos="0,2!",shape = "box", label = <<b>N_4</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+N_4 [pos="0,2!",shape = "box", label = <<b>N_4</b>>, fontsize = 12, style = "filled", fillcolor = "#2dc472", fontcolor = "#1a7142", fontname = "Arial", labelloc = "c", penwidth = 0.0]
 N_4 -> N_1 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_e</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 N_4 -> N_2 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_g</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 N_4 -> N_3 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_h</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]

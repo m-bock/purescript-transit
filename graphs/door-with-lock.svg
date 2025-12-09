@@ -12,21 +12,21 @@
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
-<polygon fill="#2f80ed" stroke="black" stroke-width="0" points="84,-206 8,-206 8,-170 84,-170 84,-206"/>
-<text text-anchor="start" x="16" y="-185.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">DoorOpen</text>
+<polygon fill="#a3e635" stroke="black" stroke-width="0" points="84,-206 8,-206 8,-170 84,-170 84,-206"/>
+<text text-anchor="start" x="16" y="-185.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#6ca114">DoorOpen</text>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
 <title>DoorClosed</title>
-<polygon fill="#f2994a" stroke="black" stroke-width="0" points="89,-121 3,-121 3,-85 89,-85 89,-121"/>
-<text text-anchor="start" x="11" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b0590d">DoorClosed</text>
+<polygon fill="#ffc700" stroke="black" stroke-width="0" points="89,-121 3,-121 3,-85 89,-85 89,-121"/>
+<text text-anchor="start" x="11" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b38b00">DoorClosed</text>
 </g>
 <!-- DoorOpen&#45;&gt;DoorClosed -->
 <g id="edge2" class="edge">
 <title>DoorOpen&#45;&gt;DoorClosed</title>
-<path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M27.66,-169.64C23.33,-164.43 19.3,-158.38 17,-152 13.9,-143.39 16.98,-134.63 22.14,-126.99"/>
-<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="24.11,-128.44 26.41,-121.38 20.21,-125.46 24.11,-128.44"/>
-<text text-anchor="start" x="17" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#115bbf">Close</text>
+<path fill="none" stroke="#a3e635" stroke-width="1.8" d="M27.66,-169.64C23.33,-164.43 19.3,-158.38 17,-152 13.9,-143.39 16.98,-134.63 22.14,-126.99"/>
+<polygon fill="#a3e635" stroke="#a3e635" stroke-width="1.8" points="24.11,-128.44 26.41,-121.38 20.21,-125.46 24.11,-128.44"/>
+<text text-anchor="start" x="17" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#6ca114">Close</text>
 </g>
 <!-- __Start__ -->
 <g id="node2" class="node">
@@ -42,29 +42,29 @@
 <!-- DoorClosed&#45;&gt;DoorOpen -->
 <g id="edge3" class="edge">
 <title>DoorClosed&#45;&gt;DoorOpen</title>
-<path fill="none" stroke="#f2994a" stroke-width="1.8" d="M51.23,-121.27C53.39,-130.38 55.16,-141.76 54,-152 53.61,-155.46 53.01,-159.07 52.31,-162.61"/>
-<polygon fill="#f2994a" stroke="#f2994a" stroke-width="1.8" points="49.86,-162.32 50.77,-169.69 54.65,-163.37 49.86,-162.32"/>
-<text text-anchor="start" x="54" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#e07210">Open</text>
+<path fill="none" stroke="#ffc700" stroke-width="1.8" d="M51.23,-121.27C53.39,-130.38 55.16,-141.76 54,-152 53.61,-155.46 53.01,-159.07 52.31,-162.61"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="49.86,-162.32 50.77,-169.69 54.65,-163.37 49.86,-162.32"/>
+<text text-anchor="start" x="54" y="-143.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#cc9f00">Open</text>
 </g>
 <!-- DoorLocked -->
 <g id="node4" class="node">
 <title>DoorLocked</title>
-<polygon fill="#eb5757" stroke="black" stroke-width="0" points="90,-36 2,-36 2,0 90,0 90,-36"/>
-<text text-anchor="start" x="10" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c41717">DoorLocked</text>
+<polygon fill="#2f80ed" stroke="black" stroke-width="0" points="90,-36 2,-36 2,0 90,0 90,-36"/>
+<text text-anchor="start" x="10" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">DoorLocked</text>
 </g>
 <!-- DoorClosed&#45;&gt;DoorLocked -->
 <g id="edge4" class="edge">
 <title>DoorClosed&#45;&gt;DoorLocked</title>
-<path fill="none" stroke="#f2994a" stroke-width="1.8" d="M29.19,-84.82C25.05,-79.53 21.18,-73.39 19,-67 16.11,-58.52 18.95,-49.81 23.73,-42.18"/>
-<polygon fill="#f2994a" stroke="#f2994a" stroke-width="1.8" points="26.03,-43.17 28.1,-36.05 22.04,-40.32 26.03,-43.17"/>
-<text text-anchor="start" x="19" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#e07210">Lock</text>
+<path fill="none" stroke="#ffc700" stroke-width="1.8" d="M29.19,-84.82C25.05,-79.53 21.18,-73.39 19,-67 16.11,-58.52 18.95,-49.81 23.73,-42.18"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="26.03,-43.17 28.1,-36.05 22.04,-40.32 26.03,-43.17"/>
+<text text-anchor="start" x="19" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#cc9f00">Lock</text>
 </g>
 <!-- DoorLocked&#45;&gt;DoorClosed -->
 <g id="edge5" class="edge">
 <title>DoorLocked&#45;&gt;DoorClosed</title>
-<path fill="none" stroke="#eb5757" stroke-width="1.8" d="M49.92,-36.29C51.55,-45.41 52.87,-56.79 52,-67 51.69,-70.59 51.21,-74.37 50.66,-78.06"/>
-<polygon fill="#eb5757" stroke="#eb5757" stroke-width="1.8" points="48.24,-77.68 49.51,-84.98 53.07,-78.48 48.24,-77.68"/>
-<text text-anchor="start" x="52" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c41717">Unlock</text>
+<path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M49.92,-36.29C51.55,-45.41 52.87,-56.79 52,-67 51.69,-70.59 51.21,-74.37 50.66,-78.06"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="48.24,-77.68 49.51,-84.98 53.07,-78.48 48.24,-77.68"/>
+<text text-anchor="start" x="52" y="-58.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#115bbf">Unlock</text>
 </g>
 </g>
 </svg>
