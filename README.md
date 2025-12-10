@@ -37,6 +37,14 @@ Type-Safe State Machines.
 
 # Transit
 
+Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time.
+
+## Key Features
+
+- **Type-safe state transitions** - The compiler ensures all transitions are valid and complete
+- **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
+- **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
+
 ## Installation
 
 ```bash
