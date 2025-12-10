@@ -1,18 +1,18 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Door with Alarm</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff"
-DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+rankdir = "TD";fontname = "Arial";label = <<b>Door with Alarm</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff";fontcolor = "#000000"
+DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 __Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
 __Start__ -> DoorOpen [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
 DoorOpen -> DoorClosed [color = "#a3e635", fontcolor = "#6ca114", fontsize = 12, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
-DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 DoorClosed -> DoorOpen [color = "#ffc700", fontcolor = "#cc9f00", fontsize = 12, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
 DoorClosed -> DoorLocked [color = "#ffc700", fontcolor = "#cc9f00", fontsize = 12, arrowsize = "0.7", label = <<b>Lock</b>>, penwidth = 1.8]
-DoorLocked [shape = "box", label = <<b>DoorLocked</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+DoorLocked [shape = "box", label = <<b>DoorLocked</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 decision_DoorLocked_Unlock [shape = "diamond", label = "?", fontsize = 12, fontcolor = "#0c4590", style = "filled", fillcolor = "#2f80ed", penwidth = 0.0, fixedsize = true, width = 0.3, height = 0.3]
 DoorLocked -> decision_DoorLocked_Unlock [color = "#2f80ed", fontcolor = "#115bbf", fontsize = 12, arrowsize = "0.7", label = <<b>Unlock</b>>, penwidth = 1.8]
 decision_DoorLocked_Unlock -> Alarm [color = "#2f80ed", fontcolor = "#115bbf", fontsize = 10, arrowsize = "0.5", label = <<i>TooManyAttempts</i>>, penwidth = 1.8, penwidth = 1.0]
 decision_DoorLocked_Unlock -> DoorLocked [color = "#2f80ed", fontcolor = "#115bbf", fontsize = 10, arrowsize = "0.5", label = <<i>PinIncorrect</i>>, penwidth = 1.8, penwidth = 1.0]
 decision_DoorLocked_Unlock -> DoorClosed [color = "#2f80ed", fontcolor = "#115bbf", fontsize = 10, arrowsize = "0.5", label = <<i>PinCorrect</i>>, penwidth = 1.8, penwidth = 1.0]
-Alarm [shape = "box", label = <<b>Alarm</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+Alarm [shape = "box", label = <<b>Alarm</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 }

@@ -8,11 +8,11 @@
  viewBox="0.00 0.00 206.00 281.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 277)">
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-277 202,-277 202,4 -4,4"/>
-<text text-anchor="start" x="76.5" y="-260.4" font-family="Arial" font-weight="bold" font-size="12.00">Untitled</text>
+<text text-anchor="start" x="76.5" y="-260.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#000000">Untitled</text>
 <!-- N_1 -->
 <g id="node1" class="node">
 <title>N_1</title>
-<polygon fill="#a3e635" stroke="black" stroke-width="0" points="54,-36 0,-36 0,0 54,0 54,-36"/>
+<polygon fill="#a3e635" stroke="#a3e635" points="54,-36 0,-36 0,0 54,0 54,-36"/>
 <text text-anchor="start" x="15.5" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#6ca114">N_1</text>
 </g>
 <!-- __Start__ -->
@@ -29,7 +29,7 @@
 <!-- N_2 -->
 <g id="node3" class="node">
 <title>N_2</title>
-<polygon fill="#ffc700" stroke="black" stroke-width="0" points="198,-36 144,-36 144,0 198,0 198,-36"/>
+<polygon fill="#ffc700" stroke="#ffc700" points="198,-36 144,-36 144,0 198,0 198,-36"/>
 <text text-anchor="start" x="159.5" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b38b00">N_2</text>
 </g>
 <!-- N_2&#45;&gt;N_1 -->
@@ -43,7 +43,7 @@
 <!-- N_3 -->
 <g id="node4" class="node">
 <title>N_3</title>
-<polygon fill="#2f80ed" stroke="black" stroke-width="0" points="198,-180 144,-180 144,-144 198,-144 198,-180"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" points="198,-180 144,-180 144,-144 198,-144 198,-180"/>
 <text text-anchor="start" x="159.5" y="-159.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">N_3</text>
 </g>
 <!-- N_3&#45;&gt;N_1 -->
@@ -65,7 +65,7 @@
 <!-- N_5 -->
 <g id="node5" class="node">
 <title>N_5</title>
-<polygon fill="#ff527c" stroke="black" stroke-width="0" points="126,-252 72,-252 72,-216 126,-216 126,-252"/>
+<polygon fill="#ff527c" stroke="#ff527c" points="126,-252 72,-252 72,-216 126,-216 126,-252"/>
 <text text-anchor="start" x="87.5" y="-231.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b8002c">N_5</text>
 </g>
 <!-- N_5&#45;&gt;N_3 -->
@@ -79,7 +79,7 @@
 <!-- N_4 -->
 <g id="node6" class="node">
 <title>N_4</title>
-<polygon fill="#2dc472" stroke="black" stroke-width="0" points="54,-180 0,-180 0,-144 54,-144 54,-180"/>
+<polygon fill="#2dc472" stroke="#2dc472" points="54,-180 0,-180 0,-144 54,-144 54,-180"/>
 <text text-anchor="start" x="15.5" y="-159.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#1a7142">N_4</text>
 </g>
 <!-- N_5&#45;&gt;N_4 -->

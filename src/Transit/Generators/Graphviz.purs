@@ -8,21 +8,16 @@ module Transit.Generators.Graphviz
 
 import Prelude
 
-import Color (ColorSpace(..))
 import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
-import Data.Map (Map)
-import Data.Map as Map
-import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Tuple.Nested ((/\))
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Colors
-import Transit.Colors as Colors
+import Transit.Colors (ColorHarmony, Theme, getColorHarmony, themeHarmonyLight)
 import Transit.Core (Match(..), Return(..), TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
 import Transit.Data.DotLang as D
@@ -106,6 +101,7 @@ mkGlobalAttrs options =
   , D.labelLocT
   , D.fontSize 12
   , D.bgColor options.theme.bgColor
+  , D.fontColor options.theme.titleColor
   ]
 
 mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
@@ -116,9 +112,10 @@ mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f ->
   , D.styleFilled
   , D.fillColor colors.nodeBg
   , D.fontColor colors.nodeFont
+  , D.color colors.nodeBorder
   , D.fontNameArial
   , D.labelLocC
-  , D.penWidth 0.0
+  , D.penWidth 1.0
   ]
 
 mkInitNode :: String -> D.Node

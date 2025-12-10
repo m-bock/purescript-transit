@@ -8,17 +8,17 @@
  viewBox="0.00 0.00 473.28 450.87" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 446.87)">
 <polygon fill="#000000" stroke="transparent" points="-4,4 -4,-446.87 469.28,-446.87 469.28,4 -4,4"/>
-<text text-anchor="start" x="192.64" y="-430.27" font-family="Arial" font-weight="bold" font-size="12.00">Contrast Dark</text>
+<text text-anchor="start" x="192.64" y="-430.27" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">Contrast Dark</text>
 <!-- SpringGreen -->
 <g id="node1" class="node">
 <title>SpringGreen</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="315.15,-104.52 226.15,-104.52 226.15,-68.52 315.15,-68.52 315.15,-104.52"/>
+<polygon fill="#000000" stroke="#ffffff" points="315.15,-104.52 226.15,-104.52 226.15,-68.52 315.15,-68.52 315.15,-104.52"/>
 <text text-anchor="start" x="234.15" y="-84.42" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">SpringGreen</text>
 </g>
 <!-- LemonYellow -->
 <g id="node3" class="node">
 <title>LemonYellow</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="249.81,-205.18 156.81,-205.18 156.81,-169.18 249.81,-169.18 249.81,-205.18"/>
+<polygon fill="#000000" stroke="#ffffff" points="249.81,-205.18 156.81,-205.18 156.81,-169.18 249.81,-169.18 249.81,-205.18"/>
 <text text-anchor="start" x="164.81" y="-185.08" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">LemonYellow</text>
 </g>
 <!-- SpringGreen&#45;&gt;LemonYellow -->
@@ -42,7 +42,7 @@
 <!-- OceanBlue -->
 <g id="node4" class="node">
 <title>OceanBlue</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="142.92,-122.16 62.92,-122.16 62.92,-86.16 142.92,-86.16 142.92,-122.16"/>
+<polygon fill="#000000" stroke="#ffffff" points="142.92,-122.16 62.92,-122.16 62.92,-86.16 142.92,-86.16 142.92,-122.16"/>
 <text text-anchor="start" x="70.92" y="-102.06" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">OceanBlue</text>
 </g>
 <!-- LemonYellow&#45;&gt;OceanBlue -->
@@ -55,7 +55,7 @@
 <!-- CoralPink -->
 <g id="node5" class="node">
 <title>CoralPink</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="76.09,-213.12 3.09,-213.12 3.09,-177.12 76.09,-177.12 76.09,-213.12"/>
+<polygon fill="#000000" stroke="#ffffff" points="76.09,-213.12 3.09,-213.12 3.09,-177.12 76.09,-177.12 76.09,-213.12"/>
 <text text-anchor="start" x="11.09" y="-193.02" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">CoralPink</text>
 </g>
 <!-- OceanBlue&#45;&gt;CoralPink -->
@@ -68,7 +68,7 @@
 <!-- MintTeal -->
 <g id="node6" class="node">
 <title>MintTeal</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="72.41,-321.76 8.41,-321.76 8.41,-285.76 72.41,-285.76 72.41,-321.76"/>
+<polygon fill="#000000" stroke="#ffffff" points="72.41,-321.76 8.41,-321.76 8.41,-285.76 72.41,-285.76 72.41,-321.76"/>
 <text text-anchor="start" x="16.41" y="-301.66" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">MintTeal</text>
 </g>
 <!-- CoralPink&#45;&gt;MintTeal -->
@@ -81,7 +81,7 @@
 <!-- AquaBlue -->
 <g id="node7" class="node">
 <title>AquaBlue</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="161.63,-388.93 87.63,-388.93 87.63,-352.93 161.63,-352.93 161.63,-388.93"/>
+<polygon fill="#000000" stroke="#ffffff" points="161.63,-388.93 87.63,-388.93 87.63,-352.93 161.63,-352.93 161.63,-388.93"/>
 <text text-anchor="start" x="95.63" y="-368.83" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">AquaBlue</text>
 </g>
 <!-- MintTeal&#45;&gt;AquaBlue -->
@@ -94,7 +94,7 @@
 <!-- SunsetOrange -->
 <g id="node8" class="node">
 <title>SunsetOrange</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="275.72,-421.87 176.72,-421.87 176.72,-385.87 275.72,-385.87 275.72,-421.87"/>
+<polygon fill="#000000" stroke="#ffffff" points="275.72,-421.87 176.72,-421.87 176.72,-385.87 275.72,-385.87 275.72,-421.87"/>
 <text text-anchor="start" x="184.72" y="-401.77" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">SunsetOrange</text>
 </g>
 <!-- AquaBlue&#45;&gt;SunsetOrange -->
@@ -107,7 +107,7 @@
 <!-- MagentaGlow -->
 <g id="node9" class="node">
 <title>MagentaGlow</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="377.73,-399.26 283.73,-399.26 283.73,-363.26 377.73,-363.26 377.73,-399.26"/>
+<polygon fill="#000000" stroke="#ffffff" points="377.73,-399.26 283.73,-399.26 283.73,-363.26 377.73,-363.26 377.73,-399.26"/>
 <text text-anchor="start" x="291.73" y="-379.16" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">MagentaGlow</text>
 </g>
 <!-- SunsetOrange&#45;&gt;MagentaGlow -->
@@ -120,7 +120,7 @@
 <!-- OliveGreen -->
 <g id="node10" class="node">
 <title>OliveGreen</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="443.48,-321.56 363.48,-321.56 363.48,-285.56 443.48,-285.56 443.48,-321.56"/>
+<polygon fill="#000000" stroke="#ffffff" points="443.48,-321.56 363.48,-321.56 363.48,-285.56 443.48,-285.56 443.48,-321.56"/>
 <text text-anchor="start" x="371.48" y="-301.46" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">OliveGreen</text>
 </g>
 <!-- MagentaGlow&#45;&gt;OliveGreen -->
@@ -133,7 +133,7 @@
 <!-- VividRed -->
 <g id="node11" class="node">
 <title>VividRed</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="465.28,-218.68 397.28,-218.68 397.28,-182.68 465.28,-182.68 465.28,-218.68"/>
+<polygon fill="#000000" stroke="#ffffff" points="465.28,-218.68 397.28,-218.68 397.28,-182.68 465.28,-182.68 465.28,-218.68"/>
 <text text-anchor="start" x="405.28" y="-198.58" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">VividRed</text>
 </g>
 <!-- OliveGreen&#45;&gt;VividRed -->
@@ -146,7 +146,7 @@
 <!-- SkyCyan -->
 <g id="node12" class="node">
 <title>SkyCyan</title>
-<polygon fill="#000000" stroke="black" stroke-width="0" points="405.76,-132.17 337.76,-132.17 337.76,-96.17 405.76,-96.17 405.76,-132.17"/>
+<polygon fill="#000000" stroke="#ffffff" points="405.76,-132.17 337.76,-132.17 337.76,-96.17 405.76,-96.17 405.76,-132.17"/>
 <text text-anchor="start" x="345.76" y="-112.07" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">SkyCyan</text>
 </g>
 <!-- VividRed&#45;&gt;SkyCyan -->

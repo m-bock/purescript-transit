@@ -8,17 +8,17 @@
  viewBox="0.00 0.00 212.46 437.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 433)">
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-433 208.46,-433 208.46,4 -4,4"/>
-<text text-anchor="start" x="56.23" y="-416.4" font-family="Arial" font-weight="bold" font-size="12.00">Door with Alarm</text>
+<text text-anchor="start" x="56.23" y="-416.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#000000">Door with Alarm</text>
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
-<polygon fill="#a3e635" stroke="black" stroke-width="0" points="150.46,-360 74.46,-360 74.46,-324 150.46,-324 150.46,-360"/>
+<polygon fill="#a3e635" stroke="#a3e635" points="150.46,-360 74.46,-360 74.46,-324 150.46,-324 150.46,-360"/>
 <text text-anchor="start" x="82.46" y="-339.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#6ca114">DoorOpen</text>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
 <title>DoorClosed</title>
-<polygon fill="#ffc700" stroke="black" stroke-width="0" points="155.46,-275 69.46,-275 69.46,-239 155.46,-239 155.46,-275"/>
+<polygon fill="#ffc700" stroke="#ffc700" points="155.46,-275 69.46,-275 69.46,-239 155.46,-239 155.46,-275"/>
 <text text-anchor="start" x="77.46" y="-254.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b38b00">DoorClosed</text>
 </g>
 <!-- DoorOpen&#45;&gt;DoorClosed -->
@@ -49,7 +49,7 @@
 <!-- DoorLocked -->
 <g id="node4" class="node">
 <title>DoorLocked</title>
-<polygon fill="#2f80ed" stroke="black" stroke-width="0" points="116.46,-190 28.46,-190 28.46,-154 116.46,-154 116.46,-190"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" points="116.46,-190 28.46,-190 28.46,-154 116.46,-154 116.46,-190"/>
 <text text-anchor="start" x="36.46" y="-169.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#0c4590">DoorLocked</text>
 </g>
 <!-- DoorClosed&#45;&gt;DoorLocked -->
@@ -89,7 +89,7 @@
 <!-- Alarm -->
 <g id="node6" class="node">
 <title>Alarm</title>
-<polygon fill="#ff527c" stroke="black" stroke-width="0" points="101.46,-36 47.46,-36 47.46,0 101.46,0 101.46,-36"/>
+<polygon fill="#ff527c" stroke="#ff527c" points="101.46,-36 47.46,-36 47.46,0 101.46,0 101.46,-36"/>
 <text text-anchor="start" x="57.46" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b8002c">Alarm</text>
 </g>
 <!-- decision_DoorLocked_Unlock&#45;&gt;Alarm -->

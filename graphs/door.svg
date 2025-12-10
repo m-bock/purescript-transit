@@ -8,17 +8,17 @@
  viewBox="0.00 0.00 95.00 198.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 194)">
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-194 91,-194 91,4 -4,4"/>
-<text text-anchor="start" x="29" y="-177.4" font-family="Arial" font-weight="bold" font-size="12.00">Door</text>
+<text text-anchor="start" x="29" y="-177.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#000000">Door</text>
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
-<polygon fill="#a3e635" stroke="black" stroke-width="0" points="81,-121 5,-121 5,-85 81,-85 81,-121"/>
+<polygon fill="#a3e635" stroke="#a3e635" points="81,-121 5,-121 5,-85 81,-85 81,-121"/>
 <text text-anchor="start" x="13" y="-100.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#6ca114">DoorOpen</text>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
 <title>DoorClosed</title>
-<polygon fill="#ffc700" stroke="black" stroke-width="0" points="86,-36 0,-36 0,0 86,0 86,-36"/>
+<polygon fill="#ffc700" stroke="#ffc700" points="86,-36 0,-36 0,0 86,0 86,-36"/>
 <text text-anchor="start" x="8" y="-15.9" font-family="Arial" font-weight="bold" font-size="12.00" fill="#b38b00">DoorClosed</text>
 </g>
 <!-- DoorOpen&#45;&gt;DoorClosed -->

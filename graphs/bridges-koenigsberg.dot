@@ -1,16 +1,16 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff"
-LandA [shape = "box", label = <<b>LandA</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff";fontcolor = "#000000"
+LandA [shape = "box", label = <<b>LandA</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 __Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
 __Start__ -> LandA [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
-LandB [shape = "box", label = <<b>LandB</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+LandB [shape = "box", label = <<b>LandB</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 LandB -> LandA [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_a</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 LandB -> LandA [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_b</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
-LandC [shape = "box", label = <<b>LandC</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+LandC [shape = "box", label = <<b>LandC</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 LandC -> LandA [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_c</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 LandC -> LandA [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_d</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
-LandD [shape = "box", label = <<b>LandD</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", fontname = "Arial", labelloc = "c", penwidth = 0.0]
+LandD [shape = "box", label = <<b>LandD</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 LandD -> LandA [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_e</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 LandD -> LandB [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_f</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
 LandD -> LandC [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_g</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]

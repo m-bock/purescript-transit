@@ -14,16 +14,16 @@ import Prelude
 
 import Color (Color)
 import Color as Color
-import Data.Array ((!!), drop)
+import Data.Array (drop)
 import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Array.NonEmpty as NEA
 import Data.Bounded.Generic (genericBottom, genericTop)
 import Data.Enum (class Enum, enumFromTo)
 import Data.Enum.Generic (genericPred, genericSucc)
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (Maybe(..), fromJust, fromMaybe)
+import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
-import Partial.Unsafe (unsafeCrashWith, unsafePartial)
+import Partial.Unsafe (unsafeCrashWith)
 
 data BaseColor
   = SpringGreen
@@ -65,74 +65,85 @@ baseColorToColor = case _ of
   SunsetOrange -> Color.hsl 28.2 0.866 0.620
   VividRed -> Color.hsl 0.0 0.787 0.631
   CoralPink -> Color.hsl 345.5 1.000 0.661
-  SkyCyan -> Color.hsl 203.2 0.709 0.514 -- if kept
-  MagentaGlow -> Color.hsl 279.3 0.857 0.690 -- if kept
+  SkyCyan -> Color.hsl 203.2 0.709 0.514
+  MagentaGlow -> Color.hsl 279.3 0.857 0.690
   OliveGreen -> Color.hsl 151.0 0.635 0.410
 
 mkLightColorHarmony :: BaseColor -> Color -> ColorHarmony
 mkLightColorHarmony = case _ of
   OceanBlue -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.25 color
     , edgeFont: Color.darken 0.15 color
     , edgeColor: color
     }
   SunsetOrange -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.25 color
     , edgeFont: Color.darken 0.15 color
     , edgeColor: color
     }
   VividRed -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   AquaBlue -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.3 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   SpringGreen -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   MintTeal -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   SkyCyan -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   LemonYellow -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.15 color
     , edgeFont: Color.darken 0.1 color
     , edgeColor: color
     }
   MagentaGlow -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   OliveGreen -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.2 color
     , edgeFont: Color.darken 0.2 color
     , edgeColor: color
     }
   CoralPink -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: Color.darken 0.3 color
     , edgeFont: Color.darken 0.15 color
     , edgeColor: color
@@ -142,86 +153,86 @@ mkDarkColorHarmony :: BaseColor -> Color -> ColorHarmony
 mkDarkColorHarmony bc = case bc of
   OceanBlue -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SunsetOrange -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   VividRed -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   AquaBlue -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SpringGreen -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MintTeal -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SkyCyan -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   LemonYellow -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MagentaGlow -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   OliveGreen -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   CoralPink -> \color ->
     { nodeBg: color
+    , nodeBorder: color
     , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
 
-mkDefaultNodeBg :: BaseColor -> Color -> Color
-mkDefaultNodeBg _ = Color.darken 0.2
-
-mkDefaultEdgeColor :: BaseColor -> Color -> Color
-mkDefaultEdgeColor _ = Color.darken 0.2
-
-mkDefaultNodeFont :: BaseColor -> Color -> Color
-mkDefaultNodeFont _ = Color.darken 0.2
-
-mkDefaultEdgeFont :: BaseColor -> Color -> Color
-mkDefaultEdgeFont _ = Color.lighten 0.2
-
 type ColorHarmony =
   { nodeBg :: Color
   , nodeFont :: Color
+  , nodeBorder :: Color
   , edgeFont :: Color
   , edgeColor :: Color
   }
@@ -242,15 +253,6 @@ indexMod xs index = case NEA.index xs (index `mod` NEA.length xs) of
   Just x -> x
   Nothing -> unsafeCrashWith "impossible: index out of bounds"
 
-themeHarmonyDark :: Theme
-themeHarmonyDark =
-  { bgColor: Color.rgb 0 0 0
-  , titleColor: Color.rgb 255 255 255
-  , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
-  , undirectedEdgeColor: Color.rgb 255 255 255
-  , undirectedEdgeFontColor: Color.rgb 255 255 255
-  }
-
 themeHarmonyLight :: Theme
 themeHarmonyLight =
   { bgColor: Color.rgb 255 255 255
@@ -260,29 +262,55 @@ themeHarmonyLight =
   , undirectedEdgeFontColor: Color.rgb 0 0 0
   }
 
-themeContrastDark :: Theme
-themeContrastDark =
+themeHarmonyDark :: Theme
+themeHarmonyDark =
   { bgColor: Color.rgb 0 0 0
   , titleColor: Color.rgb 255 255 255
-  , colorHarmonies: pure
-      { nodeBg: Color.rgb 0 0 0
-      , nodeFont: Color.rgb 255 255 255
-      , edgeFont: Color.rgb 255 255 255
-      , edgeColor: Color.rgb 255 255 255
-      }
+  , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 255 255 255
   , undirectedEdgeFontColor: Color.rgb 255 255 255
   }
 
 themeContrastLight :: Theme
 themeContrastLight =
+  { bgColor: Color.white
+  , titleColor: Color.black
+  , colorHarmonies: pure
+      { nodeBg: Color.white
+      , nodeBorder: Color.black
+      , nodeFont: Color.black
+      , edgeFont: Color.black
+      , edgeColor: Color.black
+      }
+  , undirectedEdgeColor: Color.black
+  , undirectedEdgeFontColor: Color.black
+  }
+
+themeContrastDark :: Theme
+themeContrastDark =
+  { bgColor: Color.black
+  , titleColor: Color.white
+  , colorHarmonies: pure
+      { nodeBg: Color.black
+      , nodeBorder: Color.white
+      , nodeFont: Color.white
+      , edgeFont: Color.white
+      , edgeColor: Color.white
+      }
+  , undirectedEdgeColor: Color.white
+  , undirectedEdgeFontColor: Color.white
+  }
+
+themeGradientLight :: Theme
+themeGradientLight =
   { bgColor: Color.rgb 255 255 255
   , titleColor: Color.rgb 0 0 0
   , colorHarmonies: pure
-      { nodeBg: Color.rgb 255 255 255
+      { nodeBg: Color.rgb 230 230 230
+      , nodeBorder: Color.rgb 255 255 255
       , nodeFont: Color.rgb 0 0 0
       , edgeFont: Color.rgb 0 0 0
-      , edgeColor: Color.rgb 0 0 0
+      , edgeColor: Color.rgb 130 130 130
       }
   , undirectedEdgeColor: Color.rgb 0 0 0
   , undirectedEdgeFontColor: Color.rgb 0 0 0
@@ -293,24 +321,11 @@ themeGradientDark =
   { bgColor: Color.rgb 0 0 0
   , titleColor: Color.rgb 255 255 255
   , colorHarmonies: pure
-      { nodeBg: Color.rgb 0 0 0
-      , nodeFont: Color.rgb 255 255 255
-      , edgeFont: Color.rgb 255 255 255
-      , edgeColor: Color.rgb 255 255 255
-      }
-  , undirectedEdgeColor: Color.rgb 255 255 255
-  , undirectedEdgeFontColor: Color.rgb 255 255 255
-  }
-
-themeGradientLight :: Theme
-themeGradientLight =
-  { bgColor: Color.rgb 255 255 255
-  , titleColor: Color.rgb 0 0 0
-  , colorHarmonies: pure
-      { nodeBg: Color.rgb 255 255 255
+      { nodeBg: Color.rgb 200 200 200
+      , nodeBorder: Color.rgb 200 200 200
       , nodeFont: Color.rgb 0 0 0
-      , edgeFont: Color.rgb 0 0 0
-      , edgeColor: Color.rgb 0 0 0
+      , edgeFont: Color.rgb 200 200 200
+      , edgeColor: Color.rgb 130 130 130
       }
   , undirectedEdgeColor: Color.rgb 0 0 0
   , undirectedEdgeFontColor: Color.rgb 0 0 0
