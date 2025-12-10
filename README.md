@@ -719,6 +719,8 @@ update = mkUpdateGeneric @DoorDSL
 
 Full source code: _[test/Examples/Variants.purs](test/Examples/Variants.purs)_
 
+Instead of using ADTs for `State` and `Msg`, you can define them directly as `Variant` types. This eliminates the conversion overhead between ADT and `Variant` representations, and you use `mkUpdate` instead of `mkUpdateGeneric`:
+
 <!-- PD_START:purs
 filePath: test/Examples/Variants.purs
 pick:
