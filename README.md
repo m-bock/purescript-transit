@@ -668,6 +668,12 @@ unimplemented = unsafeCoerce "not yet implemented"
 
 <!-- PD_END -->
 
+The `update` function demonstrates the type signatures that transit enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
+
+Unfortunately, PureScript's ADTs (Algebraic Data Types) don't allow expressing a subset of cases from a union type. This is where `Variant` comes in—it's perfect for representing a subset of cases from a union type. Each match handler must return a `Variant` type that precisely matches the possible target states defined in the DSL specification.
+
+This approach requires internal conversion between ADT and `Variant` representations. If you'd like to avoid this conversion overhead, you can define your `State` and `Msg` types as `Variant` directly from the start, as shown in the next chapter.
+
 <!-- PD_START:purs
 filePath: test/Examples/Signatures.purs
 pick:
