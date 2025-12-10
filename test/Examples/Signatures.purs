@@ -12,29 +12,32 @@ import Unsafe.Coerce (unsafeCoerce)
 --- transit Approach
 --------------------------------------------------------------------------------
 
+unimplemented :: forall a. a
+unimplemented = unsafeCoerce "not yet implemented"
+
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   ( match @"DoorOpen" @"Close"
       ( \(state :: Unit) (msg :: Unit) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant ("DoorClosed" :: ReturnState Unit)
       )
   )
   ( match @"DoorClosed" @"Open"
       ( \(state :: Unit) (msg :: Unit) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant ("DoorOpen" :: ReturnState Unit)
       )
   )
   ( match @"DoorClosed" @"Lock"
       ( \(state :: Unit) (msg :: { newPin :: String }) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant ("DoorLocked" :: ReturnState { attempts :: Int, pin :: String })
       )
   )
   ( match @"DoorLocked" @"Unlock"
       ( \(state :: { attempts :: Int, pin :: String }) (msg :: { enteredPin :: String }) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant
                  ( "Alarm" :: ReturnStateVia "TooManyAttempts" Unit
                  , "DoorClosed" :: ReturnStateVia "PinCorrect" Unit

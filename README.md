@@ -10,6 +10,8 @@ Type-Safe State Machines.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Transit](#transit)
+  - [Key Features](#key-features)
+  - [About This Documentation](#about-this-documentation)
   - [Installation](#installation)
   - [Example1: Door](#example1-door)
     - [The Classic Approach](#the-classic-approach)
@@ -651,6 +653,21 @@ Labeled transitions are particularly valuable when you have complex conditional 
 
 Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
 
+This chapter demonstrates the type signatures that transit enforces for your update functions. To show these signatures without implementing the actual logic, we use an `unimplemented` helper function that satisfies the type checker:
+
+<!-- PD_START:purs
+filePath: test/Examples/Signatures.purs
+pick:
+  - unimplemented
+-->
+
+```purescript
+unimplemented :: forall a. a
+unimplemented = unsafeCoerce "not yet implemented"
+```
+
+<!-- PD_END -->
+
 <!-- PD_START:purs
 filePath: test/Examples/Signatures.purs
 pick:
@@ -662,25 +679,25 @@ update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   ( match @"DoorOpen" @"Close"
       ( \(state :: Unit) (msg :: Unit) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant ("DoorClosed" :: ReturnState Unit)
       )
   )
   ( match @"DoorClosed" @"Open"
       ( \(state :: Unit) (msg :: Unit) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant ("DoorOpen" :: ReturnState Unit)
       )
   )
   ( match @"DoorClosed" @"Lock"
       ( \(state :: Unit) (msg :: { newPin :: String }) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant ("DoorLocked" :: ReturnState { attempts :: Int, pin :: String })
       )
   )
   ( match @"DoorLocked" @"Unlock"
       ( \(state :: { attempts :: Int, pin :: String }) (msg :: { enteredPin :: String }) ->
-          unsafeCoerce "todo"
+          unimplemented
             :: Variant
                  ( "Alarm" :: ReturnStateVia "TooManyAttempts" Unit
                  , "DoorClosed" :: ReturnStateVia "PinCorrect" Unit
