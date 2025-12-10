@@ -208,12 +208,12 @@ defaultOptions =
   , useUndirectedEdges: false
   }
 
-writeToFile :: (Options -> Options) -> TransitCore -> FilePath -> Effect Unit
-writeToFile mkOptions sg path = do
+writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit
+writeToFile path sg mkOptions = do
   FS.writeTextFile UTF8 path
     (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
   Console.log $ "Wrote graphviz graph to " <> path
 
-writeToFile_ :: TransitCore -> FilePath -> Effect Unit
-writeToFile_ sg path = writeToFile identity sg path
+writeToFile_ :: FilePath -> TransitCore -> Effect Unit
+writeToFile_ path sg = writeToFile path sg identity
 

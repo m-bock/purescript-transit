@@ -7,11 +7,10 @@ import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
-import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
+import Transit.Colors (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
-import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
-import Type.Proxy (Proxy(..))
+import Type.Prelude (Proxy(..))
 
 data State = SpringGreen | LemonYellow | OceanBlue | CoralPink | MintTeal | AquaBlue | SunsetOrange | MagentaGlow | OliveGreen | VividRed | SkyCyan
 
@@ -55,22 +54,38 @@ main = do
 
     globalAttrs = "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
 
-  TransitGraphviz.writeToFile
-    ( _
-        { title = "Harmony Light"
-        , globalAttrsRaw = Just globalAttrs
-        , theme = themeHarmonyLight
-        }
-    )
-    transit
-    "graphs/themes/harmony-light.dot"
+  TransitGraphviz.writeToFile "graphs/themes/harmony-light.dot" transit _
+    { title = "Harmony Light"
+    , globalAttrsRaw = Just globalAttrs
+    , theme = themeHarmonyLight
+    }
 
-  TransitGraphviz.writeToFile
-    ( _
-        { title = "Harmony Dark"
-        , globalAttrsRaw = Just globalAttrs
-        , theme = themeHarmonyDark
-        }
-    )
-    transit
-    "graphs/themes/harmony-dark.dot"
+  TransitGraphviz.writeToFile "graphs/themes/harmony-dark.dot" transit _
+    { title = "Harmony Dark"
+    , globalAttrsRaw = Just globalAttrs
+    , theme = themeHarmonyDark
+    }
+
+  TransitGraphviz.writeToFile "graphs/themes/contrast-light.dot" transit _
+    { title = "Contrast Light"
+    , globalAttrsRaw = Just globalAttrs
+    , theme = themeContrastLight
+    }
+
+  TransitGraphviz.writeToFile "graphs/themes/contrast-dark.dot" transit _
+    { title = "Contrast Dark"
+    , globalAttrsRaw = Just globalAttrs
+    , theme = themeContrastDark
+    }
+
+  TransitGraphviz.writeToFile "graphs/themes/gradient-light.dot" transit _
+    { title = "Gradient Light"
+    , globalAttrsRaw = Just globalAttrs
+    , theme = themeGradientLight
+    }
+
+  TransitGraphviz.writeToFile "graphs/themes/gradient-dark.dot" transit _
+    { title = "Gradient Dark"
+    , globalAttrsRaw = Just globalAttrs
+    , theme = themeGradientDark
+    }

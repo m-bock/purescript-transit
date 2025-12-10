@@ -138,15 +138,11 @@ main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile
-    (_ { useUndirectedEdges = true })
-    transit
-    "graphs/bridges-koenigsberg.dot"
+  TransitGraphviz.writeToFile "graphs/bridges-koenigsberg.dot" transit _
+    { useUndirectedEdges = true }
 
-  TransitTable.writeToFile
-    (_ { useUndirectedEdges = true })
-    transit
-    "graphs/bridges-koenigsberg.html"
+  TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
+    { useUndirectedEdges = true }
 
   runSpecAndExitProcess [ consoleReporter ] spec
 

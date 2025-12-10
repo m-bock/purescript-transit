@@ -157,26 +157,20 @@ main = do
   let
     transit = reflectType (Proxy @TransitSantaClaus)
 
-  TransitGraphviz.writeToFile
-    ( _
-        { useUndirectedEdges = true
-        , nodeAttrsRaw = Just \node -> case node of
-            "N_1" -> "pos=\"0,0!\""
-            "N_2" -> "pos=\"2,0!\""
-            "N_3" -> "pos=\"2,2!\""
-            "N_4" -> "pos=\"0,2!\""
-            "N_5" -> "pos=\"1,3!\""
-            _ -> ""
-        , globalAttrsRaw = Just "layout=neato"
-        }
-    )
-    transit
-    "graphs/house-of-santa-claus.dot"
+  TransitGraphviz.writeToFile "graphs/house-of-santa-claus.dot" transit _
+    { useUndirectedEdges = true
+    , nodeAttrsRaw = Just \node -> case node of
+        "N_1" -> "pos=\"0,0!\""
+        "N_2" -> "pos=\"2,0!\""
+        "N_3" -> "pos=\"2,2!\""
+        "N_4" -> "pos=\"0,2!\""
+        "N_5" -> "pos=\"1,3!\""
+        _ -> ""
+    , globalAttrsRaw = Just "layout=neato"
+    }
 
-  TransitTable.writeToFile
-    (_ { useUndirectedEdges = true })
-    transit
-    "graphs/house-of-santa-claus.html"
+  TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
+    { useUndirectedEdges = true }
 
   runSpecAndExitProcess [ consoleReporter ] spec
 
