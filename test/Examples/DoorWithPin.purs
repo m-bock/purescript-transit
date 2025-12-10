@@ -105,8 +105,11 @@ main = do
   let
     transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile "graphs/door-with-pin.dot" transit (_ { title = "Door with Pin" })
-  TransitTable.writeToFile "graphs/door-with-pin.html" transit (_ { title = "Door with Pin" })
+  TransitGraphviz.writeToFile "graphs/door-with-pin.dot" transit _
+    { title = "Door with Pin" }
+
+  TransitTable.writeToFile "graphs/door-with-pin.html" transit _
+    { title = "Door with Pin" }
 
 --------------------------------------------------------------------------------
 --- Instances

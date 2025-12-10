@@ -13,5 +13,6 @@ main = do
   let
     transit = reflectType (Proxy @DoorDSL)
 
-  TransitTable.writeToFile "graphs/door.html" transit (_ { title = "Door" })
+  TransitTable.writeToFile "graphs/door.html" transit _
+    { title = "Door" }
 

@@ -13,5 +13,6 @@ main = do
   let
     transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile "graphs/door.dot" transit (_ { title = "Door" })
+  TransitGraphviz.writeToFile "graphs/door.dot" transit _
+    { title = "Door" }
 
