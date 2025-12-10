@@ -47,6 +47,10 @@ If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from 
 - **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
 - **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
 
+## About This Documentation
+
+All code examples in this documentation are extracted from actual, type-checked PureScript source files. At the top of each chapter, you'll find a link to the complete source file(s) used in that example.
+
 ## Installation
 
 ```bash
