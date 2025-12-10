@@ -107,8 +107,8 @@
 <!-- MagentaGlow -->
 <g id="node9" class="node">
 <title>MagentaGlow</title>
-<polygon fill="#eb5757" stroke="black" stroke-width="0" points="377.73,-399.26 283.73,-399.26 283.73,-363.26 377.73,-363.26 377.73,-399.26"/>
-<text text-anchor="start" x="291.73" y="-379.16" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c41717">MagentaGlow</text>
+<polygon fill="#c56cf4" stroke="black" stroke-width="0" points="377.73,-399.26 283.73,-399.26 283.73,-363.26 377.73,-363.26 377.73,-399.26"/>
+<text text-anchor="start" x="291.73" y="-379.16" font-family="Arial" font-weight="bold" font-size="12.00" fill="#9e12e8">MagentaGlow</text>
 </g>
 <!-- SunsetOrange&#45;&gt;MagentaGlow -->
 <g id="edge8" class="edge">
@@ -126,15 +126,15 @@
 <!-- MagentaGlow&#45;&gt;OliveGreen -->
 <g id="edge9" class="edge">
 <title>MagentaGlow&#45;&gt;OliveGreen</title>
-<path fill="none" stroke="#eb5757" stroke-width="1.8" d="M347.61,-363.24C357.72,-352.43 370.7,-338.57 381.6,-326.93"/>
-<polygon fill="#eb5757" stroke="#eb5757" stroke-width="1.8" points="383.45,-328.54 386.44,-321.75 379.87,-325.19 383.45,-328.54"/>
-<text text-anchor="start" x="327.07" y="-346.85" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c41717">MsgH</text>
+<path fill="none" stroke="#c56cf4" stroke-width="1.8" d="M347.61,-363.24C357.72,-352.43 370.7,-338.57 381.6,-326.93"/>
+<polygon fill="#c56cf4" stroke="#c56cf4" stroke-width="1.8" points="383.45,-328.54 386.44,-321.75 379.87,-325.19 383.45,-328.54"/>
+<text text-anchor="start" x="327.07" y="-346.85" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#9e12e8">MsgH</text>
 </g>
 <!-- VividRed -->
 <g id="node11" class="node">
 <title>VividRed</title>
-<polygon fill="#c56cf4" stroke="black" stroke-width="0" points="465.28,-218.68 397.28,-218.68 397.28,-182.68 465.28,-182.68 465.28,-218.68"/>
-<text text-anchor="start" x="405.28" y="-198.58" font-family="Arial" font-weight="bold" font-size="12.00" fill="#9e12e8">VividRed</text>
+<polygon fill="#eb5757" stroke="black" stroke-width="0" points="465.28,-218.68 397.28,-218.68 397.28,-182.68 465.28,-182.68 465.28,-218.68"/>
+<text text-anchor="start" x="405.28" y="-198.58" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c41717">VividRed</text>
 </g>
 <!-- OliveGreen&#45;&gt;VividRed -->
 <g id="edge10" class="edge">
@@ -152,9 +152,9 @@
 <!-- VividRed&#45;&gt;SkyCyan -->
 <g id="edge11" class="edge">
 <title>VividRed&#45;&gt;SkyCyan</title>
-<path fill="none" stroke="#c56cf4" stroke-width="1.8" d="M418.66,-182.33C409.84,-169.52 397.97,-152.27 388.39,-138.34"/>
-<polygon fill="#c56cf4" stroke="#c56cf4" stroke-width="1.8" points="390.15,-136.57 384.16,-132.19 386.11,-139.35 390.15,-136.57"/>
-<text text-anchor="start" x="366.34" y="-161.56" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#9e12e8">MsgJ</text>
+<path fill="none" stroke="#eb5757" stroke-width="1.8" d="M418.66,-182.33C409.84,-169.52 397.97,-152.27 388.39,-138.34"/>
+<polygon fill="#eb5757" stroke="#eb5757" stroke-width="1.8" points="390.15,-136.57 384.16,-132.19 386.11,-139.35 390.15,-136.57"/>
+<text text-anchor="start" x="366.34" y="-161.56" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#c41717">MsgJ</text>
 </g>
 <!-- SkyCyan&#45;&gt;SpringGreen -->
 <g id="edge12" class="edge">

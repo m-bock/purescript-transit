@@ -35,13 +35,11 @@ mkGraphvizGraph options transit =
     , case options.globalAttrsRaw of
         Just raw -> [ SecGlobalRaw raw ]
         Nothing -> []
-    , join $ mapWithIndex (mkStateSections colorMap transit options) $ getStateNames transit
+    , join $ mapWithIndex (mkStateSections transit options) $ getStateNames transit
     ]
-  where
-  colorMap = mkColorMap options.theme transit
 
-mkStateSections :: ColorMap -> TransitCore -> Options -> Int -> String -> Array D.Section
-mkStateSections colorMap transit options i stateName = join
+mkStateSections :: TransitCore -> Options -> Int -> String -> Array D.Section
+mkStateSections transit options i stateName = join
   [ pure $ SecNode $ mkStateNode options colors stateName
   , if i == 0 then
       [ SecNode $ mkInitNode "__Start__"
@@ -51,7 +49,7 @@ mkStateSections colorMap transit options i stateName = join
   , Array.concatMap (mkMatchSections colors transit options) $ getMatchesForState stateName transit
   ]
   where
-  colors = lookupColor stateName colorMap
+  colors = getColorHarmony options.theme i
 
 mkMatchSections :: ColorHarmony -> TransitCore -> Options -> Match -> Array D.Section
 mkMatchSections colors transit options (Match from msg returns) = case returns of
@@ -109,15 +107,6 @@ mkGlobalAttrs options =
   , D.fontSize 12
   , D.bgColor options.theme.bgColor
   ]
-
-type ColorMap = Map String ColorHarmony
-
-lookupColor :: String -> ColorMap -> ColorHarmony
-lookupColor state colorMap = fromMaybe (Colors.defaultColorHarmony) $ Map.lookup state colorMap
-
-mkColorMap :: Theme -> TransitCore -> ColorMap
-mkColorMap theme transit =
-  Map.fromFoldable $ mapWithIndex (\i node -> (node /\ getColorHarmony theme i)) $ getStateNames transit
 
 mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
 mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
@@ -212,7 +201,7 @@ type Options =
 defaultOptions :: Options
 defaultOptions =
   { title: "Untitled"
-  , theme: themeLight
+  , theme: themeHarmonyLight
   , globalAttrsRaw: Nothing
   , nodeAttrsRaw: Nothing
   , useDecisionNodes: true

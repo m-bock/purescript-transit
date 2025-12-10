@@ -7,13 +7,15 @@ import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Effect (Effect)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
-import Transit.Colors (BaseColor, themeDark)
+import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.StateGraph (mkStateGraph)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
-type State = BaseColor
+data State = SpringGreen | LemonYellow | OceanBlue | CoralPink | MintTeal | AquaBlue | SunsetOrange | MagentaGlow | OliveGreen | VividRed | SkyCyan
+
+derive instance Generic State _
 
 data Msg = MsgA | MsgB | MsgC | MsgD | MsgE | MsgF | MsgG | MsgH | MsgI | MsgJ | MsgK
 
@@ -51,21 +53,24 @@ main = do
   let
     transit = reflectType (Proxy @ColorsFSM)
 
-  TransitGraphviz.writeToFile
-    ( _
-        { title = "Color Ring"
-        , globalAttrsRaw = Just "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
-        }
-    )
-    transit
-    "graphs/color-ring.dot"
+    globalAttrs = "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
 
   TransitGraphviz.writeToFile
     ( _
-        { title = "Color Ring"
-        , globalAttrsRaw = Just "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
-        , theme = themeDark
+        { title = "Harmony Light"
+        , globalAttrsRaw = Just globalAttrs
+        , theme = themeHarmonyLight
         }
     )
     transit
-    "graphs/color-ring-dark.dot"
+    "graphs/themes/harmony-light.dot"
+
+  TransitGraphviz.writeToFile
+    ( _
+        { title = "Harmony Dark"
+        , globalAttrsRaw = Just globalAttrs
+        , theme = themeHarmonyDark
+        }
+    )
+    transit
+    "graphs/themes/harmony-dark.dot"

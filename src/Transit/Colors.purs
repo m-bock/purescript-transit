@@ -1,16 +1,29 @@
-module Transit.Colors where
+module Transit.Colors
+  ( ColorHarmony
+  , Theme
+  , getColorHarmony
+  , themeHarmonyDark
+  , themeHarmonyLight
+  , themeContrastDark
+  , themeContrastLight
+  , themeGradientDark
+  , themeGradientLight
+  ) where
 
 import Prelude
 
 import Color (Color)
 import Color as Color
-import Data.Array ((!!))
+import Data.Array ((!!), drop)
+import Data.Array.NonEmpty (NonEmptyArray)
+import Data.Array.NonEmpty as NEA
 import Data.Bounded.Generic (genericBottom, genericTop)
 import Data.Enum (class Enum, enumFromTo)
 import Data.Enum.Generic (genericPred, genericSucc)
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (Maybe(..), fromJust, fromMaybe)
 import Data.Show.Generic (genericShow)
+import Partial.Unsafe (unsafeCrashWith, unsafePartial)
 
 data BaseColor
   = SpringGreen
@@ -39,8 +52,8 @@ instance Enum BaseColor where
   succ = genericSucc
   pred = genericPred
 
-allBaseColors :: Array BaseColor
-allBaseColors = enumFromTo bottom top
+allBaseColors :: NonEmptyArray BaseColor
+allBaseColors = NEA.cons' bottom (drop 1 $ enumFromTo bottom top)
 
 baseColorToColor :: BaseColor -> Color
 baseColorToColor = case _ of
@@ -56,8 +69,8 @@ baseColorToColor = case _ of
   MagentaGlow -> Color.hsl 279.3 0.857 0.690 -- if kept
   OliveGreen -> Color.hsl 151.0 0.635 0.410
 
-x :: BaseColor -> Color -> ColorHarmony
-x = case _ of
+mkLightColorHarmony :: BaseColor -> Color -> ColorHarmony
+mkLightColorHarmony = case _ of
   OceanBlue -> \color ->
     { nodeBg: color
     , nodeFont: Color.darken 0.25 color
@@ -125,71 +138,71 @@ x = case _ of
     , edgeColor: color
     }
 
-y :: BaseColor -> Color -> ColorHarmony
-y bc = case bc of
+mkDarkColorHarmony :: BaseColor -> Color -> ColorHarmony
+mkDarkColorHarmony bc = case bc of
   OceanBlue -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SunsetOrange -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   VividRed -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   AquaBlue -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SpringGreen -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MintTeal -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SkyCyan -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   LemonYellow -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MagentaGlow -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   OliveGreen -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   CoralPink -> \color ->
     { nodeBg: color
-    , nodeFont: (x bc color).nodeFont
+    , nodeFont: (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
@@ -216,36 +229,89 @@ type ColorHarmony =
 type Theme =
   { bgColor :: Color
   , titleColor :: Color
-  , colorHarmonies :: Array ColorHarmony
+  , colorHarmonies :: NonEmptyArray ColorHarmony
   , undirectedEdgeColor :: Color
   , undirectedEdgeFontColor :: Color
   }
 
-themeLight :: Theme
-themeLight =
-  { bgColor: Color.rgb 255 255 255
-  , titleColor: Color.rgb 0 0 0
-  , colorHarmonies: map (\bc -> x bc (baseColorToColor bc)) allBaseColors
-  , undirectedEdgeColor: Color.rgb 0 0 0
-  , undirectedEdgeFontColor: Color.rgb 0 0 0
-  }
+getColorHarmony :: Theme -> Int -> ColorHarmony
+getColorHarmony theme index = indexMod theme.colorHarmonies index
 
-defaultColorHarmony :: ColorHarmony
-defaultColorHarmony =
-  { nodeBg: Color.rgb 255 255 255
-  , nodeFont: Color.rgb 0 0 0
-  , edgeFont: Color.rgb 0 0 0
-  , edgeColor: Color.rgb 0 0 0
-  }
+indexMod :: forall a. NonEmptyArray a -> Int -> a
+indexMod xs index = case NEA.index xs (index `mod` NEA.length xs) of
+  Just x -> x
+  Nothing -> unsafeCrashWith "impossible: index out of bounds"
 
-themeDark :: Theme
-themeDark =
+themeHarmonyDark :: Theme
+themeHarmonyDark =
   { bgColor: Color.rgb 0 0 0
   , titleColor: Color.rgb 255 255 255
-  , colorHarmonies: map (\bc -> y bc (baseColorToColor bc)) allBaseColors
+  , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 255 255 255
   , undirectedEdgeFontColor: Color.rgb 255 255 255
   }
 
-getColorHarmony :: Theme -> Int -> ColorHarmony
-getColorHarmony theme index = fromMaybe defaultColorHarmony $ theme.colorHarmonies !! index
+themeHarmonyLight :: Theme
+themeHarmonyLight =
+  { bgColor: Color.rgb 255 255 255
+  , titleColor: Color.rgb 0 0 0
+  , colorHarmonies: map (\bc -> mkLightColorHarmony bc (baseColorToColor bc)) allBaseColors
+  , undirectedEdgeColor: Color.rgb 0 0 0
+  , undirectedEdgeFontColor: Color.rgb 0 0 0
+  }
+
+themeContrastDark :: Theme
+themeContrastDark =
+  { bgColor: Color.rgb 0 0 0
+  , titleColor: Color.rgb 255 255 255
+  , colorHarmonies: pure
+      { nodeBg: Color.rgb 0 0 0
+      , nodeFont: Color.rgb 255 255 255
+      , edgeFont: Color.rgb 255 255 255
+      , edgeColor: Color.rgb 255 255 255
+      }
+  , undirectedEdgeColor: Color.rgb 255 255 255
+  , undirectedEdgeFontColor: Color.rgb 255 255 255
+  }
+
+themeContrastLight :: Theme
+themeContrastLight =
+  { bgColor: Color.rgb 255 255 255
+  , titleColor: Color.rgb 0 0 0
+  , colorHarmonies: pure
+      { nodeBg: Color.rgb 255 255 255
+      , nodeFont: Color.rgb 0 0 0
+      , edgeFont: Color.rgb 0 0 0
+      , edgeColor: Color.rgb 0 0 0
+      }
+  , undirectedEdgeColor: Color.rgb 0 0 0
+  , undirectedEdgeFontColor: Color.rgb 0 0 0
+  }
+
+themeGradientDark :: Theme
+themeGradientDark =
+  { bgColor: Color.rgb 0 0 0
+  , titleColor: Color.rgb 255 255 255
+  , colorHarmonies: pure
+      { nodeBg: Color.rgb 0 0 0
+      , nodeFont: Color.rgb 255 255 255
+      , edgeFont: Color.rgb 255 255 255
+      , edgeColor: Color.rgb 255 255 255
+      }
+  , undirectedEdgeColor: Color.rgb 255 255 255
+  , undirectedEdgeFontColor: Color.rgb 255 255 255
+  }
+
+themeGradientLight :: Theme
+themeGradientLight =
+  { bgColor: Color.rgb 255 255 255
+  , titleColor: Color.rgb 0 0 0
+  , colorHarmonies: pure
+      { nodeBg: Color.rgb 255 255 255
+      , nodeFont: Color.rgb 0 0 0
+      , edgeFont: Color.rgb 0 0 0
+      , edgeColor: Color.rgb 0 0 0
+      }
+  , undirectedEdgeColor: Color.rgb 0 0 0
+  , undirectedEdgeFontColor: Color.rgb 0 0 0
+  }
