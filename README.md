@@ -45,6 +45,8 @@ spago install transit
 
 ## Example1: Door
 
+Full source code: _[test/Examples/Door.purs](test/Examples/Door.purs)_
+
 Let's start with a simple door state machine. Here's its state diagram:
 
 <img src="graphs/door.svg" />
@@ -72,8 +74,6 @@ data State = DoorOpen | DoorClosed
 data Msg = Close | Open
 ```
 
-_[test/Examples/Door.purs](test/Examples/Door.purs)_
-
 <!-- PD_END -->
 
 ### The Classic Approach
@@ -93,8 +93,6 @@ updateClassic state msg = case state, msg of
   DoorClosed, Open -> DoorOpen
   _, _ -> state
 ```
-
-_[test/Examples/Door.purs](test/Examples/Door.purs)_
 
 <!-- PD_END -->
 
@@ -121,8 +119,6 @@ type DoorDSL =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-_[test/Examples/Door.purs](test/Examples/Door.purs)_
-
 <!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
@@ -141,8 +137,6 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
-
-_[test/Examples/Door.purs](test/Examples/Door.purs)_
 
 <!-- PD_END -->
 
@@ -167,6 +161,8 @@ Conversely, the compiler guarantees:
 Later we'll see how to generate the state diagram directly from the spec, ensuring it always stays in sync with the code.
 
 ## Example2: Door with Lock
+
+Full source code: _[test/Examples/DoorWithLock.purs](test/Examples/DoorWithLock.purs)_
 
 Now let's extend our door example by adding a lock mechanism. Here's the enhanced state diagram:
 
@@ -202,8 +198,6 @@ data Msg
   | Unlock
 ```
 
-_[test/Examples/DoorWithLock.purs](test/Examples/DoorWithLock.purs)_
-
 <!-- PD_END -->
 
 ### The Classic Approach
@@ -225,8 +219,6 @@ updateClassic state msg = case state, msg of
   DoorLocked, Unlock -> DoorClosed
   _, _ -> state
 ```
-
-_[test/Examples/Door.purs](test/Examples/Door.purs)_
 
 <!-- PD_END -->
 
@@ -255,8 +247,6 @@ type DoorDSL =
     :* ("DoorLocked" :@ "Unlock" >| "DoorClosed")
 ```
 
-_[test/Examples/DoorWithLock.purs](test/Examples/DoorWithLock.purs)_
-
 <!-- PD_END -->
 
 The update function now includes all four transitions, and the compiler ensures each one is correctly implemented:
@@ -276,8 +266,6 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
 ```
 
-_[test/Examples/DoorWithLock.purs](test/Examples/DoorWithLock.purs)_
-
 <!-- PD_END -->
 
 The type system prevents common mistakes:
@@ -289,6 +277,8 @@ The type system prevents common mistakes:
 This becomes even more valuable as state machines grow in complexity.
 
 ## Generate State Diagrams
+
+Full source code: _[test/Examples/GenerateStateDiagrams.purs](test/Examples/GenerateStateDiagrams.purs)_
 
 One of the key benefits of transit is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
 
@@ -309,8 +299,6 @@ main = do
   TransitGraphviz.writeToFile "graphs/door.dot" transit _
     { title = "Door" }
 ```
-
-_[test/Examples/GenerateStateDiagrams.purs](test/Examples/GenerateStateDiagrams.purs)_
 
 <!-- PD_END -->
 
@@ -335,6 +323,8 @@ Since the diagram is generated from the same DSL specification used to create th
 
 ## Generate Transition Tables
 
+Full source code: _[test/Examples/GenerateTransitionTables.purs](test/Examples/GenerateTransitionTables.purs)_
+
 In addition to state diagrams, you can also generate transition tables from the same graph data structure. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
 
 The process is identical to generating state diagrams—you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
@@ -355,8 +345,6 @@ main = do
     { title = "Door" }
 ```
 
-_[test/Examples/GenerateTransitionTables.purs](test/Examples/GenerateTransitionTables.purs)_
-
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
@@ -364,6 +352,8 @@ This generates an HTML file containing a table with columns for "From State", "M
 Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
 
 ## Example3: Door with Pin
+
+Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
 
 Now let's add a PIN code to our door lock. This introduces two important concepts: **states with data** and **conditional transitions**.
 
@@ -401,8 +391,6 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-_[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
-
 <!-- PD_END -->
 
 ### The Classic Approach
@@ -429,8 +417,6 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-_[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
-
 <!-- PD_END -->
 
 ### The Transit Approach
@@ -455,8 +441,6 @@ type DoorDSL =
           >| "DoorLocked"
       )
 ```
-
-_[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
 
 <!-- PD_END -->
 
@@ -490,8 +474,6 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-_[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
-
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
@@ -501,6 +483,8 @@ The match handlers receive both the current state and the message, giving you ac
 - 🟢 The conditional logic is type-safe
 
 ## Example4: Door with Pin and Alarm
+
+Full source code: _[test/Examples/DoorWithAlarm.purs](test/Examples/DoorWithAlarm.purs)_
 
 Now let's extend the door with PIN by adding an alarm system that triggers after too many failed unlock attempts. This introduces **labeled conditional transitions**, which allow you to document the different conditions that lead to different states.
 
@@ -541,8 +525,6 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-_[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
-
 <!-- PD_END -->
 
 ### The Classic Approach
@@ -573,8 +555,6 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-_[test/Examples/DoorWithAlarm.purs](test/Examples/DoorWithAlarm.purs)_
-
 <!-- PD_END -->
 
 ### The Transit Approach
@@ -600,8 +580,6 @@ type DoorDSL =
           >| ("TooManyAttempts" :? "Alarm")
       )
 ```
-
-_[test/Examples/DoorWithAlarm.purs](test/Examples/DoorWithAlarm.purs)_
 
 <!-- PD_END -->
 
@@ -645,8 +623,6 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-_[test/Examples/DoorWithAlarm.purs](test/Examples/DoorWithAlarm.purs)_
-
 <!-- PD_END -->
 
 The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
@@ -658,6 +634,8 @@ The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state
 Labeled transitions are particularly valuable when you have complex conditional logic with multiple possible outcomes, as they provide both type safety and clear documentation of the state machine's behavior.
 
 ## Type signatures
+
+Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
 
 <!-- PD_START:purs
 filePath: test/Examples/Signatures.purs
@@ -698,11 +676,11 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-_[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
-
 <!-- PD_END -->
 
 ## Variants
+
+Full source code: _[test/Examples/Variants.purs](test/Examples/Variants.purs)_
 
 <!-- PD_START:purs
 filePath: test/Examples/Variants.purs
@@ -745,11 +723,11 @@ update = mkUpdate @DoorDSL
   )
 ```
 
-_[test/Examples/Variants.purs](test/Examples/Variants.purs)_
-
 <!-- PD_END -->
 
 ## Monadic update functions
+
+Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
 
 So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
 
@@ -790,13 +768,13 @@ update = mkUpdateGenericM @DoorDSL
   )
 ```
 
-_[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
-
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
 
 ## Example 6: Seven Bridges of Königsberg
+
+Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
 So far, we've seen how transit helps you build type-safe state machines and generate state diagrams and transition tables. But the power of transit extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
@@ -831,8 +809,6 @@ data Msg
   | Cross_g
 ```
 
-_[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
-
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -865,8 +841,6 @@ type BridgesTransitions =
     :* ("LandC" :@ "Cross_g" >| "LandD")
     :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
-
-_[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
 <!-- PD_END -->
 
@@ -920,8 +894,6 @@ countOddOutgoingEdges g =
       (Set.toUnfoldable nodes)
 ```
 
-_[test/Examples/Common.purs](test/Examples/Common.purs)_
-
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
@@ -961,8 +933,6 @@ main = do
   runSpecAndExitProcess [ consoleReporter ] spec
 ```
 
-_[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
-
 <!-- PD_END -->
 
 The key steps are:
@@ -990,6 +960,8 @@ This example demonstrates that transit's value extends far beyond state machine 
 In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how transit can help verify and understand graph properties beyond simple state machines.
 
 ## Example 7: This is the house of Santa Claus
+
+Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
 [AI: in german, this is the house of Santa Claus, more common, thus explain]
 
@@ -1044,8 +1016,6 @@ type TransitSantaClaus =
     :* ("N_3" :@ "E_h" >| "N_4")
     :* ("N_4" :@ "E_h" >| "N_3")
 ```
-
-_[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
 <!-- PD_END -->
 
