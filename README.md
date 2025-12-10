@@ -39,6 +39,8 @@ Type-Safe State Machines.
 
 Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time.
 
+If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, Transit follows a similar philosophy: just as Servant uses a REST API type-level specification to generate type-safe routing functions and OpenAPI documentation, Transit uses a state machine graph type-level specification to generate type-safe update functions and state diagrams.
+
 ## Key Features
 
 - **Type-safe state transitions** - The compiler ensures all transitions are valid and complete
