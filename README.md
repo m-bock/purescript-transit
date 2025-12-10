@@ -290,7 +290,8 @@ main = do
   let
     transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile "graphs/door.dot" transit (_ { title = "Door" })
+  TransitGraphviz.writeToFile "graphs/door.dot" transit _
+    { title = "Door" }
 ```
 
 <!-- PD_END -->
@@ -332,7 +333,8 @@ main = do
   let
     transit = reflectType (Proxy @DoorDSL)
 
-  TransitTable.writeToFile "graphs/door.html" transit (_ { title = "Door" })
+  TransitTable.writeToFile "graphs/door.html" transit _
+    { title = "Door" }
 ```
 
 <!-- PD_END -->
@@ -902,15 +904,11 @@ main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile
-    "graphs/bridges-koenigsberg.dot"
-    transit
-    (_ { useUndirectedEdges = true })
+  TransitGraphviz.writeToFile "graphs/bridges-koenigsberg.dot" transit _
+    { useUndirectedEdges = true }
 
-  TransitTable.writeToFile
-    "graphs/bridges-koenigsberg.html"
-    transit
-    (_ { useUndirectedEdges = true })
+  TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
+    { useUndirectedEdges = true }
 
   runSpecAndExitProcess [ consoleReporter ] spec
 ```

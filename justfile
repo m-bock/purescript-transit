@@ -1,6 +1,5 @@
 gen-svgs:
-    cd graphs && for file in *.dot; do dot -Tsvg "$file" -o "${file%.dot}.svg"; done
-    cd assets && for file in *.dot; do dot -Tsvg "$file" -o "${file%.dot}.svg"; done
+    find graphs assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
 
 
 gen-docs:
