@@ -72,6 +72,8 @@ data State = DoorOpen | DoorClosed
 data Msg = Close | Open
 ```
 
+<a href="test/Examples/Door.purs#L1-L12">View code</a>
+
 <!-- PD_END -->
 
 ### The Classic Approach
