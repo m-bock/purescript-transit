@@ -37,6 +37,21 @@ Type-Safe State Machines.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
+
 # Transit
 
 Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time.
@@ -91,6 +106,9 @@ data Msg = Close | Open
 ```
 
 <!-- PD_END -->
+<p align="right">
+  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
+</p>
 
 ### The Classic Approach
 
@@ -111,6 +129,10 @@ updateClassic state msg = case state, msg of
 ```
 
 <!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
+</p>
 
 While this approach works, it has some drawbacks:
 
@@ -137,6 +159,10 @@ type DoorDSL =
 
 <!-- PD_END -->
 
+<p align="right">
+  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
+</p>
+
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
 This type-level specification fully defines the state machine. Based on this spec, we can now create an update function that the compiler ensures only allows legal state transitions:
@@ -155,6 +181,10 @@ update = mkUpdateGeneric @DoorDSL
 ```
 
 <!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
+</p>
 
 Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
 
@@ -216,6 +246,10 @@ data Msg
 
 <!-- PD_END -->
 
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithLock.purs">Examples/DoorWithLock.purs</a></sup>
+</p>
+
 ### The Classic Approach
 
 The classic update function now handles more cases:
@@ -237,6 +271,10 @@ updateClassic state msg = case state, msg of
 ```
 
 <!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithLock.purs">Examples/DoorWithLock.purs</a></sup>
+</p>
 
 As the state machine grows, the classic approach becomes more error-prone. You need to remember:
 
@@ -284,6 +322,10 @@ update = mkUpdateGeneric @DoorDSL
 
 <!-- PD_END -->
 
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithLock.purs">Examples/DoorWithLock.purs</a></sup>
+</p>
+
 The type system prevents common mistakes:
 
 - 🔴 Trying to match `DoorOpen` with `Lock` (invalid transition)
@@ -317,6 +359,10 @@ main = do
 ```
 
 <!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs">Examples/GenerateStateDiagrams.purs</a></sup>
+</p>
 
 The process works in two steps:
 
@@ -362,6 +408,8 @@ main = do
 ```
 
 <!-- PD_END -->
+
+<p align="right">
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
 
@@ -409,6 +457,10 @@ data Msg
 
 <!-- PD_END -->
 
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
+</p>
+
 ### The Classic Approach
 
 The classic update function now needs to handle state and message data:
@@ -435,6 +487,10 @@ updateClassic state msg = case state, msg of
 
 <!-- PD_END -->
 
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
+</p>
+
 ### The Transit Approach
 
 In the DSL specification, we express conditional transitions by listing multiple possible target states:
@@ -459,6 +515,10 @@ type DoorDSL =
 ```
 
 <!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
+</p>
 
 The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
 
@@ -491,6 +551,10 @@ update = mkUpdateGeneric @DoorDSL
 ```
 
 <!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
+</p>
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
 

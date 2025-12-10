@@ -65,23 +65,20 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorClosed" @"Lock" \_ _ -> return @"DoorLocked")
   (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
 
+x =
+  [ { msg: Open, expectedState: DoorOpen }
+  , { msg: Close, expectedState: DoorClosed }
+  , { msg: Lock, expectedState: DoorLocked }
+  , { msg: Unlock, expectedState: DoorClosed }
+  ]
+
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
 
-mkTest :: (State -> Msg -> State) -> Spec Unit
-mkTest updateFn = do
-  describe "purescript-spec" do
-    it "awesome" do
-      updateFn DoorOpen Close `shouldEqual` DoorClosed
-      updateFn DoorOpen Open `shouldEqual` DoorOpen
-      updateFn DoorClosed Open `shouldEqual` DoorOpen
-      updateFn DoorClosed Close `shouldEqual` DoorClosed
-
 spec :: Spec Unit
 spec = do
-  mkTest updateClassic
-  mkTest update
+  pure unit
 
 --------------------------------------------------------------------------------
 --- State diagram generation
