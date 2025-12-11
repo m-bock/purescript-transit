@@ -2,9 +2,17 @@ module Test.Examples.Variants where
 
 import Prelude
 
+import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
+import Data.Variant as V
+import Prim.Row as Row
+import Test.Examples.Common (runWalk)
 import Test.Examples.DoorWithPin (DoorDSL)
+import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 import Transit (match, mkUpdate, return)
+import Type.Proxy (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
 
 type State = Variant
   ( "DoorOpen" :: Unit
@@ -18,6 +26,36 @@ type Msg = Variant
   , "Lock" :: { newPin :: String }
   , "Unlock" :: { enteredPin :: String }
   )
+
+updateClassic :: State -> Msg -> State
+updateClassic state msg =
+  ( V.default state
+      # on @"DoorOpen"
+          ( \_ ->
+              ( V.default state
+                  # on @"Close" (\_ -> inj @"DoorClosed" unit)
+              ) msg
+          )
+      # on @"DoorClosed"
+          ( \_ ->
+              ( V.default state
+                  # on @"Open" (\_ -> inj @"DoorOpen" unit)
+                  # on @"Lock" (\msg -> inj @"DoorLocked" { pin: msg.newPin })
+              ) msg
+          )
+      # on @"DoorLocked"
+          ( \st ->
+              ( V.default state
+                  # on @"Unlock"
+                      ( \msg ->
+                          if st.pin == msg.enteredPin then
+                            inj @"DoorClosed" unit
+                          else
+                            inj @"DoorLocked" { pin: st.pin }
+                      )
+              ) msg
+          )
+  ) state
 
 update :: State -> Msg -> State
 update = mkUpdate @DoorDSL
@@ -36,3 +74,54 @@ update = mkUpdate @DoorDSL
       else
         return @"DoorLocked" { pin: state.pin }
   )
+
+inj :: forall @sym a r1 r2. Row.Cons sym a r1 r2 => IsSymbol sym => a -> Variant r2
+inj = V.inj (Proxy :: _ sym)
+
+on :: forall @sym a b r1 r2. Row.Cons sym a r1 r2 => IsSymbol sym => (a -> b) -> (Variant r1 -> b) -> Variant r2 -> b
+on f = V.on (Proxy :: _ sym) f
+
+spec :: Spec Unit
+spec = do
+  describe "Variants" do
+    let
+      walk =
+        { initialState: V.inj (Proxy @"DoorOpen") unit
+        , steps:
+            [ { msg: inj @"Close" unit
+              , state: inj @"DoorClosed" unit
+              }
+            , { msg: inj @"Open" unit
+              , state: inj @"DoorOpen" unit
+              }
+            , { msg: inj @"Close" unit
+              , state: inj @"DoorClosed" unit
+              }
+            , { msg: inj @"Lock" { newPin: "1234" }
+              , state: inj @"DoorLocked" { pin: "1234" }
+              }
+            , { msg: inj @"Unlock" { enteredPin: "abcd" }
+              , state: inj @"DoorLocked" { pin: "1234" }
+              }
+            , { msg: inj @"Unlock" { enteredPin: "1234" }
+              , state: inj @"DoorClosed" unit
+              }
+            , { msg: inj @"Open" unit
+              , state: inj @"DoorOpen" unit
+              }
+            ]
+        }
+
+    describe "classic update" do
+      it "should follow the walk" do
+        let actualStates = runWalk updateClassic walk
+        let expectedStates = map _.state walk.steps
+        actualStates `shouldEqual` expectedStates
+
+    describe "transit update" do
+      it "should follow the walk" do
+        let actualStates = runWalk update walk
+        let expectedStates = map _.state walk.steps
+        actualStates `shouldEqual` expectedStates
+
+    pure unit

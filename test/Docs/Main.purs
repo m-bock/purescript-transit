@@ -13,6 +13,7 @@ import Test.Examples.HouseOfSantaClaus as Test.Examples.HouseOfSantaClaus
 import Test.Spec (Spec)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
+import Test.Examples.Variants as Test.Examples.Variants
 
 spec :: Spec Unit
 spec = do
@@ -22,16 +23,17 @@ spec = do
   Test.Examples.BridgesKoenigsberg.spec
   Test.Examples.HouseOfSantaClaus.spec
   Test.Examples.ColorRing.spec
+  Test.Examples.Variants.spec
 
 main :: Effect Unit
 main = do
-  -- runSpecAndExitProcess [ consoleReporter ] spec
+  runSpecAndExitProcess [ consoleReporter ] spec
 
-  -- Test.Examples.Door.main
-  -- Test.Examples.DoorWithPin.main
-  -- Test.Examples.DoorWithAlarm.main
-  -- Test.Examples.BridgesKoenigsberg.main
-  -- Test.Examples.HouseOfSantaClaus.main
-  -- Test.Examples.ColorRing.main
+  Test.Examples.Door.main
+  Test.Examples.DoorWithPin.main
+  Test.Examples.DoorWithAlarm.main
+  Test.Examples.BridgesKoenigsberg.main
+  Test.Examples.HouseOfSantaClaus.main
+  Test.Examples.ColorRing.main
 
   Patchdown.main

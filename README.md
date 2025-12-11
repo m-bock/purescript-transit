@@ -792,7 +792,7 @@ update = mkUpdate @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L9-L38">test/Examples/Variants.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs</a></sup></p><!-- PD_END -->
 
 ## Monadic update functions
 
@@ -848,7 +848,7 @@ The problem can be modeled as a graph where:
 - **Nodes** represent the four land areas (A, B, C, and D)
 - **Edges** represent the seven bridges connecting them
 
-<img src="assets/bridges-koenigsberg.jpg" />
+<img src="assets/bridges.png" />
 
 While transit is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
 
