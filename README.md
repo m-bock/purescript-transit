@@ -235,45 +235,18 @@ We'll use this helper function several times later. So let's also factor it out 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
 pick:
-  - checkWalk
+  - runWalk
 -->
-> <br>
-> 🛑 Error at section `purs`
-> 
-> ##### no values found
-> ```yaml
-> pick:
->   tag: any
->   name: checkWalk
-> names:
->   values:
->     - hasEulerCircle
->     - hasEulerTrail
->     - countOddOutgoingEdges
->     - runWalk
->   types:
->     - Step
->     - Walk
->   signatures:
->     - hasEulerCircle
->     - hasEulerTrail
->     - countOddOutgoingEdges
->     - runWalk
->   newtypes: []
->   imports: []
->   foreignValues: []
->   dataTypes: []
-> ```
-> <br>
-
 
 ```purescript
-
+runWalk :: forall msg state. (state -> msg -> state) -> Walk msg state -> Array state
+runWalk updateFn { initialState, steps } = do
+  scanl (\state step -> updateFn state step.msg) initialState steps
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L49-L51">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
 
 Now we can use the `checkWalk` function to test the state machine:
 
