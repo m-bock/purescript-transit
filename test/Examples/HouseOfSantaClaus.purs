@@ -1,4 +1,4 @@
-module Test.Examples.HouseOfSantaClaus (main) where
+module Test.Examples.HouseOfSantaClaus (main, spec) where
 
 import Prelude
 
@@ -130,8 +130,8 @@ update = mkUpdateGeneric @TransitSantaClaus
 
 spec :: Spec Unit
 spec = do
-  describe ".." do
-    it "..." do
+  describe "House of Santa Claus" do
+    it "should have 8 states" do
       let transit = reflectType (Proxy @TransitSantaClaus)
       let graph = mkStateGraph transit
 
@@ -145,7 +145,7 @@ spec = do
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
-    it "" do
+    it "should follow the walk" do
       let
         walk =
           { initialState: N_1
@@ -186,8 +186,6 @@ main = do
 
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }
-
-  runSpecAndExitProcess [ consoleReporter ] spec
 
 --------------------------------------------------------------------------------
 --- Instances

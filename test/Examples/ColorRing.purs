@@ -1,4 +1,4 @@
-module Test.Examples.ColorRing where
+module Test.Examples.ColorRing (main, spec) where
 
 import Prelude
 
@@ -11,6 +11,7 @@ import Transit.Colors (themeContrastDark, themeContrastLight, themeGradientDark,
 import Transit.Generators.Graphviz as TransitGraphviz
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
+import Test.Spec (Spec)
 
 data State = SpringGreen | LemonYellow | OceanBlue | CoralPink | MintTeal | AquaBlue | SunsetOrange | MagentaGlow | OliveGreen | VividRed | SkyCyan
 
@@ -89,3 +90,7 @@ main = do
     , globalAttrsRaw = Just globalAttrs
     , theme = themeGradientDark
     }
+
+spec :: Spec Unit
+spec = do
+  pure unit

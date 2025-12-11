@@ -7,6 +7,8 @@ import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Set as Set
 import Effect.Aff (Aff)
+import Effect.Class (liftEffect)
+import Effect.Console as Console
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Data.Graph (Graph)
 import Transit.Data.Graph as Graph
@@ -49,5 +51,6 @@ checkWalk updateFn { initialState, steps } = do
     Just { head, tail } -> do
       let newState = updateFn initialState head.msg
       newState `shouldEqual` head.state
+      liftEffect $ Console.log $ "newState: " <> show newState
       checkWalk updateFn { initialState: newState, steps: tail }
     Nothing -> pure unit

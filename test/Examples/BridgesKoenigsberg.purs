@@ -1,4 +1,4 @@
-module Test.Examples.BridgesKoenigsberg (main) where
+module Test.Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
@@ -118,8 +118,8 @@ update = mkUpdateGeneric @BridgesTransitions
 
 spec :: Spec Unit
 spec = do
-  describe "Dead ends" do
-    it "should be empty" do
+  describe ".." do
+    it "..." do
       let transit = reflectType (Proxy @BridgesTransitions)
       let graph = mkStateGraph transit
       Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
@@ -143,8 +143,6 @@ main = do
 
   TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }
-
-  runSpecAndExitProcess [ consoleReporter ] spec
 
 --------------------------------------------------------------------------------
 --- Instances

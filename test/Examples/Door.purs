@@ -108,8 +108,6 @@ spec = do
 
 main :: Effect Unit
 main = do
-  runSpecAndExitProcess [ consoleReporter ] spec
-
   let
     transit = reflectType (Proxy @DoorDSL)
 

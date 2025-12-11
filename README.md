@@ -18,8 +18,8 @@ Type-Safe State Machines.
     - [The Transit Approach](#the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
     - [[AI: find title]](#ai-find-title)
-  - [Generate State Diagrams](#generate-state-diagrams)
-  - [Generate Transition Tables](#generate-transition-tables)
+    - [Generate State Diagrams](#generate-state-diagrams)
+    - [Generate Transition Tables](#generate-transition-tables)
   - [Example2: Door with Pin](#example2-door-with-pin)
     - [The Classic Approach](#the-classic-approach-1)
     - [The Transit Approach](#the-transit-approach-1)
@@ -251,13 +251,14 @@ checkWalk updateFn { initialState, steps } = do
     Just { head, tail } -> do
       let newState = updateFn initialState head.msg
       newState `shouldEqual` head.state
+      liftEffect $ Console.log $ "newState: " <> show newState
       checkWalk updateFn { initialState: newState, steps: tail }
     Nothing -> pure unit
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L40-L53">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L42-L56">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
 
 Now we can use the `checkWalk` function to test the state machine:
 
@@ -297,7 +298,7 @@ spec = do
 
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L103">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
 
-## Generate State Diagrams
+### Generate State Diagrams
 
 Full source code: _[test/Examples/GenerateStateDiagrams.purs](test/Examples/GenerateStateDiagrams.purs)_
 
@@ -344,7 +345,7 @@ dot -Tpng graphs/door.dot -o graphs/door.png
 
 Since the diagram is generated from the same DSL specification used to create the type-safe update function, any changes to your state machine are automatically reflected in both the code and the diagram. This eliminates the common problem of documentation getting out of sync with implementation.
 
-## Generate Transition Tables
+### Generate Transition Tables
 
 Full source code: _[test/Examples/GenerateTransitionTables.purs](test/Examples/GenerateTransitionTables.purs)_
 
@@ -970,7 +971,7 @@ countOddOutgoingEdges g =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L14-L31">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L16-L33">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
 
@@ -984,8 +985,8 @@ pick:
 ```purescript
 spec :: Spec Unit
 spec = do
-  describe "Dead ends" do
-    it "should be empty" do
+  describe ".." do
+    it "..." do
       let transit = reflectType (Proxy @BridgesTransitions)
       let graph = mkStateGraph transit
       Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
@@ -1005,13 +1006,11 @@ main = do
 
   TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }
-
-  runSpecAndExitProcess [ consoleReporter ] spec
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L147">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L145">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
 
 The key steps are:
 
@@ -1115,8 +1114,8 @@ pick:
 ```purescript
 spec :: Spec Unit
 spec = do
-  describe ".." do
-    it "..." do
+  describe "House of Santa Claus" do
+    it "should have 8 states" do
       let transit = reflectType (Proxy @TransitSantaClaus)
       let graph = mkStateGraph transit
 
@@ -1130,7 +1129,7 @@ spec = do
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
-    it "" do
+    it "should follow the walk" do
       let
         walk =
           { initialState: N_1
@@ -1167,10 +1166,8 @@ main = do
 
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }
-
-  runSpecAndExitProcess [ consoleReporter ] spec
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L131-L190">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L131-L188">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
