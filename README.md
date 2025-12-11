@@ -14,17 +14,23 @@ Type-Safe State Machines.
   - [About This Documentation](#about-this-documentation)
   - [Installation](#installation)
   - [Example1: Door](#example1-door)
+    - [The Classic Approach](#the-classic-approach)
     - [The Transit Approach](#the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
   - [Example2: Door with Lock](#example2-door-with-lock)
+    - [The Classic Approach](#the-classic-approach-1)
     - [The Transit Approach](#the-transit-approach-1)
   - [Generate State Diagrams](#generate-state-diagrams)
   - [Generate Transition Tables](#generate-transition-tables)
-    - [The Classic Approach](#the-classic-approach)
+  - [Example3: Door with Pin](#example3-door-with-pin)
+    - [The Classic Approach](#the-classic-approach-2)
     - [The Transit Approach](#the-transit-approach-2)
   - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
+    - [The Classic Approach](#the-classic-approach-3)
     - [The Transit Approach](#the-transit-approach-3)
+  - [Type signatures](#type-signatures)
   - [Variants](#variants)
+  - [Monadic update functions](#monadic-update-functions)
   - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
   - [Example 7: This is the house of Santa Claus](#example-7-this-is-the-house-of-santa-claus)
@@ -93,9 +99,9 @@ pick:
   - Msg
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs</a></sup></p>```purescript
+```purescript
 data State = DoorOpen | DoorClosed
 
 data Msg = Close | Open
@@ -113,9 +119,9 @@ pick:
   - updateClassic
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs</a></sup></p>```purescript
+```purescript
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
@@ -141,9 +147,9 @@ pick:
   - DoorDSL
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs</a></sup></p>```purescript
+```purescript
 type DoorDSL =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
@@ -162,9 +168,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs</a></sup></p>```purescript
+```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
@@ -218,9 +224,9 @@ pick:
   - Msg
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L26-L35">test/Examples/DoorWithLock.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L26-L35">test/Examples/DoorWithLock.purs</a></sup></p>```purescript
+```purescript
 data State
   = DoorOpen
   | DoorClosed
@@ -245,9 +251,9 @@ pick:
   - updateClassic
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L41-L47">test/Examples/DoorWithLock.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L41-L47">test/Examples/DoorWithLock.purs</a></sup></p>```purescript
+```purescript
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
@@ -275,9 +281,9 @@ pick:
   - DoorDSL
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L53-L58">test/Examples/DoorWithLock.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L53-L58">test/Examples/DoorWithLock.purs</a></sup></p>```purescript
+```purescript
 type DoorDSL =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
@@ -296,9 +302,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L60-L65">test/Examples/DoorWithLock.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L60-L65">test/Examples/DoorWithLock.purs</a></sup></p>```purescript
+```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
@@ -331,9 +337,9 @@ pick:
   - main
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L10-L16">test/Examples/GenerateStateDiagrams.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L10-L16">test/Examples/GenerateStateDiagrams.purs</a></sup></p>```purescript
+```purescript
 main :: Effect Unit
 main = do
   let
@@ -378,9 +384,9 @@ pick:
   - main
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L10-L16">test/Examples/GenerateTransitionTables.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L10-L16">test/Examples/GenerateTransitionTables.purs</a></sup></p>```purescript
+```purescript
 main :: Effect Unit
 main = do
   let
@@ -425,9 +431,9 @@ pick:
   - Msg
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L20-L29">test/Examples/DoorWithPin.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L20-L29">test/Examples/DoorWithPin.purs</a></sup></p>```purescript
+```purescript
 data State
   = DoorOpen
   | DoorClosed
@@ -452,9 +458,9 @@ pick:
   - updateClassic
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L35-L45">test/Examples/DoorWithPin.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L35-L45">test/Examples/DoorWithPin.purs</a></sup></p>```purescript
+```purescript
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
@@ -484,9 +490,9 @@ pick:
   - DoorDSL
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L51-L60">test/Examples/DoorWithPin.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L51-L60">test/Examples/DoorWithPin.purs</a></sup></p>```purescript
+```purescript
 type DoorDSL =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
@@ -511,9 +517,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L62-L78">test/Examples/DoorWithPin.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L62-L78">test/Examples/DoorWithPin.purs</a></sup></p>```purescript
+```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   ( match @"DoorOpen" @"Close" \_ _ ->
@@ -570,9 +576,9 @@ pick:
   - Msg
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L23-L33">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L23-L33">test/Examples/DoorWithAlarm.purs</a></sup></p>```purescript
+```purescript
 data State
   = DoorOpen
   | DoorClosed
@@ -598,9 +604,9 @@ pick:
   - updateClassic
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L39-L53">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L39-L53">test/Examples/DoorWithAlarm.purs</a></sup></p>```purescript
+```purescript
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
@@ -630,9 +636,9 @@ pick:
   - DoorDSL
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L59-L69">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L59-L69">test/Examples/DoorWithAlarm.purs</a></sup></p>```purescript
+```purescript
 type DoorDSL =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
@@ -658,9 +664,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L71-L97">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L71-L97">test/Examples/DoorWithAlarm.purs</a></sup></p>```purescript
+```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   ( match @"DoorOpen" @"Close" \_ _ ->
@@ -712,9 +718,9 @@ pick:
   - unimplemented
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L14-L15">test/Examples/Signatures.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L14-L15">test/Examples/Signatures.purs</a></sup></p>```purescript
+```purescript
 unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
@@ -733,9 +739,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L17-L46">test/Examples/Signatures.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L17-L46">test/Examples/Signatures.purs</a></sup></p>```purescript
+```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
   ( match @"DoorOpen" @"Close"
@@ -784,9 +790,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L8-L37">test/Examples/Variants.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L8-L37">test/Examples/Variants.purs</a></sup></p>```purescript
+```purescript
 type State = Variant
   ( "DoorOpen" :: Unit
   , "DoorClosed" :: Unit
@@ -843,9 +849,9 @@ pick:
   - update
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L9-L26">test/Examples/Monadic.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L9-L26">test/Examples/Monadic.purs</a></sup></p>```purescript
+```purescript
 update :: State -> Msg -> Effect State
 update = mkUpdateGenericM @DoorDSL
   ( matchM @"DoorOpen" @"Close" \_ _ -> do
@@ -894,9 +900,9 @@ pick:
   - Msg
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L27-L36">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L27-L36">test/Examples/BridgesKoenigsberg.purs</a></sup></p>```purescript
+```purescript
 data State = LandA | LandB | LandC | LandD
 
 data Msg
@@ -917,9 +923,9 @@ pick:
   - BridgesTransitions
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L68-L89">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L68-L89">test/Examples/BridgesKoenigsberg.purs</a></sup></p>```purescript
+```purescript
 type BridgesTransitions =
   Transit $ Empty
     :* ("LandA" :@ "Cross_a" >| "LandB")
@@ -975,9 +981,9 @@ pick:
   - countOddOutgoingEdges
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L10-L27">test/Examples/Common.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L10-L27">test/Examples/Common.purs</a></sup></p>```purescript
+```purescript
 hasEulerCircle :: forall e n. Ord n => Ord e => Graph e n -> Boolean
 hasEulerCircle g = true
   && Graph.isUndirected g
@@ -1009,9 +1015,9 @@ pick:
   - main
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L118-L146">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L118-L146">test/Examples/BridgesKoenigsberg.purs</a></sup></p>```purescript
+```purescript
 spec :: Spec Unit
 spec = do
   describe "Dead ends" do
@@ -1095,9 +1101,9 @@ pick:
   - TransitSantaClaus
 -->
 
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L74-L98">test/Examples/HouseOfSantaClaus.purs</a></sup></p>
 
-
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L74-L98">test/Examples/HouseOfSantaClaus.purs</a></sup></p>```purescript
+```purescript
 type TransitSantaClaus =
   Transit $ Empty
     :* ("N_1" :@ "E_a" >| "N_2")
