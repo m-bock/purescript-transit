@@ -2,18 +2,17 @@ module Test.Examples.Door (main, spec, DoorDSL) where
 
 import Prelude
 
-import Data.Array as Array
 import Data.Foldable (foldl)
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
-import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Spec (Spec)
+import Test.Examples.Common (checkWalk)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Reporter (consoleReporter)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -62,41 +61,46 @@ update = mkUpdateGeneric @DoorDSL
 --- Tests
 --------------------------------------------------------------------------------
 
-f :: Array ({ msg :: Msg, state :: State }) -> State -> Aff Unit
-f xs state = case Array.uncons xs of
-  Just { head, tail } -> do
-    let newState = update state head.msg
-    newState `shouldEqual` head.state
-    f tail newState
-  Nothing -> pure unit
+-- f :: Array ({ msg :: Msg, state :: State }) -> State -> Aff Unit
+-- f xs state = 
+
+checkSimpleWalk :: Aff Unit
+checkSimpleWalk = do
+  let
+    initState = DoorOpen
+
+    walk =
+      [ Close, Open, Open, Close, Open, Close, Close ]
+
+    finalStateA = foldl updateClassic initState walk
+    finalStateB = foldl update initState walk
+
+  finalStateA `shouldEqual` DoorClosed
+  finalStateB `shouldEqual` DoorClosed
 
 spec :: Spec Unit
 spec = do
   describe "Door" do
-    it "should follow the walk" do
-      let walk = [ Close, Open, Open, Close, Open, Close, Close ]
-      foldl update DoorOpen walk `shouldEqual` DoorClosed
-    it ".." do
-      let
-        x =
-          [ { msg: Close, state: DoorClosed }
-          , { msg: Open, state: DoorOpen }
-          , { msg: Open, state: DoorOpen }
-          , { msg: Close, state: DoorClosed }
-          , { msg: Open, state: DoorOpen }
-          , { msg: Close, state: DoorClosed }
-          , { msg: Open, state: DoorOpen }
-          , { msg: Close, state: DoorClosed }
-          , { msg: Close, state: DoorClosed }
-          ]
-      f x DoorOpen
+    it "should follow the simple walk" do
+      checkSimpleWalk
 
--- describe "Dead ends" do
---   it "should be empty" do
---     let r = reflectType (Proxy @DoorDSL)
---     let states = R.getStates r
---     let deadEnds = Array.filter (\x -> R.getOutgoing x r == []) states
---     deadEnds `shouldEqual` []
+    it "should follow the  walk" do
+      let
+        walk =
+          { initialState: DoorOpen
+          , steps:
+              [ { msg: Close, state: DoorClosed }
+              , { msg: Open, state: DoorOpen }
+              , { msg: Open, state: DoorOpen }
+              , { msg: Close, state: DoorClosed }
+              , { msg: Open, state: DoorOpen }
+              , { msg: Close, state: DoorClosed }
+              , { msg: Close, state: DoorClosed }
+              ]
+          }
+
+      checkWalk updateClassic walk
+      checkWalk update walk
 
 --------------------------------------------------------------------------------
 --- State diagram generation
@@ -104,6 +108,8 @@ spec = do
 
 main :: Effect Unit
 main = do
+  runSpecAndExitProcess [ consoleReporter ] spec
+
   let
     transit = reflectType (Proxy @DoorDSL)
 

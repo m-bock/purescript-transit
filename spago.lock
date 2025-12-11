@@ -731,7 +731,8 @@
         ]
       },
       "patchdown": {
-        "path": "../purescript-patchdown"
+        "git": "https://github.com/m-bock/purescript-patchdown.git",
+        "ref": "ef6e15dd45048c5f1ae86846ac25167f04623bfd"
       }
     }
   },
@@ -1609,8 +1610,9 @@
       "dependencies": []
     },
     "patchdown": {
-      "type": "local",
-      "path": "../purescript-patchdown",
+      "type": "git",
+      "url": "https://github.com/m-bock/purescript-patchdown.git",
+      "rev": "ef6e15dd45048c5f1ae86846ac25167f04623bfd",
       "dependencies": [
         "argonaut",
         "argonaut-core",
