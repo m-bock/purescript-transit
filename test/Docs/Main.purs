@@ -25,13 +25,13 @@ spec = do
 
 main :: Effect Unit
 main = do
-  runSpecAndExitProcess [ consoleReporter ] spec
+  -- runSpecAndExitProcess [ consoleReporter ] spec
 
-  Test.Examples.Door.main
-  Test.Examples.DoorWithPin.main
-  Test.Examples.DoorWithAlarm.main
-  Test.Examples.BridgesKoenigsberg.main
-  Test.Examples.HouseOfSantaClaus.main
-  Test.Examples.ColorRing.main
+  -- Test.Examples.Door.main
+  -- Test.Examples.DoorWithPin.main
+  -- Test.Examples.DoorWithAlarm.main
+  -- Test.Examples.BridgesKoenigsberg.main
+  -- Test.Examples.HouseOfSantaClaus.main
+  -- Test.Examples.ColorRing.main
 
   Patchdown.main

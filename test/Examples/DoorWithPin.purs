@@ -6,7 +6,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Test.Examples.Common (checkWalk)
+import Test.Examples.Common (runWalk)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
@@ -97,11 +97,15 @@ spec = do
               , { msg: Lock { newPin: "1234" }, state: DoorLocked { pin: "1234" } }
               , { msg: Unlock { enteredPin: "abcd" }, state: DoorLocked { pin: "1234" } }
               , { msg: Unlock { enteredPin: "1234" }, state: DoorClosed }
-              , { msg: Close, state: DoorOpen }
+              , { msg: Open, state: DoorOpen }
               ]
           }
-      checkWalk updateClassic walk
-      checkWalk update walk
+      let actualStatesA = runWalk updateClassic walk
+      let actualStatesB = runWalk update walk
+      let expectedStates = map _.state walk.steps
+
+      actualStatesA `shouldEqual` expectedStates
+      actualStatesB `shouldEqual` expectedStates
 
 --------------------------------------------------------------------------------
 --- State diagram generation

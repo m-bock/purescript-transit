@@ -10,7 +10,7 @@ import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Test.Examples.Common (checkWalk, hasEulerCircle, hasEulerTrail)
+import Test.Examples.Common (runWalk, hasEulerCircle, hasEulerTrail)
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -65,6 +65,9 @@ updateClassic state msg = case state, msg of
 
   N_2, E_g -> N_4
   N_4, E_g -> N_2
+
+  N_3, E_h -> N_4
+  N_4, E_h -> N_3
 
   _, _ -> state
 
@@ -145,7 +148,7 @@ spec = do
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
-    it "should follow the walk" do
+    describe "should follow the walk" do
       let
         walk =
           { initialState: N_1
@@ -160,8 +163,17 @@ spec = do
               , { msg: E_b, state: N_2 }
               ]
           }
-      checkWalk updateClassic walk
-      checkWalk update walk
+
+      let
+        expectedStates = map _.state walk.steps
+
+      describe "classic update" do
+        it "should follow the walk" do
+          runWalk updateClassic walk `shouldEqual` expectedStates
+
+      describe "transit update" do
+        it "should follow the walk" do
+          runWalk update walk `shouldEqual` expectedStates
 
 --------------------------------------------------------------------------------
 --- State diagram generation

@@ -237,28 +237,43 @@ filePath: test/Examples/Common.purs
 pick:
   - checkWalk
 -->
+> <br>
+> 🛑 Error at section `purs`
+> 
+> ##### no values found
+> ```yaml
+> pick:
+>   tag: any
+>   name: checkWalk
+> names:
+>   values:
+>     - hasEulerCircle
+>     - hasEulerTrail
+>     - countOddOutgoingEdges
+>     - runWalk
+>   types:
+>     - Step
+>     - Walk
+>   signatures:
+>     - hasEulerCircle
+>     - hasEulerTrail
+>     - countOddOutgoingEdges
+>     - runWalk
+>   newtypes: []
+>   imports: []
+>   foreignValues: []
+>   dataTypes: []
+> ```
+> <br>
+
 
 ```purescript
-checkWalk
-  :: forall msg state
-   . Eq state
-  => Show state
-  => (state -> msg -> state)
-  -> Walk msg state
-  -> Aff Unit
-checkWalk updateFn { initialState, steps } = do
-  case Array.uncons steps of
-    Just { head, tail } -> do
-      let newState = updateFn initialState head.msg
-      newState `shouldEqual` head.state
-      liftEffect $ Console.log $ "newState: " <> show newState
-      checkWalk updateFn { initialState: newState, steps: tail }
-    Nothing -> pure unit
+
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L42-L56">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
 
 Now we can use the `checkWalk` function to test the state machine:
 
@@ -290,13 +305,17 @@ spec = do
               ]
           }
 
-      checkWalk updateClassic walk
-      checkWalk update walk
+      let actualStatesA = runWalk updateClassic walk
+      let actualStatesB = runWalk update walk
+      let expectedStates = map _.state walk.steps
+
+      actualStatesA `shouldEqual` expectedStates
+      actualStatesB `shouldEqual` expectedStates
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L103">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L107">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
 
 ### Generate State Diagrams
 
@@ -971,7 +990,7 @@ countOddOutgoingEdges g =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L16-L33">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L23-L40">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
 
@@ -1096,7 +1115,7 @@ type TransitSantaClaus =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L75-L99">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L78-L102">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
@@ -1129,7 +1148,7 @@ spec = do
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
-    it "should follow the walk" do
+    describe "should follow the walk" do
       let
         walk =
           { initialState: N_1
@@ -1144,8 +1163,17 @@ spec = do
               , { msg: E_b, state: N_2 }
               ]
           }
-      checkWalk updateClassic walk
-      checkWalk update walk
+
+      let
+        expectedStates = map _.state walk.steps
+
+      describe "classic update" do
+        it "should follow the walk" do
+          runWalk updateClassic walk `shouldEqual` expectedStates
+
+      describe "transit update" do
+        it "should follow the walk" do
+          runWalk update walk `shouldEqual` expectedStates
 
 main :: Effect Unit
 main = do
@@ -1170,4 +1198,4 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L131-L188">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L134-L200">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->

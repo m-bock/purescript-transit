@@ -2,13 +2,20 @@ module Test.Examples.Common where
 
 import Prelude
 
+import Data.Array (scanl)
 import Data.Array as Array
+import Data.Either (Either(..))
+import Data.Foldable (foldM)
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Set as Set
+import Data.Traversable (scanr)
+import Data.Tuple (Tuple(..))
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Console as Console
+import Test.Spec (Spec, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Data.Graph (Graph)
 import Transit.Data.Graph as Graph
@@ -39,18 +46,6 @@ type Walk msg state =
   , steps :: Array (Step msg state)
   }
 
-checkWalk
-  :: forall msg state
-   . Eq state
-  => Show state
-  => (state -> msg -> state)
-  -> Walk msg state
-  -> Aff Unit
-checkWalk updateFn { initialState, steps } = do
-  case Array.uncons steps of
-    Just { head, tail } -> do
-      let newState = updateFn initialState head.msg
-      newState `shouldEqual` head.state
-      liftEffect $ Console.log $ "newState: " <> show newState
-      checkWalk updateFn { initialState: newState, steps: tail }
-    Nothing -> pure unit
+runWalk :: forall msg state. (state -> msg -> state) -> Walk msg state -> Array state
+runWalk updateFn { initialState, steps } = do
+  scanl (\state step -> updateFn state step.msg) initialState steps
