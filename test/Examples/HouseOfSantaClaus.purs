@@ -10,7 +10,7 @@ import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
-import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
+import Test.Examples.Common (checkWalk, hasEulerCircle, hasEulerTrail)
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -128,9 +128,6 @@ update = mkUpdateGeneric @TransitSantaClaus
 -- --- Tests
 -- --------------------------------------------------------------------------------
 
-walk :: Array Msg
-walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
-
 spec :: Spec Unit
 spec = do
   describe ".." do
@@ -147,6 +144,24 @@ spec = do
       hasEulerCircle graph `shouldEqual` false
       hasEulerTrail graph `shouldEqual` true
       pure unit
+
+    it "" do
+      let
+        walk =
+          { initialState: N_1
+          , steps:
+              [ { msg: E_f, state: N_3 }
+              , { msg: E_h, state: N_4 }
+              , { msg: E_g, state: N_2 }
+              , { msg: E_a, state: N_1 }
+              , { msg: E_e, state: N_4 }
+              , { msg: E_d, state: N_5 }
+              , { msg: E_c, state: N_3 }
+              , { msg: E_b, state: N_2 }
+              ]
+          }
+      checkWalk updateClassic walk
+      checkWalk update walk
 
 --------------------------------------------------------------------------------
 --- State diagram generation

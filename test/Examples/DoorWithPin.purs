@@ -6,13 +6,14 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Effect (Effect)
+import Test.Examples.Common (checkWalk)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
-import Type.Function (type ($))
-import Type.Proxy (Proxy(..))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
+import Type.Function (type ($))
+import Type.Proxy (Proxy(..))
 
 --------------------------------------------------------------------------------
 --- Types
@@ -82,19 +83,25 @@ update = mkUpdateGeneric @DoorDSL
 --- Tests
 --------------------------------------------------------------------------------
 
-mkTest :: (State -> Msg -> State) -> Spec Unit
-mkTest updateFn = do
-  describe "purescript-spec" do
-    it "awesome" do
-      updateFn DoorOpen Close `shouldEqual` DoorClosed
-      updateFn DoorOpen Open `shouldEqual` DoorOpen
-      updateFn DoorClosed Open `shouldEqual` DoorOpen
-      updateFn DoorClosed Close `shouldEqual` DoorClosed
-
 spec :: Spec Unit
 spec = do
-  mkTest updateClassic
-  mkTest update
+  describe "Door with Pin" do
+    it "should follow the walk" do
+      let
+        walk =
+          { initialState: DoorOpen
+          , steps:
+              [ { msg: Close, state: DoorClosed }
+              , { msg: Open, state: DoorOpen }
+              , { msg: Close, state: DoorClosed }
+              , { msg: Lock { newPin: "1234" }, state: DoorLocked { pin: "1234" } }
+              , { msg: Unlock { enteredPin: "abcd" }, state: DoorLocked { pin: "1234" } }
+              , { msg: Unlock { enteredPin: "1234" }, state: DoorClosed }
+              , { msg: Close, state: DoorOpen }
+              ]
+          }
+      checkWalk updateClassic walk
+      checkWalk update walk
 
 --------------------------------------------------------------------------------
 --- State diagram generation
