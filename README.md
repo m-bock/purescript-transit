@@ -18,23 +18,20 @@ Type-Safe State Machines.
     - [The Transit Approach](#the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
     - [[AI: find title]](#ai-find-title)
-  - [Example2: Door with Lock](#example2-door-with-lock)
-    - [The Classic Approach](#the-classic-approach-1)
-    - [The Transit Approach](#the-transit-approach-1)
   - [Generate State Diagrams](#generate-state-diagrams)
   - [Generate Transition Tables](#generate-transition-tables)
-  - [Example3: Door with Pin](#example3-door-with-pin)
+  - [Example2: Door with Pin](#example2-door-with-pin)
+    - [The Classic Approach](#the-classic-approach-1)
+    - [The Transit Approach](#the-transit-approach-1)
+  - [Example3: Door with Pin and Alarm](#example3-door-with-pin-and-alarm)
     - [The Classic Approach](#the-classic-approach-2)
     - [The Transit Approach](#the-transit-approach-2)
-  - [Example4: Door with Pin and Alarm](#example4-door-with-pin-and-alarm)
-    - [The Classic Approach](#the-classic-approach-3)
-    - [The Transit Approach](#the-transit-approach-3)
   - [Type signatures](#type-signatures)
   - [Variants](#variants)
   - [Monadic update functions](#monadic-update-functions)
-  - [Example 6: Seven Bridges of Königsberg](#example-6-seven-bridges-of-k%C3%B6nigsberg)
+  - [Example 4: Seven Bridges of Königsberg](#example-4-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
-  - [Example 7: This is the house of Santa Claus](#example-7-this-is-the-house-of-santa-claus)
+  - [Example 5: This is the house of Santa Claus](#example-5-this-is-the-house-of-santa-claus)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -274,7 +271,7 @@ spec = do
               , { msg: Open, state: DoorOpen }
               , { msg: Open, state: DoorOpen }
               , { msg: Close, state: DoorClosed }
-              , { msg: Open, state: DoorClosed }
+              , { msg: Open, state: DoorOpen }
               , { msg: Close, state: DoorClosed }
               , { msg: Close, state: DoorClosed }
               ]
@@ -285,122 +282,6 @@ spec = do
 ```
 
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L103">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
-
-## Example2: Door with Lock
-
-Full source code: _[test/Examples/DoorWithLock.purs](test/Examples/DoorWithLock.purs)_
-
-Now let's extend our door example by adding a lock mechanism. Here's the enhanced state diagram:
-
-<img src="graphs/door-with-lock.svg" />
-
-This state machine extends the simple door with a third state (`DoorLocked`) and two additional messages (`Lock` and `Unlock`). Notice that you can only lock the door when it's closed, and unlocking returns you to the closed state (not open). This is a common pattern in real-world state machines where certain operations are only valid in specific states.
-
-The transition table shows all valid transitions:
-
-<!-- PD_START:raw
-filePath: graphs/door-with-lock.html
---><table><caption>Door with Lock</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
-
-The PureScript types extend the previous example:
-
-<!-- PD_START:purs
-filePath: test/Examples/DoorWithLock.purs
-pick:
-  - State
-  - Msg
--->
-
-```purescript
-data State
-  = DoorOpen
-  | DoorClosed
-  | DoorLocked
-
-data Msg
-  = Close
-  | Open
-  | Lock
-  | Unlock
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L27-L36">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
-
-### The Classic Approach
-
-The classic update function now handles more cases:
-
-<!-- PD_START:purs
-filePath: test/Examples/DoorWithLock.purs
-pick:
-  - updateClassic
--->
-
-```purescript
-updateClassic :: State -> Msg -> State
-updateClassic state msg = case state, msg of
-  DoorOpen, Close -> DoorClosed
-  DoorClosed, Open -> DoorOpen
-  DoorClosed, Lock -> DoorLocked
-  DoorLocked, Unlock -> DoorClosed
-  _, _ -> state
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L42-L48">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
-
-As the state machine grows, the classic approach becomes more error-prone. You need to remember:
-
-- Which messages are valid in which states
-- What the next state should be for each transition
-- To handle all edge cases (like trying to lock an open door)
-
-### The Transit Approach
-
-With transit, we extend the DSL specification to include the new transitions:
-
-<!-- PD_START:purs
-filePath: test/Examples/DoorWithLock.purs
-pick:
-  - DoorDSL
--->
-
-```purescript
-type DoorDSL =
-  Transit $ Empty
-    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
-    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
-    :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
-    :* ("DoorLocked" :@ "Unlock" >| "DoorClosed")
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L54-L59">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
-
-The update function now includes all four transitions, and the compiler ensures each one is correctly implemented:
-
-<!-- PD_START:purs
-filePath: test/Examples/DoorWithLock.purs
-pick:
-  - update
--->
-
-```purescript
-update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
-  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
-  (match @"DoorClosed" @"Lock" \_ _ -> return @"DoorLocked")
-  (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L61-L66">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
-
-The type system prevents common mistakes:
-
-- 🔴 Trying to match `DoorOpen` with `Lock` (invalid transition)
-- 🔴 Returning `DoorOpen` from the `Unlock` handler (wrong target state)
-- 🔴 Forgetting to handle the `Lock` transition
-
-This becomes even more valuable as state machines grow in complexity.
 
 ## Generate State Diagrams
 
@@ -479,7 +360,7 @@ This generates an HTML file containing a table with columns for "From State", "M
 
 Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
 
-## Example3: Door with Pin
+## Example2: Door with Pin
 
 Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
 
@@ -614,7 +495,7 @@ The match handlers receive both the current state and the message, giving you ac
 - 🔴 You handle all required transitions
 - 🟢 The conditional logic is type-safe
 
-## Example4: Door with Pin and Alarm
+## Example3: Door with Pin and Alarm
 
 Full source code: _[test/Examples/DoorWithAlarm.purs](test/Examples/DoorWithAlarm.purs)_
 
@@ -927,7 +808,7 @@ update = mkUpdateGenericM @DoorDSL
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
 
-## Example 6: Seven Bridges of Königsberg
+## Example 4: Seven Bridges of Königsberg
 
 Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
@@ -1114,7 +995,7 @@ This example demonstrates that transit's value extends far beyond state machine 
 
 In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how transit can help verify and understand graph properties beyond simple state machines.
 
-## Example 7: This is the house of Santa Claus
+## Example 5: This is the house of Santa Claus
 
 Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
