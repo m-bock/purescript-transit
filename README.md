@@ -105,10 +105,9 @@ data State = DoorOpen | DoorClosed
 data Msg = Close | Open
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs">test/Examples/Door.purs</a></sup></p>
+
 <!-- PD_END -->
-<p align="right">
-  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
-</p>
 
 ### The Classic Approach
 
@@ -128,11 +127,9 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs">test/Examples/Door.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 While this approach works, it has some drawbacks:
 
@@ -157,11 +154,9 @@ type DoorDSL =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs">test/Examples/Door.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
@@ -180,11 +175,9 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs">test/Examples/Door.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/Door.purs">Examples/Door.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
 
@@ -244,11 +237,9 @@ data Msg
   | Unlock
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs">test/Examples/DoorWithLock.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithLock.purs">Examples/DoorWithLock.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 ### The Classic Approach
 
@@ -270,11 +261,9 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs">test/Examples/DoorWithLock.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithLock.purs">Examples/DoorWithLock.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 As the state machine grows, the classic approach becomes more error-prone. You need to remember:
 
@@ -301,6 +290,8 @@ type DoorDSL =
     :* ("DoorLocked" :@ "Unlock" >| "DoorClosed")
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs">test/Examples/DoorWithLock.purs</a></sup></p>
+
 <!-- PD_END -->
 
 The update function now includes all four transitions, and the compiler ensures each one is correctly implemented:
@@ -320,11 +311,9 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs">test/Examples/DoorWithLock.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithLock.purs">Examples/DoorWithLock.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 The type system prevents common mistakes:
 
@@ -358,11 +347,9 @@ main = do
     { title = "Door" }
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs">test/Examples/GenerateStateDiagrams.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs">Examples/GenerateStateDiagrams.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 The process works in two steps:
 
@@ -406,6 +393,8 @@ main = do
   TransitTable.writeToFile "graphs/door.html" transit _
     { title = "Door" }
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs">test/Examples/GenerateTransitionTables.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -455,11 +444,9 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs">test/Examples/DoorWithPin.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 ### The Classic Approach
 
@@ -484,6 +471,8 @@ updateClassic state msg = case state, msg of
       DoorLocked { pin }
   _, _ -> state
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs">test/Examples/DoorWithPin.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -514,11 +503,9 @@ type DoorDSL =
       )
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs">test/Examples/DoorWithPin.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
 
@@ -550,11 +537,9 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-<!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs">test/Examples/DoorWithPin.purs</a></sup></p>
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
-</p>
+<!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
 
@@ -605,6 +590,8 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs">test/Examples/DoorWithAlarm.purs</a></sup></p>
+
 <!-- PD_END -->
 
 ### The Classic Approach
@@ -635,6 +622,8 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs">test/Examples/DoorWithAlarm.purs</a></sup></p>
+
 <!-- PD_END -->
 
 ### The Transit Approach
@@ -660,6 +649,8 @@ type DoorDSL =
           >| ("TooManyAttempts" :? "Alarm")
       )
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -703,6 +694,8 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs">test/Examples/DoorWithAlarm.purs</a></sup></p>
+
 <!-- PD_END -->
 
 The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
@@ -729,6 +722,8 @@ pick:
 unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs">test/Examples/Signatures.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -776,6 +771,8 @@ update = mkUpdateGeneric @DoorDSL
       )
   )
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs">test/Examples/Signatures.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -826,6 +823,8 @@ update = mkUpdate @DoorDSL
   )
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs">test/Examples/Variants.purs</a></sup></p>
+
 <!-- PD_END -->
 
 ## Monadic update functions
@@ -871,6 +870,8 @@ update = mkUpdateGenericM @DoorDSL
   )
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs">test/Examples/Monadic.purs</a></sup></p>
+
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
@@ -912,6 +913,8 @@ data Msg
   | Cross_g
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
+
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -944,6 +947,8 @@ type BridgesTransitions =
     :* ("LandC" :@ "Cross_g" >| "LandD")
     :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -997,6 +1002,8 @@ countOddOutgoingEdges g =
       (Set.toUnfoldable nodes)
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs">test/Examples/Common.purs</a></sup></p>
+
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
@@ -1035,6 +1042,8 @@ main = do
 
   runSpecAndExitProcess [ consoleReporter ] spec
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
 <!-- PD_END -->
 
@@ -1119,6 +1128,8 @@ type TransitSantaClaus =
     :* ("N_3" :@ "E_h" >| "N_4")
     :* ("N_4" :@ "E_h" >| "N_3")
 ```
+
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs">test/Examples/HouseOfSantaClaus.purs</a></sup></p>
 
 <!-- PD_END -->
 
