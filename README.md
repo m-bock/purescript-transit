@@ -99,15 +99,15 @@ pick:
   - Msg
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs</a></sup></p>
-
 ```purescript
 data State = DoorOpen | DoorClosed
 
 data Msg = Close | Open
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L27-L29">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -119,8 +119,6 @@ pick:
   - updateClassic
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs</a></sup></p>
-
 ```purescript
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
@@ -129,7 +127,9 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L35-L39">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
 
 While this approach works, it has some drawbacks:
 
@@ -147,8 +147,6 @@ pick:
   - DoorDSL
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs</a></sup></p>
-
 ```purescript
 type DoorDSL =
   Transit $ Empty
@@ -156,7 +154,9 @@ type DoorDSL =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L51-L54">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
@@ -168,8 +168,6 @@ pick:
   - update
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs</a></sup></p>
-
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorDSL
@@ -177,7 +175,9 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L56-L59">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
 
 Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
 
@@ -224,8 +224,6 @@ pick:
   - Msg
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L26-L35">test/Examples/DoorWithLock.purs</a></sup></p>
-
 ```purescript
 data State
   = DoorOpen
@@ -239,7 +237,9 @@ data Msg
   | Unlock
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L27-L36">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -251,8 +251,6 @@ pick:
   - updateClassic
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L41-L47">test/Examples/DoorWithLock.purs</a></sup></p>
-
 ```purescript
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
@@ -263,7 +261,9 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L42-L48">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
 
 As the state machine grows, the classic approach becomes more error-prone. You need to remember:
 
@@ -281,8 +281,6 @@ pick:
   - DoorDSL
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L53-L58">test/Examples/DoorWithLock.purs</a></sup></p>
-
 ```purescript
 type DoorDSL =
   Transit $ Empty
@@ -292,7 +290,9 @@ type DoorDSL =
     :* ("DoorLocked" :@ "Unlock" >| "DoorClosed")
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L54-L59">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
 
 The update function now includes all four transitions, and the compiler ensures each one is correctly implemented:
 
@@ -301,8 +301,6 @@ filePath: test/Examples/DoorWithLock.purs
 pick:
   - update
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L60-L65">test/Examples/DoorWithLock.purs</a></sup></p>
 
 ```purescript
 update :: State -> Msg -> State
@@ -313,7 +311,9 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorLocked" @"Unlock" \_ _ -> return @"DoorClosed")
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithLock.purs#L61-L66">test/Examples/DoorWithLock.purs</a></sup></p><!-- PD_END -->
 
 The type system prevents common mistakes:
 
@@ -337,8 +337,6 @@ pick:
   - main
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L10-L16">test/Examples/GenerateStateDiagrams.purs</a></sup></p>
-
 ```purescript
 main :: Effect Unit
 main = do
@@ -349,7 +347,9 @@ main = do
     { title = "Door" }
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L11-L17">test/Examples/GenerateStateDiagrams.purs</a></sup></p><!-- PD_END -->
 
 The process works in two steps:
 
@@ -384,8 +384,6 @@ pick:
   - main
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L10-L16">test/Examples/GenerateTransitionTables.purs</a></sup></p>
-
 ```purescript
 main :: Effect Unit
 main = do
@@ -396,7 +394,9 @@ main = do
     { title = "Door" }
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L11-L17">test/Examples/GenerateTransitionTables.purs</a></sup></p><!-- PD_END -->
 
 <p align="right">
 
@@ -431,8 +431,6 @@ pick:
   - Msg
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L20-L29">test/Examples/DoorWithPin.purs</a></sup></p>
-
 ```purescript
 data State
   = DoorOpen
@@ -446,7 +444,9 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L21-L30">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -457,8 +457,6 @@ filePath: test/Examples/DoorWithPin.purs
 pick:
   - updateClassic
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L35-L45">test/Examples/DoorWithPin.purs</a></sup></p>
 
 ```purescript
 updateClassic :: State -> Msg -> State
@@ -474,7 +472,9 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L36-L46">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
 
 <p align="right">
   <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
@@ -490,8 +490,6 @@ pick:
   - DoorDSL
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L51-L60">test/Examples/DoorWithPin.purs</a></sup></p>
-
 ```purescript
 type DoorDSL =
   Transit $ Empty
@@ -505,7 +503,9 @@ type DoorDSL =
       )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L52-L61">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
 
 The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
 
@@ -516,8 +516,6 @@ filePath: test/Examples/DoorWithPin.purs
 pick:
   - update
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L62-L78">test/Examples/DoorWithPin.purs</a></sup></p>
 
 ```purescript
 update :: State -> Msg -> State
@@ -539,7 +537,9 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L63-L79">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
 
@@ -576,8 +576,6 @@ pick:
   - Msg
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L23-L33">test/Examples/DoorWithAlarm.purs</a></sup></p>
-
 ```purescript
 data State
   = DoorOpen
@@ -592,7 +590,9 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L24-L34">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -603,8 +603,6 @@ filePath: test/Examples/DoorWithAlarm.purs
 pick:
   - updateClassic
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L39-L53">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
 ```purescript
 updateClassic :: State -> Msg -> State
@@ -624,7 +622,9 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L40-L54">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
 
 ### The Transit Approach
 
@@ -635,8 +635,6 @@ filePath: test/Examples/DoorWithAlarm.purs
 pick:
   - DoorDSL
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L59-L69">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
 ```purescript
 type DoorDSL =
@@ -652,7 +650,9 @@ type DoorDSL =
       )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L60-L70">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed")` labels the transition path, making it clear in the specification what condition leads to which state. This is especially useful when you have multiple conditional transitions from the same state/message pair.
 
@@ -663,8 +663,6 @@ filePath: test/Examples/DoorWithAlarm.purs
 pick:
   - update
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L71-L97">test/Examples/DoorWithAlarm.purs</a></sup></p>
 
 ```purescript
 update :: State -> Msg -> State
@@ -696,7 +694,9 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L72-L98">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
 
 The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
 
@@ -718,14 +718,14 @@ pick:
   - unimplemented
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L14-L15">test/Examples/Signatures.purs</a></sup></p>
-
 ```purescript
 unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs</a></sup></p><!-- PD_END -->
 
 The `update` function demonstrates the type signatures that transit enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
 
@@ -738,8 +738,6 @@ filePath: test/Examples/Signatures.purs
 pick:
   - update
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L17-L46">test/Examples/Signatures.purs</a></sup></p>
 
 ```purescript
 update :: State -> Msg -> State
@@ -774,7 +772,9 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L47">test/Examples/Signatures.purs</a></sup></p><!-- PD_END -->
 
 ## Variants
 
@@ -789,8 +789,6 @@ pick:
   - Msg
   - update
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L8-L37">test/Examples/Variants.purs</a></sup></p>
 
 ```purescript
 type State = Variant
@@ -825,7 +823,9 @@ update = mkUpdate @DoorDSL
   )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L9-L38">test/Examples/Variants.purs</a></sup></p><!-- PD_END -->
 
 ## Monadic update functions
 
@@ -849,8 +849,6 @@ pick:
   - update
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L9-L26">test/Examples/Monadic.purs</a></sup></p>
-
 ```purescript
 update :: State -> Msg -> Effect State
 update = mkUpdateGenericM @DoorDSL
@@ -872,7 +870,9 @@ update = mkUpdateGenericM @DoorDSL
   )
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L27">test/Examples/Monadic.purs</a></sup></p><!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
 
@@ -900,8 +900,6 @@ pick:
   - Msg
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L27-L36">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
-
 ```purescript
 data State = LandA | LandB | LandC | LandD
 
@@ -915,15 +913,15 @@ data Msg
   | Cross_g
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L37">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
   - BridgesTransitions
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L68-L89">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
 ```purescript
 type BridgesTransitions =
@@ -950,7 +948,9 @@ type BridgesTransitions =
     :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L69-L90">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
@@ -981,8 +981,6 @@ pick:
   - countOddOutgoingEdges
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L10-L27">test/Examples/Common.purs</a></sup></p>
-
 ```purescript
 hasEulerCircle :: forall e n. Ord n => Ord e => Graph e n -> Boolean
 hasEulerCircle g = true
@@ -1004,7 +1002,9 @@ countOddOutgoingEdges g =
       (Set.toUnfoldable nodes)
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L11-L28">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
 
@@ -1014,8 +1014,6 @@ pick:
   - spec
   - main
 -->
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L118-L146">test/Examples/BridgesKoenigsberg.purs</a></sup></p>
 
 ```purescript
 spec :: Spec Unit
@@ -1045,7 +1043,9 @@ main = do
   runSpecAndExitProcess [ consoleReporter ] spec
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L147">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
 
 The key steps are:
 
@@ -1101,8 +1101,6 @@ pick:
   - TransitSantaClaus
 -->
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L74-L98">test/Examples/HouseOfSantaClaus.purs</a></sup></p>
-
 ```purescript
 type TransitSantaClaus =
   Transit $ Empty
@@ -1131,7 +1129,9 @@ type TransitSantaClaus =
     :* ("N_4" :@ "E_h" >| "N_3")
 ```
 
-<!-- PD_END -->
+
+
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L75-L99">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
