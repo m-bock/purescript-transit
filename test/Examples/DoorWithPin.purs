@@ -5,8 +5,8 @@ import Prelude
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
+import Data.Traversable (scanl)
 import Effect (Effect)
-import Test.Examples.Common (runWalk)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
@@ -83,29 +83,62 @@ update = mkUpdateGeneric @DoorDSL
 --- Tests
 --------------------------------------------------------------------------------
 
+initState :: State
+initState = DoorOpen
+
+walk :: Array { msg :: Msg, state :: State }
+walk =
+  [ { msg: Close
+    , state: DoorClosed
+    }
+  , { msg: Open
+    , state: DoorOpen
+    }
+  , { msg: Close
+    , state: DoorClosed
+    }
+  , { msg: Lock { newPin: "1234" }
+    , state: DoorLocked { pin: "1234" }
+    }
+  , { msg: Unlock { enteredPin: "abcd" }
+    , state: DoorLocked { pin: "1234" }
+    }
+  , { msg: Unlock { enteredPin: "1234" }
+    , state: DoorClosed
+    }
+  , { msg: Open
+    , state: DoorOpen
+    }
+  ]
+
+msgs :: Array Msg
+msgs = map _.msg walk
+
+expectedStates :: Array State
+expectedStates = map _.state walk
+
+spec1 :: Spec Unit
+spec1 = describe "classic update" do
+  it "should follow the walk" do
+    let
+      actualStates :: Array State
+      actualStates = scanl updateClassic initState msgs
+
+    actualStates `shouldEqual` expectedStates
+
+spec2 :: Spec Unit
+spec2 = describe "transit update" do
+  it "should follow the walk" do
+    let
+      actualStates :: Array State
+      actualStates = scanl update initState msgs
+    actualStates `shouldEqual` expectedStates
+
 spec :: Spec Unit
 spec = do
   describe "Door with Pin" do
-    it "should follow the walk" do
-      let
-        walk =
-          { initialState: DoorOpen
-          , steps:
-              [ { msg: Close, state: DoorClosed }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Close, state: DoorClosed }
-              , { msg: Lock { newPin: "1234" }, state: DoorLocked { pin: "1234" } }
-              , { msg: Unlock { enteredPin: "abcd" }, state: DoorLocked { pin: "1234" } }
-              , { msg: Unlock { enteredPin: "1234" }, state: DoorClosed }
-              , { msg: Open, state: DoorOpen }
-              ]
-          }
-      let actualStatesA = runWalk updateClassic walk
-      let actualStatesB = runWalk update walk
-      let expectedStates = map _.state walk.steps
-
-      actualStatesA `shouldEqual` expectedStates
-      actualStatesB `shouldEqual` expectedStates
+    spec1
+    spec2
 
 --------------------------------------------------------------------------------
 --- State diagram generation

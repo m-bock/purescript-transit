@@ -105,7 +105,7 @@ data Msg = Close | Open
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs L26-L28</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -127,7 +127,7 @@ updateClassic state msg = case state, msg of
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs L34-L38</a></sup></p><!-- PD_END -->
 
 While this approach works, it has some drawbacks:
 
@@ -154,7 +154,7 @@ type DoorDSL =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs L50-L53</a></sup></p><!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
@@ -175,7 +175,7 @@ update = mkUpdateGeneric @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs L55-L58</a></sup></p><!-- PD_END -->
 
 Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
 
@@ -206,47 +206,70 @@ We define an array of messages which we will apply to the state machine. We use 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - checkSimpleWalk
+  - spec1
 -->
 
 ```purescript
-checkSimpleWalk :: Aff Unit
-checkSimpleWalk = do
+spec1 :: Spec Unit
+spec1 = describe "should follow the walk" do
   let
     initState = DoorOpen
 
-    walk =
+    msgs =
       [ Close, Open, Open, Close, Open, Close, Close ]
 
-    finalStateA = foldl updateClassic initState walk
-    finalStateB = foldl update initState walk
+    expectedFinalState = DoorClosed
 
-  finalStateA `shouldEqual` DoorClosed
-  finalStateB `shouldEqual` DoorClosed
+  for_ [ updateClassic, update ] \updateFn ->
+    it "should follow the walk" do
+      let
+        actualFinalState = foldl updateFn initState msgs
+      actualFinalState `shouldEqual` expectedFinalState
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L67-L79">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L64-L78">test/Examples/Door.purs L64-L78</a></sup></p><!-- PD_END -->
 
 This is not perfect yet. Because we only validate the final state. Instead we should check each intermediate state as well.
 We'll use this helper function several times later. So let's also factor it out and make it work with any state and message types.
 
 <!-- PD_START:purs
-filePath: test/Examples/Common.purs
+filePath: test/Examples/Door.purs
 pick:
-  - runWalk
+  - spec2
 -->
 
 ```purescript
-runWalk :: forall msg state. (state -> msg -> state) -> Walk msg state -> Array state
-runWalk updateFn { initialState, steps } = do
-  scanl (\state step -> updateFn state step.msg) initialState steps
+spec2 :: Spec Unit
+spec2 = describe "" do
+  let
+
+    initState = DoorOpen
+
+    walk =
+      [ { msg: Close, state: DoorClosed }
+      , { msg: Open, state: DoorOpen }
+      , { msg: Open, state: DoorOpen }
+      , { msg: Close, state: DoorClosed }
+      , { msg: Open, state: DoorOpen }
+      , { msg: Close, state: DoorClosed }
+      , { msg: Close, state: DoorClosed }
+      ]
+
+    msgs = map _.msg walk
+    expectedStates = map _.state walk
+
+  for_ [ updateClassic, update ] \updateFn ->
+    it "should follow the walk" do
+      let
+        actualStates = scanl updateFn initState msgs
+      actualStates `shouldEqual` expectedStates
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L49-L51">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L80-L103">test/Examples/Door.purs L80-L103</a></sup></p><!-- PD_END -->
 
 Now we can use the `checkWalk` function to test the state machine:
 
@@ -260,35 +283,13 @@ pick:
 spec :: Spec Unit
 spec = do
   describe "Door" do
-    it "should follow the simple walk" do
-      checkSimpleWalk
-
-    it "should follow the  walk" do
-      let
-        walk =
-          { initialState: DoorOpen
-          , steps:
-              [ { msg: Close, state: DoorClosed }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Close, state: DoorClosed }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Close, state: DoorClosed }
-              , { msg: Close, state: DoorClosed }
-              ]
-          }
-
-      let actualStatesA = runWalk updateClassic walk
-      let actualStatesB = runWalk update walk
-      let expectedStates = map _.state walk.steps
-
-      actualStatesA `shouldEqual` expectedStates
-      actualStatesB `shouldEqual` expectedStates
+    spec1
+    spec2
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L107">test/Examples/Door.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L105-L109">test/Examples/Door.purs L105-L109</a></sup></p><!-- PD_END -->
 
 ### Generate State Diagrams
 
@@ -316,7 +317,7 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L11-L17">test/Examples/GenerateStateDiagrams.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L11-L17">test/Examples/GenerateStateDiagrams.purs L11-L17</a></sup></p><!-- PD_END -->
 
 The process works in two steps:
 
@@ -363,7 +364,7 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L11-L17">test/Examples/GenerateTransitionTables.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L11-L17">test/Examples/GenerateTransitionTables.purs L11-L17</a></sup></p><!-- PD_END -->
 
 <p align="right">
 
@@ -413,7 +414,7 @@ data Msg
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L22-L31">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L22-L31">test/Examples/DoorWithPin.purs L22-L31</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -441,7 +442,7 @@ updateClassic state msg = case state, msg of
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L37-L47">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L37-L47">test/Examples/DoorWithPin.purs L37-L47</a></sup></p><!-- PD_END -->
 
 <p align="right">
   <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
@@ -472,7 +473,7 @@ type DoorDSL =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L53-L62">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L53-L62">test/Examples/DoorWithPin.purs L53-L62</a></sup></p><!-- PD_END -->
 
 The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
 
@@ -506,7 +507,7 @@ update = mkUpdateGeneric @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L80">test/Examples/DoorWithPin.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L80">test/Examples/DoorWithPin.purs L64-L80</a></sup></p><!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
 
@@ -559,7 +560,7 @@ data Msg
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L24-L34">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L24-L34">test/Examples/DoorWithAlarm.purs L24-L34</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -591,7 +592,7 @@ updateClassic state msg = case state, msg of
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L40-L54">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L40-L54">test/Examples/DoorWithAlarm.purs L40-L54</a></sup></p><!-- PD_END -->
 
 ### The Transit Approach
 
@@ -619,7 +620,7 @@ type DoorDSL =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L60-L70">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L60-L70">test/Examples/DoorWithAlarm.purs L60-L70</a></sup></p><!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed")` labels the transition path, making it clear in the specification what condition leads to which state. This is especially useful when you have multiple conditional transitions from the same state/message pair.
 
@@ -663,7 +664,7 @@ update = mkUpdateGeneric @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L72-L98">test/Examples/DoorWithAlarm.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L72-L98">test/Examples/DoorWithAlarm.purs L72-L98</a></sup></p><!-- PD_END -->
 
 The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
 
@@ -692,7 +693,7 @@ unimplemented = unsafeCoerce "not yet implemented"
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs L15-L16</a></sup></p><!-- PD_END -->
 
 The `update` function demonstrates the type signatures that transit enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
 
@@ -741,7 +742,7 @@ update = mkUpdateGeneric @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L47">test/Examples/Signatures.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L47">test/Examples/Signatures.purs L18-L47</a></sup></p><!-- PD_END -->
 
 ## Variants
 
@@ -792,7 +793,7 @@ update = mkUpdate @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs L17-L76</a></sup></p><!-- PD_END -->
 
 ## Monadic update functions
 
@@ -831,7 +832,7 @@ update = mkUpdateGenericM @DoorDSL
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p><!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
 
@@ -874,7 +875,7 @@ data Msg
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L37">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L37">test/Examples/BridgesKoenigsberg.purs L28-L37</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -909,7 +910,7 @@ type BridgesTransitions =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L69-L90">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L69-L90">test/Examples/BridgesKoenigsberg.purs L69-L90</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
@@ -963,7 +964,7 @@ countOddOutgoingEdges g =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L23-L40">test/Examples/Common.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L23-L40">test/Examples/Common.purs L23-L40</a></sup></p><!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
 
@@ -1002,7 +1003,7 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L145">test/Examples/BridgesKoenigsberg.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L145">test/Examples/BridgesKoenigsberg.purs L119-L145</a></sup></p><!-- PD_END -->
 
 The key steps are:
 
@@ -1088,7 +1089,7 @@ type TransitSantaClaus =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L78-L102">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L79-L103">test/Examples/HouseOfSantaClaus.purs L79-L103</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
@@ -1123,30 +1124,32 @@ spec = do
 
     describe "should follow the walk" do
       let
+        initState = N_1
+
         walk =
-          { initialState: N_1
-          , steps:
-              [ { msg: E_f, state: N_3 }
-              , { msg: E_h, state: N_4 }
-              , { msg: E_g, state: N_2 }
-              , { msg: E_a, state: N_1 }
-              , { msg: E_e, state: N_4 }
-              , { msg: E_d, state: N_5 }
-              , { msg: E_c, state: N_3 }
-              , { msg: E_b, state: N_2 }
-              ]
-          }
+          [ { msg: E_f, state: N_3 }
+          , { msg: E_h, state: N_4 }
+          , { msg: E_g, state: N_2 }
+          , { msg: E_a, state: N_1 }
+          , { msg: E_e, state: N_4 }
+          , { msg: E_d, state: N_5 }
+          , { msg: E_c, state: N_3 }
+          , { msg: E_b, state: N_2 }
+          ]
 
       let
-        expectedStates = map _.state walk.steps
+        msgs = map _.msg walk
+        expectedStates = map _.state walk
 
       describe "classic update" do
         it "should follow the walk" do
-          runWalk updateClassic walk `shouldEqual` expectedStates
+          let actualStates = scanl updateClassic initState msgs
+          actualStates `shouldEqual` expectedStates
 
       describe "transit update" do
         it "should follow the walk" do
-          runWalk update walk `shouldEqual` expectedStates
+          let actualStates = scanl update initState msgs
+          actualStates `shouldEqual` expectedStates
 
 main :: Effect Unit
 main = do
@@ -1171,4 +1174,4 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L134-L200">test/Examples/HouseOfSantaClaus.purs</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L135-L203">test/Examples/HouseOfSantaClaus.purs L135-L203</a></sup></p><!-- PD_END -->

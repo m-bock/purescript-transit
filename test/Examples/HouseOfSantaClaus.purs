@@ -9,8 +9,9 @@ import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
+import Data.Traversable (scanl)
 import Effect (Effect)
-import Test.Examples.Common (runWalk, hasEulerCircle, hasEulerTrail)
+import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -150,30 +151,32 @@ spec = do
 
     describe "should follow the walk" do
       let
+        initState = N_1
+
         walk =
-          { initialState: N_1
-          , steps:
-              [ { msg: E_f, state: N_3 }
-              , { msg: E_h, state: N_4 }
-              , { msg: E_g, state: N_2 }
-              , { msg: E_a, state: N_1 }
-              , { msg: E_e, state: N_4 }
-              , { msg: E_d, state: N_5 }
-              , { msg: E_c, state: N_3 }
-              , { msg: E_b, state: N_2 }
-              ]
-          }
+          [ { msg: E_f, state: N_3 }
+          , { msg: E_h, state: N_4 }
+          , { msg: E_g, state: N_2 }
+          , { msg: E_a, state: N_1 }
+          , { msg: E_e, state: N_4 }
+          , { msg: E_d, state: N_5 }
+          , { msg: E_c, state: N_3 }
+          , { msg: E_b, state: N_2 }
+          ]
 
       let
-        expectedStates = map _.state walk.steps
+        msgs = map _.msg walk
+        expectedStates = map _.state walk
 
       describe "classic update" do
         it "should follow the walk" do
-          runWalk updateClassic walk `shouldEqual` expectedStates
+          let actualStates = scanl updateClassic initState msgs
+          actualStates `shouldEqual` expectedStates
 
       describe "transit update" do
         it "should follow the walk" do
-          runWalk update walk `shouldEqual` expectedStates
+          let actualStates = scanl update initState msgs
+          actualStates `shouldEqual` expectedStates
 
 --------------------------------------------------------------------------------
 --- State diagram generation

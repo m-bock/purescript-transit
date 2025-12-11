@@ -2,13 +2,13 @@ module Test.Examples.Door (main, spec, DoorDSL, State(..), Msg(..)) where
 
 import Prelude
 
-import Data.Foldable (foldl)
+import Data.Foldable (foldl, for_)
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
+import Data.Traversable (scanl)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (runWalk)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter (consoleReporter)
@@ -61,50 +61,52 @@ update = mkUpdateGeneric @DoorDSL
 --- Tests
 --------------------------------------------------------------------------------
 
--- f :: Array ({ msg :: Msg, state :: State }) -> State -> Aff Unit
--- f xs state = 
-
-checkSimpleWalk :: Aff Unit
-checkSimpleWalk = do
+spec1 :: Spec Unit
+spec1 = describe "should follow the walk" do
   let
     initState = DoorOpen
 
-    walk =
+    msgs =
       [ Close, Open, Open, Close, Open, Close, Close ]
 
-    finalStateA = foldl updateClassic initState walk
-    finalStateB = foldl update initState walk
+    expectedFinalState = DoorClosed
 
-  finalStateA `shouldEqual` DoorClosed
-  finalStateB `shouldEqual` DoorClosed
+  for_ [ updateClassic, update ] \updateFn ->
+    it "should follow the walk" do
+      let
+        actualFinalState = foldl updateFn initState msgs
+      actualFinalState `shouldEqual` expectedFinalState
+
+spec2 :: Spec Unit
+spec2 = describe "" do
+  let
+
+    initState = DoorOpen
+
+    walk =
+      [ { msg: Close, state: DoorClosed }
+      , { msg: Open, state: DoorOpen }
+      , { msg: Open, state: DoorOpen }
+      , { msg: Close, state: DoorClosed }
+      , { msg: Open, state: DoorOpen }
+      , { msg: Close, state: DoorClosed }
+      , { msg: Close, state: DoorClosed }
+      ]
+
+    msgs = map _.msg walk
+    expectedStates = map _.state walk
+
+  for_ [ updateClassic, update ] \updateFn ->
+    it "should follow the walk" do
+      let
+        actualStates = scanl updateFn initState msgs
+      actualStates `shouldEqual` expectedStates
 
 spec :: Spec Unit
 spec = do
   describe "Door" do
-    it "should follow the simple walk" do
-      checkSimpleWalk
-
-    it "should follow the  walk" do
-      let
-        walk =
-          { initialState: DoorOpen
-          , steps:
-              [ { msg: Close, state: DoorClosed }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Close, state: DoorClosed }
-              , { msg: Open, state: DoorOpen }
-              , { msg: Close, state: DoorClosed }
-              , { msg: Close, state: DoorClosed }
-              ]
-          }
-
-      let actualStatesA = runWalk updateClassic walk
-      let actualStatesB = runWalk update walk
-      let expectedStates = map _.state walk.steps
-
-      actualStatesA `shouldEqual` expectedStates
-      actualStatesB `shouldEqual` expectedStates
+    spec1
+    spec2
 
 --------------------------------------------------------------------------------
 --- State diagram generation

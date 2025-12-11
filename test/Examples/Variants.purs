@@ -3,10 +3,10 @@ module Test.Examples.Variants where
 import Prelude
 
 import Data.Symbol (class IsSymbol)
+import Data.Traversable (scanl)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Test.Examples.Common (runWalk)
 import Test.Examples.DoorWithPin (DoorDSL)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -85,43 +85,50 @@ spec :: Spec Unit
 spec = do
   describe "Variants" do
     let
+      initState :: State
+      initState = V.inj (Proxy @"DoorOpen") unit
+
+      walk :: Array { msg :: Msg, state :: State }
       walk =
-        { initialState: V.inj (Proxy @"DoorOpen") unit
-        , steps:
-            [ { msg: inj @"Close" unit
-              , state: inj @"DoorClosed" unit
-              }
-            , { msg: inj @"Open" unit
-              , state: inj @"DoorOpen" unit
-              }
-            , { msg: inj @"Close" unit
-              , state: inj @"DoorClosed" unit
-              }
-            , { msg: inj @"Lock" { newPin: "1234" }
-              , state: inj @"DoorLocked" { pin: "1234" }
-              }
-            , { msg: inj @"Unlock" { enteredPin: "abcd" }
-              , state: inj @"DoorLocked" { pin: "1234" }
-              }
-            , { msg: inj @"Unlock" { enteredPin: "1234" }
-              , state: inj @"DoorClosed" unit
-              }
-            , { msg: inj @"Open" unit
-              , state: inj @"DoorOpen" unit
-              }
-            ]
-        }
+        [ { msg: inj @"Close" unit
+          , state: inj @"DoorClosed" unit
+          }
+        , { msg: inj @"Open" unit
+          , state: inj @"DoorOpen" unit
+          }
+        , { msg: inj @"Close" unit
+          , state: inj @"DoorClosed" unit
+          }
+        , { msg: inj @"Lock" { newPin: "1234" }
+          , state: inj @"DoorLocked" { pin: "1234" }
+          }
+        , { msg: inj @"Unlock" { enteredPin: "abcd" }
+          , state: inj @"DoorLocked" { pin: "1234" }
+          }
+        , { msg: inj @"Unlock" { enteredPin: "1234" }
+          , state: inj @"DoorClosed" unit
+          }
+        , { msg: inj @"Open" unit
+          , state: inj @"DoorOpen" unit
+          }
+        ]
+
+      msgs :: Array Msg
+      msgs = map _.msg walk
+
+      expectedStates :: Array State
+      expectedStates = map _.state walk
 
     describe "classic update" do
       it "should follow the walk" do
-        let actualStates = runWalk updateClassic walk
-        let expectedStates = map _.state walk.steps
+        let
+          actualStates :: Array State
+          actualStates = scanl updateClassic initState msgs
         actualStates `shouldEqual` expectedStates
 
     describe "transit update" do
       it "should follow the walk" do
-        let actualStates = runWalk update walk
-        let expectedStates = map _.state walk.steps
+        let
+          actualStates :: Array State
+          actualStates = scanl update initState msgs
         actualStates `shouldEqual` expectedStates
-
-    pure unit

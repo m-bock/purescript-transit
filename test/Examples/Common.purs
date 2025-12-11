@@ -38,14 +38,3 @@ countOddOutgoingEdges g =
     Array.length $ Array.filter
       (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g))
       (Set.toUnfoldable nodes)
-
-type Step msg state = { msg :: msg, state :: state }
-
-type Walk msg state =
-  { initialState :: state
-  , steps :: Array (Step msg state)
-  }
-
-runWalk :: forall msg state. (state -> msg -> state) -> Walk msg state -> Array state
-runWalk updateFn { initialState, steps } = do
-  scanl (\state step -> updateFn state step.msg) initialState steps
