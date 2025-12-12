@@ -43,7 +43,7 @@
 <li><a href="#about-this-documentation">About This
 Documentation</a></li>
 <li><a href="#installation">Installation</a></li>
-<li><a href="#example1-door">Example1: Door</a>
+<li><a href="#example-1-a-simple-door">Example 1: A Simple Door</a>
 <ul>
 <li><a href="#the-classic-approach">The Classic Approach</a></li>
 <li><a href="#the-transit-approach">The Transit Approach</a></li>
@@ -79,38 +79,6 @@ This is the house of Santa Claus</a></li>
 </ul>
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-<div class="note">
-<div class="title">
-<p>Note</p>
-</div>
-<p>Useful information that users should know, even when skimming
-content.</p>
-</div>
-<div class="tip">
-<div class="title">
-<p>Tip</p>
-</div>
-<p>Helpful advice for doing things better or more easily.</p>
-</div>
-<div class="important">
-<div class="title">
-<p>Important</p>
-</div>
-<p>Key information users need to know to achieve their goal.</p>
-</div>
-<div class="warning">
-<div class="title">
-<p>Warning</p>
-</div>
-<p>Urgent info that needs immediate user attention to avoid
-problems.</p>
-</div>
-<div class="caution">
-<div class="title">
-<p>Caution</p>
-</div>
-<p>Advises about risks or negative outcomes of certain actions.</p>
-</div>
 <h1 id="transit">Transit</h1>
 <p>Transit is a PureScript library for building type-safe state
 machines. It provides a type-level DSL for specifying state transitions,
@@ -134,12 +102,13 @@ graph data structure for advanced analysis</li>
 </ul>
 <h2 id="about-this-documentation">About This Documentation</h2>
 <p>All code examples in this documentation are extracted from actual,
-type-checked PureScript source files. At the top of each chapter, you'll
-find a link to the complete source file(s) used in that example.</p>
+type-checked PureScript source files. Whenever you find a unit test,
+it's ensured that it ran and passed. In this sense this text is not just
+documentation, but also a test suite.</p>
 <h2 id="installation">Installation</h2>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">spago</span> install transit</span></code></pre></div>
-<h2 id="example1-door">Example1: Door</h2>
+<h2 id="example-1-a-simple-door">Example 1: A Simple Door</h2>
 <p>Let's start with a simple door state machine. Here's its state
 diagram:</p>
 <picture>
@@ -149,7 +118,7 @@ diagram:</p>
 </picture>
 
 <p>This state machine has two states (<code>DoorOpen</code> and
-<code>DoorClosed</code>) and two messages (<code>Close</code> and
+<code>DoorClosed</code>) and two transitions (<code>Close</code> and
 <code>Open</code>). The initial state is <code>DoorOpen</code>,
 indicated by the grey arrow pointing to it.</p>
 <p>Another way to represent this is a transition table:</p>

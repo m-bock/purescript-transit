@@ -13,7 +13,7 @@ Type-Safe State Machines.
   - [Key Features](#key-features)
   - [About This Documentation](#about-this-documentation)
   - [Installation](#installation)
-  - [Example1: Door](#example1-door)
+  - [Example 1: A Simple Door](#example-1-a-simple-door)
     - [The Classic Approach](#the-classic-approach)
     - [The Transit Approach](#the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
@@ -35,21 +35,6 @@ Type-Safe State Machines.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
-
-> [!TIP]
-> Helpful advice for doing things better or more easily.
-
-> [!IMPORTANT]
-> Key information users need to know to achieve their goal.
-
-> [!WARNING]
-> Urgent info that needs immediate user attention to avoid problems.
-
-> [!CAUTION]
-> Advises about risks or negative outcomes of certain actions.
-
 # Transit
 
 Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time.
@@ -64,7 +49,7 @@ If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from 
 
 ## About This Documentation
 
-All code examples in this documentation are extracted from actual, type-checked PureScript source files. At the top of each chapter, you'll find a link to the complete source file(s) used in that example.
+All code examples in this documentation are extracted from actual, type-checked PureScript source files. Whenever you find a unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite.
 
 ## Installation
 
@@ -72,7 +57,7 @@ All code examples in this documentation are extracted from actual, type-checked 
 spago install transit
 ```
 
-## Example1: Door
+## Example 1: A Simple Door
 
 Let's start with a simple door state machine. Here's its state diagram:
 
@@ -82,7 +67,7 @@ Let's start with a simple door state machine. Here's its state diagram:
   <img alt="Door state diagram" src="graphs/door-light.svg">
 </picture>
 
-This state machine has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). The initial state is `DoorOpen`, indicated by the grey arrow pointing to it.
+This state machine has two states (`DoorOpen` and `DoorClosed`) and two transitions (`Close` and `Open`). The initial state is `DoorOpen`, indicated by the grey arrow pointing to it.
 
 Another way to represent this is a transition table:
 
