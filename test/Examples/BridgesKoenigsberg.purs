@@ -6,6 +6,7 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
+import Data.Traversable (for_)
 import Effect (Effect)
 import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
 import Test.Spec (Spec)
@@ -14,6 +15,7 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Data.Graph as Graph
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -138,8 +140,15 @@ main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile "graphs/bridges-koenigsberg.dot" transit _
-    { useUndirectedEdges = true }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/bridges-koenigsberg-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/bridges-koenigsberg-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { useUndirectedEdges = true
+        , theme = opts.theme
+        }
 
   TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }

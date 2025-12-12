@@ -2,11 +2,11 @@ module Test.Examples.SimpleDoor (main, spec, SimpleDoorTransit, State(..), Msg(.
 
 import Prelude
 
-import Data.Foldable (foldl, for_)
+import Data.Foldable (foldl)
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
-import Data.Traversable (scanl)
+import Data.Traversable (for_, scanl)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Spec (Spec, describe, it)
@@ -104,18 +104,17 @@ main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @SimpleDoorTransit)
-
     title = "Simple Door State Machine"
 
-  TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
-    { title = title
-    , theme = themeHarmonyLight
-    }
-
-  TransitGraphviz.writeToFile "graphs/simple-door-dark.dot" transit _
-    { title = title
-    , theme = themeHarmonyDark
-    }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/simple-door-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/simple-door-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { title = title
+        , theme = opts.theme
+        }
 
   TransitTable.writeToFile "graphs/simple-door.html" transit _
     { title = title }

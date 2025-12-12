@@ -1,0 +1,16 @@
+digraph 
+{
+rankdir = "TD";fontname = "Arial";label = <<b>Door with Alarm</b>>;labelloc = "t";fontsize = 12;bgcolor = "#141414";color = "#ffffff";fontcolor = "#ffffff"
+DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+DoorOpen -> DoorClosed [color = "#a3e635", fontcolor = "#ccf190", fontsize = 12, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
+DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+DoorClosed -> DoorOpen [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
+DoorClosed -> DoorLocked [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12, arrowsize = "0.7", label = <<b>Lock</b>>, penwidth = 1.8]
+DoorLocked [shape = "box", label = <<b>DoorLocked</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#082e61", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+decision_DoorLocked_Unlock [shape = "diamond", label = "?", fontsize = 12, fontcolor = "#082e61", style = "filled", fillcolor = "#2f80ed", penwidth = 0.0, fixedsize = true, width = 0.3, height = 0.3]
+DoorLocked -> decision_DoorLocked_Unlock [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 12, arrowsize = "0.7", label = <<b>Unlock</b>>, penwidth = 1.8]
+decision_DoorLocked_Unlock -> Alarm [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", label = <<i>TooManyAttempts</i>>, penwidth = 1.8, penwidth = 1.0]
+decision_DoorLocked_Unlock -> DoorLocked [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", label = <<i>PinIncorrect</i>>, penwidth = 1.8, penwidth = 1.0]
+decision_DoorLocked_Unlock -> DoorClosed [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", label = <<i>PinCorrect</i>>, penwidth = 1.8, penwidth = 1.0]
+Alarm [shape = "box", label = <<b>Alarm</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#850020", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+}

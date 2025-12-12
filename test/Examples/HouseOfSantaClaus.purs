@@ -9,7 +9,7 @@ import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
-import Data.Traversable (scanl)
+import Data.Traversable (for_, scanl)
 import Effect (Effect)
 import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
 import Test.Spec (Spec)
@@ -18,6 +18,7 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Data.Graph as Graph
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -186,18 +187,26 @@ main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @TransitSantaClaus)
+    nodeAttrs = Just \node -> case node of
+      "N_1" -> "pos=\"0,0!\""
+      "N_2" -> "pos=\"2,0!\""
+      "N_3" -> "pos=\"2,2!\""
+      "N_4" -> "pos=\"0,2!\""
+      "N_5" -> "pos=\"1,3!\""
+      _ -> ""
+    globalAttrs = Just "layout=neato"
 
-  TransitGraphviz.writeToFile "graphs/house-of-santa-claus.dot" transit _
-    { useUndirectedEdges = true
-    , nodeAttrsRaw = Just \node -> case node of
-        "N_1" -> "pos=\"0,0!\""
-        "N_2" -> "pos=\"2,0!\""
-        "N_3" -> "pos=\"2,2!\""
-        "N_4" -> "pos=\"0,2!\""
-        "N_5" -> "pos=\"1,3!\""
-        _ -> ""
-    , globalAttrsRaw = Just "layout=neato"
-    }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/house-of-santa-claus-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/house-of-santa-claus-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { useUndirectedEdges = true
+        , nodeAttrsRaw = nodeAttrs
+        , globalAttrsRaw = globalAttrs
+        , theme = opts.theme
+        }
 
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }

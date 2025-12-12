@@ -5,11 +5,13 @@ import Prelude
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
+import Data.Traversable (for_)
 import Effect (Effect)
 import Effect.Class.Console as Console
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, returnVia)
+import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.DSL (type (:?))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -114,8 +116,15 @@ main = do
   let
     transit = reflectType (Proxy @DoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/door-with-alarm.dot" transit _
-    { title = "Door with Alarm" }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/door-with-alarm-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/door-with-alarm-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { title = "Door with Alarm"
+        , theme = opts.theme
+        }
 
   TransitTable.writeToFile "graphs/door-with-alarm.html" transit _
     { title = "Door with Alarm" }

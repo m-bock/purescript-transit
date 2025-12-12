@@ -269,13 +269,20 @@ main = do
   let
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/simple-door.dot" transit _
-    { title = "Simple Door" }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/simple-door-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/simple-door-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { title = "Simple Door"
+        , theme = opts.theme
+        }
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L11-L17">test/Examples/GenerateStateDiagrams.purs L11-L17</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L13-L26">test/Examples/GenerateStateDiagrams.purs L13-L26</a></sup></p><!-- PD_END -->
 
 The process works in two steps:
 
@@ -337,9 +344,9 @@ Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.pu
 Now let's add a PIN code to our door lock. This introduces two important concepts: **states with data** and **conditional transitions**.
 
 <picture>
-  <source srcset="graphs/door-with-pin-light.svg" media="(prefers-color-scheme: light)">
-  <source srcset="graphs/door-with-pin-dark.svg" media="(prefers-color-scheme: dark)">
-  <img src="graphs/door-with-pin.svg" alt="Door with Pin">
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/door-with-pin-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/door-with-pin-light.svg">
+  <img alt="Door with Pin state diagram" src="graphs/door-with-pin-light.svg">
 </picture>
 
 In this example, the `DoorLocked` state stores a PIN code, and the `Unlock` message includes the entered PIN. The unlock operation can succeed (transitioning to `DoorClosed`) or fail (staying in `DoorLocked`), depending on whether the entered PIN matches the stored one.
@@ -483,7 +490,11 @@ Full source code: _[test/Examples/DoorWithAlarm.purs](test/Examples/DoorWithAlar
 
 Now let's extend the door with PIN by adding an alarm system that triggers after too many failed unlock attempts. This introduces **labeled conditional transitions**, which allow you to document the different conditions that lead to different states.
 
-<img src="graphs/door-with-alarm.svg" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/door-with-alarm-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/door-with-alarm-light.svg">
+  <img alt="Door with Alarm state diagram" src="graphs/door-with-alarm-light.svg">
+</picture>
 
 In this example, the `DoorLocked` state now tracks the number of failed unlock attempts. When unlocking:
 
@@ -522,7 +533,7 @@ data Msg
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L24-L34">test/Examples/DoorWithAlarm.purs L24-L34</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L26-L36">test/Examples/DoorWithAlarm.purs L26-L36</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -554,7 +565,7 @@ updateClassic state msg = case state, msg of
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L40-L54">test/Examples/DoorWithAlarm.purs L40-L54</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L42-L56">test/Examples/DoorWithAlarm.purs L42-L56</a></sup></p><!-- PD_END -->
 
 ### The Transit Approach
 
@@ -582,7 +593,7 @@ type DoorTransit =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L60-L70">test/Examples/DoorWithAlarm.purs L60-L70</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L62-L72">test/Examples/DoorWithAlarm.purs L62-L72</a></sup></p><!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed")` labels the transition path, making it clear in the specification what condition leads to which state. This is especially useful when you have multiple conditional transitions from the same state/message pair.
 
@@ -626,7 +637,7 @@ update = mkUpdateGeneric @DoorTransit
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L72-L98">test/Examples/DoorWithAlarm.purs L72-L98</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L74-L100">test/Examples/DoorWithAlarm.purs L74-L100</a></sup></p><!-- PD_END -->
 
 The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
 
@@ -837,7 +848,7 @@ data Msg
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L37">test/Examples/BridgesKoenigsberg.purs L28-L37</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L30-L39">test/Examples/BridgesKoenigsberg.purs L30-L39</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -872,7 +883,7 @@ type BridgesTransitions =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L69-L90">test/Examples/BridgesKoenigsberg.purs L69-L90</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L71-L92">test/Examples/BridgesKoenigsberg.purs L71-L92</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
@@ -880,7 +891,11 @@ filePath: graphs/bridges-koenigsberg.html
 
 The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
-<img src="graphs/bridges-koenigsberg.svg" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/bridges-koenigsberg-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/bridges-koenigsberg-light.svg">
+  <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
+</picture>
 
 ### Graph Analysis
 
@@ -956,8 +971,15 @@ main = do
   let
     transit = reflectType (Proxy @BridgesTransitions)
 
-  TransitGraphviz.writeToFile "graphs/bridges-koenigsberg.dot" transit _
-    { useUndirectedEdges = true }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/bridges-koenigsberg-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/bridges-koenigsberg-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { useUndirectedEdges = true
+        , theme = opts.theme
+        }
 
   TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }
@@ -965,7 +987,7 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L145">test/Examples/BridgesKoenigsberg.purs L119-L145</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L121-L154">test/Examples/BridgesKoenigsberg.purs L121-L154</a></sup></p><!-- PD_END -->
 
 The key steps are:
 
@@ -1051,13 +1073,17 @@ type TransitSantaClaus =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L79-L103">test/Examples/HouseOfSantaClaus.purs L79-L103</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L80-L104">test/Examples/HouseOfSantaClaus.purs L80-L104</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
 --><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
 
-<img src="graphs/house-of-santa-claus.svg"  />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/house-of-santa-claus-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/house-of-santa-claus-light.svg">
+  <img alt="House of Santa Claus graph" src="graphs/house-of-santa-claus-light.svg">
+</picture>
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
@@ -1117,18 +1143,26 @@ main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @TransitSantaClaus)
+    nodeAttrs = Just \node -> case node of
+      "N_1" -> "pos=\"0,0!\""
+      "N_2" -> "pos=\"2,0!\""
+      "N_3" -> "pos=\"2,2!\""
+      "N_4" -> "pos=\"0,2!\""
+      "N_5" -> "pos=\"1,3!\""
+      _ -> ""
+    globalAttrs = Just "layout=neato"
 
-  TransitGraphviz.writeToFile "graphs/house-of-santa-claus.dot" transit _
-    { useUndirectedEdges = true
-    , nodeAttrsRaw = Just \node -> case node of
-        "N_1" -> "pos=\"0,0!\""
-        "N_2" -> "pos=\"2,0!\""
-        "N_3" -> "pos=\"2,2!\""
-        "N_4" -> "pos=\"0,2!\""
-        "N_5" -> "pos=\"1,3!\""
-        _ -> ""
-    , globalAttrsRaw = Just "layout=neato"
-    }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/house-of-santa-claus-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/house-of-santa-claus-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { useUndirectedEdges = true
+        , nodeAttrsRaw = nodeAttrs
+        , globalAttrsRaw = globalAttrs
+        , theme = opts.theme
+        }
 
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }
@@ -1136,4 +1170,4 @@ main = do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L135-L203">test/Examples/HouseOfSantaClaus.purs L135-L203</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L136-L212">test/Examples/HouseOfSantaClaus.purs L136-L212</a></sup></p><!-- PD_END -->
