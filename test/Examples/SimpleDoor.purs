@@ -1,4 +1,4 @@
-module Test.Examples.Door (main, spec, DoorTransit, State(..), Msg(..)) where
+module Test.Examples.SimpleDoor (main, spec, SimpleDoorTransit, State(..), Msg(..)) where
 
 import Prelude
 
@@ -42,13 +42,13 @@ updateClassic state msg = case state, msg of
 --- Transit Approach
 --------------------------------------------------------------------------------
 
-type DoorTransit =
+type SimpleDoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorTransit
+update = mkUpdateGeneric @SimpleDoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
@@ -92,7 +92,7 @@ spec2 = describe "" do
 
 spec :: Spec Unit
 spec = do
-  describe "Door" do
+  describe "SimpleDoor" do
     spec1
     spec2
 
@@ -103,21 +103,21 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorTransit)
+    transit = reflectType (Proxy @SimpleDoorTransit)
 
-    title = "Door State Machine"
+    title = "Simple Door State Machine"
 
-  TransitGraphviz.writeToFile "graphs/door-light.dot" transit _
+  TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
     { title = title
     , theme = themeHarmonyLight
     }
 
-  TransitGraphviz.writeToFile "graphs/door-dark.dot" transit _
+  TransitGraphviz.writeToFile "graphs/simple-door-dark.dot" transit _
     { title = title
     , theme = themeHarmonyDark
     }
 
-  TransitTable.writeToFile "graphs/door.html" transit _
+  TransitTable.writeToFile "graphs/simple-door.html" transit _
     { title = title }
 
 --------------------------------------------------------------------------------

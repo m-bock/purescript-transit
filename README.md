@@ -62,9 +62,9 @@ spago install transit
 Let's start with a simple door state machine. Here's its state diagram:
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/door-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/door-light.svg">
-  <img alt="Door state diagram" src="graphs/door-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/simple-door-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/simple-door-light.svg">
+  <img alt="Simple Door state diagram" src="graphs/simple-door-light.svg">
 </picture>
 
 This state machine has two states (`DoorOpen` and `DoorClosed`) and two transitions (`Close` and `Open`). The initial state is `DoorOpen`, indicated by the grey arrow pointing to it.
@@ -72,13 +72,13 @@ This state machine has two states (`DoorOpen` and `DoorClosed`) and two transiti
 Another way to represent this is a transition table:
 
 <!-- PD_START:raw
-filePath: graphs/door.html
---><table><caption>Door State Machine</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
+filePath: graphs/simple-door.html
+--><table><caption>Simple Door State Machine</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
 
 In PureScript, we represent the states and messages with simple data types:
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
   - State
   - Msg
@@ -92,14 +92,14 @@ data Msg = Close | Open
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L27-L29">test/Examples/Door.purs L27-L29</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
 The traditional way to implement state transitions is to write an update function that takes a state and a message and returns a new state:
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
   - updateClassic
 -->
@@ -114,7 +114,7 @@ updateClassic state msg = case state, msg of
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L35-L39">test/Examples/Door.purs L35-L39</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L35-L39">test/Examples/SimpleDoor.purs L35-L39</a></sup></p><!-- PD_END -->
 
 While this approach works, it has some drawbacks:
 
@@ -127,13 +127,13 @@ While this approach works, it has some drawbacks:
 With the transit library, we take a different approach. First, we define a type-level specification of the state machine:
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
-  - DoorTransit
+  - SimpleDoorTransit
 -->
 
 ```purescript
-type DoorTransit =
+type SimpleDoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -141,28 +141,28 @@ type DoorTransit =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L45-L48">test/Examples/Door.purs L45-L48</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L45-L48">test/Examples/SimpleDoor.purs L45-L48</a></sup></p><!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
 This type-level specification fully defines the state machine. Based on this spec, we can now create an update function that the compiler ensures only allows legal state transitions:
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
   - update
 -->
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorTransit
+update = mkUpdateGeneric @SimpleDoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs L50-L53</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L50-L53">test/Examples/SimpleDoor.purs L50-L53</a></sup></p><!-- PD_END -->
 
 Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
 
@@ -191,7 +191,7 @@ As the equality of the type signatures of the classic and transit approaches upd
 We define an array of messages which we will apply to the state machine. We use the `foldl` function to apply the update functions consecutively until we reach a final state. We do this for both the classic and transit approaches. And then we check if the final states match our expectations.
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
   - spec1
 -->
@@ -209,13 +209,13 @@ spec1 = describe "should follow the walk" do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L59-L66">test/Examples/Door.purs L59-L66</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L59-L66">test/Examples/SimpleDoor.purs L59-L66</a></sup></p><!-- PD_END -->
 
 This is not perfect yet. Because we only validate the final state. Instead we should check each intermediate state as well.
 We'll use this helper function several times later. So let's also factor it out and make it work with any state and message types.
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
   - spec2
 -->
@@ -249,7 +249,7 @@ spec2 = describe "" do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L68-L91">test/Examples/Door.purs L68-L91</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L68-L91">test/Examples/SimpleDoor.purs L68-L91</a></sup></p><!-- PD_END -->
 
 ### Generate State Diagrams
 
@@ -267,10 +267,10 @@ pick:
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorTransit)
+    transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/door.dot" transit _
-    { title = "Door" }
+  TransitGraphviz.writeToFile "graphs/simple-door.dot" transit _
+    { title = "Simple Door" }
 ```
 
 
@@ -285,13 +285,13 @@ The process works in two steps:
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
 ```bash
-dot -Tsvg graphs/door.dot -o graphs/door.svg
+dot -Tsvg graphs/simple-door.dot -o graphs/simple-door.svg
 ```
 
 Or for PNG:
 
 ```bash
-dot -Tpng graphs/door.dot -o graphs/door.png
+dot -Tpng graphs/simple-door.dot -o graphs/simple-door.png
 ```
 
 Since the diagram is generated from the same DSL specification used to create the type-safe update function, any changes to your state machine are automatically reflected in both the code and the diagram. This eliminates the common problem of documentation getting out of sync with implementation.
@@ -314,10 +314,10 @@ pick:
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorTransit)
+    transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitTable.writeToFile "graphs/door.html" transit _
-    { title = "Door" }
+  TransitTable.writeToFile "graphs/simple-door.html" transit _
+    { title = "Simple Door" }
 ```
 
 
@@ -781,7 +781,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> Effect State
-update = mkUpdateGenericM @DoorTransit
+update = mkUpdateGenericM @SimpleDoorTransit
   ( matchM @"DoorOpen" @"Close" \_ _ -> do
       Console.log "You just closed the door"
       pure $ return @"DoorClosed"

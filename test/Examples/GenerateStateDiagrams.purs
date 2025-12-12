@@ -4,15 +4,15 @@ import Prelude
 
 import Data.Reflectable (reflectType)
 import Effect (Effect)
-import Test.Examples.Door (DoorTransit)
+import Test.Examples.SimpleDoor (SimpleDoorTransit)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Type.Prelude (Proxy(..))
 
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorTransit)
+    transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/door.dot" transit _
-    { title = "Door" }
+  TransitGraphviz.writeToFile "graphs/simple-door.dot" transit _
+    { title = "Simple Door" }
 
