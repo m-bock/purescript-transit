@@ -25,17 +25,14 @@ General AI guideline:
 - the module name of each PureScript file must match the file name
 - Each test file must be referenced in Test.Main
 
-<div style="display: table;">
-  <div style="display: table-row;">
-    <div style="display: table-cell; padding: 4px 8px;">A</div>
-    <div style="display: table-cell; padding: 4px 8px;">B</div>
-  </div>
-  <div style="display: table-row;">
-    <div style="display: table-cell; padding: 4px 8px;">C</div>
-    <div style="display: table-cell; padding: 4px 8px;">D</div>
-  </div>
-  <div style="display: table-row;">
-    <div style="display: table-cell; padding: 4px 8px;">C</div>
-    <div style="display: table-cell; padding: 4px 8px;">D</div>
-  </div>
-</div>
+<table>
+  <tbody>
+    <tr><td>A</td><td>B</td></tr>
+  </tbody>
+  <tbody>
+    <tr><td>C</td><td>D</td></tr>
+  </tbody>
+  <tbody>
+    <tr><td>E</td><td>F</td></tr>
+  </tbody>
+</table>
