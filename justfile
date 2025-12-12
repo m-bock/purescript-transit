@@ -13,10 +13,9 @@ gen:
 
 gen-preview:
     pandoc README.md \
-        -f gfm \
-        -t html5 \
-        --template=gh-template.html \
-        -o preview.html
+        --highlight-style=zenburn \
+        --template=assets/gh-template.html \
+        -o assets/gh-preview.html
 
 dev:
     ls README.md | entr just gen

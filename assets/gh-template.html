@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <title>$title$</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Your GitHub stylesheet -->
     <link rel="stylesheet" href="github.css" />
+
+    <!-- Your custom layout -->
     <style>
       /* Basic layout like GitHub's README container */
       body {
@@ -23,7 +27,15 @@
         padding: 45px;
       }
     </style>
+
+    <!-- 🔥 Pandoc syntax highlighting CSS (the missing part) -->
+    $if(highlighting-css)$
+    <style type="text/css">
+      $highlighting-css$
+    </style>
+    $endif$
   </head>
+
   <body>
     <article class="markdown-body">$body$</article>
   </body>
