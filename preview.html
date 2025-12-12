@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="github.css" />
+    <style>
+      /* Basic layout like GitHub's README container */
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        background-color: #0d1117; /* dark bg looks nice with dark theme */
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        width: 100%;
+        padding: 45px;
+      }
+    </style>
+  </head>
+  <body>
+    <article class="markdown-body"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
+  <img alt="Transit logo" src="assets/logo-light.svg">
+</picture>
+
+<p>Type-Safe State Machines.</p>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+<ul>
+<li><a href="#transit">Transit</a>
+<ul>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#about-this-documentation">About This
+Documentation</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#example1-door">Example1: Door</a>
+<ul>
+<li><a href="#the-classic-approach">The Classic Approach</a></li>
+<li><a href="#the-transit-approach">The Transit Approach</a></li>
+<li><a href="#compile-time-safety">Compile-Time Safety</a></li>
+<li><a href="#ai-find-title">[AI: find title]</a></li>
+<li><a href="#generate-state-diagrams">Generate State Diagrams</a></li>
+<li><a href="#generate-transition-tables">Generate Transition
+Tables</a></li>
+</ul></li>
+<li><a href="#example2-door-with-pin">Example2: Door with Pin</a>
+<ul>
+<li><a href="#the-classic-approach-1">The Classic Approach</a></li>
+<li><a href="#the-transit-approach-1">The Transit Approach</a></li>
+</ul></li>
+<li><a href="#example3-door-with-pin-and-alarm">Example3: Door with Pin
+and Alarm</a>
+<ul>
+<li><a href="#the-classic-approach-2">The Classic Approach</a></li>
+<li><a href="#the-transit-approach-2">The Transit Approach</a></li>
+</ul></li>
+<li><a href="#type-signatures">Type signatures</a></li>
+<li><a href="#variants">Variants</a></li>
+<li><a href="#monadic-update-functions">Monadic update
+functions</a></li>
+<li><a href="#example-4-seven-bridges-of-k%C3%B6nigsberg">Example 4:
+Seven Bridges of Königsberg</a>
+<ul>
+<li><a href="#graph-analysis">Graph Analysis</a></li>
+</ul></li>
+<li><a href="#example-5-this-is-the-house-of-santa-claus">Example 5:
+This is the house of Santa Claus</a></li>
+</ul></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+<div class="note">
+<div class="title">
+<p>Note</p>
+</div>
+<p>Useful information that users should know, even when skimming
+content.</p>
+</div>
+<div class="tip">
+<div class="title">
+<p>Tip</p>
+</div>
+<p>Helpful advice for doing things better or more easily.</p>
+</div>
+<div class="important">
+<div class="title">
+<p>Important</p>
+</div>
+<p>Key information users need to know to achieve their goal.</p>
+</div>
+<div class="warning">
+<div class="title">
+<p>Warning</p>
+</div>
+<p>Urgent info that needs immediate user attention to avoid
+problems.</p>
+</div>
+<div class="caution">
+<div class="title">
+<p>Caution</p>
+</div>
+<p>Advises about risks or negative outcomes of certain actions.</p>
+</div>
+<h1 id="transit">Transit</h1>
+<p>Transit is a PureScript library for building type-safe state
+machines. It provides a type-level DSL for specifying state transitions,
+ensuring that your state machine implementation is correct at compile
+time.</p>
+<p>If you're familiar with <a
+href="https://haskell-servant.readthedocs.io/">Servant</a> from Haskell,
+Transit follows a similar philosophy: just as Servant uses a REST API
+type-level specification to generate type-safe routing functions and
+OpenAPI documentation, Transit uses a state machine graph type-level
+specification to generate type-safe update functions and state
+diagrams.</p>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>Type-safe state transitions</strong> - The compiler ensures
+all transitions are valid and complete</li>
+<li><strong>Automatic diagram generation</strong> - Generate state
+diagrams and transition tables directly from your specification</li>
+<li><strong>Graph analysis</strong> - Convert your state machine into a
+graph data structure for advanced analysis</li>
+</ul>
+<h2 id="about-this-documentation">About This Documentation</h2>
+<p>All code examples in this documentation are extracted from actual,
+type-checked PureScript source files. At the top of each chapter, you'll
+find a link to the complete source file(s) used in that example.</p>
+<h2 id="installation">Installation</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">spago</span> install transit</span></code></pre></div>
+<h2 id="example1-door">Example1: Door</h2>
+<p>Full source code: <em><a
+href="test/Examples/Door.purs">test/Examples/Door.purs</a></em></p>
+<p>Let's start with a simple door state machine. Here's its state
+diagram:</p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/door.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/door.svg">
+  <img alt="Door state diagram" src="graphs/door.svg">
+</picture>
+
+<p>This state machine has two states (<code>DoorOpen</code> and
+<code>DoorClosed</code>) and two messages (<code>Close</code> and
+<code>Open</code>). The initial state is <code>DoorOpen</code>,
+indicated by the grey arrow pointing to it.</p>
+<p>Another way to represent this is a transition table:</p>
+<!-- PD_START:raw
+filePath: graphs/door.html
+--><table><caption>Door</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
+
+<p>In PureScript, we represent the states and messages with simple data
+types:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - State
+  - Msg
+-->
+
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">DoorOpen</span> <span class="op">|</span> <span class="dt">DoorClosed</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Close</span> <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs L26-L28</a></sup></p><!-- PD_END -->
+
+<h3 id="the-classic-approach">The Classic Approach</h3>
+<p>The traditional way to implement state transitions is to write an
+update function that takes a state and a message and returns a new
+state:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - updateClassic
+-->
+
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">updateClassic ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>updateClassic state msg <span class="ot">=</span> <span class="kw">case</span> state, msg <span class="kw">of</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs L34-L38</a></sup></p><!-- PD_END -->
+
+<p>While this approach works, it has some drawbacks:</p>
+<ul>
+<li>The state diagram and implementation can easily get out of sync</li>
+<li>The compiler won't catch missing transitions or invalid
+state/message combinations</li>
+<li>You need to manually ensure all cases are handled correctly</li>
+</ul>
+<h3 id="the-transit-approach">The Transit Approach</h3>
+<p>With the transit library, we take a different approach. First, we
+define a type-level specification of the state machine:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - DoorDSL
+-->
+
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorDSL</span> <span class="ot">=</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span> <span class="op">$</span> <span class="dt">Empty</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs L50-L53</a></sup></p><!-- PD_END -->
+
+<p>This DSL syntax reads as: "From state <code>DoorOpen</code> on
+message <code>Close</code>, transition to state <code>DoorClosed</code>"
+and "From state <code>DoorClosed</code> on message <code>Open</code>,
+transition to state <code>DoorOpen</code>". The <code>Empty</code>
+starts the list, and <code>:*</code> adds each transition.</p>
+<p>This type-level specification fully defines the state machine. Based
+on this spec, we can now create an update function that the compiler
+ensures only allows legal state transitions:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - update
+-->
+
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateGeneric <span class="op">@</span><span class="dt">DoorDSL</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs L55-L58</a></sup></p><!-- PD_END -->
+
+<p>Notice that the type signature is identical to the classic
+approach—<code>State -&gt; Msg -&gt; State</code>. The difference is
+that the compiler now enforces correctness at compile time.</p>
+<h3 id="compile-time-safety">Compile-Time Safety</h3>
+<p>The type system ensures that your implementation matches the
+specification. The following will <strong>not</strong> compile:</p>
+<ul>
+<li>🔴 Missing a match line for a state transition</li>
+<li>🔴 Matching on illegal state/message combinations</li>
+<li>🔴 Returning illegal states</li>
+<li>🔴 Misspelled names of states and messages</li>
+</ul>
+<p>Conversely, the compiler guarantees:</p>
+<ul>
+<li>🟢 All matches are covered</li>
+<li>🟢 Each match is on the correct state/message combination</li>
+<li>🟢 Each match returns the correct state</li>
+<li>🟢 All symbols (type-level strings) are spelled correctly</li>
+</ul>
+<p>Later we'll see how to generate the state diagram directly from the
+spec, ensuring it always stays in sync with the code.</p>
+<h3 id="ai-find-title">[AI: find title]</h3>
+<p>As the equality of the type signatures of the classic and transit
+approaches update functions already suggest: Web can use them
+interchangeably. That means transit can be seamlessly integrated into
+existing codebases. Let's verify this.</p>
+<p>We define an array of messages which we will apply to the state
+machine. We use the <code>foldl</code> function to apply the update
+functions consecutively until we reach a final state. We do this for
+both the classic and transit approaches. And then we check if the final
+states match our expectations.</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - spec1
+-->
+
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">=</span> describe <span class="st">&quot;should follow the walk&quot;</span> <span class="kw">do</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    initState <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    msgs <span class="ot">=</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      [ <span class="dt">Close</span>, <span class="dt">Open</span>, <span class="dt">Open</span>, <span class="dt">Close</span>, <span class="dt">Open</span>, <span class="dt">Close</span>, <span class="dt">Close</span> ]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    expectedFinalState <span class="ot">=</span> <span class="dt">DoorClosed</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  for_ [ updateClassic, update ] \updateFn <span class="ot">-&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    it <span class="st">&quot;should follow the walk&quot;</span> <span class="kw">do</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        actualFinalState <span class="ot">=</span> <span class="fu">foldl</span> updateFn initState msgs</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      actualFinalState <span class="ot">`shouldEqual`</span> expectedFinalState</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L64-L78">test/Examples/Door.purs L64-L78</a></sup></p><!-- PD_END -->
+
+<p>This is not perfect yet. Because we only validate the final state.
+Instead we should check each intermediate state as well. We'll use this
+helper function several times later. So let's also factor it out and
+make it work with any state and message types.</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - spec2
+-->
+
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">=</span> describe <span class="st">&quot;&quot;</span> <span class="kw">do</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    initState <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    walk <span class="ot">=</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      [ { msg<span class="op">:</span> <span class="dt">Close</span>, state<span class="op">:</span> <span class="dt">DoorClosed</span> }</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      , { msg<span class="op">:</span> <span class="dt">Open</span>, state<span class="op">:</span> <span class="dt">DoorOpen</span> }</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      , { msg<span class="op">:</span> <span class="dt">Open</span>, state<span class="op">:</span> <span class="dt">DoorOpen</span> }</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      , { msg<span class="op">:</span> <span class="dt">Close</span>, state<span class="op">:</span> <span class="dt">DoorClosed</span> }</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      , { msg<span class="op">:</span> <span class="dt">Open</span>, state<span class="op">:</span> <span class="dt">DoorOpen</span> }</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      , { msg<span class="op">:</span> <span class="dt">Close</span>, state<span class="op">:</span> <span class="dt">DoorClosed</span> }</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      , { msg<span class="op">:</span> <span class="dt">Close</span>, state<span class="op">:</span> <span class="dt">DoorClosed</span> }</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      ]</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    msgs <span class="ot">=</span> <span class="fu">map</span> _<span class="op">.</span>msg walk</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    expectedStates <span class="ot">=</span> <span class="fu">map</span> _<span class="op">.</span>state walk</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  for_ [ updateClassic, update ] \updateFn <span class="ot">-&gt;</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    it <span class="st">&quot;should follow the walk&quot;</span> <span class="kw">do</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        actualStates <span class="ot">=</span> <span class="fu">scanl</span> updateFn initState msgs</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      actualStates <span class="ot">`shouldEqual`</span> expectedStates</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L80-L103">test/Examples/Door.purs L80-L103</a></sup></p><!-- PD_END -->
+
+<p>Now we can use the <code>checkWalk</code> function to test the state
+machine:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - spec
+-->
+
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  describe <span class="st">&quot;Door&quot;</span> <span class="kw">do</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    spec1</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    spec2</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L105-L109">test/Examples/Door.purs L105-L109</a></sup></p><!-- PD_END -->
+
+<h3 id="generate-state-diagrams">Generate State Diagrams</h3>
+<p>Full source code: <em><a
+href="test/Examples/GenerateStateDiagrams.purs">test/Examples/GenerateStateDiagrams.purs</a></em></p>
+<p>One of the key benefits of transit is that you can generate state
+diagrams directly from your type-level specification. This ensures your
+diagrams always stay in sync with your code—no manual updates
+required.</p>
+<p>To generate a state diagram, you use <code>reflectType</code> to
+convert your type-level DSL specification to a term-level equivalent,
+then write it to a Graphviz <code>.dot</code> file:</p>
+<!-- PD_START:purs
+filePath: test/Examples/GenerateStateDiagrams.purs
+pick:
+  - main
+-->
+
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorDSL</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;graphs/door.dot&quot;</span> transit _</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    { title <span class="ot">=</span> <span class="st">&quot;Door&quot;</span> }</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L11-L17">test/Examples/GenerateStateDiagrams.purs L11-L17</a></sup></p><!-- PD_END -->
+
+<p>The process works in two steps:</p>
+<ol type="1">
+<li><code>reflectType</code> converts your type-level DSL specification
+to a term-level equivalent</li>
+<li><code>TransitGraphviz.writeToFile</code> uses that to render a
+Graphviz <code>.dot</code> file</li>
+</ol>
+<p>To convert the <code>.dot</code> file to an SVG (or other formats),
+use the Graphviz command-line tools:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> graphs/door.dot <span class="at">-o</span> graphs/door.svg</span></code></pre></div>
+<p>Or for PNG:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> graphs/door.dot <span class="at">-o</span> graphs/door.png</span></code></pre></div>
+<p>Since the diagram is generated from the same DSL specification used
+to create the type-safe update function, any changes to your state
+machine are automatically reflected in both the code and the diagram.
+This eliminates the common problem of documentation getting out of sync
+with implementation.</p>
+<h3 id="generate-transition-tables">Generate Transition Tables</h3>
+<p>Full source code: <em><a
+href="test/Examples/GenerateTransitionTables.purs">test/Examples/GenerateTransitionTables.purs</a></em></p>
+<p>In addition to state diagrams, you can also generate transition
+tables from the same graph data structure. This provides a tabular view
+of all state transitions, which can be easier to read for some use
+cases.</p>
+<p>The process is identical to generating state diagrams—you use
+<code>reflectType</code> to convert your DSL specification, but then use
+<code>TransitTable.writeToFile</code> instead:</p>
+<!-- PD_START:purs
+filePath: test/Examples/GenerateTransitionTables.purs
+pick:
+  - main
+-->
+
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorDSL</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  TransitTable.writeToFile <span class="st">&quot;graphs/door.html&quot;</span> transit _</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    { title <span class="ot">=</span> <span class="st">&quot;Door&quot;</span> }</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L11-L17">test/Examples/GenerateTransitionTables.purs L11-L17</a></sup></p><!-- PD_END -->
+
+<p align="right">
+
+<p>This generates an HTML file containing a table with columns for "From
+State", "Message", and "To State". The table can be embedded directly in
+documentation (as shown in the examples above) or viewed in a
+browser.</p>
+<p>Since both the state diagram and transition table are generated from
+the same DSL specification, they're guaranteed to be consistent with
+each other and with your type-level specification.</p>
+<h2 id="example2-door-with-pin">Example2: Door with Pin</h2>
+<p>Full source code: <em><a
+href="test/Examples/DoorWithPin.purs">test/Examples/DoorWithPin.purs</a></em></p>
+<p>Now let's add a PIN code to our door lock. This introduces two
+important concepts: <strong>states with data</strong> and
+<strong>conditional transitions</strong>.</p>
+<img src="graphs/door-with-pin.svg" />
+
+<p>In this example, the <code>DoorLocked</code> state stores a PIN code,
+and the <code>Unlock</code> message includes the entered PIN. The unlock
+operation can succeed (transitioning to <code>DoorClosed</code>) or fail
+(staying in <code>DoorLocked</code>), depending on whether the entered
+PIN matches the stored one.</p>
+<p>Notice the diamond node in the state diagram—this represents a
+conditional transition where the outcome depends on runtime data.</p>
+<p>The transition table shows both possible outcomes:</p>
+<!-- PD_START:raw
+filePath: graphs/door-with-pin.html
+--><table><caption>Door with Pin</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
+
+<p>The PureScript types now include data in both states and
+messages:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - State
+  - Msg
+-->
+
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">DoorClosed</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">DoorLocked</span> {<span class="ot"> pin ::</span> <span class="dt">String</span> }</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Close</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Open</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Lock</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Unlock</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L22-L31">test/Examples/DoorWithPin.purs L22-L31</a></sup></p><!-- PD_END -->
+
+<h3 id="the-classic-approach-1">The Classic Approach</h3>
+<p>The classic update function now needs to handle state and message
+data:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - updateClassic
+-->
+
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ot">updateClassic ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>updateClassic state msg <span class="ot">=</span> <span class="kw">case</span> state, msg <span class="kw">of</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Lock</span> { newPin } <span class="ot">-&gt;</span> <span class="dt">DoorLocked</span> { pin<span class="op">:</span> newPin }</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorLocked</span> { pin }, <span class="dt">Unlock</span> { enteredPin } <span class="ot">-&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> pin <span class="op">==</span> enteredPin <span class="kw">then</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">DoorClosed</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">DoorLocked</span> { pin }</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L37-L47">test/Examples/DoorWithPin.purs L37-L47</a></sup></p><!-- PD_END -->
+
+<p align="right">
+  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
+</p>
+
+<h3 id="the-transit-approach-1">The Transit Approach</h3>
+<p>In the DSL specification, we express conditional transitions by
+listing multiple possible target states:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - DoorDSL
+-->
+
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorDSL</span> <span class="ot">=</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span> <span class="op">$</span> <span class="dt">Empty</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Lock&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorLocked&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      ( <span class="st">&quot;DoorLocked&quot;</span> <span class="op">:@</span> <span class="st">&quot;Unlock&quot;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> <span class="st">&quot;DoorLocked&quot;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L53-L62">test/Examples/DoorWithPin.purs L53-L62</a></sup></p><!-- PD_END -->
+
+<p>The syntax <code>&gt;| "DoorClosed" &gt;| "DoorLocked"</code>
+indicates that the <code>Unlock</code> message from
+<code>DoorLocked</code> can transition to either state, depending on
+runtime conditions.</p>
+<p>The update function now has access to both the current state and the
+message data, allowing you to implement the conditional logic:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - update
+-->
+
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateGeneric <span class="op">@</span><span class="dt">DoorDSL</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Lock&quot;</span> \_ msg <span class="ot">-&gt;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { pin<span class="op">:</span> msg<span class="op">.</span>newPin }</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> <span class="op">@</span><span class="st">&quot;Unlock&quot;</span> \state msg <span class="ot">-&gt;</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">if</span> state<span class="op">.</span>pin <span class="op">==</span> msg<span class="op">.</span>enteredPin <span class="kw">then</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="kw">else</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { pin<span class="op">:</span> state<span class="op">.</span>pin }</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L80">test/Examples/DoorWithPin.purs L64-L80</a></sup></p><!-- PD_END -->
+
+<p>The match handlers receive both the current state and the message,
+giving you access to all the data needed to make runtime decisions. The
+type system still ensures that:</p>
+<ul>
+<li>🔴 You can only return states that are valid targets for that
+transition</li>
+<li>🔴 You handle all required transitions</li>
+<li>🟢 The conditional logic is type-safe</li>
+</ul>
+<h2 id="example3-door-with-pin-and-alarm">Example3: Door with Pin and
+Alarm</h2>
+<p>Full source code: <em><a
+href="test/Examples/DoorWithAlarm.purs">test/Examples/DoorWithAlarm.purs</a></em></p>
+<p>Now let's extend the door with PIN by adding an alarm system that
+triggers after too many failed unlock attempts. This introduces
+<strong>labeled conditional transitions</strong>, which allow you to
+document the different conditions that lead to different states.</p>
+<img src="graphs/door-with-alarm.svg" />
+
+<p>In this example, the <code>DoorLocked</code> state now tracks the
+number of failed unlock attempts. When unlocking:</p>
+<ul>
+<li>If the PIN is correct, the door transitions to
+<code>DoorClosed</code></li>
+<li>If the PIN is incorrect but attempts &lt; 3, it stays in
+<code>DoorLocked</code> with an incremented attempt counter</li>
+<li>If the PIN is incorrect and attempts &gt;= 3, it transitions to
+<code>Alarm</code> state</li>
+</ul>
+<p>The transition table shows all possible outcomes:</p>
+<!-- PD_START:raw
+filePath: graphs/door-with-alarm.html
+--><table><caption>Door with Alarm</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? TooManyAttempts</td><td>⟶</td><td>Alarm</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table><!-- PD_END -->
+
+<p>The PureScript types extend the previous example with an alarm state
+and attempt tracking:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - State
+  - Msg
+-->
+
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">DoorClosed</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">DoorLocked</span> {<span class="ot"> pin ::</span> <span class="dt">String</span>,<span class="ot"> attempts ::</span> <span class="dt">Int</span> }</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Alarm</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Close</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Open</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Lock</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Unlock</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L24-L34">test/Examples/DoorWithAlarm.purs L24-L34</a></sup></p><!-- PD_END -->
+
+<h3 id="the-classic-approach-2">The Classic Approach</h3>
+<p>The classic update function now handles the attempt counter and alarm
+condition:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - updateClassic
+-->
+
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ot">updateClassic ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>updateClassic state msg <span class="ot">=</span> <span class="kw">case</span> state, msg <span class="kw">of</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Lock</span> { newPin } <span class="ot">-&gt;</span> <span class="dt">DoorLocked</span> { pin<span class="op">:</span> newPin, attempts<span class="op">:</span> <span class="dv">0</span> }</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorLocked</span> { pin, attempts }, <span class="dt">Unlock</span> { enteredPin } <span class="ot">-&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      pinCorrect <span class="ot">=</span> pin <span class="op">==</span> enteredPin</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      attemptsExceeded <span class="ot">=</span> attempts <span class="op">&gt;=</span> <span class="dv">3</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>      <span class="kw">case</span> pinCorrect, attemptsExceeded <span class="kw">of</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        true, _ <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        false, true <span class="ot">-&gt;</span> <span class="dt">DoorLocked</span> { pin, attempts<span class="op">:</span> attempts <span class="op">+</span> <span class="dv">1</span> }</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        false, false <span class="ot">-&gt;</span> <span class="dt">Alarm</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L40-L54">test/Examples/DoorWithAlarm.purs L40-L54</a></sup></p><!-- PD_END -->
+
+<h3 id="the-transit-approach-2">The Transit Approach</h3>
+<p>With transit, we use <strong>labeled conditional transitions</strong>
+to document the different conditions. The <code>:?</code> operator
+allows you to label each possible outcome:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - DoorDSL
+-->
+
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorDSL</span> <span class="ot">=</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span> <span class="op">$</span> <span class="dt">Empty</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Lock&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorLocked&quot;</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      ( <span class="st">&quot;DoorLocked&quot;</span> <span class="op">:@</span> <span class="st">&quot;Unlock&quot;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;PinCorrect&quot;</span> <span class="op">:?</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;PinIncorrect&quot;</span> <span class="op">:?</span> <span class="st">&quot;DoorLocked&quot;</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;TooManyAttempts&quot;</span> <span class="op">:?</span> <span class="st">&quot;Alarm&quot;</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>      )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L60-L70">test/Examples/DoorWithAlarm.purs L60-L70</a></sup></p><!-- PD_END -->
+
+<p>The syntax <code>("PinCorrect" :? "DoorClosed")</code> labels the
+transition path, making it clear in the specification what condition
+leads to which state. This is especially useful when you have multiple
+conditional transitions from the same state/message pair.</p>
+<p>The update function uses <code>returnVia</code> instead of
+<code>return</code> to specify which labeled path to take:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithAlarm.purs
+pick:
+  - update
+-->
+
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateGeneric <span class="op">@</span><span class="dt">DoorDSL</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Lock&quot;</span> \_ msg <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>      { pin<span class="op">:</span> msg<span class="op">.</span>newPin</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>      , attempts<span class="op">:</span> <span class="dv">0</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> <span class="op">@</span><span class="st">&quot;Unlock&quot;</span> \state msg <span class="ot">-&gt;</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        pinCorrect <span class="ot">=</span> state<span class="op">.</span>pin <span class="op">==</span> msg<span class="op">.</span>enteredPin</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        attemptsExceeded <span class="ot">=</span> state<span class="op">.</span>attempts <span class="op">&gt;=</span> <span class="dv">3</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>      <span class="kw">in</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">case</span> pinCorrect, attemptsExceeded <span class="kw">of</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>          true, _ <span class="ot">-&gt;</span> returnVia <span class="op">@</span><span class="st">&quot;PinCorrect&quot;</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>          false, true <span class="ot">-&gt;</span> returnVia <span class="op">@</span><span class="st">&quot;PinIncorrect&quot;</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>            { pin<span class="op">:</span> state<span class="op">.</span>pin</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>            , attempts<span class="op">:</span> state<span class="op">.</span>attempts <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>          false, false <span class="ot">-&gt;</span> returnVia <span class="op">@</span><span class="st">&quot;TooManyAttempts&quot;</span> <span class="op">@</span><span class="st">&quot;Alarm&quot;</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L72-L98">test/Examples/DoorWithAlarm.purs L72-L98</a></sup></p><!-- PD_END -->
+
+<p>The <code>returnVia</code> function takes a label (like
+<code>@"PinCorrect"</code>) and a target state. The type system ensures
+that:</p>
+<ul>
+<li>🔴 You can only use labels that are defined in the DSL
+specification</li>
+<li>🔴 Each label must map to the correct target state</li>
+<li>🟢 The labels make the code self-documenting—it's immediately clear
+which condition leads to which state</li>
+</ul>
+<p>Labeled transitions are particularly valuable when you have complex
+conditional logic with multiple possible outcomes, as they provide both
+type safety and clear documentation of the state machine's behavior.</p>
+<h2 id="type-signatures">Type signatures</h2>
+<p>Full source code: <em><a
+href="test/Examples/Signatures.purs">test/Examples/Signatures.purs</a></em></p>
+<p>This chapter demonstrates the type signatures that transit enforces
+for your update functions. To show these signatures without implementing
+the actual logic, we use an <code>unimplemented</code> helper function
+that satisfies the type checker:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Signatures.purs
+pick:
+  - unimplemented
+-->
+
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ot">unimplemented ::</span> <span class="kw">forall</span> a<span class="op">.</span> a</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>unimplemented <span class="ot">=</span> unsafeCoerce <span class="st">&quot;not yet implemented&quot;</span></span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs L15-L16</a></sup></p><!-- PD_END -->
+
+<p>The <code>update</code> function demonstrates the type signatures
+that transit enforces. The straightforward part is the
+<code>State</code> and <code>Msg</code> types—each match handler
+receives the exact state and message types for that transition. However,
+the return type is more complex: depending on the specification, a
+transition may allow multiple possible target states, so we need to
+return a subset of the state type.</p>
+<p>Unfortunately, PureScript's ADTs (Algebraic Data Types) don't allow
+expressing a subset of cases from a union type. This is where
+<code>Variant</code> comes in—it's perfect for representing a subset of
+cases from a union type. Each match handler must return a
+<code>Variant</code> type that precisely matches the possible target
+states defined in the DSL specification.</p>
+<p>This approach requires internal conversion between ADT and
+<code>Variant</code> representations. If you'd like to avoid this
+conversion overhead, you can define your <code>State</code> and
+<code>Msg</code> types as <code>Variant</code> directly from the start,
+as shown in the next chapter.</p>
+<!-- PD_START:purs
+filePath: test/Examples/Signatures.purs
+pick:
+  - update
+-->
+
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateGeneric <span class="op">@</span><span class="dt">DoorDSL</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      ( \(<span class="ot">state ::</span> <span class="dt">Unit</span>) (<span class="ot">msg ::</span> <span class="dt">Unit</span>) <span class="ot">-&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>          unimplemented</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="ot">            ::</span> <span class="dt">Variant</span> (<span class="st">&quot;DoorClosed&quot;</span><span class="ot"> ::</span> <span class="dt">ReturnState</span> <span class="dt">Unit</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>      ( \(<span class="ot">state ::</span> <span class="dt">Unit</span>) (<span class="ot">msg ::</span> <span class="dt">Unit</span>) <span class="ot">-&gt;</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>          unimplemented</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="ot">            ::</span> <span class="dt">Variant</span> (<span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> <span class="dt">ReturnState</span> <span class="dt">Unit</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Lock&quot;</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>      ( \(<span class="ot">state ::</span> <span class="dt">Unit</span>) (<span class="ot">msg ::</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }) <span class="ot">-&gt;</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>          unimplemented</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="ot">            ::</span> <span class="dt">Variant</span> (<span class="st">&quot;DoorLocked&quot;</span><span class="ot"> ::</span> <span class="dt">ReturnState</span> {<span class="ot"> attempts ::</span> <span class="dt">Int</span>,<span class="ot"> pin ::</span> <span class="dt">String</span> })</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> <span class="op">@</span><span class="st">&quot;Unlock&quot;</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>      ( \(<span class="ot">state ::</span> {<span class="ot"> attempts ::</span> <span class="dt">Int</span>,<span class="ot"> pin ::</span> <span class="dt">String</span> }) (<span class="ot">msg ::</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }) <span class="ot">-&gt;</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>          unimplemented</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="ot">            ::</span> <span class="dt">Variant</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>                 ( <span class="st">&quot;Alarm&quot;</span><span class="ot"> ::</span> <span class="dt">ReturnStateVia</span> <span class="st">&quot;TooManyAttempts&quot;</span> <span class="dt">Unit</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>                 , <span class="st">&quot;DoorClosed&quot;</span><span class="ot"> ::</span> <span class="dt">ReturnStateVia</span> <span class="st">&quot;PinCorrect&quot;</span> <span class="dt">Unit</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>                 , <span class="st">&quot;DoorLocked&quot;</span><span class="ot"> ::</span> <span class="dt">ReturnStateVia</span> <span class="st">&quot;PinIncorrect&quot;</span> {<span class="ot"> attempts ::</span> <span class="dt">Int</span>,<span class="ot"> pin ::</span> <span class="dt">String</span> }</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L47">test/Examples/Signatures.purs L18-L47</a></sup></p><!-- PD_END -->
+
+<h2 id="variants">Variants</h2>
+<p>Full source code: <em><a
+href="test/Examples/Variants.purs">test/Examples/Variants.purs</a></em></p>
+<p>Instead of using ADTs for <code>State</code> and <code>Msg</code>,
+you can define them directly as <code>Variant</code> types. This
+eliminates the conversion overhead between ADT and <code>Variant</code>
+representations, and you use <code>mkUpdate</code> instead of
+<code>mkUpdateGeneric</code>:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Variants.purs
+pick:
+  - State
+  - Msg
+  - update
+-->
+
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> <span class="dt">Unit</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;DoorClosed&quot;</span><span class="ot"> ::</span> <span class="dt">Unit</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;DoorLocked&quot;</span><span class="ot"> ::</span> {<span class="ot"> pin ::</span> <span class="dt">String</span> }</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;Close&quot;</span><span class="ot"> ::</span> <span class="dt">Unit</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Open&quot;</span><span class="ot"> ::</span> <span class="dt">Unit</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Lock&quot;</span><span class="ot"> ::</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Unlock&quot;</span><span class="ot"> ::</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorDSL</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Lock&quot;</span> \_ msg <span class="ot">-&gt;</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { pin<span class="op">:</span> msg<span class="op">.</span>newPin }</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> <span class="op">@</span><span class="st">&quot;Unlock&quot;</span> \state msg <span class="ot">-&gt;</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>      <span class="kw">if</span> state<span class="op">.</span>pin <span class="op">==</span> msg<span class="op">.</span>enteredPin <span class="kw">then</span></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">else</span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { pin<span class="op">:</span> state<span class="op">.</span>pin }</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs L17-L76</a></sup></p><!-- PD_END -->
+
+<h2 id="monadic-update-functions">Monadic update functions</h2>
+<p>Full source code: <em><a
+href="test/Examples/Monadic.purs">test/Examples/Monadic.purs</a></em></p>
+<p>So far, all our examples have used pure update functions with the
+type signature <code>State -&gt; Msg -&gt; State</code>. However,
+sometimes you need to perform side effects during state transitions—such
+as logging, making HTTP requests, or interacting with external
+systems.</p>
+<p>For these cases, transit provides <code>mkUpdateGenericM</code>,
+which creates update functions that operate in a monadic context. The
+type signature becomes <code>State -&gt; Msg -&gt; m State</code>, where
+<code>m</code> is any <code>Monad</code> (commonly <code>Effect</code>,
+<code>Aff</code>, or <code>ReaderT</code>).</p>
+<p>The key differences from pure update functions are:</p>
+<ol type="1">
+<li><strong>Use <code>mkUpdateGenericM</code> instead of
+<code>mkUpdateGeneric</code></strong> - This tells transit you want a
+monadic update function</li>
+<li><strong>Use <code>matchM</code> instead of
+<code>match</code></strong> - This allows your handlers to return values
+in the monadic context</li>
+<li><strong>Type signature includes the monad</strong> - Instead of
+<code>State -&gt; Msg -&gt; State</code>, you get
+<code>State -&gt; Msg -&gt; m State</code></li>
+</ol>
+<p>Here's an example that adds logging to state transitions:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Monadic.purs
+pick:
+  - update
+-->
+
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">Effect</span> <span class="dt">State</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateGenericM <span class="op">@</span><span class="dt">DoorDSL</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  ( matchM <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>      Console.log <span class="st">&quot;You just closed the door&quot;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  ( matchM <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="kw">do</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      Console.log <span class="st">&quot;You just opened the door&quot;</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p><!-- PD_END -->
+
+<p>Each handler can now perform side effects (like logging) before
+returning the new state. The <code>return</code> function still works
+the same way—you wrap your state value with it, and then wrap that in
+<code>pure</code> to lift it into the monadic context.</p>
+<h2 id="example-4-seven-bridges-of-königsberg">Example 4: Seven Bridges
+of Königsberg</h2>
+<p>Full source code: <em><a
+href="test/Examples/BridgesKoenigsberg.purs">test/Examples/BridgesKoenigsberg.purs</a></em></p>
+<p>So far, we've seen how transit helps you build type-safe state
+machines and generate state diagrams and transition tables. But the
+power of transit extends far beyond documentation generation. The
+reflected data structure—the term-level representation of your
+type-level DSL specification—can be converted into a general-purpose
+graph data structure, enabling sophisticated graph analysis.</p>
+<p>This example demonstrates this capability using the famous <a
+href="https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg">Seven
+Bridges of Königsberg</a> problem. In 1736, the mathematician Leonhard
+Euler was asked whether it was possible to walk through the city of
+Königsberg (now Kaliningrad) crossing each of its seven bridges exactly
+once and returning to the starting point. Euler's solution to this
+problem laid the foundation for graph theory.</p>
+<p>The problem can be modeled as a graph where:</p>
+<ul>
+<li><strong>Nodes</strong> represent the four land areas (A, B, C, and
+D)</li>
+<li><strong>Edges</strong> represent the seven bridges connecting
+them</li>
+</ul>
+<img src="assets/bridges.png" />
+
+<p>While transit is designed for directed state machines, we can model
+an undirected graph by defining bidirectional transitions for each
+bridge. The renderer can then summarize these complementary edges into a
+single undirected edge for visualization. Notice how each bridge has two
+transitions—one in each direction:</p>
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - State
+  - Msg
+-->
+
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">LandA</span> <span class="op">|</span> <span class="dt">LandB</span> <span class="op">|</span> <span class="dt">LandC</span> <span class="op">|</span> <span class="dt">LandD</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Cross_a</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Cross_b</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Cross_c</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Cross_d</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Cross_e</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Cross_f</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Cross_g</span></span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L37">test/Examples/BridgesKoenigsberg.purs L28-L37</a></sup></p><!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - BridgesTransitions
+-->
+
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">BridgesTransitions</span> <span class="ot">=</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span> <span class="op">$</span> <span class="dt">Empty</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandA&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandB&quot;</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandB&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandA&quot;</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandA&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandB&quot;</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandB&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandA&quot;</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandA&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandC&quot;</span>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandC&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandA&quot;</span>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandA&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandC&quot;</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandC&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandA&quot;</span>)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandA&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandD&quot;</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandD&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandA&quot;</span>)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandB&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandD&quot;</span>)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandD&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandB&quot;</span>)</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandC&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandD&quot;</span>)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;LandD&quot;</span> <span class="op">:@</span> <span class="st">&quot;Cross_g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;LandC&quot;</span>)</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L69-L90">test/Examples/BridgesKoenigsberg.purs L69-L90</a></sup></p><!-- PD_END -->
+
+<!-- PD_START:raw
+filePath: graphs/bridges-koenigsberg.html
+--><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
+
+<p>The transition table shows the undirected nature of the graph—each
+bridge can be crossed in both directions. When generating the
+visualization, the renderer summarizes these bidirectional edges into a
+single undirected edge:</p>
+<img src="graphs/bridges-koenigsberg.svg" />
+
+<h3 id="graph-analysis">Graph Analysis</h3>
+<p>The real power of transit becomes apparent when we convert the
+reflected data structure into a general-purpose graph. Using
+<code>mkStateGraph</code>, we transform the transit specification into a
+<code>StateGraph</code>—a specialized <code>Graph</code> type configured
+with edge and node labels suitable for state machine analysis.</p>
+<p>Once we have this graph data structure, we can perform sophisticated
+analysis using standard graph algorithms. For the Seven Bridges problem,
+we want to determine if the graph has an <strong>Eulerian
+circuit</strong> (a path that visits every edge exactly once and returns
+to the starting point) or an <strong>Eulerian trail</strong> (a path
+that visits every edge exactly once but doesn't necessarily return to
+the start).</p>
+<p>Euler's theorem states that:</p>
+<ul>
+<li>An undirected graph has an Eulerian circuit if and only if it is
+connected and has zero vertices of odd degree</li>
+<li>An undirected graph has an Eulerian trail if and only if it is
+connected and has exactly zero or two vertices of odd degree</li>
+</ul>
+<p>We can check these conditions using helper functions from the
+<code>Test.Examples.Common</code> module:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - hasEulerCircle
+  - hasEulerTrail
+  - countOddOutgoingEdges
+-->
+
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ot">hasEulerCircle ::</span> <span class="kw">forall</span> e n<span class="op">.</span> <span class="dt">Ord</span> n <span class="ot">=&gt;</span> <span class="dt">Ord</span> e <span class="ot">=&gt;</span> <span class="dt">Graph</span> e n <span class="ot">-&gt;</span> <span class="dt">Boolean</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>hasEulerCircle g <span class="ot">=</span> true</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">&amp;&amp;</span> Graph.isUndirected g</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">&amp;&amp;</span> countOddOutgoingEdges g <span class="op">==</span> <span class="dv">0</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="ot">hasEulerTrail ::</span> <span class="kw">forall</span> e n<span class="op">.</span> <span class="dt">Ord</span> n <span class="ot">=&gt;</span> <span class="dt">Ord</span> e <span class="ot">=&gt;</span> <span class="dt">Graph</span> e n <span class="ot">-&gt;</span> <span class="dt">Boolean</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>hasEulerTrail g <span class="ot">=</span> true</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">&amp;&amp;</span> Graph.isUndirected g</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">&amp;&amp;</span> (countOddOutgoingEdges g <span class="op">==</span> <span class="dv">0</span> <span class="op">||</span> countOddOutgoingEdges g <span class="op">==</span> <span class="dv">2</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="ot">countOddOutgoingEdges ::</span> <span class="kw">forall</span> e n<span class="op">.</span> <span class="dt">Ord</span> n <span class="ot">=&gt;</span> <span class="dt">Ord</span> e <span class="ot">=&gt;</span> <span class="dt">Graph</span> e n <span class="ot">-&gt;</span> <span class="dt">Int</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>countOddOutgoingEdges g <span class="ot">=</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    nodes <span class="ot">=</span> Graph.getNodes g</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    Array.length <span class="op">$</span> Array.filter</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>      (\node <span class="ot">-&gt;</span> <span class="dt">Int</span><span class="op">.</span><span class="fu">odd</span> <span class="op">$</span> Set.size (Graph.getOutgoingEdges node g))</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>      (Set.toUnfoldable nodes)</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L23-L40">test/Examples/Common.purs L23-L40</a></sup></p><!-- PD_END -->
+
+<p>To perform the analysis, we convert the reflected transit
+specification into a graph and then check its properties:</p>
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - spec
+  - main
+-->
+
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  describe <span class="st">&quot;..&quot;</span> <span class="kw">do</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    it <span class="st">&quot;...&quot;</span> <span class="kw">do</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">BridgesTransitions</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> graph <span class="ot">=</span> mkStateGraph transit</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>      Set.size (Graph.getOutgoingEdges <span class="st">&quot;LandA&quot;</span> graph) <span class="ot">`shouldEqual`</span> <span class="dv">5</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>      Set.size (Graph.getOutgoingEdges <span class="st">&quot;LandB&quot;</span> graph) <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>      Set.size (Graph.getOutgoingEdges <span class="st">&quot;LandC&quot;</span> graph) <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>      Set.size (Graph.getOutgoingEdges <span class="st">&quot;LandD&quot;</span> graph) <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>      hasEulerCircle graph <span class="ot">`shouldEqual`</span> false</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>      hasEulerTrail graph <span class="ot">`shouldEqual`</span> false</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">BridgesTransitions</span>)</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;graphs/bridges-koenigsberg.dot&quot;</span> transit _</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    { useUndirectedEdges <span class="ot">=</span> true }</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  TransitTable.writeToFile <span class="st">&quot;graphs/bridges-koenigsberg.html&quot;</span> transit _</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    { useUndirectedEdges <span class="ot">=</span> true }</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L145">test/Examples/BridgesKoenigsberg.purs L119-L145</a></sup></p><!-- PD_END -->
+
+<p>The key steps are:</p>
+<ol type="1">
+<li><strong>Reflect the type-level specification</strong>:
+<code>reflectType (Proxy @BridgesTransitions)</code> converts the
+type-level DSL to a term-level representation</li>
+<li><strong>Convert to a graph</strong>:
+<code>mkStateGraph transit</code> transforms the transit specification
+into a <code>StateGraph</code>—a general-purpose graph data
+structure</li>
+<li><strong>Perform analysis</strong>: Use graph analysis functions like
+<code>hasEulerCircle</code> and <code>hasEulerTrail</code> to check
+properties</li>
+</ol>
+<p>These functions check whether the graph is undirected and count how
+many vertices have an odd number of outgoing edges. For the Seven
+Bridges of Königsberg:</p>
+<ul>
+<li><strong>LandA</strong> has 5 bridges (odd)</li>
+<li><strong>LandB</strong> has 3 bridges (odd)</li>
+<li><strong>LandC</strong> has 3 bridges (odd)</li>
+<li><strong>LandD</strong> has 3 bridges (odd)</li>
+</ul>
+<p>Since all four vertices have an odd degree, the graph has <strong>4
+vertices with odd degree</strong>. According to Euler's theorem, this
+means:</p>
+<ul>
+<li>❌ The graph does <strong>not</strong> have an Eulerian circuit
+(would require 0 odd-degree vertices)</li>
+<li>❌ The graph does <strong>not</strong> have an Eulerian trail (would
+require 0 or 2 odd-degree vertices)</li>
+</ul>
+<p>This confirms Euler's original conclusion: it's impossible to walk
+through Königsberg crossing each bridge exactly once.</p>
+<p>This example demonstrates that transit's value extends far beyond
+state machine documentation. By reflecting the type-level specification
+to a term-level graph data structure, you gain access to a rich
+ecosystem of graph algorithms and analysis tools. The same DSL that
+ensures compile-time correctness for your state transitions can also
+power runtime graph analysis, pathfinding, cycle detection, and
+more.</p>
+<p>In the next example, we'll see a graph that <strong>does</strong>
+have an Eulerian trail, demonstrating how transit can help verify and
+understand graph properties beyond simple state machines.</p>
+<h2 id="example-5-this-is-the-house-of-santa-claus">Example 5: This is
+the house of Santa Claus</h2>
+<p>Full source code: <em><a
+href="test/Examples/HouseOfSantaClaus.purs">test/Examples/HouseOfSantaClaus.purs</a></em></p>
+<p>[AI: in german, this is the house of Santa Claus, more common, thus
+explain]</p>
+<img src="assets/das-haus-vom-nikolaus-solution.webp" />
+
+<table>
+  <tr>
+    <th>Syllable</th>
+    <th>German</th>
+    <th>English</th>
+  </tr>
+  <tr><td>1</td><td>das</td> <td>This</td></tr>
+  <tr><td>2</td><td>ist</td> <td>is</td></tr>
+  <tr><td>3</td><td>das</td> <td>the</td></tr>
+  <tr><td>4</td><td>Haus</td> <td>house</td></tr>
+  <tr><td>5</td><td>vom</td> <td>of</td></tr>
+  <tr><td>6</td><td>Ni-</td> <td>San-</td></tr>
+  <tr><td>7</td><td>ko-</td> <td>ta</td></tr>
+  <tr><td>8</td><td>laus</td> <td>Claus</td></tr>
+</table>
+
+<!-- PD_START:purs
+filePath: test/Examples/HouseOfSantaClaus.purs
+pick:
+  - TransitSantaClaus
+-->
+
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">TransitSantaClaus</span> <span class="ot">=</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span> <span class="op">$</span> <span class="dt">Empty</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_1&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_2&quot;</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_2&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_1&quot;</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_2&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_3&quot;</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_3&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_2&quot;</span>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_3&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_5&quot;</span>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_5&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_3&quot;</span>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_5&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_4&quot;</span>)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_4&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_5&quot;</span>)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_4&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_1&quot;</span>)</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_1&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_4&quot;</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_1&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_3&quot;</span>)</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_3&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_1&quot;</span>)</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_2&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_4&quot;</span>)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_4&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_2&quot;</span>)</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_3&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_h&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_4&quot;</span>)</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;N_4&quot;</span> <span class="op">:@</span> <span class="st">&quot;E_h&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;N_3&quot;</span>)</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L79-L103">test/Examples/HouseOfSantaClaus.purs L79-L103</a></sup></p><!-- PD_END -->
+
+<!-- PD_START:raw
+filePath: graphs/house-of-santa-claus.html
+--><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
+
+<img src="graphs/house-of-santa-claus.svg"  />
+
+<!-- PD_START:purs
+filePath: test/Examples/HouseOfSantaClaus.purs
+pick:
+  - spec
+  - main
+-->
+
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  describe <span class="st">&quot;House of Santa Claus&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    it <span class="st">&quot;should have 8 states&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">TransitSantaClaus</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> graph <span class="ot">=</span> mkStateGraph transit</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span> walk <span class="ot">=</span> [ <span class="dt">E_f</span>, <span class="dt">E_h</span>, <span class="dt">E_g</span>, <span class="dt">E_a</span>, <span class="dt">E_e</span>, <span class="dt">E_d</span>, <span class="dt">E_c</span>, <span class="dt">E_b</span> ]</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>      Array.length (Array.nub walk) <span class="ot">`shouldEqual`</span> <span class="dv">8</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">foldl</span> update <span class="dt">N_1</span> walk <span class="ot">`shouldEqual`</span> <span class="dt">N_2</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>      hasEulerCircle graph <span class="ot">`shouldEqual`</span> false</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>      hasEulerTrail graph <span class="ot">`shouldEqual`</span> true</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> unit</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    describe <span class="st">&quot;should follow the walk&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>        initState <span class="ot">=</span> <span class="dt">N_1</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>        walk <span class="ot">=</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>          [ { msg<span class="op">:</span> <span class="dt">E_f</span>, state<span class="op">:</span> <span class="dt">N_3</span> }</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_h</span>, state<span class="op">:</span> <span class="dt">N_4</span> }</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_g</span>, state<span class="op">:</span> <span class="dt">N_2</span> }</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_a</span>, state<span class="op">:</span> <span class="dt">N_1</span> }</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_e</span>, state<span class="op">:</span> <span class="dt">N_4</span> }</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_d</span>, state<span class="op">:</span> <span class="dt">N_5</span> }</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_c</span>, state<span class="op">:</span> <span class="dt">N_3</span> }</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>          , { msg<span class="op">:</span> <span class="dt">E_b</span>, state<span class="op">:</span> <span class="dt">N_2</span> }</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>          ]</span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>        msgs <span class="ot">=</span> <span class="fu">map</span> _<span class="op">.</span>msg walk</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>        expectedStates <span class="ot">=</span> <span class="fu">map</span> _<span class="op">.</span>state walk</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>      describe <span class="st">&quot;classic update&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>        it <span class="st">&quot;should follow the walk&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>          <span class="kw">let</span> actualStates <span class="ot">=</span> <span class="fu">scanl</span> updateClassic initState msgs</span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>          actualStates <span class="ot">`shouldEqual`</span> expectedStates</span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>      describe <span class="st">&quot;transit update&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>        it <span class="st">&quot;should follow the walk&quot;</span> <span class="kw">do</span></span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>          <span class="kw">let</span> actualStates <span class="ot">=</span> <span class="fu">scanl</span> update initState msgs</span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>          actualStates <span class="ot">`shouldEqual`</span> expectedStates</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">TransitSantaClaus</span>)</span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;graphs/house-of-santa-claus.dot&quot;</span> transit _</span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a>    { useUndirectedEdges <span class="ot">=</span> true</span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>    , nodeAttrsRaw <span class="ot">=</span> <span class="dt">Just</span> \node <span class="ot">-&gt;</span> <span class="kw">case</span> node <span class="kw">of</span></span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;N_1&quot;</span> <span class="ot">-&gt;</span> <span class="st">&quot;pos=\&quot;0,0!\&quot;&quot;</span></span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;N_2&quot;</span> <span class="ot">-&gt;</span> <span class="st">&quot;pos=\&quot;2,0!\&quot;&quot;</span></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;N_3&quot;</span> <span class="ot">-&gt;</span> <span class="st">&quot;pos=\&quot;2,2!\&quot;&quot;</span></span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;N_4&quot;</span> <span class="ot">-&gt;</span> <span class="st">&quot;pos=\&quot;0,2!\&quot;&quot;</span></span>
+<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;N_5&quot;</span> <span class="ot">-&gt;</span> <span class="st">&quot;pos=\&quot;1,3!\&quot;&quot;</span></span>
+<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a>        _ <span class="ot">-&gt;</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a>    , globalAttrsRaw <span class="ot">=</span> <span class="dt">Just</span> <span class="st">&quot;layout=neato&quot;</span></span>
+<span id="cb30-62"><a href="#cb30-62" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb30-63"><a href="#cb30-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a>  TransitTable.writeToFile <span class="st">&quot;graphs/house-of-santa-claus.html&quot;</span> transit _</span>
+<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a>    { useUndirectedEdges <span class="ot">=</span> true }</span></code></pre></div>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L135-L203">test/Examples/HouseOfSantaClaus.purs L135-L203</a></sup></p><!-- PD_END --></article>
+  </body>
+</html>

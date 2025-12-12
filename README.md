@@ -1,7 +1,7 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.png">
-  <img alt="State diagram" src="assets/logo-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
+  <img alt="Transit logo" src="assets/logo-light.svg">
 </picture>
 
 Type-Safe State Machines.
@@ -78,7 +78,11 @@ Full source code: _[test/Examples/Door.purs](test/Examples/Door.purs)_
 
 Let's start with a simple door state machine. Here's its state diagram:
 
-<img src="graphs/door.svg" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/door.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/door.svg">
+  <img alt="Door state diagram" src="graphs/door.svg">
+</picture>
 
 This state machine has two states (`DoorOpen` and `DoorClosed`) and two messages (`Close` and `Open`). The initial state is `DoorOpen`, indicated by the grey arrow pointing to it.
 
@@ -103,8 +107,6 @@ data State = DoorOpen | DoorClosed
 data Msg = Close | Open
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs L26-L28</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
@@ -124,8 +126,6 @@ updateClassic state msg = case state, msg of
   DoorClosed, Open -> DoorOpen
   _, _ -> state
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs L34-L38</a></sup></p><!-- PD_END -->
 
@@ -152,8 +152,6 @@ type DoorDSL =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs L50-L53</a></sup></p><!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
@@ -172,8 +170,6 @@ update = mkUpdateGeneric @DoorDSL
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs L55-L58</a></sup></p><!-- PD_END -->
 
@@ -227,8 +223,6 @@ spec1 = describe "should follow the walk" do
       actualFinalState `shouldEqual` expectedFinalState
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L64-L78">test/Examples/Door.purs L64-L78</a></sup></p><!-- PD_END -->
 
 This is not perfect yet. Because we only validate the final state. Instead we should check each intermediate state as well.
@@ -267,8 +261,6 @@ spec2 = describe "" do
       actualStates `shouldEqual` expectedStates
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L80-L103">test/Examples/Door.purs L80-L103</a></sup></p><!-- PD_END -->
 
 Now we can use the `checkWalk` function to test the state machine:
@@ -286,8 +278,6 @@ spec = do
     spec1
     spec2
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L105-L109">test/Examples/Door.purs L105-L109</a></sup></p><!-- PD_END -->
 
@@ -314,8 +304,6 @@ main = do
   TransitGraphviz.writeToFile "graphs/door.dot" transit _
     { title = "Door" }
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L11-L17">test/Examples/GenerateStateDiagrams.purs L11-L17</a></sup></p><!-- PD_END -->
 
@@ -361,8 +349,6 @@ main = do
   TransitTable.writeToFile "graphs/door.html" transit _
     { title = "Door" }
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L11-L17">test/Examples/GenerateTransitionTables.purs L11-L17</a></sup></p><!-- PD_END -->
 
@@ -412,8 +398,6 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L22-L31">test/Examples/DoorWithPin.purs L22-L31</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
@@ -439,8 +423,6 @@ updateClassic state msg = case state, msg of
       DoorLocked { pin }
   _, _ -> state
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L37-L47">test/Examples/DoorWithPin.purs L37-L47</a></sup></p><!-- PD_END -->
 
@@ -470,8 +452,6 @@ type DoorDSL =
           >| "DoorLocked"
       )
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L53-L62">test/Examples/DoorWithPin.purs L53-L62</a></sup></p><!-- PD_END -->
 
@@ -504,8 +484,6 @@ update = mkUpdateGeneric @DoorDSL
         return @"DoorLocked" { pin: state.pin }
   )
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L80">test/Examples/DoorWithPin.purs L64-L80</a></sup></p><!-- PD_END -->
 
@@ -558,8 +536,6 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L24-L34">test/Examples/DoorWithAlarm.purs L24-L34</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
@@ -590,8 +566,6 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L40-L54">test/Examples/DoorWithAlarm.purs L40-L54</a></sup></p><!-- PD_END -->
 
 ### The Transit Approach
@@ -617,8 +591,6 @@ type DoorDSL =
           >| ("TooManyAttempts" :? "Alarm")
       )
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L60-L70">test/Examples/DoorWithAlarm.purs L60-L70</a></sup></p><!-- PD_END -->
 
@@ -662,8 +634,6 @@ update = mkUpdateGeneric @DoorDSL
   )
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithAlarm.purs#L72-L98">test/Examples/DoorWithAlarm.purs L72-L98</a></sup></p><!-- PD_END -->
 
 The `returnVia` function takes a label (like `@"PinCorrect"`) and a target state. The type system ensures that:
@@ -690,8 +660,6 @@ pick:
 unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs L15-L16</a></sup></p><!-- PD_END -->
 
@@ -739,8 +707,6 @@ update = mkUpdateGeneric @DoorDSL
       )
   )
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L47">test/Examples/Signatures.purs L18-L47</a></sup></p><!-- PD_END -->
 
@@ -791,8 +757,6 @@ update = mkUpdate @DoorDSL
   )
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs L17-L76</a></sup></p><!-- PD_END -->
 
 ## Monadic update functions
@@ -829,8 +793,6 @@ update = mkUpdateGenericM @DoorDSL
       pure $ return @"DoorOpen"
   )
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p><!-- PD_END -->
 
@@ -873,8 +835,6 @@ data Msg
   | Cross_g
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L37">test/Examples/BridgesKoenigsberg.purs L28-L37</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:purs
@@ -907,8 +867,6 @@ type BridgesTransitions =
     :* ("LandC" :@ "Cross_g" >| "LandD")
     :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L69-L90">test/Examples/BridgesKoenigsberg.purs L69-L90</a></sup></p><!-- PD_END -->
 
@@ -962,8 +920,6 @@ countOddOutgoingEdges g =
       (Set.toUnfoldable nodes)
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L23-L40">test/Examples/Common.purs L23-L40</a></sup></p><!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
@@ -1000,8 +956,6 @@ main = do
   TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L119-L145">test/Examples/BridgesKoenigsberg.purs L119-L145</a></sup></p><!-- PD_END -->
 
@@ -1087,8 +1041,6 @@ type TransitSantaClaus =
     :* ("N_4" :@ "E_h" >| "N_3")
 ```
 
-
-
 <p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L79-L103">test/Examples/HouseOfSantaClaus.purs L79-L103</a></sup></p><!-- PD_END -->
 
 <!-- PD_START:raw
@@ -1171,7 +1123,5 @@ main = do
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }
 ```
-
-
 
 <p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L135-L203">test/Examples/HouseOfSantaClaus.purs L135-L203</a></sup></p><!-- PD_END -->

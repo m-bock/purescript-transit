@@ -10,3 +10,10 @@ gen-doctoc:
 
 gen: 
     just gen-docs && just gen-svgs && just gen-doctoc
+
+preview:
+    pandoc README.md \
+        -f gfm \
+        -t html5 \
+        --template=gh-template.html \
+        -o preview.html
