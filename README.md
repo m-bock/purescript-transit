@@ -336,7 +336,11 @@ Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.pu
 
 Now let's add a PIN code to our door lock. This introduces two important concepts: **states with data** and **conditional transitions**.
 
-<img src="graphs/door-with-pin.svg" />
+<picture>
+  <source srcset="graphs/door-with-pin-light.svg" media="(prefers-color-scheme: light)">
+  <source srcset="graphs/door-with-pin-dark.svg" media="(prefers-color-scheme: dark)">
+  <img src="graphs/door-with-pin.svg" alt="Door with Pin">
+</picture>
 
 In this example, the `DoorLocked` state stores a PIN code, and the `Unlock` message includes the entered PIN. The unlock operation can succeed (transitioning to `DoorClosed`) or fail (staying in `DoorLocked`), depending on whether the entered PIN matches the stored one.
 
@@ -372,7 +376,7 @@ data Msg
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L22-L31">test/Examples/DoorWithPin.purs L22-L31</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L23-L32">test/Examples/DoorWithPin.purs L23-L32</a></sup></p><!-- PD_END -->
 
 ### The Classic Approach
 
@@ -400,7 +404,7 @@ updateClassic state msg = case state, msg of
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L37-L47">test/Examples/DoorWithPin.purs L37-L47</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L38-L48">test/Examples/DoorWithPin.purs L38-L48</a></sup></p><!-- PD_END -->
 
 <p align="right">
   <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
@@ -431,7 +435,7 @@ type DoorTransit =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L53-L62">test/Examples/DoorWithPin.purs L53-L62</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L54-L63">test/Examples/DoorWithPin.purs L54-L63</a></sup></p><!-- PD_END -->
 
 The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
 
@@ -465,7 +469,7 @@ update = mkUpdateGeneric @DoorTransit
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L80">test/Examples/DoorWithPin.purs L64-L80</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L65-L81">test/Examples/DoorWithPin.purs L65-L81</a></sup></p><!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
 

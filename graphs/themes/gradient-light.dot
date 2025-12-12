@@ -3,8 +3,6 @@ digraph
 rankdir = "TD";fontname = "Arial";label = <<b>Gradient Light</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000"
 graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];
 SpringGreen [shape = "box", label = <<b>SpringGreen</b>>, fontsize = 12, style = "filled", fillcolor = "#e6e6e6", fontcolor = "#000000", color = "#ffffff", fontname = "Arial", labelloc = "c", penwidth = 1.0]
-__Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
-__Start__ -> SpringGreen [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
 SpringGreen -> LemonYellow [color = "#828282", fontcolor = "#000000", fontsize = 12, arrowsize = "0.7", label = <<b>MsgA</b>>, penwidth = 1.8]
 LemonYellow [shape = "box", label = <<b>LemonYellow</b>>, fontsize = 12, style = "filled", fillcolor = "#e6e6e6", fontcolor = "#000000", color = "#ffffff", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 LemonYellow -> OceanBlue [color = "#828282", fontcolor = "#000000", fontsize = 12, arrowsize = "0.7", label = <<b>MsgB</b>>, penwidth = 1.8]

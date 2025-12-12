@@ -36,7 +36,7 @@ mkGraphvizGraph options transit =
 mkStateSections :: TransitCore -> Options -> Int -> String -> Array D.Section
 mkStateSections transit options i stateName = join
   [ pure $ SecNode $ mkStateNode options colors stateName
-  , if i == 0 then
+  , if Array.elem stateName options.entryPoints then
       [ SecNode $ mkInitNode "__Start__"
       , SecEdge $ mkInitEdge "__Start__" stateName
       ]
@@ -194,6 +194,7 @@ type Options =
   , nodeAttrsRaw :: Maybe (String -> String)
   , useDecisionNodes :: Boolean
   , useUndirectedEdges :: Boolean
+  , entryPoints :: Array String
   }
 
 defaultOptions :: Options
@@ -204,6 +205,7 @@ defaultOptions =
   , nodeAttrsRaw: Nothing
   , useDecisionNodes: true
   , useUndirectedEdges: false
+  , entryPoints: []
   }
 
 writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit

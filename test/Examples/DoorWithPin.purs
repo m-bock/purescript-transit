@@ -5,11 +5,12 @@ import Prelude
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
-import Data.Traversable (scanl)
+import Data.Traversable (for_, scanl)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Type.Function (type ($))
@@ -83,62 +84,44 @@ update = mkUpdateGeneric @DoorTransit
 --- Tests
 --------------------------------------------------------------------------------
 
-initState :: State
-initState = DoorOpen
-
-walk :: Array { msg :: Msg, state :: State }
-walk =
-  [ { msg: Close
-    , state: DoorClosed
-    }
-  , { msg: Open
-    , state: DoorOpen
-    }
-  , { msg: Close
-    , state: DoorClosed
-    }
-  , { msg: Lock { newPin: "1234" }
-    , state: DoorLocked { pin: "1234" }
-    }
-  , { msg: Unlock { enteredPin: "abcd" }
-    , state: DoorLocked { pin: "1234" }
-    }
-  , { msg: Unlock { enteredPin: "1234" }
-    , state: DoorClosed
-    }
-  , { msg: Open
-    , state: DoorOpen
-    }
-  ]
-
-msgs :: Array Msg
-msgs = map _.msg walk
-
-expectedStates :: Array State
-expectedStates = map _.state walk
-
-spec1 :: Spec Unit
-spec1 = describe "classic update" do
-  it "should follow the walk" do
-    let
-      actualStates :: Array State
-      actualStates = scanl updateClassic initState msgs
-
-    actualStates `shouldEqual` expectedStates
-
-spec2 :: Spec Unit
-spec2 = describe "transit update" do
-  it "should follow the walk" do
-    let
-      actualStates :: Array State
-      actualStates = scanl update initState msgs
-    actualStates `shouldEqual` expectedStates
-
 spec :: Spec Unit
-spec = do
-  describe "Door with Pin" do
-    spec1
-    spec2
+spec = describe "" do
+  let
+
+    initState = DoorOpen
+
+    walk =
+      [ { msg: Close
+        , state: DoorClosed
+        }
+      , { msg: Open
+        , state: DoorOpen
+        }
+      , { msg: Close
+        , state: DoorClosed
+        }
+      , { msg: Lock { newPin: "1234" }
+        , state: DoorLocked { pin: "1234" }
+        }
+      , { msg: Unlock { enteredPin: "abcd" }
+        , state: DoorLocked { pin: "1234" }
+        }
+      , { msg: Unlock { enteredPin: "1234" }
+        , state: DoorClosed
+        }
+      , { msg: Open
+        , state: DoorOpen
+        }
+      ]
+
+    msgs = map _.msg walk
+    expectedStates = map _.state walk
+
+  for_ [ updateClassic, update ] \updateFn ->
+    it "should follow the walk" do
+      let
+        actualStates = scanl updateFn initState msgs
+      actualStates `shouldEqual` expectedStates
 
 --------------------------------------------------------------------------------
 --- State diagram generation
@@ -149,8 +132,16 @@ main = do
   let
     transit = reflectType (Proxy @DoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/door-with-pin.dot" transit _
-    { title = "Door with Pin" }
+  for_
+    [ { theme: themeHarmonyLight, file: "graphs/door-with-pin-light.dot" }
+    , { theme: themeHarmonyDark, file: "graphs/door-with-pin-dark.dot" }
+    ]
+    \opts ->
+      TransitGraphviz.writeToFile opts.file transit _
+        { title = "Door with Pin"
+        , theme = opts.theme
+        , entryPoints = [ "DoorOpen" ]
+        }
 
   TransitTable.writeToFile "graphs/door-with-pin.html" transit _
     { title = "Door with Pin" }
