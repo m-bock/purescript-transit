@@ -21,10 +21,11 @@ import Unsafe.Coerce (unsafeCoerce)
 
 toHtml :: Options -> TransitCore -> Html.Node
 toHtml options transit@(TransitCore matches) = Html.table []
-  [ Html.caption [] [ Html.text options.title ]
-  , Html.thead [] [ mkHeader ]
-  , Html.tbody [] $ Array.concatMap (mkMatch options transit) matches
-  ]
+  $ join
+      [ pure $ Html.caption [] [ Html.text options.title ]
+      , pure $ Html.thead [] [ mkHeader ]
+      , Array.concatMap (mkMatch options transit) matches
+      ]
 
 mkMatch :: Options -> TransitCore -> Match -> Array Html.Node
 mkMatch options transit (Match from msg returns) =
@@ -42,28 +43,32 @@ mkMatch options transit (Match from msg returns) =
 
 mkUndirectedRow :: Options -> String -> String -> String -> Html.Node
 mkUndirectedRow options fromState msg toState =
-  Html.tr []
-    [ Html.td [] [ Html.text fromState ]
-    , Html.td [] [ Html.text "⟵" ]
-    , Html.td [] [ Html.text msg ]
-    , Html.td [] [ Html.text "⟶" ]
-    , Html.td [] [ Html.text toState ]
+  Html.tbody []
+    [ Html.tr []
+        [ Html.td [] [ Html.text fromState ]
+        , Html.td [] [ Html.text "⟵" ]
+        , Html.td [] [ Html.text msg ]
+        , Html.td [] [ Html.text "⟶" ]
+        , Html.td [] [ Html.text toState ]
+        ]
     ]
 
 mkDirectedRow :: Options -> String -> String -> Return -> Html.Node
 mkDirectedRow options fromState msg ret =
-  Html.tr []
-    [ Html.td [] [ Html.text fromState ]
-    , Html.td [] [ Html.text "⟶" ]
-    , Html.td []
-        [ Html.text
-            ( case guard of
-                Just guard -> msg <> " ? " <> guard
-                Nothing -> msg
-            )
+  Html.tbody []
+    [ Html.tr []
+        [ Html.td [] [ Html.text fromState ]
+        , Html.td [] [ Html.text "⟶" ]
+        , Html.td []
+            [ Html.text
+                ( case guard of
+                    Just guard -> msg <> " ? " <> guard
+                    Nothing -> msg
+                )
+            ]
+        , Html.td [] [ Html.text "⟶" ]
+        , Html.td [] [ Html.text toState ]
         ]
-    , Html.td [] [ Html.text "⟶" ]
-    , Html.td [] [ Html.text toState ]
     ]
   where
   { toState, guard } = case ret of
@@ -74,7 +79,7 @@ mkHeader :: Html.Node
 mkHeader = Html.tr []
   [ Html.th [] [ Html.text "From State" ]
   , Html.th [] []
-  , Html.th [] [ Html.text "Message" ]
+  , Html.th [] [ Html.text "Transition" ]
   , Html.th [] []
   , Html.th [] [ Html.text "To State" ]
   ]
