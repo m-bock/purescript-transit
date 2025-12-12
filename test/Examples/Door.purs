@@ -14,6 +14,7 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Type.Function (type ($))
@@ -117,11 +118,20 @@ main = do
   let
     transit = reflectType (Proxy @DoorDSL)
 
-  TransitGraphviz.writeToFile "graphs/door.dot" transit _
-    { title = "Door" }
+    title = "Door State Machine"
+
+  TransitGraphviz.writeToFile "graphs/door-light.dot" transit _
+    { title = title
+    , theme = themeHarmonyLight
+    }
+
+  TransitGraphviz.writeToFile "graphs/door-dark.dot" transit _
+    { title = title
+    , theme = themeHarmonyDark
+    }
 
   TransitTable.writeToFile "graphs/door.html" transit _
-    { title = "Door" }
+    { title = title }
 
 --------------------------------------------------------------------------------
 --- Instances

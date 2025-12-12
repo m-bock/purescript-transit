@@ -9,11 +9,14 @@ gen-doctoc:
     npx doctoc --maxlevel 3 README.md
 
 gen: 
-    just gen-docs && just gen-svgs && just gen-doctoc
+    just gen-docs && just gen-svgs && just gen-doctoc && just gen-preview
 
-preview:
+gen-preview:
     pandoc README.md \
         -f gfm \
         -t html5 \
         --template=gh-template.html \
         -o preview.html
+
+dev:
+    ls README.md | entr just gen

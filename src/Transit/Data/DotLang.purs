@@ -27,6 +27,7 @@ module Transit.Data.DotLang
   , labelHtmlItalic
   , labelLocC
   , labelLocT
+  , margin
   , penWidth
   , rankDirTD
   , shapeBox
@@ -194,3 +195,6 @@ arrowTailNone = Attr "arrowtail" (Value "none")
 
 bgColor :: Color -> Attr
 bgColor color = Attr "bgcolor" (ValueColors [ color ])
+
+margin :: Number -> Attr
+margin size = Attr "margin" (ValueNumber size)

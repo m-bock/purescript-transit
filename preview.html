@@ -140,14 +140,12 @@ find a link to the complete source file(s) used in that example.</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">spago</span> install transit</span></code></pre></div>
 <h2 id="example1-door">Example1: Door</h2>
-<p>Full source code: <em><a
-href="test/Examples/Door.purs">test/Examples/Door.purs</a></em></p>
 <p>Let's start with a simple door state machine. Here's its state
 diagram:</p>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/door.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/door.svg">
-  <img alt="Door state diagram" src="graphs/door.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/door-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/door-light.svg">
+  <img alt="Door state diagram" src="graphs/door-light.svg">
 </picture>
 
 <p>This state machine has two states (<code>DoorOpen</code> and
@@ -157,7 +155,7 @@ indicated by the grey arrow pointing to it.</p>
 <p>Another way to represent this is a transition table:</p>
 <!-- PD_START:raw
 filePath: graphs/door.html
---><table><caption>Door</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
+--><table><caption>Door State Machine</caption><thead><tr><th>From State</th><th /><th>Message</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
 
 <p>In PureScript, we represent the states and messages with simple data
 types:</p>
@@ -172,7 +170,7 @@ pick:
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">DoorOpen</span> <span class="op">|</span> <span class="dt">DoorClosed</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Close</span> <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L26-L28">test/Examples/Door.purs L26-L28</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L27-L29">test/Examples/Door.purs L27-L29</a></sup></p><!-- PD_END -->
 
 <h3 id="the-classic-approach">The Classic Approach</h3>
 <p>The traditional way to implement state transitions is to write an
@@ -190,7 +188,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L34-L38">test/Examples/Door.purs L34-L38</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L35-L39">test/Examples/Door.purs L35-L39</a></sup></p><!-- PD_END -->
 
 <p>While this approach works, it has some drawbacks:</p>
 <ul>
@@ -213,7 +211,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span> <span class="op">$</span> <span class="dt">Empty</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs L50-L53</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L51-L54">test/Examples/Door.purs L51-L54</a></sup></p><!-- PD_END -->
 
 <p>This DSL syntax reads as: "From state <code>DoorOpen</code> on
 message <code>Close</code>, transition to state <code>DoorClosed</code>"
@@ -234,7 +232,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateGeneric <span class="op">@</span><span class="dt">DoorDSL</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L55-L58">test/Examples/Door.purs L55-L58</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L56-L59">test/Examples/Door.purs L56-L59</a></sup></p><!-- PD_END -->
 
 <p>Notice that the type signature is identical to the classic
 approach—<code>State -&gt; Msg -&gt; State</code>. The difference is
@@ -289,7 +287,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        actualFinalState <span class="ot">=</span> <span class="fu">foldl</span> updateFn initState msgs</span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      actualFinalState <span class="ot">`shouldEqual`</span> expectedFinalState</span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L64-L78">test/Examples/Door.purs L64-L78</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L65-L79">test/Examples/Door.purs L65-L79</a></sup></p><!-- PD_END -->
 
 <p>This is not perfect yet. Because we only validate the final state.
 Instead we should check each intermediate state as well. We'll use this
@@ -326,7 +324,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb7-
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        actualStates <span class="ot">=</span> <span class="fu">scanl</span> updateFn initState msgs</span>
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      actualStates <span class="ot">`shouldEqual`</span> expectedStates</span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L80-L103">test/Examples/Door.purs L80-L103</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L104">test/Examples/Door.purs L81-L104</a></sup></p><!-- PD_END -->
 
 <p>Now we can use the <code>checkWalk</code> function to test the state
 machine:</p>
@@ -342,7 +340,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb8-
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  describe <span class="st">&quot;Door&quot;</span> <span class="kw">do</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    spec1</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    spec2</span></code></pre></div>
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L105-L109">test/Examples/Door.purs L105-L109</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L106-L110">test/Examples/Door.purs L106-L110</a></sup></p><!-- PD_END -->
 
 <h3 id="generate-state-diagrams">Generate State Diagrams</h3>
 <p>Full source code: <em><a

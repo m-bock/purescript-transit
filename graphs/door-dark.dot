@@ -1,0 +1,10 @@
+digraph 
+{
+rankdir = "TD";fontname = "Arial";label = <<b>Door State Machine</b>>;labelloc = "t";fontsize = 12;bgcolor = "#141414";color = "#ffffff";fontcolor = "#ffffff"
+DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+__Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
+__Start__ -> DoorOpen [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]
+DoorOpen -> DoorClosed [color = "#a3e635", fontcolor = "#ccf190", fontsize = 12, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
+DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+DoorClosed -> DoorOpen [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
+}

@@ -101,6 +101,7 @@ mkGlobalAttrs options =
   , D.labelLocT
   , D.fontSize 12
   , D.bgColor options.theme.bgColor
+  , D.color options.theme.titleColor
   , D.fontColor options.theme.titleColor
   ]
 

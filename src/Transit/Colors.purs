@@ -154,77 +154,77 @@ mkDarkColorHarmony bc = case bc of
   OceanBlue -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SunsetOrange -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   VividRed -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   AquaBlue -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SpringGreen -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MintTeal -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SkyCyan -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   LemonYellow -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MagentaGlow -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   OliveGreen -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   CoralPink -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
@@ -264,7 +264,7 @@ themeHarmonyLight =
 
 themeHarmonyDark :: Theme
 themeHarmonyDark =
-  { bgColor: Color.rgb 0 0 0
+  { bgColor: Color.rgb 20 20 20
   , titleColor: Color.rgb 255 255 255
   , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 255 255 255
