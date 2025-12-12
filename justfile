@@ -15,7 +15,7 @@ gen-preview:
     pandoc README.md \
         --highlight-style=zenburn \
         --template=assets/gh-template.html \
-        -o assets/gh-preview.html
+        -o gh-preview.html
 
 dev:
     ls README.md | entr just gen

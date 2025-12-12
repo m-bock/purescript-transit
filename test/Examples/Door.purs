@@ -1,4 +1,4 @@
-module Test.Examples.Door (main, spec, DoorDSL, State(..), Msg(..)) where
+module Test.Examples.Door (main, spec, DoorTransit, State(..), Msg(..)) where
 
 import Prelude
 
@@ -29,7 +29,7 @@ data State = DoorOpen | DoorClosed
 data Msg = Close | Open
 
 --------------------------------------------------------------------------------
---- TraditionalUpdate
+--- Traditional Approach
 --------------------------------------------------------------------------------
 
 updateClassic :: State -> Msg -> State
@@ -38,23 +38,17 @@ updateClassic state msg = case state, msg of
   DoorClosed, Open -> DoorOpen
   _, _ -> state
 
-updateClassic_flawed :: State -> Msg -> State
-updateClassic_flawed state msg = case state, msg of
-  DoorOpen, Close -> DoorClosed
-  DoorClosed, Open -> DoorClosed
-  _, _ -> state
-
 --------------------------------------------------------------------------------
---- transit Approach
+--- Transit Approach
 --------------------------------------------------------------------------------
 
-type DoorDSL =
+type DoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
+update = mkUpdateGeneric @DoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
@@ -64,19 +58,12 @@ update = mkUpdateGeneric @DoorDSL
 
 spec1 :: Spec Unit
 spec1 = describe "should follow the walk" do
-  let
-    initState = DoorOpen
+  it "classic update" do
+    foldl update DoorOpen [ Close, Open, Close ]
+      `shouldEqual` DoorClosed
 
-    msgs =
-      [ Close, Open, Open, Close, Open, Close, Close ]
-
-    expectedFinalState = DoorClosed
-
-  for_ [ updateClassic, update ] \updateFn ->
-    it "should follow the walk" do
-      let
-        actualFinalState = foldl updateFn initState msgs
-      actualFinalState `shouldEqual` expectedFinalState
+    foldl updateClassic DoorOpen [ Close, Open, Close ]
+      `shouldEqual` DoorClosed
 
 spec2 :: Spec Unit
 spec2 = describe "" do
@@ -116,7 +103,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorDSL)
+    transit = reflectType (Proxy @DoorTransit)
 
     title = "Door State Machine"
 

@@ -1,4 +1,4 @@
-module Test.Examples.DoorWithAlarm (main, spec, DoorDSL, State(..), Msg(..)) where
+module Test.Examples.DoorWithAlarm (main, spec, DoorTransit, State(..), Msg(..)) where
 
 import Prelude
 
@@ -57,7 +57,7 @@ updateClassic state msg = case state, msg of
 --- transit Approach
 --------------------------------------------------------------------------------
 
-type DoorDSL =
+type DoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -70,7 +70,7 @@ type DoorDSL =
       )
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
+update = mkUpdateGeneric @DoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -112,7 +112,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorDSL)
+    transit = reflectType (Proxy @DoorTransit)
 
   TransitGraphviz.writeToFile "graphs/door-with-alarm.dot" transit _
     { title = "Door with Alarm" }

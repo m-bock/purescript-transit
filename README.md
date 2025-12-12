@@ -129,11 +129,11 @@ With the transit library, we take a different approach. First, we define a type-
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - DoorDSL
+  - DoorTransit
 -->
 
 ```purescript
-type DoorDSL =
+type DoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -141,7 +141,7 @@ type DoorDSL =
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L51-L54">test/Examples/Door.purs L51-L54</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L45-L48">test/Examples/Door.purs L45-L48</a></sup></p><!-- PD_END -->
 
 This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
 
@@ -155,14 +155,14 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
+update = mkUpdateGeneric @DoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L56-L59">test/Examples/Door.purs L56-L59</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L50-L53">test/Examples/Door.purs L50-L53</a></sup></p><!-- PD_END -->
 
 Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
 
@@ -199,24 +199,17 @@ pick:
 ```purescript
 spec1 :: Spec Unit
 spec1 = describe "should follow the walk" do
-  let
-    initState = DoorOpen
+  it "classic update" do
+    foldl update DoorOpen [ Close, Open, Close ]
+      `shouldEqual` DoorClosed
 
-    msgs =
-      [ Close, Open, Open, Close, Open, Close, Close ]
-
-    expectedFinalState = DoorClosed
-
-  for_ [ updateClassic, update ] \updateFn ->
-    it "should follow the walk" do
-      let
-        actualFinalState = foldl updateFn initState msgs
-      actualFinalState `shouldEqual` expectedFinalState
+    foldl updateClassic DoorOpen [ Close, Open, Close ]
+      `shouldEqual` DoorClosed
 ```
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L65-L79">test/Examples/Door.purs L65-L79</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L59-L66">test/Examples/Door.purs L59-L66</a></sup></p><!-- PD_END -->
 
 This is not perfect yet. Because we only validate the final state. Instead we should check each intermediate state as well.
 We'll use this helper function several times later. So let's also factor it out and make it work with any state and message types.
@@ -256,31 +249,9 @@ spec2 = describe "" do
 
 
 
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L81-L104">test/Examples/Door.purs L81-L104</a></sup></p><!-- PD_END -->
-
-Now we can use the `checkWalk` function to test the state machine:
-
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - spec
--->
-
-```purescript
-spec :: Spec Unit
-spec = do
-  describe "Door" do
-    spec1
-    spec2
-```
-
-
-
-<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L106-L110">test/Examples/Door.purs L106-L110</a></sup></p><!-- PD_END -->
+<p align="right"><sup>🗎 <a href="test/Examples/Door.purs#L68-L91">test/Examples/Door.purs L68-L91</a></sup></p><!-- PD_END -->
 
 ### Generate State Diagrams
-
-Full source code: _[test/Examples/GenerateStateDiagrams.purs](test/Examples/GenerateStateDiagrams.purs)_
 
 One of the key benefits of transit is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
 
@@ -296,7 +267,7 @@ pick:
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorDSL)
+    transit = reflectType (Proxy @DoorTransit)
 
   TransitGraphviz.writeToFile "graphs/door.dot" transit _
     { title = "Door" }
@@ -343,7 +314,7 @@ pick:
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorDSL)
+    transit = reflectType (Proxy @DoorTransit)
 
   TransitTable.writeToFile "graphs/door.html" transit _
     { title = "Door" }
@@ -442,11 +413,11 @@ In the DSL specification, we express conditional transitions by listing multiple
 <!-- PD_START:purs
 filePath: test/Examples/DoorWithPin.purs
 pick:
-  - DoorDSL
+  - DoorTransit
 -->
 
 ```purescript
-type DoorDSL =
+type DoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -474,7 +445,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
+update = mkUpdateGeneric @DoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -588,11 +559,11 @@ With transit, we use **labeled conditional transitions** to document the differe
 <!-- PD_START:purs
 filePath: test/Examples/DoorWithAlarm.purs
 pick:
-  - DoorDSL
+  - DoorTransit
 -->
 
 ```purescript
-type DoorDSL =
+type DoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -621,7 +592,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
+update = mkUpdateGeneric @DoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -696,7 +667,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorDSL
+update = mkUpdateGeneric @DoorTransit
   ( match @"DoorOpen" @"Close"
       ( \(state :: Unit) (msg :: Unit) ->
           unimplemented
@@ -760,7 +731,7 @@ type Msg = Variant
   )
 
 update :: State -> Msg -> State
-update = mkUpdate @DoorDSL
+update = mkUpdate @DoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -806,7 +777,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> Effect State
-update = mkUpdateGenericM @DoorDSL
+update = mkUpdateGenericM @DoorTransit
   ( matchM @"DoorOpen" @"Close" \_ _ -> do
       Console.log "You just closed the door"
       pure $ return @"DoorClosed"

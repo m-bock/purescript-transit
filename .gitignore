@@ -12,3 +12,4 @@ generated-docs/
 .spago
 .spec-results
 /tmp
+gh-preview.html

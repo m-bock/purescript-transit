@@ -7,7 +7,7 @@ import Data.Traversable (scanl)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Test.Examples.DoorWithPin (DoorDSL)
+import Test.Examples.DoorWithPin (DoorTransit)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (match, mkUpdate, return)
@@ -58,7 +58,7 @@ updateClassic state msg =
   ) state
 
 update :: State -> Msg -> State
-update = mkUpdate @DoorDSL
+update = mkUpdate @DoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
