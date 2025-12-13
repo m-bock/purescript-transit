@@ -4,12 +4,10 @@
   <img alt="Transit logo" src="assets/logo-light.svg">
 </picture>
 
-Type-Safe State Machines.
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Transit](#transit)
+- [Transit - Type-Safe State Machines](#transit---type-safe-state-machines)
   - [Introduction](#introduction)
     - [Key Features](#key-features)
     - [About This Documentation](#about-this-documentation)
@@ -34,9 +32,9 @@ Type-Safe State Machines.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Transit
+# Transit - Type-Safe State Machines
 
-Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time.
+Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time. With Transit, you define your state machine once using a type-level specification, and the compiler ensures your implementation matches that specification—eliminating bugs from invalid transitions, missing cases, or documentation drift.
 
 > If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, Transit follows a similar philosophy: just as Servant uses a REST API type-level specification to generate type-safe routing functions and OpenAPI documentation, Transit uses a state machine graph type-level specification to generate type-safe update functions and state diagrams.
 
@@ -141,7 +139,7 @@ type SimpleDoorTransit =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L45-L48">test/Examples/SimpleDoor.purs L45-L48</a></sup></p>
 <!-- PD_END -->
 
-This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` starts the list, and `:*` adds each transition.
+This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` constructor initializes an empty transition list, and `:*` is an infix operator that appends each transition to the list, building up the complete state machine specification.
 
 This type-level specification fully defines the state machine. Based on this spec, we can now create an update function that the compiler ensures only allows legal state transitions:
 
@@ -404,7 +402,7 @@ This generates an HTML file containing a table with columns for "From State", "M
 
 Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
 
-## Example2: Door with Pin
+## Example 2: Door with Pin
 
 Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
 
@@ -508,7 +506,7 @@ type DoorTransit =
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L54-L63">test/Examples/DoorWithPin.purs L54-L63</a></sup></p>
 <!-- PD_END -->
 
-The syntax `>| "DoorClosed" >| "DoorLocked"` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions.
+The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
 
 The update function now has access to both the current state and the message data, allowing you to implement the conditional logic:
 
@@ -548,6 +546,8 @@ The match handlers receive both the current state and the message, giving you ac
 - 🟢 The conditional logic is type-safe
 
 ### Type signatures
+
+Understanding the type signatures that transit enforces helps clarify how the type system ensures correctness. This section demonstrates the exact types that each match handler must satisfy, showing how transit uses `Variant` types to represent subsets of possible states.
 
 Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
 
@@ -807,8 +807,8 @@ pick:
 ```purescript
 spec :: Spec Unit
 spec = do
-  describe ".." do
-    it "..." do
+  describe "Seven Bridges of Königsberg" do
+    it "should verify graph properties and Eulerian path conditions" do
       let transit = reflectType (Proxy @BridgesTransitions)
       let graph = mkStateGraph transit
       Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
@@ -868,7 +868,7 @@ In the next example, we'll see a graph that **does** have an Eulerian trail, dem
 
 Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
-[AI: in german, this is the house of Santa Claus, more common, thus explain]
+This example uses "Das Haus vom Nikolaus" (The house of Santa Claus), a well-known German drawing puzzle. The challenge is to draw a house shape in one continuous stroke without lifting the pen and without retracing any line. In German-speaking countries, this puzzle is commonly associated with Saint Nicholas (Nikolaus), hence the name. The puzzle is equivalent to finding an Eulerian trail in the graph representing the house's edges.
 
 <img src="assets/das-haus-vom-nikolaus-solution.webp" />
 
