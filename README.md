@@ -720,7 +720,7 @@ The problem can be modeled as a graph where:
 - **Nodes** represent the four land areas (A, B, C, and D)
 - **Edges** represent the seven bridges connecting them
 
-<img src="assets/bridges.png" />
+<img src="assets/bridges.png" width="400" />
 
 While transit is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
 
@@ -744,7 +744,7 @@ data Msg
   | Cross_g
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L30-L39">test/Examples/BridgesKoenigsberg.purs L30-L39</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L32-L41">test/Examples/BridgesKoenigsberg.purs L32-L41</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -778,7 +778,7 @@ type BridgesKoenigsbergTransit =
     :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L71-L92">test/Examples/BridgesKoenigsberg.purs L71-L92</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L73-L94">test/Examples/BridgesKoenigsberg.purs L73-L94</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -851,6 +851,8 @@ pick:
 spec :: Spec Unit
 spec = do
   describe ".." do
+    it "should assert1" do
+      assert1
     it "..." do
       let transit = reflectType (Proxy @BridgesKoenigsbergTransit)
       let graph = mkStateGraph transit
@@ -880,7 +882,7 @@ main = do
     { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L121-L154">test/Examples/BridgesKoenigsberg.purs L121-L154</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L134-L169">test/Examples/BridgesKoenigsberg.purs L134-L169</a></sup></p>
 <!-- PD_END -->
 
 The key steps are:
