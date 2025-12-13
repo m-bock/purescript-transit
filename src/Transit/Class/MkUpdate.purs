@@ -1,23 +1,28 @@
 module Transit.Class.MkUpdate
   ( class MkUpdate
   , mkUpdate
+  , TransitError
   ) where
 
 import Prelude
 
+import Data.Either (Either(..))
 import Data.Tuple.Nested (type (/\), (/\))
+import Transit.Class.GetSubset (class GetSubset, getSubset)
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
-import Transit.Class.GetSubset (class GetSubset, getSubset)
 import Type.Data.List (type (:>), Nil')
 
+type TransitError state msg = state /\ msg
+
 class MkUpdate (spec :: TransitCoreTL) m impl msg state | spec msg state m -> impl where
-  mkUpdate :: impl -> state -> msg -> m state
+  mkUpdate :: impl -> state -> msg -> m (Either (TransitError state msg) state)
 
 data No = No
 
 instance (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
-  mkUpdate _ state _ = pure state
+  mkUpdate _ state msg = pure
+    (Left (state /\ msg))
 
 instance
   ( MatchBySym symStateIn state stateIn
@@ -35,7 +40,7 @@ instance
   where
   mkUpdate (MatchImpl fn /\ rest) state msg =
     matchBySym2 @symStateIn @symMsg
-      (\s m -> getSubset @returns <$> fn s m)
+      (\s m -> Right <$> (getSubset @returns <$> fn s m))
       (\_ -> mkUpdate @(MkTransitCoreTL rest1) rest state msg)
       state
       msg

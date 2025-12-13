@@ -1,10 +1,15 @@
 module Transit
   ( module Export
-  , mkUpdateGeneric
-  , mkUpdateGenericM
+  , mkUpdateEitherM
+  , mkUpdateEither
+  , mkUpdateM
+  , mkUpdate
   , match
   , matchM
-  , mkUpdate
+  , mkUpdateGenericEitherM
+  , mkUpdateGenericEither
+  , mkUpdateGenericM
+  , mkUpdateGeneric
   , return
   , returnVia
   , class Return
@@ -13,53 +18,146 @@ module Transit
 
 import Prelude
 
+import Data.Bifunctor (bimap)
+import Data.Either (Either, fromRight)
 import Data.Identity (Identity(..))
-import Data.Newtype (un)
 import Data.Symbol (class IsSymbol)
+import Data.Tuple.Nested ((/\))
 import Data.Variant (Variant)
 import Data.Variant as V
+import Prim.Coerce (class Coercible)
 import Prim.Row as Row
-import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
+import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
-import Transit.DSL as Export
-import Transit.Class.MkUpdate (class MkUpdate)
+import Transit.Class.MkUpdate (class MkUpdate, TransitError)
 import Transit.Class.MkUpdate as MU
+import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
+import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Empty, StateWithMsg, Transit, WithGuard) as Export
 import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
 
-mkUpdateGenericM
-  :: forall @dsl spec m msg state xs a
-   . (Functor m)
-  => (IsTransitSpec dsl spec)
-  => (CurryN xs (state -> msg -> m state) a)
-  => (MkUpdate spec m xs (Generically msg) (Generically state))
-  => a
-mkUpdateGenericM = curryN @xs f
-  where
-  f :: xs -> state -> msg -> m state
-  f impl state msg = map (un Generically) $ MU.mkUpdate @spec @m @xs impl (Generically state) (Generically msg)
+-- mkUpdateEitherM
+-- mkUpdateEither
+-- mkUpdateM
+-- mkUpdate
 
-mkUpdateGeneric
-  :: forall @dsl spec msg state xs a
-   . (IsTransitSpec dsl spec)
-  => (CurryN xs (state -> msg -> state) a)
-  => (MkUpdate spec Identity xs (Generically msg) (Generically state))
+-- mkUpdateGenericEitherM
+-- mkUpdateGenericEither
+-- mkUpdateGenericM
+-- mkUpdateGeneric
+
+mkUpdateEitherM
+  :: forall @spec tcore msg state args m a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> m (Either (TransitError state msg) state)) a)
+  => (MkUpdate tcore m args msg state)
   => a
-mkUpdateGeneric = curryN @xs f
+mkUpdateEitherM = curryN @args f
   where
-  f :: xs -> state -> msg -> state
-  f impl state msg = un Identity $ map (un Generically) $ MU.mkUpdate @spec @Identity @xs impl (Generically state) (Generically msg)
+  f :: args -> state -> msg -> m (Either (TransitError state msg) state)
+  f impl state msg =
+    MU.mkUpdate @tcore impl state msg
+
+mkUpdateEither
+  :: forall @spec tcore msg state args a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> Either (TransitError state msg) state) a)
+  => (MkUpdate tcore Identity args msg state)
+  => a
+mkUpdateEither = curryN @args f
+  where
+  f :: args -> state -> msg -> Either (TransitError state msg) state
+  f impl state msg =
+    safeUnwrap @Identity $
+      (MU.mkUpdate @tcore impl state msg)
+
+mkUpdateM
+  :: forall @spec tcore msg state args m a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> m state) a)
+  => (MkUpdate tcore m args msg state)
+  => Functor m
+  => a
+mkUpdateM = curryN @args f
+  where
+  f :: args -> state -> msg -> m state
+  f impl state msg =
+    map (fromRight state)
+      (MU.mkUpdate @tcore impl state msg)
 
 mkUpdate
-  :: forall @dsl spec msg state xs a
-   . (IsTransitSpec dsl spec)
-  => (CurryN xs (state -> msg -> state) a)
-  => (MkUpdate spec Identity xs msg state)
+  :: forall @spec tcore msg state args a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> state) a)
+  => (MkUpdate tcore Identity args msg state)
   => a
-mkUpdate = curryN @xs f
+mkUpdate = curryN @args f
   where
-  f :: xs -> state -> msg -> state
-  f impl state msg = un Identity $ MU.mkUpdate @spec @Identity @xs impl state msg
+  f :: args -> state -> msg -> state
+  f impl state msg =
+    fromRight state $ safeUnwrap @Identity $ (MU.mkUpdate @tcore impl state msg)
+
+mkUpdateGenericEitherM
+  :: forall @spec tcore msg state args m a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> m (Either (TransitError state msg) state)) a)
+  => (MkUpdate tcore m args (Generically msg) (Generically state))
+  => Functor m
+  => a
+mkUpdateGenericEitherM = curryN @args f
+  where
+  f :: args -> state -> msg -> m (Either (TransitError state msg) state)
+  f impl state msg =
+    map Safe.coerce
+      $ MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg)
+
+mkUpdateGenericEither
+  :: forall @spec tcore msg state args a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> Either (TransitError state msg) state) a)
+  => (MkUpdate tcore Identity args (Generically msg) (Generically state))
+  => a
+mkUpdateGenericEither = curryN @args f
+  where
+  f :: args -> state -> msg -> Either (TransitError state msg) state
+  f impl state msg =
+    Safe.coerce
+      $ (safeUnwrap @Identity)
+      $ MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg)
+
+mkUpdateGenericM
+  :: forall @spec tcore msg state args m a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> m state) a)
+  => (MkUpdate tcore m args (Generically msg) (Generically state))
+  => Functor m
+  => a
+mkUpdateGenericM = curryN @args f
+  where
+  f :: args -> state -> msg -> m state
+  f impl state msg =
+    map (Safe.coerce <<< fromRight (safeWrap @Generically state))
+      $ MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg)
+
+mkUpdateGeneric
+  :: forall @spec tcore msg state args a
+   . (IsTransitSpec spec tcore)
+  => (CurryN args (state -> msg -> state) a)
+  => (MkUpdate tcore Identity args (Generically msg) (Generically state))
+  => a
+mkUpdateGeneric = curryN @args f
+  where
+  f :: args -> state -> msg -> state
+  f impl state msg =
+    (Safe.coerce <<< fromRight (safeWrap @Generically state))
+      $ safeUnwrap @Identity
+      $ (MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg))
+
+safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a
+safeUnwrap = Safe.coerce
+
+safeWrap :: forall @f a. Coercible a (f a) => a -> f a
+safeWrap = Safe.coerce
 
 match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg Identity msgIn stateIn stateOut
 match f = MatchImpl (\msg state -> pure $ f msg state)
@@ -84,3 +182,11 @@ instance (Row.Cons sym (ReturnStateVia symGuard a) r1 r2, IsSymbol sym) => Retur
 
 instance (Row.Cons sym (ReturnStateVia symGuard Unit) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
   returnVia = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard unit)
+
+---
+
+mapTransitError :: forall msg1 msg2 state1 state2. (msg1 -> msg2) -> (state1 -> state2) -> TransitError state1 msg1 -> TransitError state2 msg2
+mapTransitError mapMsg mapState (state /\ msg) = (mapState state /\ mapMsg msg)
+
+mapTransitResult :: forall msg1 msg2 state1 state2. (msg1 -> msg2) -> (state1 -> state2) -> Either (TransitError state1 msg1) state1 -> Either (TransitError state2 msg2) state2
+mapTransitResult mapMsg mapState = bimap (mapTransitError mapMsg mapState) mapState

@@ -19,7 +19,7 @@
     - [Writing Tests for the update function](#writing-tests-for-the-update-function)
     - [Generate State Diagrams](#generate-state-diagrams)
     - [Generate Transition Tables](#generate-transition-tables)
-  - [Example2: Door with Pin](#example2-door-with-pin)
+  - [Example 2: Door with Pin](#example-2-door-with-pin)
     - [The Classic Approach](#the-classic-approach-1)
     - [The Transit Approach](#the-transit-approach-1)
     - [Type signatures](#type-signatures)
@@ -807,8 +807,8 @@ pick:
 ```purescript
 spec :: Spec Unit
 spec = do
-  describe "Seven Bridges of Königsberg" do
-    it "should verify graph properties and Eulerian path conditions" do
+  describe ".." do
+    it "..." do
       let transit = reflectType (Proxy @BridgesTransitions)
       let graph = mkStateGraph transit
       Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5

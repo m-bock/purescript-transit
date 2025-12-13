@@ -6,6 +6,7 @@ module Test.Transit.Class.MkUpdate
 
 import Prelude
 
+import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Identity (Identity(..))
 import Data.Show.Generic (genericShow)
@@ -14,7 +15,7 @@ import Data.Variant (Variant)
 import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Class.MkUpdate (class MkUpdate, mkUpdate)
+import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdate)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkReturnViaTL, MkTransitCoreTL, ReturnState(..), ReturnStateVia, TransitCoreTL)
 import Transit.Util (Generically(..))
 import Type.Data.List (type (:>), Nil')
@@ -107,12 +108,15 @@ type MyStateGraph = MkTransitCoreTL
       :> Nil'
   )
 
+type GState = Generically State
+type GMsg = Generically Msg
+
 spec :: Spec Unit
 spec = do
   describe "Transit.Class.MkUpdate" do
     describe "mkUpdate" do
       let
-        update :: Generically State -> Generically Msg -> Identity (Generically State)
+        update :: GState -> GMsg -> Identity (Either (TransitError GState GMsg) GState)
         update = mkUpdate @MyStateGraph @Identity
           ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (ReturnState "42"))
               /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (ReturnState 99))
@@ -122,26 +126,26 @@ spec = do
       it "perform state updates on legal transitions" do
 
         update (Generically (State1 1)) (Generically (Msg1 2))
-          `shouldEqual` Identity (Generically (State2 "42"))
+          `shouldEqual` Identity (Right (Generically (State2 "42")))
 
         update (Generically (State2 "foo")) (Generically (Msg2 "bar"))
-          `shouldEqual` Identity (Generically (State1 99))
+          `shouldEqual` Identity (Right (Generically (State1 99)))
 
         update (Generically State3) (Generically Msg3)
-          `shouldEqual` Identity (Generically State3)
+          `shouldEqual` Identity (Right (Generically State3))
 
       it "should leave the state unchanged on illegal transitions" do
         update (Generically (State1 1)) (Generically Msg3)
-          `shouldEqual` Identity (Generically (State1 1))
+          `shouldEqual` Identity (Right (Generically (State1 1)))
 
         update (Generically (State2 "foo")) (Generically (Msg1 2))
-          `shouldEqual` Identity (Generically (State2 "foo"))
+          `shouldEqual` Identity (Right (Generically (State2 "foo")))
 
         update (Generically State3) (Generically (Msg1 2))
-          `shouldEqual` Identity (Generically State3)
+          `shouldEqual` Identity (Right (Generically State3))
 
         update (Generically State3) (Generically (Msg2 "bar"))
-          `shouldEqual` Identity (Generically State3)
+          `shouldEqual` Identity (Right (Generically State3))
 
 type Id a = a
 
