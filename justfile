@@ -19,8 +19,9 @@ gen-preview:
 
 gen-book:
     rm -rf site
-    pandoc README.md -t chunkedhtml --split-level=2 --toc --toc-depth=3 -o site --highlight-style=zenburn  --template=assets/gh-template.html
+    pandoc README.md -t chunkedhtml --split-level=3 --toc --toc-depth=3 -o site --highlight-style=zenburn  --template=assets/gh-template.html
     cp -r assets site/assets
+    cp -r graphs site/graphs
 
 dev:
     ls README.md | entr just gen
