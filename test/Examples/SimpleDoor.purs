@@ -7,12 +7,12 @@ import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Data.Traversable (for_, scanl)
+import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Aff (Aff)
+import Test.Examples.Common (mkSpec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Test.Spec.Reporter (consoleReporter)
-import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
@@ -56,45 +56,38 @@ update = mkUpdateGeneric @SimpleDoorTransit
 --- Tests
 --------------------------------------------------------------------------------
 
-spec1 :: Spec Unit
-spec1 = describe "should follow the walk" do
-  it "classic update" do
-    foldl update DoorOpen [ Close, Open, Close ]
-      `shouldEqual` DoorClosed
+assert1 :: Aff Unit
+assert1 =
+  (foldl update DoorOpen [ Close, Open, Close ])
+    `shouldEqual`
+      DoorClosed
 
-    foldl updateClassic DoorOpen [ Close, Open, Close ]
-      `shouldEqual` DoorClosed
+assert2 :: Aff Unit
+assert2 =
+  (scanl update DoorOpen [ Close, Open, Close ])
+    `shouldEqual`
+      [ DoorClosed, DoorOpen, DoorClosed ]
 
-spec2 :: Spec Unit
-spec2 = describe "" do
-  let
-
-    initState = DoorOpen
-
-    walk =
-      [ { msg: Close, state: DoorClosed }
-      , { msg: Open, state: DoorOpen }
-      , { msg: Open, state: DoorOpen }
-      , { msg: Close, state: DoorClosed }
-      , { msg: Open, state: DoorOpen }
-      , { msg: Close, state: DoorClosed }
-      , { msg: Close, state: DoorClosed }
-      ]
-
-    msgs = map _.msg walk
-    expectedStates = map _.state walk
-
-  for_ [ updateClassic, update ] \updateFn ->
-    it "should follow the walk" do
-      let
-        actualStates = scanl updateFn initState msgs
-      actualStates `shouldEqual` expectedStates
+spec3 :: Spec Unit
+spec3 = for_ [ updateClassic, update ] \fn ->
+  mkSpec fn
+    DoorOpen
+    [ Close /\ DoorClosed
+    , Open /\ DoorOpen
+    , Open /\ DoorOpen
+    , Close /\ DoorClosed
+    , Open /\ DoorOpen
+    ]
 
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
-    spec1
-    spec2
+    spec3
+  describe "should assert1" do
+    it "should assert1" do
+      assert1
+    it "should assert2" do
+      assert2
 
 --------------------------------------------------------------------------------
 --- State diagram generation
