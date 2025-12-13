@@ -59,3 +59,10 @@ mkSpec updateFn initState walk = describe "" do
       actualStates = scanl updateFn initState msgs
 
     actualStates `shouldEqual` expectedStates
+
+sameLengthPermutations :: forall a. Eq a => Array a -> Array (Array a)
+sameLengthPermutations xs
+  | Array.null xs = [ [] ]
+  | otherwise =
+      xs >>= \x ->
+        (Array.cons x) <$> sameLengthPermutations (Array.delete x xs)

@@ -10,13 +10,12 @@
 
     <!-- Your custom layout -->
     <style>
-      /* Basic layout like GitHub's README container */
       body {
         margin: 0;
         padding: 0;
         display: flex;
         justify-content: center;
-        background-color: #0d1117; /* dark bg looks nice with dark theme */
+        background-color: #0d1117;
       }
 
       .markdown-body {
@@ -25,6 +24,13 @@
         max-width: 980px;
         width: 100%;
         padding: 45px;
+      }
+
+      /* Optional: nicer TOC spacing */
+      nav.toc {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #30363d;
       }
     </style>
 
@@ -37,6 +43,10 @@
   </head>
 
   <body>
-    <article class="markdown-body">$body$</article>
+    <article class="markdown-body">
+      $if(toc)$
+      <nav id="TOC" class="toc">$table-of-contents$</nav>
+      $else$ $body$ $endif$
+    </article>
   </body>
 </html>

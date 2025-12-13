@@ -13,15 +13,15 @@
     - [About This Documentation](#about-this-documentation)
     - [Installation](#installation)
   - [Example 1: A Simple Door](#example-1-a-simple-door)
-    - [The Classic Approach](#the-classic-approach)
-    - [The Transit Approach](#the-transit-approach)
+    - [State updates: The Classic Approach](#state-updates-the-classic-approach)
+    - [State updates: The Transit Approach](#state-updates-the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
     - [Writing Tests for the update function](#writing-tests-for-the-update-function)
     - [Generate State Diagrams](#generate-state-diagrams)
     - [Generate Transition Tables](#generate-transition-tables)
   - [Example 2: Door with Pin](#example-2-door-with-pin)
-    - [The Classic Approach](#the-classic-approach-1)
-    - [The Transit Approach](#the-transit-approach-1)
+    - [State updates: The Classic Approach](#state-updates-the-classic-approach-1)
+    - [State updates: The Transit Approach](#state-updates-the-transit-approach-1)
     - [Type signatures](#type-signatures)
     - [Variants](#variants)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
@@ -48,7 +48,7 @@ Transit is a PureScript library for building type-safe state machines. It provid
 
 ### About This Documentation
 
-All code examples in this documentation are extracted from actual, type-checked PureScript source files. Whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite.
+All code examples in this documentation are extracted from actual, type-checked PureScript source files. Also, whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite.
 
 ### Installation
 
@@ -74,7 +74,7 @@ Another way to represent this is a transition table:
 filePath: graphs/simple-door.html
 --><table><caption>Simple Door State Machine</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
 
-In PureScript, we represent the states and messages with simple data types:
+In PureScript, we represent those states and messages by simple data types:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -92,7 +92,7 @@ data Msg = Close | Open
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p>
 <!-- PD_END -->
 
-### The Classic Approach
+### State updates: The Classic Approach
 
 The traditional way to implement state transitions is to write an update function that takes a state and a message and returns a new state:
 
@@ -119,7 +119,7 @@ While this approach works, it has some drawbacks:
 - The compiler won't catch missing transitions or invalid state/message combinations
 - You need to manually ensure all cases are handled correctly
 
-### The Transit Approach
+### State updates: The Transit Approach
 
 With the transit library, we take a different approach. First, we define a type-level specification of the state machine:
 
@@ -159,7 +159,7 @@ update = mkUpdateGeneric @SimpleDoorTransit
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L50-L53">test/Examples/SimpleDoor.purs L50-L53</a></sup></p>
 <!-- PD_END -->
 
-Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. The difference is that the compiler now enforces correctness at compile time.
+Notice that the type signature is identical to the classic approach—`State -> Msg -> State`.
 
 ### Compile-Time Safety
 
@@ -449,7 +449,7 @@ data Msg
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L23-L32">test/Examples/DoorWithPin.purs L23-L32</a></sup></p>
 <!-- PD_END -->
 
-### The Classic Approach
+### State updates: The Classic Approach
 
 The classic update function now needs to handle state and message data:
 
@@ -480,7 +480,7 @@ updateClassic state msg = case state, msg of
   <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
 </p>
 
-### The Transit Approach
+### State updates: The Transit Approach
 
 In the DSL specification, we express conditional transitions by listing multiple possible target states:
 
