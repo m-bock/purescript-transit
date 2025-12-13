@@ -10,7 +10,7 @@ import Prim.Row as Row
 import Test.Examples.DoorWithPin (DoorTransit)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (match, mkUpdate, return)
+import Transit (match, mkUpdate, return, returnVia)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -70,9 +70,9 @@ update = mkUpdate @DoorTransit
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        return @"DoorClosed"
+        returnVia @"PinCorrect" @"DoorClosed"
       else
-        return @"DoorLocked" { pin: state.pin }
+        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
   )
 
 inj :: forall @sym a r1 r2. Row.Cons sym a r1 r2 => IsSymbol sym => a -> Variant r2

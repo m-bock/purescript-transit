@@ -3,7 +3,7 @@ module Test.Examples.Signatures (update) where
 import Prelude
 
 import Data.Variant (Variant)
-import Test.Examples.DoorWithAlarm (Msg, State, DoorTransit)
+import Test.Examples.DoorWithPin (Msg, State, DoorTransit)
 import Transit (match, mkUpdateGeneric)
 import Transit.Core (ReturnState, ReturnStateVia)
 import Unsafe.Coerce (unsafeCoerce)
@@ -32,16 +32,15 @@ update = mkUpdateGeneric @DoorTransit
   ( match @"DoorClosed" @"Lock"
       ( \(state :: Unit) (msg :: { newPin :: String }) ->
           unimplemented
-            :: Variant ("DoorLocked" :: ReturnState { attempts :: Int, pin :: String })
+            :: Variant ("DoorLocked" :: ReturnState { pin :: String })
       )
   )
   ( match @"DoorLocked" @"Unlock"
-      ( \(state :: { attempts :: Int, pin :: String }) (msg :: { enteredPin :: String }) ->
+      ( \(state :: { pin :: String }) (msg :: { enteredPin :: String }) ->
           unimplemented
             :: Variant
-                 ( "Alarm" :: ReturnStateVia "TooManyAttempts" Unit
-                 , "DoorClosed" :: ReturnStateVia "PinCorrect" Unit
-                 , "DoorLocked" :: ReturnStateVia "PinIncorrect" { attempts :: Int, pin :: String }
+                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" Unit
+                 , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
                  )
       )
   )

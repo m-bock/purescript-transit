@@ -9,7 +9,7 @@ import Data.Traversable (for_, scanl)
 import Effect (Effect)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit (type (:*), type (:?), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, returnVia)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -58,8 +58,8 @@ type DoorTransit =
     :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
     :*
       ( "DoorLocked" :@ "Unlock"
-          >| "DoorClosed"
-          >| "DoorLocked"
+          >| ("PinCorrect" :? "DoorClosed")
+          >| ("PinIncorrect" :? "DoorLocked")
       )
 
 update :: State -> Msg -> State
@@ -75,9 +75,9 @@ update = mkUpdateGeneric @DoorTransit
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        return @"DoorClosed"
+        returnVia @"PinCorrect" @"DoorClosed"
       else
-        return @"DoorLocked" { pin: state.pin }
+        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
   )
 
 --------------------------------------------------------------------------------

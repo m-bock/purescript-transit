@@ -11,6 +11,6 @@ DoorClosed -> DoorLocked [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 1
 DoorLocked [shape = "box", label = <<b>DoorLocked</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#082e61", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 decision_DoorLocked_Unlock [shape = "diamond", label = "?", fontsize = 12, fontcolor = "#082e61", style = "filled", fillcolor = "#2f80ed", penwidth = 0.0, fixedsize = true, width = 0.3, height = 0.3]
 DoorLocked -> decision_DoorLocked_Unlock [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 12, arrowsize = "0.7", label = <<b>Unlock</b>>, penwidth = 1.8]
-decision_DoorLocked_Unlock -> DoorLocked [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", penwidth = 1.8, penwidth = 1.0]
-decision_DoorLocked_Unlock -> DoorClosed [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", penwidth = 1.8, penwidth = 1.0]
+decision_DoorLocked_Unlock -> DoorLocked [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", label = <<i>PinIncorrect</i>>, penwidth = 1.8, penwidth = 1.0]
+decision_DoorLocked_Unlock -> DoorClosed [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 10, arrowsize = "0.5", label = <<i>PinCorrect</i>>, penwidth = 1.8, penwidth = 1.0]
 }
