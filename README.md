@@ -181,7 +181,11 @@ Later we'll see how to generate the state diagram directly from the spec, ensuri
 
 ### Writing Tests for the update function
 
-As the equality of the type signatures of the classic and transit approaches update functions already suggest: We can use them interchangeably. That means transit can be seamlessly integrated into existing codebases. Let's verify this. We'll make use of the following functions from the `Data.Array` module of the `arrays` package:
+As the equality of the type signatures of the classic and transit approaches update functions already suggest: We can use them interchangeably. That means transit can be seamlessly integrated into existing codebases. Let's verify this.
+
+#### Testing State Transitions
+
+We'll make use of the following functions from the `Data.Array` module of the `arrays` package:
 
 <!-- PD_START:purs
 inline: true
@@ -274,17 +278,40 @@ assertWalk updateFn initState walk = do
 
 <!-- PD_END -->
 
+We can use it like this:
+
+<!-- PD_START:purs
+pick:
+  - tag: value
+    name: assert3
+    filePath: test/Examples/SimpleDoor.purs
+-->
+
+```purescript
+assert3 =
+  assertWalk update
+    DoorOpen
+    [ Close /\ DoorClosed
+    , Open /\ DoorOpen
+    , Close /\ DoorClosed
+    ]
+```
+
+<!-- PD_END -->
+
+#### Verifying Interchangeability
+
 Of course we want to check this with both the classic and transit approaches. The following test checks all intermediate states for both approaches.
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
 pick:
   - tag: value
-    name: assert3
+    name: assert4
 -->
 
 ```purescript
-assert3 =
+assert4 =
   for_ [ updateClassic, update ]
     \fn ->
       assertWalk fn
@@ -297,7 +324,7 @@ assert3 =
         ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L72-L82">test/Examples/SimpleDoor.purs L72-L82</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L81-L91">test/Examples/SimpleDoor.purs L81-L91</a></sup></p>
 <!-- PD_END -->
 
 ### Generate State Diagrams

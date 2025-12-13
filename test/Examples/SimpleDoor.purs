@@ -70,6 +70,15 @@ assert2 =
 
 assert3 :: Aff Unit
 assert3 =
+  assertWalk update
+    DoorOpen
+    [ Close /\ DoorClosed
+    , Open /\ DoorOpen
+    , Close /\ DoorClosed
+    ]
+
+assert4 :: Aff Unit
+assert4 =
   for_ [ updateClassic, update ]
     \fn ->
       assertWalk fn
@@ -84,13 +93,11 @@ assert3 =
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
-    it "should assert3" do
-      assert3
-  describe "should assert1" do
-    it "should assert1" do
+    it "" do
       assert1
-    it "should assert2" do
       assert2
+      assert3
+      assert4
 
 --------------------------------------------------------------------------------
 --- State diagram generation
