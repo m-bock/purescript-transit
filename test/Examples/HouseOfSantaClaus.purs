@@ -77,7 +77,7 @@ updateClassic state msg = case state, msg of
 --- transit Approach
 --------------------------------------------------------------------------------
 
-type TransitSantaClaus =
+type HouseOfSantaClausTransit =
   Transit $ Empty
     :* ("N_1" :@ "E_a" >| "N_2")
     :* ("N_2" :@ "E_a" >| "N_1")
@@ -104,7 +104,7 @@ type TransitSantaClaus =
     :* ("N_4" :@ "E_h" >| "N_3")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @TransitSantaClaus
+update = mkUpdateGeneric @HouseOfSantaClausTransit
   (match @"N_1" @"E_a" \_ _ -> return @"N_2")
   (match @"N_2" @"E_a" \_ _ -> return @"N_1")
 
@@ -137,7 +137,7 @@ spec :: Spec Unit
 spec = do
   describe "House of Santa Claus" do
     it "should have 8 states" do
-      let transit = reflectType (Proxy @TransitSantaClaus)
+      let transit = reflectType (Proxy @HouseOfSantaClausTransit)
       let graph = mkStateGraph transit
 
       let walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
@@ -186,7 +186,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @TransitSantaClaus)
+    transit = reflectType (Proxy @HouseOfSantaClausTransit)
     nodeAttrs = Just \node -> case node of
       "N_1" -> "pos=\"0,0!\""
       "N_2" -> "pos=\"2,0!\""

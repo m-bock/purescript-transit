@@ -68,7 +68,7 @@ updateClassic state msg = case state, msg of
 --- transit Approach
 --------------------------------------------------------------------------------
 
-type BridgesTransitions =
+type BridgesKoenigsbergTransit =
   Transit $ Empty
     :* ("LandA" :@ "Cross_a" >| "LandB")
     :* ("LandB" :@ "Cross_a" >| "LandA")
@@ -92,7 +92,7 @@ type BridgesTransitions =
     :* ("LandD" :@ "Cross_g" >| "LandC")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @BridgesTransitions
+update = mkUpdateGeneric @BridgesKoenigsbergTransit
   (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
   (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
 
@@ -122,7 +122,7 @@ spec :: Spec Unit
 spec = do
   describe ".." do
     it "..." do
-      let transit = reflectType (Proxy @BridgesTransitions)
+      let transit = reflectType (Proxy @BridgesKoenigsbergTransit)
       let graph = mkStateGraph transit
       Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
       Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
@@ -138,7 +138,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @BridgesTransitions)
+    transit = reflectType (Proxy @BridgesKoenigsbergTransit)
 
   for_
     [ { theme: themeHarmonyLight, file: "graphs/bridges-koenigsberg-light.dot" }

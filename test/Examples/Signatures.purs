@@ -3,7 +3,7 @@ module Test.Examples.Signatures (update) where
 import Prelude
 
 import Data.Variant (Variant)
-import Test.Examples.DoorWithPin (Msg, State, DoorTransit)
+import Test.Examples.DoorWithPin (Msg, State, DoorWithPinTransit)
 import Transit (match, mkUpdateGeneric)
 import Transit.Core (ReturnState, ReturnStateVia)
 import Unsafe.Coerce (unsafeCoerce)
@@ -16,7 +16,7 @@ unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorTransit
+update = mkUpdateGeneric @DoorWithPinTransit
   ( match @"DoorOpen" @"Close"
       ( \(state :: Unit) (msg :: Unit) ->
           unimplemented

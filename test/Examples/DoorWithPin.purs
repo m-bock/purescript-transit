@@ -1,4 +1,4 @@
-module Test.Examples.DoorWithPin (main, spec, DoorTransit, State(..), Msg(..)) where
+module Test.Examples.DoorWithPin (main, spec, DoorWithPinTransit, State(..), Msg(..)) where
 
 import Prelude
 
@@ -51,7 +51,7 @@ updateClassic state msg = case state, msg of
 --- transit Approach
 --------------------------------------------------------------------------------
 
-type DoorTransit =
+type DoorWithPinTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -63,7 +63,7 @@ type DoorTransit =
       )
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorTransit
+update = mkUpdateGeneric @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -130,7 +130,7 @@ spec = describe "" do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorTransit)
+    transit = reflectType (Proxy @DoorWithPinTransit)
 
   for_
     [ { theme: themeHarmonyLight, file: "graphs/door-with-pin-light.dot" }

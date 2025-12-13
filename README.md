@@ -530,11 +530,11 @@ In the DSL specification, we express conditional transitions by listing multiple
 <!-- PD_START:purs
 filePath: test/Examples/DoorWithPin.purs
 pick:
-  - DoorTransit
+  - DoorWithPinTransit
 -->
 
 ```purescript
-type DoorTransit =
+type DoorWithPinTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -561,7 +561,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorTransit
+update = mkUpdateGeneric @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -624,7 +624,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorTransit
+update = mkUpdateGeneric @DoorWithPinTransit
   ( match @"DoorOpen" @"Close"
       ( \(state :: Unit) (msg :: Unit) ->
           unimplemented
@@ -686,7 +686,7 @@ type Msg = Variant
   )
 
 update :: State -> Msg -> State
-update = mkUpdate @DoorTransit
+update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -750,11 +750,11 @@ data Msg
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - BridgesTransitions
+  - BridgesKoenigsbergTransit
 -->
 
 ```purescript
-type BridgesTransitions =
+type BridgesKoenigsbergTransit =
   Transit $ Empty
     :* ("LandA" :@ "Cross_a" >| "LandB")
     :* ("LandB" :@ "Cross_a" >| "LandA")
@@ -852,7 +852,7 @@ spec :: Spec Unit
 spec = do
   describe ".." do
     it "..." do
-      let transit = reflectType (Proxy @BridgesTransitions)
+      let transit = reflectType (Proxy @BridgesKoenigsbergTransit)
       let graph = mkStateGraph transit
       Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
       Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
@@ -864,7 +864,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @BridgesTransitions)
+    transit = reflectType (Proxy @BridgesKoenigsbergTransit)
 
   for_
     [ { theme: themeHarmonyLight, file: "graphs/bridges-koenigsberg-light.dot" }
@@ -885,7 +885,7 @@ main = do
 
 The key steps are:
 
-1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesTransitions)` converts the type-level DSL to a term-level representation
+1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesKoenigsbergTransit)` converts the type-level DSL to a term-level representation
 2. **Convert to a graph**: `mkStateGraph transit` transforms the transit specification into a `StateGraph`—a general-purpose graph data structure
 3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
 
@@ -934,11 +934,11 @@ This example uses "Das Haus vom Nikolaus" (The house of Santa Claus), a well-kno
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
 pick:
-  - TransitSantaClaus
+  - HouseOfSantaClausTransit
 -->
 
 ```purescript
-type TransitSantaClaus =
+type HouseOfSantaClausTransit =
   Transit $ Empty
     :* ("N_1" :@ "E_a" >| "N_2")
     :* ("N_2" :@ "E_a" >| "N_1")
@@ -990,7 +990,7 @@ spec :: Spec Unit
 spec = do
   describe "House of Santa Claus" do
     it "should have 8 states" do
-      let transit = reflectType (Proxy @TransitSantaClaus)
+      let transit = reflectType (Proxy @HouseOfSantaClausTransit)
       let graph = mkStateGraph transit
 
       let walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
@@ -1035,7 +1035,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @TransitSantaClaus)
+    transit = reflectType (Proxy @HouseOfSantaClausTransit)
     nodeAttrs = Just \node -> case node of
       "N_1" -> "pos=\"0,0!\""
       "N_2" -> "pos=\"2,0!\""
