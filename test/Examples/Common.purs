@@ -4,18 +4,11 @@ import Prelude
 
 import Data.Array (scanl)
 import Data.Array as Array
-import Data.Either (Either(..))
-import Data.Foldable (foldM)
-import Data.FunctorWithIndex (mapWithIndex)
 import Data.Int as Int
-import Data.Maybe (Maybe(..))
 import Data.Set as Set
-import Data.Traversable (for_, scanr)
-import Data.Tuple (Tuple(..), fst, snd)
+import Data.Tuple (fst, snd)
 import Data.Tuple.Nested (type (/\))
 import Effect.Aff (Aff)
-import Effect.Class (liftEffect)
-import Effect.Console as Console
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Data.Graph (Graph)
@@ -40,25 +33,26 @@ countOddOutgoingEdges g =
       (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g))
       (Set.toUnfoldable nodes)
 
-mkSpec
+assertWalk
   :: forall msg state
    . Eq state
   => Show state
   => (state -> msg -> state)
   -> state
   -> Array (msg /\ state)
-  -> Spec Unit
-mkSpec updateFn initState walk = describe "" do
+  -> Aff Unit
+assertWalk updateFn initState walk = do
   let
+    msgs :: Array msg
     msgs = map fst walk
+
+    expectedStates :: Array state
     expectedStates = map snd walk
 
-  it "should follow the walk" do
-    let
-      actualStates :: Array state
-      actualStates = scanl updateFn initState msgs
+    actualStates :: Array state
+    actualStates = scanl updateFn initState msgs
 
-    actualStates `shouldEqual` expectedStates
+  actualStates `shouldEqual` expectedStates
 
 sameLengthPermutations :: forall a. Eq a => Array a -> Array (Array a)
 sameLengthPermutations xs

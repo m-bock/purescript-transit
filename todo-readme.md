@@ -18,8 +18,6 @@
   - [ ] ⭐ State updates: The Transit Approach
   - [ ] ⭐ Compile-Time Safety
   - [ ] ⭐ Writing Tests for the update function
-    - [ ] Show imports for foldl or note it's from Data.Array (Line 196-200)
-    - [ ] Explain what scanl/foldl functions do (Line 221-222)
     - [ ] Show import for for\_ or explain it's from Data.Foldable (Line 273)
   - [ ] ⭐ Generate State Diagrams
   - [ ] ⭐ Generate Transition Tables

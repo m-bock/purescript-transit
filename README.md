@@ -181,9 +181,28 @@ Later we'll see how to generate the state diagram directly from the spec, ensuri
 
 ### Writing Tests for the update function
 
-As the equality of the type signatures of the classic and transit approaches update functions already suggest: We can use them interchangeably. That means transit can be seamlessly integrated into existing codebases. Let's verify this.
+As the equality of the type signatures of the classic and transit approaches update functions already suggest: We can use them interchangeably. That means transit can be seamlessly integrated into existing codebases. Let's verify this. We'll make use of the following functions from the `Data.Array` module of the `arrays` package:
 
-So how can we test the update function? An easy way is to perform a fold over the messages and check if the final state is the expected one:
+<!-- PD_START:purs
+inline: true
+pick:
+  - tag: signature_or_foreign
+    name: foldl
+    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
+    prefix: '- '
+  - tag: signature_or_foreign
+    name: scanl
+    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
+    prefix: '- '
+split: true
+-->
+
+- `foldl :: forall a b. (b -> a -> b) -> b -> Array a -> b`
+- `scanl :: forall a b. (b -> a -> b) -> b -> Array a -> Array b`
+
+<!-- PD_END -->
+
+Now, how can we test the update function? An easy way is to perform a fold over the messages and check if the final state is the expected one:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -205,45 +224,6 @@ assert1 =
 However, this only checks the final state. We should also check all intermediate states. For this purpose the scanl function is perfectly suited. It works like foldl, but it returns an array of all intermediate states.
 
 <!-- PD_START:purs
-inline: true
-pick:
-  - tag: signature_or_foreign
-    name: foldl
-    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
-    prefix: '- '
-  - tag: signature_or_foreign
-    name: scanl
-    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
-    prefix: '- '
-split: true
--->
-
-- `foldl :: forall a b. (b -> a -> b) -> b -> Array a -> b`
-- `scanl :: forall a b. (b -> a -> b) -> b -> Array a -> Array b`
-
-<!-- PD_END -->
-
-<!-- PD_START:purs
-pick:
-  - tag: signature_or_foreign
-    name: mkSpec
-    filePath: test/Examples/Common.purs
--->
-
-```purescript
-mkSpec
-  :: forall msg state
-   . Eq state
-  => Show state
-  => (state -> msg -> state)
-  -> state
-  -> Array (msg /\ state)
-  -> Spec Unit
-```
-
-<!-- PD_END -->
-
-<!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
 pick:
   - tag: value
@@ -260,28 +240,64 @@ assert2 =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L66-L69">test/Examples/SimpleDoor.purs L66-L69</a></sup></p>
 <!-- PD_END -->
 
-Of course we want to check this with both the classic and transit approaches. The following test checks all intermediate states for both approaches. For better readability we define an array of messages and expected states.
+Since we want to perform many of these tests, we'll define a convenient helper function `assertWalk` that performs the test and asserts the result:
+
+<!-- PD_START:purs
+pick:
+  - tag: any
+    name: assertWalk
+    filePath: test/Examples/Common.purs
+-->
+
+```purescript
+assertWalk
+  :: forall msg state
+   . Eq state
+  => Show state
+  => (state -> msg -> state)
+  -> state
+  -> Array (msg /\ state)
+  -> Aff Unit
+assertWalk updateFn initState walk = do
+  let
+    msgs :: Array msg
+    msgs = map fst walk
+
+    expectedStates :: Array state
+    expectedStates = map snd walk
+
+    actualStates :: Array state
+    actualStates = scanl updateFn initState msgs
+
+  actualStates `shouldEqual` expectedStates
+```
+
+<!-- PD_END -->
+
+Of course we want to check this with both the classic and transit approaches. The following test checks all intermediate states for both approaches.
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
 pick:
-  - spec3
+  - tag: value
+    name: assert3
 -->
 
 ```purescript
-spec3 :: Spec Unit
-spec3 = for_ [ updateClassic, update ] \fn ->
-  mkSpec fn
-    DoorOpen
-    [ Close /\ DoorClosed
-    , Open /\ DoorOpen
-    , Open /\ DoorOpen
-    , Close /\ DoorClosed
-    , Open /\ DoorOpen
-    ]
+assert3 =
+  for_ [ updateClassic, update ]
+    \fn ->
+      assertWalk fn
+        DoorOpen
+        [ Close /\ DoorClosed
+        , Open /\ DoorOpen
+        , Open /\ DoorOpen
+        , Close /\ DoorClosed
+        , Open /\ DoorOpen
+        ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L71-L80">test/Examples/SimpleDoor.purs L71-L80</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L72-L82">test/Examples/SimpleDoor.purs L72-L82</a></sup></p>
 <!-- PD_END -->
 
 ### Generate State Diagrams
@@ -792,7 +808,7 @@ countOddOutgoingEdges g =
       (Set.toUnfoldable nodes)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L24-L41">test/Examples/Common.purs L24-L41</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L17-L34">test/Examples/Common.purs L17-L34</a></sup></p>
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:

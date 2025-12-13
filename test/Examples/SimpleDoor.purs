@@ -10,7 +10,7 @@ import Data.Traversable (for_, scanl)
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (mkSpec)
+import Test.Examples.Common (assertWalk)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
@@ -68,21 +68,24 @@ assert2 =
     `shouldEqual`
       [ DoorClosed, DoorOpen, DoorClosed ]
 
-spec3 :: Spec Unit
-spec3 = for_ [ updateClassic, update ] \fn ->
-  mkSpec fn
-    DoorOpen
-    [ Close /\ DoorClosed
-    , Open /\ DoorOpen
-    , Open /\ DoorOpen
-    , Close /\ DoorClosed
-    , Open /\ DoorOpen
-    ]
+assert3 :: Aff Unit
+assert3 =
+  for_ [ updateClassic, update ]
+    \fn ->
+      assertWalk fn
+        DoorOpen
+        [ Close /\ DoorClosed
+        , Open /\ DoorOpen
+        , Open /\ DoorOpen
+        , Close /\ DoorClosed
+        , Open /\ DoorOpen
+        ]
 
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
-    spec3
+    it "should assert3" do
+      assert3
   describe "should assert1" do
     it "should assert1" do
       assert1
