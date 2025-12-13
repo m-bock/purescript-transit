@@ -10,9 +10,10 @@ Type-Safe State Machines.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Transit](#transit)
-  - [Key Features](#key-features)
-  - [About This Documentation](#about-this-documentation)
-  - [Installation](#installation)
+  - [Introduction](#introduction)
+    - [Key Features](#key-features)
+    - [About This Documentation](#about-this-documentation)
+    - [Installation](#installation)
   - [Example 1: A Simple Door](#example-1-a-simple-door)
     - [The Classic Approach](#the-classic-approach)
     - [The Transit Approach](#the-transit-approach)
@@ -23,12 +24,13 @@ Type-Safe State Machines.
   - [Example2: Door with Pin](#example2-door-with-pin)
     - [The Classic Approach](#the-classic-approach-1)
     - [The Transit Approach](#the-transit-approach-1)
-  - [Type signatures](#type-signatures)
-  - [Variants](#variants)
-  - [Monadic update functions](#monadic-update-functions)
-  - [Example 4: Seven Bridges of Königsberg](#example-4-seven-bridges-of-k%C3%B6nigsberg)
+    - [Type signatures](#type-signatures)
+    - [Variants](#variants)
+  - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
-  - [Example 5: This is the house of Santa Claus](#example-5-this-is-the-house-of-santa-claus)
+  - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
+  - [More](#more)
+    - [Monadic update functions](#monadic-update-functions)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -38,17 +40,19 @@ Transit is a PureScript library for building type-safe state machines. It provid
 
 > If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, Transit follows a similar philosophy: just as Servant uses a REST API type-level specification to generate type-safe routing functions and OpenAPI documentation, Transit uses a state machine graph type-level specification to generate type-safe update functions and state diagrams.
 
-## Key Features
+## Introduction
+
+### Key Features
 
 - **Type-safe state transitions** - The compiler ensures all transitions are valid and complete
 - **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
 - **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
 
-## About This Documentation
+### About This Documentation
 
 All code examples in this documentation are extracted from actual, type-checked PureScript source files. Whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite.
 
-## Installation
+### Installation
 
 ```bash
 spago install transit
@@ -543,7 +547,7 @@ The match handlers receive both the current state and the message, giving you ac
 - 🔴 You handle all required transitions
 - 🟢 The conditional logic is type-safe
 
-## Type signatures
+### Type signatures
 
 Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
 
@@ -610,7 +614,7 @@ update = mkUpdateGeneric @DoorTransit
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L46">test/Examples/Signatures.purs L18-L46</a></sup></p>
 <!-- PD_END -->
 
-## Variants
+### Variants
 
 Full source code: _[test/Examples/Variants.purs](test/Examples/Variants.purs)_
 
@@ -660,47 +664,7 @@ update = mkUpdate @DoorTransit
 <p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs L17-L76</a></sup></p>
 <!-- PD_END -->
 
-## Monadic update functions
-
-Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
-
-So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
-
-For these cases, transit provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad` (commonly `Effect`, `Aff`, or `ReaderT`).
-
-The key differences from pure update functions are:
-
-1. **Use `mkUpdateGenericM` instead of `mkUpdateGeneric`** - This tells transit you want a monadic update function
-2. **Use `matchM` instead of `match`** - This allows your handlers to return values in the monadic context
-3. **Type signature includes the monad** - Instead of `State -> Msg -> State`, you get `State -> Msg -> m State`
-
-Here's an example that adds logging to state transitions:
-
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - update
--->
-
-```purescript
-update :: State -> Msg -> Effect State
-update = mkUpdateGenericM @SimpleDoorTransit
-  ( matchM @"DoorOpen" @"Close" \_ _ -> do
-      Console.log "You just closed the door"
-      pure $ return @"DoorClosed"
-  )
-  ( matchM @"DoorClosed" @"Open" \_ _ -> do
-      Console.log "You just opened the door"
-      pure $ return @"DoorOpen"
-  )
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p>
-<!-- PD_END -->
-
-Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
-
-## Example 4: Seven Bridges of Königsberg
+## Example 3: Seven Bridges of Königsberg
 
 Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
@@ -900,7 +864,7 @@ This example demonstrates that transit's value extends far beyond state machine 
 
 In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how transit can help verify and understand graph properties beyond simple state machines.
 
-## Example 5: This is the house of Santa Claus
+## Example 4: The house of Santa Claus
 
 Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
@@ -1056,3 +1020,45 @@ main = do
 
 <p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L136-L212">test/Examples/HouseOfSantaClaus.purs L136-L212</a></sup></p>
 <!-- PD_END -->
+
+## More
+
+### Monadic update functions
+
+Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
+
+So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
+
+For these cases, transit provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad` (commonly `Effect`, `Aff`, or `ReaderT`).
+
+The key differences from pure update functions are:
+
+1. **Use `mkUpdateGenericM` instead of `mkUpdateGeneric`** - This tells transit you want a monadic update function
+2. **Use `matchM` instead of `match`** - This allows your handlers to return values in the monadic context
+3. **Type signature includes the monad** - Instead of `State -> Msg -> State`, you get `State -> Msg -> m State`
+
+Here's an example that adds logging to state transitions:
+
+<!-- PD_START:purs
+filePath: test/Examples/Monadic.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> Effect State
+update = mkUpdateGenericM @SimpleDoorTransit
+  ( matchM @"DoorOpen" @"Close" \_ _ -> do
+      Console.log "You just closed the door"
+      pure $ return @"DoorClosed"
+  )
+  ( matchM @"DoorClosed" @"Open" \_ _ -> do
+      Console.log "You just opened the door"
+      pure $ return @"DoorOpen"
+  )
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p>
+<!-- PD_END -->
+
+Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
