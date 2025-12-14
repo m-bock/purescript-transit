@@ -6,6 +6,7 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Transit - Type-Safe State Machines](#transit---type-safe-state-machines)
   - [Introduction](#introduction)
@@ -34,9 +35,7 @@
 
 # Transit - Type-Safe State Machines
 
-Transit is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions, ensuring that your state machine implementation is correct at compile time. With Transit, you define your state machine once using a type-level specification, and the compiler ensures your implementation matches that specification—eliminating bugs from invalid transitions, missing cases, or documentation drift.
-
-> If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, Transit follows a similar philosophy: just as Servant uses a REST API type-level specification to generate type-safe routing functions and OpenAPI documentation, Transit uses a state machine graph type-level specification to generate type-safe update functions and state diagrams.
+**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using a type-level specification, and the compiler ensures your implementation matches that specification—eliminating bugs from invalid transitions, missing cases, or documentation drift.
 
 ## Introduction
 
@@ -46,11 +45,15 @@ Transit is a PureScript library for building type-safe state machines. It provid
 - **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
 - **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
 
+> If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, **Transit** follows a similar philosophy: just as Servant uses a REST API type-level specification to generate type-safe routing functions and OpenAPI documentation, **Transit** uses a state machine graph type-level specification to generate type-safe update functions and state diagrams.
+
 ### About This Documentation
 
-All code examples in this documentation are extracted from actual, type-checked PureScript source files. Also, whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite.
+All code examples in this documentation are extracted from actual, type-checked PureScript source files. Also, whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite. At the bottom of every code example you can find a link to the actual source file. So you can get a better picture of the context and get information about the imports used.
 
 ### Installation
+
+Transit is published to Pursuit. You can install it with `spago`:
 
 ```bash
 spago install transit
@@ -58,7 +61,9 @@ spago install transit
 
 ## Example 1: A Simple Door
 
-Let's start with a simple door state machine. Here's its state diagram:
+Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of compile-time safety and automatic documentation generation. Here's the state diagram for our simple door:
+
+<p>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/simple-door-dark.svg">
@@ -66,15 +71,19 @@ Let's start with a simple door state machine. Here's its state diagram:
   <img alt="Simple Door state diagram" src="graphs/simple-door-light.svg">
 </picture>
 
-This state machine has two states (`DoorOpen` and `DoorClosed`) and two transitions (`Close` and `Open`).
+</p>
 
-Another way to represent this is a transition table:
+The diagram shows a simple state machine with two states (`DoorOpen` and `DoorClosed`) and two transitions (`Close` and `Open`). The arrows indicate the valid transitions: you can close an open door, and you can open a closed door. This visual representation makes it easy to understand the state machine's behavior at a glance. Another way to represent this same information is a transition table, which provides a tabular view of all possible state transitions:
+
+<p>
 
 <!-- PD_START:raw
 filePath: graphs/simple-door.html
 --><table><caption>Simple Door State Machine</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
 
-In PureScript, we represent those states and messages by simple data types:
+</p>
+
+The table clearly shows all valid transitions in a structured format. Both the diagram and table are automatically generated from the same **Transit** specification, ensuring they always stay in sync with the code. Now let's see how we represent this state machine in PureScript code. We start by defining the states and messages as simple data types:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -91,6 +100,8 @@ data Msg = Close | Open
 
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p>
 <!-- PD_END -->
+
+These data types define the two possible states of our door and the two messages that can trigger state transitions. With these types in place, we can now implement the state transition logic. Let's first look at the traditional approach, then see how **Transit** improves upon it.
 
 ### State updates: The Classic Approach
 
@@ -121,7 +132,7 @@ While this approach works, it has some drawbacks:
 
 ### State updates: The Transit Approach
 
-With the transit library, we take a different approach. First, we define a type-level specification of the state machine:
+With the **Transit** library, we take a different approach. First, we define a type-level specification of the state machine:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -181,7 +192,7 @@ Later we'll see how to generate the state diagram directly from the spec, ensuri
 
 ### Writing Tests for the update function
 
-As the equality of the type signatures of the classic and transit approaches update functions already suggest: We can use them interchangeably. That means transit can be seamlessly integrated into existing codebases. Let's verify this.
+As the equality of the type signatures of the classic and **Transit** approaches update functions already suggest: We can use them interchangeably. That means **Transit** can be seamlessly integrated into existing codebases. Let's verify this.
 
 #### Testing State Transitions
 
@@ -301,7 +312,7 @@ assert3 =
 
 #### Verifying Interchangeability
 
-Of course we want to check this with both the classic and transit approaches. The following test checks all intermediate states for both approaches.
+Of course we want to check this with both the classic and **Transit** approaches. The following test checks all intermediate states for both approaches.
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -329,7 +340,7 @@ assert4 =
 
 ### Generate State Diagrams
 
-One of the key benefits of transit is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
+One of the key benefits of **Transit** is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
 
 To generate a state diagram, you use `reflectType` to convert your type-level DSL specification to a term-level equivalent, then write it to a Graphviz `.dot` file:
 
@@ -590,11 +601,11 @@ The match handlers receive both the current state and the message, giving you ac
 
 ### Type signatures
 
-Understanding the type signatures that transit enforces helps clarify how the type system ensures correctness. This section demonstrates the exact types that each match handler must satisfy, showing how transit uses `Variant` types to represent subsets of possible states.
+Understanding the type signatures that **Transit** enforces helps clarify how the type system ensures correctness. This section demonstrates the exact types that each match handler must satisfy, showing how **Transit** uses `Variant` types to represent subsets of possible states.
 
 Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
 
-This chapter demonstrates the type signatures that transit enforces for your update functions. To show these signatures without implementing the actual logic, we use an `unimplemented` helper function that satisfies the type checker:
+This chapter demonstrates the type signatures that **Transit** enforces for your update functions. To show these signatures without implementing the actual logic, we use an `unimplemented` helper function that satisfies the type checker:
 
 <!-- PD_START:purs
 filePath: test/Examples/Signatures.purs
@@ -610,7 +621,7 @@ unimplemented = unsafeCoerce "not yet implemented"
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs L15-L16</a></sup></p>
 <!-- PD_END -->
 
-The `update` function demonstrates the type signatures that transit enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
+The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
 
 Unfortunately, PureScript's ADTs (Algebraic Data Types) don't allow expressing a subset of cases from a union type. This is where `Variant` comes in—it's perfect for representing a subset of cases from a union type. Each match handler must return a `Variant` type that precisely matches the possible target states defined in the DSL specification.
 
@@ -709,20 +720,30 @@ update = mkUpdate @DoorWithPinTransit
 
 ## Example 3: Seven Bridges of Königsberg
 
-Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
+So far, we've seen how **Transit** helps you build type-safe state machines and generate state diagrams and transition tables. But the power of **Transit** extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
-So far, we've seen how transit helps you build type-safe state machines and generate state diagrams and transition tables. But the power of transit extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
-
-This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler was asked whether it was possible to walk through the city of Königsberg (now Kaliningrad) crossing each of its seven bridges exactly once and returning to the starting point. Euler's solution to this problem laid the foundation for graph theory.
+This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler was asked whether it was possible to walk through the city of Königsberg crossing each of its seven bridges exactly once. Euler's solution to this problem laid the foundation for graph theory.
 
 The problem can be modeled as a graph where:
 
 - **Nodes** represent the four land areas (A, B, C, and D)
 - **Edges** represent the seven bridges connecting them
 
-<img src="assets/bridges.png" width="400" />
+The following picture shows roughly how the actual map looked like back then:
 
-While transit is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
+<img src="assets/bridges.png" width="450" />
+
+<img src="assets/bridges-walk.png" width="450" />
+
+Even not immediately obvious, this can be represented as a graph:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="graphs/bridges-koenigsberg-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="graphs/bridges-koenigsberg-light.svg">
+  <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
+</picture>
+
+While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -744,7 +765,7 @@ data Msg
   | Cross_g
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L32-L41">test/Examples/BridgesKoenigsberg.purs L32-L41</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L36-L45">test/Examples/BridgesKoenigsberg.purs L36-L45</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -778,7 +799,67 @@ type BridgesKoenigsbergTransit =
     :* ("LandD" :@ "Cross_g" >| "LandC")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L73-L94">test/Examples/BridgesKoenigsberg.purs L73-L94</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L77-L98">test/Examples/BridgesKoenigsberg.purs L77-L98</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdateGeneric @BridgesKoenigsbergTransit
+  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
+
+  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
+
+  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
+
+  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA")
+
+  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA")
+
+  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB")
+
+  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L100-L121">test/Examples/BridgesKoenigsberg.purs L100-L121</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - assert1
+-->
+
+```purescript
+assert1 :: Aff Unit
+assert1 =
+  for_ [ updateClassic, update ] \fn ->
+    assertWalk fn
+      LandA
+      [ Cross_a /\ LandB
+      , Cross_f /\ LandD
+      , Cross_g /\ LandC
+      , Cross_c /\ LandA
+      , Cross_e /\ LandD
+      , Cross_g /\ LandC
+      , Cross_d /\ LandA
+      , Cross_b /\ LandB
+      ]
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L127-L140">test/Examples/BridgesKoenigsberg.purs L127-L140</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -787,21 +868,14 @@ filePath: graphs/bridges-koenigsberg.html
 
 The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/bridges-koenigsberg-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/bridges-koenigsberg-light.svg">
-  <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
-</picture>
-
 ### Graph Analysis
 
-The real power of transit becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the transit specification into a `StateGraph`—a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
+The real power of **Transit** becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the **Transit** specification into a `StateGraph`—a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
 
 Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
 
 Euler's theorem states that:
 
-- An undirected graph has an Eulerian circuit if and only if it is connected and has zero vertices of odd degree
 - An undirected graph has an Eulerian trail if and only if it is connected and has exactly zero or two vertices of odd degree
 
 We can check these conditions using helper functions from the `Test.Examples.Common` module:
@@ -809,36 +883,43 @@ We can check these conditions using helper functions from the `Test.Examples.Com
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
 pick:
-  - hasEulerCircle
-  - hasEulerTrail
-  - countOddOutgoingEdges
+  - nodeDegree
 -->
 
 ```purescript
-hasEulerCircle :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-hasEulerCircle g = true
-  && Graph.isUndirected g
-  && countOddOutgoingEdges g == 0
-
-hasEulerTrail :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-hasEulerTrail g = true
-  && Graph.isUndirected g
-  && (countOddOutgoingEdges g == 0 || countOddOutgoingEdges g == 2)
-
-countOddOutgoingEdges :: forall e n. Ord n => Ord e => Graph e n -> Int
-countOddOutgoingEdges g =
-  let
-    nodes = Graph.getNodes g
-  in
-    Array.length $ Array.filter
-      (\node -> Int.odd $ Set.size (Graph.getOutgoingEdges node g))
-      (Set.toUnfoldable nodes)
+nodeDegree :: StateNode -> StateGraph -> Int
+nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L17-L34">test/Examples/Common.purs L17-L34</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L18-L19">test/Examples/Common.purs L18-L19</a></sup></p>
 <!-- PD_END -->
 
-To perform the analysis, we convert the reflected transit specification into a graph and then check its properties:
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - hasEulerTrail
+-->
+
+```purescript
+hasEulerTrail :: StateGraph -> Boolean
+hasEulerTrail graph =
+  let
+    nodes :: Array StateNode
+    nodes = fromFoldable (Graph.getNodes graph)
+
+    countEdgesByNode :: Array Int
+    countEdgesByNode = map (\node -> Set.size (Graph.getOutgoingEdges node graph)) nodes
+
+    sumOddEdges :: Int
+    sumOddEdges = (Array.length <<< Array.filter Int.odd) countEdgesByNode
+  in
+    sumOddEdges == 2 || sumOddEdges == 0
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L21-L33">test/Examples/Common.purs L21-L33</a></sup></p>
+<!-- PD_END -->
+
+To perform the analysis, we convert the reflected **Transit** specification into a graph and then check its properties:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -853,15 +934,7 @@ spec = do
   describe ".." do
     it "should assert1" do
       assert1
-    it "..." do
-      let transit = reflectType (Proxy @BridgesKoenigsbergTransit)
-      let graph = mkStateGraph transit
-      Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
-      Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
-      Set.size (Graph.getOutgoingEdges "LandC" graph) `shouldEqual` 3
-      Set.size (Graph.getOutgoingEdges "LandD" graph) `shouldEqual` 3
-      hasEulerCircle graph `shouldEqual` false
-      hasEulerTrail graph `shouldEqual` false
+      assert2
 
 main :: Effect Unit
 main = do
@@ -882,14 +955,94 @@ main = do
     { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L134-L169">test/Examples/BridgesKoenigsberg.purs L134-L169</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L152-L179">test/Examples/BridgesKoenigsberg.purs L152-L179</a></sup></p>
 <!-- PD_END -->
 
 The key steps are:
 
 1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesKoenigsbergTransit)` converts the type-level DSL to a term-level representation
-2. **Convert to a graph**: `mkStateGraph transit` transforms the transit specification into a `StateGraph`—a general-purpose graph data structure
+2. **Convert to a graph**: `mkStateGraph transit` transforms the **Transit** specification into a `StateGraph`—a general-purpose graph data structure
 3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
+
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - nodeDegree
+-->
+
+```purescript
+nodeDegree :: StateNode -> StateGraph -> Int
+nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L18-L19">test/Examples/Common.purs L18-L19</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - hasEulerTrail
+-->
+
+```purescript
+hasEulerTrail :: StateGraph -> Boolean
+hasEulerTrail graph =
+  let
+    nodes :: Array StateNode
+    nodes = fromFoldable (Graph.getNodes graph)
+
+    countEdgesByNode :: Array Int
+    countEdgesByNode = map (\node -> Set.size (Graph.getOutgoingEdges node graph)) nodes
+
+    sumOddEdges :: Int
+    sumOddEdges = (Array.length <<< Array.filter Int.odd) countEdgesByNode
+  in
+    sumOddEdges == 2 || sumOddEdges == 0
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L21-L33">test/Examples/Common.purs L21-L33</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - assert1
+-->
+
+```purescript
+assert1 :: Aff Unit
+assert1 =
+  for_ [ updateClassic, update ] \fn ->
+    assertWalk fn
+      LandA
+      [ Cross_a /\ LandB
+      , Cross_f /\ LandD
+      , Cross_g /\ LandC
+      , Cross_c /\ LandA
+      , Cross_e /\ LandD
+      , Cross_g /\ LandC
+      , Cross_d /\ LandA
+      , Cross_b /\ LandB
+      ]
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L127-L140">test/Examples/BridgesKoenigsberg.purs L127-L140</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - assert2
+-->
+
+```purescript
+assert2 :: Aff Unit
+assert2 = do
+  hasEulerTrail graph `shouldEqual` false
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L148-L150">test/Examples/BridgesKoenigsberg.purs L148-L150</a></sup></p>
+<!-- PD_END -->
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
 
@@ -905,9 +1058,9 @@ Since all four vertices have an odd degree, the graph has **4 vertices with odd 
 
 This confirms Euler's original conclusion: it's impossible to walk through Königsberg crossing each bridge exactly once.
 
-This example demonstrates that transit's value extends far beyond state machine documentation. By reflecting the type-level specification to a term-level graph data structure, you gain access to a rich ecosystem of graph algorithms and analysis tools. The same DSL that ensures compile-time correctness for your state transitions can also power runtime graph analysis, pathfinding, cycle detection, and more.
+This example demonstrates that **Transit**'s value extends far beyond state machine documentation. By reflecting the type-level specification to a term-level graph data structure, you gain access to a rich ecosystem of graph algorithms and analysis tools. The same DSL that ensures compile-time correctness for your state transitions can also power runtime graph analysis, pathfinding, cycle detection, and more.
 
-In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how transit can help verify and understand graph properties beyond simple state machines.
+In the next example, we'll see a graph that **does** have an Eulerian trail, demonstrating how **Transit** can help verify and understand graph properties beyond simple state machines.
 
 ## Example 4: The house of Santa Claus
 
@@ -1001,7 +1154,6 @@ spec = do
 
       foldl update N_1 walk `shouldEqual` N_2
 
-      hasEulerCircle graph `shouldEqual` false
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
@@ -1063,7 +1215,7 @@ main = do
     { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L136-L212">test/Examples/HouseOfSantaClaus.purs L136-L212</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L136-L211">test/Examples/HouseOfSantaClaus.purs L136-L211</a></sup></p>
 <!-- PD_END -->
 
 ## More
@@ -1074,11 +1226,11 @@ Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
 
 So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
 
-For these cases, transit provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad` (commonly `Effect`, `Aff`, or `ReaderT`).
+For these cases, **Transit** provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad` (commonly `Effect`, `Aff`, or `ReaderT`).
 
 The key differences from pure update functions are:
 
-1. **Use `mkUpdateGenericM` instead of `mkUpdateGeneric`** - This tells transit you want a monadic update function
+1. **Use `mkUpdateGenericM` instead of `mkUpdateGeneric`** - This tells **Transit** you want a monadic update function
 2. **Use `matchM` instead of `match`** - This allows your handlers to return values in the monadic context
 3. **Type signature includes the monad** - Instead of `State -> Msg -> State`, you get `State -> Msg -> m State`
 

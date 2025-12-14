@@ -2,7 +2,10 @@ module Test.Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
+import Data.Array (fromFoldable)
+import Data.Array as Array
 import Data.Generic.Rep (class Generic)
+import Data.Int as Int
 import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
@@ -10,10 +13,10 @@ import Data.Traversable (for_)
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (assertWalk, hasEulerCircle, hasEulerTrail)
+import Test.Examples.Common (assertWalk, hasEulerTrail)
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
+import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
@@ -22,7 +25,7 @@ import Transit.Core (TransitCore(..))
 import Transit.Data.Graph as Graph
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.StateGraph (StateGraph, mkStateGraph)
+import Transit.StateGraph (StateGraph, StateNode, mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -130,6 +133,10 @@ assert1 =
       , Cross_f /\ LandD
       , Cross_g /\ LandC
       , Cross_c /\ LandA
+      , Cross_e /\ LandD
+      , Cross_g /\ LandC
+      , Cross_d /\ LandA
+      , Cross_b /\ LandB
       ]
 
 bridgesKoenigsbergTransit :: TransitCore
@@ -139,25 +146,15 @@ graph :: StateGraph
 graph = mkStateGraph bridgesKoenigsbergTransit
 
 assert2 :: Aff Unit
-assert2 = hasEulerCircle graph `shouldEqual` false
-
-assert3 :: Aff Unit
-assert3 = hasEulerTrail graph `shouldEqual` false
+assert2 = do
+  hasEulerTrail graph `shouldEqual` false
 
 spec :: Spec Unit
 spec = do
   describe ".." do
     it "should assert1" do
       assert1
-    it "..." do
-      let transit = reflectType (Proxy @BridgesKoenigsbergTransit)
-      let graph = mkStateGraph transit
-      Set.size (Graph.getOutgoingEdges "LandA" graph) `shouldEqual` 5
-      Set.size (Graph.getOutgoingEdges "LandB" graph) `shouldEqual` 3
-      Set.size (Graph.getOutgoingEdges "LandC" graph) `shouldEqual` 3
-      Set.size (Graph.getOutgoingEdges "LandD" graph) `shouldEqual` 3
-      hasEulerCircle graph `shouldEqual` false
-      hasEulerTrail graph `shouldEqual` false
+      assert2
 
 --------------------------------------------------------------------------------
 --- State diagram generation

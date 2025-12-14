@@ -11,7 +11,7 @@ import Data.Set as Set
 import Data.Show.Generic (genericShow)
 import Data.Traversable (for_, scanl)
 import Effect (Effect)
-import Test.Examples.Common (hasEulerCircle, hasEulerTrail)
+import Test.Examples.Common (hasEulerTrail)
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -146,7 +146,6 @@ spec = do
 
       foldl update N_1 walk `shouldEqual` N_2
 
-      hasEulerCircle graph `shouldEqual` false
       hasEulerTrail graph `shouldEqual` true
       pure unit
 

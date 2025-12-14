@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#141414";color = "#ffffff";fontcolor = "#ffffff"
+rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#141414";color = "#c8c8c8";fontcolor = "#c8c8c8"
 LandA [shape = "box", label = <<b>LandA</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 LandB [shape = "box", label = <<b>LandB</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 LandB -> LandA [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>Cross_a</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]

@@ -265,7 +265,7 @@ themeHarmonyLight =
 themeHarmonyDark :: Theme
 themeHarmonyDark =
   { bgColor: Color.rgb 20 20 20
-  , titleColor: Color.rgb 255 255 255
+  , titleColor: Color.rgb 200 200 200
   , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 255 255 255
   , undirectedEdgeFontColor: Color.rgb 255 255 255

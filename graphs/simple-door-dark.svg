@@ -8,7 +8,7 @@
  viewBox="0.00 0.00 178.00 150.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 146)">
 <polygon fill="#141414" stroke="transparent" points="-4,4 -4,-146 174,-146 174,4 -4,4"/>
-<text text-anchor="start" x="8" y="-129.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#ffffff">Simple Door State Machine</text>
+<text text-anchor="start" x="8" y="-129.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#c8c8c8">Simple Door State Machine</text>
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
