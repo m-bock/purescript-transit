@@ -103,21 +103,30 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-main :: Effect Unit
-main = do
+generateStateDiagram :: Effect Unit
+generateStateDiagram = do
   let
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  for_
-    [ { theme: themeHarmonyLight, file: "graphs/simple-door-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/simple-door-dark.dot" }
-    ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { theme = opts.theme
-        }
+  TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
+    { theme = themeHarmonyLight
+    }
+
+  TransitGraphviz.writeToFile "graphs/simple-door-dark.dot" transit _
+    { theme = themeHarmonyDark
+    }
+
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
+  let
+    transit = reflectType (Proxy @SimpleDoorTransit)
 
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
+
+main :: Effect Unit
+main = do
+  generateStateDiagram
+  generateTransitionTable
 
 --------------------------------------------------------------------------------
 --- Instances

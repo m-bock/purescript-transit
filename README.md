@@ -14,7 +14,7 @@
     - [About This Documentation](#about-this-documentation)
     - [Installation](#installation)
   - [Example 1: A Simple Door](#example-1-a-simple-door)
-    - [Visual Representation](#visual-representation)
+    - [The State Machine](#the-state-machine)
     - [States and Messages](#states-and-messages)
     - [State updates: The Classic Approach](#state-updates-the-classic-approach)
     - [State updates: The Transit Approach](#state-updates-the-transit-approach)
@@ -65,7 +65,7 @@ spago install transit
 
 Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of compile-time safety and automatic documentation generation.
 
-### Visual Representation
+### The State Machine
 
 Here's the state diagram:
 
@@ -362,50 +362,27 @@ split: true
 <!-- PD_END -->
 
 <!-- PD_START:purs
-filePath: src/Transit/Generators/Graphviz.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
-  - Options
+  - generateStateDiagram
 -->
 
 ```purescript
-type Options =
-  { title :: Maybe String
-  , theme :: Theme
-  , globalAttrsRaw :: Maybe String
-  , nodeAttrsRaw :: Maybe (String -> String)
-  , useDecisionNodes :: Boolean
-  , useUndirectedEdges :: Boolean
-  , entryPoints :: Array String
-  }
-```
-
-<p align="right"><sup>🗎 <a href="src/Transit/Generators/Graphviz.purs#L191-L199">src/Transit/Generators/Graphviz.purs L191-L199</a></sup></p>
-<!-- PD_END -->
-
-<!-- PD_START:purs
-filePath: test/Examples/GenerateStateDiagrams.purs
-pick:
-  - main
--->
-
-```purescript
-main :: Effect Unit
-main = do
+generateStateDiagram :: Effect Unit
+generateStateDiagram = do
   let
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  for_
-    [ { theme: themeHarmonyLight, file: "graphs/simple-door-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/simple-door-dark.dot" }
-    ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { title = Just "Simple Door"
-        , theme = opts.theme
-        }
+  TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
+    { theme = themeHarmonyLight
+    }
+
+  TransitGraphviz.writeToFile "graphs/simple-door-dark.dot" transit _
+    { theme = themeHarmonyDark
+    }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L14-L27">test/Examples/GenerateStateDiagrams.purs L14-L27</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L106-L117">test/Examples/SimpleDoor.purs L106-L117</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -434,22 +411,21 @@ In addition to state diagrams, you can also generate transition tables from the 
 The process is identical to generating state diagrams—you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
 
 <!-- PD_START:purs
-filePath: test/Examples/GenerateTransitionTables.purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
-  - main
+  - generateTransitionTable
 -->
 
 ```purescript
-main :: Effect Unit
-main = do
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
   let
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitTable.writeToFile "graphs/simple-door.html" transit _
-    { title = Just "Simple Door" }
+  TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L12-L18">test/Examples/GenerateTransitionTables.purs L12-L18</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L119-L124">test/Examples/SimpleDoor.purs L119-L124</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
