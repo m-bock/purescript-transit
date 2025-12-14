@@ -17,7 +17,6 @@
     - [States and Messages](#states-and-messages)
     - [State updates: The Classic Approach](#state-updates-the-classic-approach)
     - [State updates: The Transit Approach](#state-updates-the-transit-approach)
-    - [Compile-Time Safety](#compile-time-safety)
     - [Writing Tests for the update function](#writing-tests-for-the-update-function)
     - [Generate State Diagrams](#generate-state-diagrams)
     - [Generate Transition Tables](#generate-transition-tables)
@@ -219,24 +218,6 @@ This approach addresses all the drawbacks we saw earlier:
 - **Compile-time safety**: The compiler verifies that your `match` lines exactly correspond to the specification. If you miss a transition or add an invalid one, the code won't compile.
 - **No documentation drift**: The specification is the source of truth. If you change the spec, the compiler forces you to update the implementation to match.
 - **Automatic verification**: You don't need to manually check completeness—the compiler does it for you. Every transition in the spec must have a corresponding `match` line, and you can't add extra matches that aren't in the spec.
-
-### Compile-Time Safety
-
-The type system ensures that your implementation matches the specification. The following will **not** compile:
-
-- 🔴 Missing a match line for a state transition
-- 🔴 Matching on illegal state/message combinations
-- 🔴 Returning illegal states
-- 🔴 Misspelled names of states and messages
-
-Conversely, the compiler guarantees:
-
-- 🟢 All matches are covered
-- 🟢 Each match is on the correct state/message combination
-- 🟢 Each match returns the correct state
-- 🟢 All symbols (type-level strings) are spelled correctly
-
-Later we'll see how to generate the state diagram directly from the spec, ensuring it always stays in sync with the code.
 
 ### Writing Tests for the update function
 
