@@ -5,7 +5,33 @@
 </picture>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- END doctoc -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Transit - Type-Safe State Machines](#transit---type-safe-state-machines)
+  - [Introduction](#introduction)
+    - [Key Features](#key-features)
+    - [About This Documentation](#about-this-documentation)
+    - [Installation](#installation)
+  - [Example 1: A Simple Door](#example-1-a-simple-door)
+    - [The State Machine](#the-state-machine)
+    - [States and Messages](#states-and-messages)
+    - [State updates: The Classic Approach](#state-updates-the-classic-approach)
+    - [State updates: The Transit Approach](#state-updates-the-transit-approach)
+    - [Writing Tests for the update function](#writing-tests-for-the-update-function)
+    - [Generating Diagrams and Tables](#generating-diagrams-and-tables)
+    - [Conclusion](#conclusion)
+  - [Example 2: Door with Pin](#example-2-door-with-pin)
+    - [State updates: The Classic Approach](#state-updates-the-classic-approach-1)
+    - [State updates: The Transit Approach](#state-updates-the-transit-approach-1)
+    - [Type signatures](#type-signatures)
+    - [Variants](#variants)
+  - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
+    - [Graph Analysis](#graph-analysis)
+  - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
+  - [More](#more)
+    - [Monadic update functions](#monadic-update-functions)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Transit - Type-Safe State Machines
 
@@ -442,6 +468,18 @@ generateTransitionTable = do
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
 
 Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
+
+### Conclusion
+
+In this example, we've seen how **Transit** helps you build type-safe state machines. We started with a simple door that can be open or closed, and learned the core workflow:
+
+1. **Define the state machine** using **Transit**'s type-level DSL specification
+2. **Implement the update function** using `mkUpdateGeneric` with `match` clauses that the compiler verifies against the specification
+3. **Generate documentation** automatically—both state diagrams and transition tables—from the same specification
+
+The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.
+
+While this example was simple, it demonstrates **Transit**'s fundamental approach. In the next example, we'll see how **Transit** handles more complex scenarios with states that contain data and conditional transitions.
 
 ## Example 2: Door with Pin
 
