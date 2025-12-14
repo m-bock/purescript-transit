@@ -3,7 +3,7 @@ gen-svgs:
 
 
 gen-docs:
-    PATCHDOWN_FILE_PATH="./README.md" npx spago run -m Docs.Main
+    ./merge-readme.sh
 
 gen-doctoc:
     npx doctoc --maxlevel 3 README.md

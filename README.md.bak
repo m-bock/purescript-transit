@@ -6,6 +6,7 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Transit - Type-Safe State Machines](#transit---type-safe-state-machines)
   - [Introduction](#introduction)
@@ -68,15 +69,11 @@ Let's start with a simple door state machine to demonstrate **Transit**'s core c
 
 Here's the state diagram:
 
-#### State Diagram
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/simple-door-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="graphs/simple-door-light.svg">
   <img alt="Simple Door state diagram" src="graphs/simple-door-light.svg">
 </picture>
-
-#### Transition Table
 
 And here's the corresponding transition table:
 
@@ -1240,4 +1237,3 @@ update = mkUpdateGenericM @SimpleDoorTransit
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
-
