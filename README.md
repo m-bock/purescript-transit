@@ -5,33 +5,7 @@
 </picture>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Transit - Type-Safe State Machines](#transit---type-safe-state-machines)
-  - [Introduction](#introduction)
-    - [Key Features](#key-features)
-    - [About This Documentation](#about-this-documentation)
-    - [Installation](#installation)
-  - [Example 1: A Simple Door](#example-1-a-simple-door)
-    - [The State Machine](#the-state-machine)
-    - [States and Messages](#states-and-messages)
-    - [State updates: The Classic Approach](#state-updates-the-classic-approach)
-    - [State updates: The Transit Approach](#state-updates-the-transit-approach)
-    - [Writing Tests for the update function](#writing-tests-for-the-update-function)
-    - [Generate State Diagrams](#generate-state-diagrams)
-    - [Generate Transition Tables](#generate-transition-tables)
-  - [Example 2: Door with Pin](#example-2-door-with-pin)
-    - [State updates: The Classic Approach](#state-updates-the-classic-approach-1)
-    - [State updates: The Transit Approach](#state-updates-the-transit-approach-1)
-    - [Type signatures](#type-signatures)
-    - [Variants](#variants)
-  - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
-    - [Graph Analysis](#graph-analysis)
-  - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
-  - [More](#more)
-    - [Monadic update functions](#monadic-update-functions)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- END doctoc -->
 
 # Transit - Type-Safe State Machines
 
@@ -371,11 +345,13 @@ assert4 =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L81-L91">test/Examples/SimpleDoor.purs L81-L91</a></sup></p>
 <!-- PD_END -->
 
-### Generate State Diagrams
+### Generating Diagrams and Tables
 
-One of the key benefits of **Transit** is that you can generate state diagrams directly from your type-level specification. This ensures your diagrams always stay in sync with your code—no manual updates required.
+**Transit** can generate both state diagrams and transition tables directly from your type-level specification. Both generation processes use the same approach: `reflectType` converts your type-level DSL specification to a term-level equivalent, which can then be used to generate the documentation.
 
-To generate a state diagram, you use `reflectType` to convert your type-level DSL specification to a term-level equivalent, then write it to a Graphviz `.dot` file:
+#### State Diagrams
+
+To generate a state diagram, you use `TransitGraphviz.writeToFile` to render a Graphviz `.dot` file:
 
 <!-- PD_START:purs
 filePath: src/Transit/Generators/Graphviz.purs
@@ -421,6 +397,12 @@ The process works in two steps:
 1. `reflectType` converts your type-level DSL specification to a term-level equivalent
 2. `TransitGraphviz.writeToFile` uses that to render a Graphviz `.dot` file
 
+The `writeToFile` function accepts an options record that lets you customize the diagram. The `theme` option controls the color scheme. **Transit** provides six built-in themes:
+
+- `themeHarmonyLight` and `themeHarmonyDark` - Harmonious color palettes
+- `themeContrastLight` and `themeContrastDark` - High-contrast palettes for better visibility
+- `themeGradientLight` and `themeGradientDark` - Gradient-based color schemes
+
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
 ```bash
@@ -433,13 +415,11 @@ Or for PNG:
 dot -Tpng graphs/simple-door.dot -o graphs/simple-door.png
 ```
 
-Since the diagram is generated from the same DSL specification used to create the type-safe update function, any changes to your state machine are automatically reflected in both the code and the diagram. This eliminates the common problem of documentation getting out of sync with implementation.
+#### Transition Tables
 
-### Generate Transition Tables
+In addition to state diagrams, you can also generate transition tables from the same specification. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
 
-In addition to state diagrams, you can also generate transition tables from the same graph data structure. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
-
-The process is identical to generating state diagrams—you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
+The process is identical—you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -458,8 +438,6 @@ generateTransitionTable = do
 
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L119-L124">test/Examples/SimpleDoor.purs L119-L124</a></sup></p>
 <!-- PD_END -->
-
-<p align="right">
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
 
