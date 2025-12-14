@@ -96,9 +96,11 @@ filePath: graphs/simple-door.html
 
 This table provides the same information in a structured format. Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions—like trying to open an already open door—simply don't appear in the table.
 
-Now that we've seen the visual representation, let's see how we represent this state machine in PureScript code. We'll start by defining the states and messages as simple data types:
+Now let's see how we represent this in PureScript code.
 
 ### States and Messages
+
+To represent our door in code, we need two things: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -116,11 +118,13 @@ data Msg = Close | Open
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p>
 <!-- PD_END -->
 
-These data types define the two possible states of our door and the two messages that can trigger state transitions. With these types in place, we can now implement the state transition logic. Let's first look at the traditional approach, then see how **Transit** improves upon it.
+The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier—each state and each transition from the diagram has a corresponding value in these types.
+
+With these types in place, we can now implement the logic that handles state transitions. Let's first look at the traditional approach, then see how **Transit** improves upon it.
 
 ### State updates: The Classic Approach
 
-The traditional way to implement state transitions is to write an update function that takes a state and a message and returns a new state:
+Now that we have our types, we need a function that takes the current state and a message, and returns the new state. The traditional way to implement this is with a pattern-matching function:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -139,15 +143,21 @@ updateClassic state msg = case state, msg of
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L35-L39">test/Examples/SimpleDoor.purs L35-L39</a></sup></p>
 <!-- PD_END -->
 
-While this approach works, it has some drawbacks:
+This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
 
-- The state diagram and implementation can easily get out of sync
-- The compiler won't catch missing transitions or invalid state/message combinations
-- You need to manually ensure all cases are handled correctly
+While this approach works and is straightforward, it has some drawbacks:
+
+- **No compile-time safety**: The compiler won't catch if you forget to handle a valid transition or if you add a new state but forget to update the function
+- **Documentation drift**: If you update the state diagram, there's nothing ensuring the code stays in sync—you have to remember to update both manually
+- **Manual maintenance**: You need to manually ensure all cases are handled correctly, and there's no way to verify completeness at compile time
 
 ### State updates: The Transit Approach
 
-With the **Transit** library, we take a different approach. First, we define a type-level specification of the state machine:
+With the **Transit** library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify.
+
+#### The Type-Level Specification
+
+First, we define the state machine structure using **Transit**'s type-level DSL:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -165,9 +175,18 @@ type SimpleDoorTransit =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L45-L48">test/Examples/SimpleDoor.purs L45-L48</a></sup></p>
 <!-- PD_END -->
 
-This DSL syntax reads as: "From state `DoorOpen` on message `Close`, transition to state `DoorClosed`" and "From state `DoorClosed` on message `Open`, transition to state `DoorOpen`". The `Empty` constructor initializes an empty transition list, and `:*` is an infix operator that appends each transition to the list, building up the complete state machine specification.
+Breaking down the syntax:
 
-This type-level specification fully defines the state machine. Based on this spec, we can now create an update function that the compiler ensures only allows legal state transitions:
+- `Empty` initializes an empty transition list
+- `:*` is an infix operator that appends each transition to the list
+- `"DoorOpen" :@ "Close" >| "DoorClosed"` means: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`
+- The `@` operator connects a state to a message, and `>|` indicates the target state
+
+This type-level specification fully defines the state machine's structure. The compiler can now use this specification to ensure our implementation is correct.
+
+#### The Update Function
+
+Based on this specification, we create an update function using `mkUpdateGeneric`:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -185,7 +204,21 @@ update = mkUpdateGeneric @SimpleDoorTransit
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L50-L53">test/Examples/SimpleDoor.purs L50-L53</a></sup></p>
 <!-- PD_END -->
 
-Notice that the type signature is identical to the classic approach—`State -> Msg -> State`.
+Here's how this works:
+
+- `mkUpdateGeneric @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application, passing the specification to the function.
+- Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
+- `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
+
+Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. This means you can use **Transit**'s update function as a drop-in replacement without changing any calling code.
+
+#### How This Solves the Classic Approach's Problems
+
+This approach addresses all the drawbacks we saw earlier:
+
+- **Compile-time safety**: The compiler verifies that your `match` lines exactly correspond to the specification. If you miss a transition or add an invalid one, the code won't compile.
+- **No documentation drift**: The specification is the source of truth. If you change the spec, the compiler forces you to update the implementation to match.
+- **Automatic verification**: You don't need to manually check completeness—the compiler does it for you. Every transition in the spec must have a corresponding `match` line, and you can't add extra matches that aren't in the spec.
 
 ### Compile-Time Safety
 
