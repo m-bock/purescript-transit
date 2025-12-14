@@ -221,11 +221,11 @@ This approach addresses all the drawbacks we saw earlier:
 
 ### Writing Tests for the update function
 
-As the equality of the type signatures of the classic and **Transit** approaches update functions already suggest: We can use them interchangeably. That means **Transit** can be seamlessly integrated into existing codebases. Let's verify this.
+Since both the classic and **Transit** approaches have the same type signature (`State -> Msg -> State`), they can be used interchangeably. Let's see how to write tests for the update function and verify that both approaches behave identically.
 
 #### Testing State Transitions
 
-We'll make use of the following functions from the `Data.Array` module of the `arrays` package:
+To test our update function, we'll use two useful functions from the `Data.Array` module:
 
 <!-- PD_START:purs
 inline: true
@@ -246,7 +246,7 @@ split: true
 
 <!-- PD_END -->
 
-Now, how can we test the update function? An easy way is to perform a fold over the messages and check if the final state is the expected one:
+The simplest way to test the update function is to use `foldl` to apply a sequence of messages and check if the final state matches what we expect:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -265,7 +265,9 @@ assert1 =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L60-L63">test/Examples/SimpleDoor.purs L60-L63</a></sup></p>
 <!-- PD_END -->
 
-However, this only checks the final state. We should also check all intermediate states. For this purpose the scanl function is perfectly suited. It works like foldl, but it returns an array of all intermediate states.
+This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
+
+This test only checks the final result. To be more thorough, we should also verify that each step along the way works correctly. The `scanl` function is perfect for this—it shows us all the intermediate states, not just the final one.
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -284,7 +286,9 @@ assert2 =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L66-L69">test/Examples/SimpleDoor.purs L66-L69</a></sup></p>
 <!-- PD_END -->
 
-Since we want to perform many of these tests, we'll define a convenient helper function `assertWalk` that performs the test and asserts the result:
+This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
+
+Since we'll want to write many of these tests, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
 
 <!-- PD_START:purs
 pick:
@@ -318,7 +322,7 @@ assertWalk updateFn initState walk = do
 
 <!-- PD_END -->
 
-We can use it like this:
+The function extracts the messages from the pairs, applies them sequentially using `scanl`, and verifies that the resulting states match the expected ones. Here's how we use it:
 
 <!-- PD_START:purs
 pick:
@@ -341,7 +345,7 @@ assert3 =
 
 #### Verifying Interchangeability
 
-Of course we want to check this with both the classic and **Transit** approaches. The following test checks all intermediate states for both approaches.
+Since both approaches have identical type signatures, we should verify they produce the same results. The following test runs the same sequence of messages through both `updateClassic` and `update`, checking that all intermediate states match:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
