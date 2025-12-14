@@ -2,6 +2,7 @@ module Test.Examples.DoorWithPin (main, spec, DoorWithPinTransit, State(..), Msg
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
 import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
@@ -138,13 +139,13 @@ main = do
     ]
     \opts ->
       TransitGraphviz.writeToFile opts.file transit _
-        { title = "Door with Pin"
+        { title = Just "Door with Pin"
         , theme = opts.theme
         , entryPoints = [ "DoorOpen" ]
         }
 
   TransitTable.writeToFile "graphs/door-with-pin.html" transit _
-    { title = "Door with Pin" }
+    { title = Just "Door with Pin" }
 
 --------------------------------------------------------------------------------
 --- Instances

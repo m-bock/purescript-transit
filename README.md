@@ -14,6 +14,8 @@
     - [About This Documentation](#about-this-documentation)
     - [Installation](#installation)
   - [Example 1: A Simple Door](#example-1-a-simple-door)
+    - [Visual Representation](#visual-representation)
+    - [States and Messages](#states-and-messages)
     - [State updates: The Classic Approach](#state-updates-the-classic-approach)
     - [State updates: The Transit Approach](#state-updates-the-transit-approach)
     - [Compile-Time Safety](#compile-time-safety)
@@ -61,9 +63,11 @@ spago install transit
 
 ## Example 1: A Simple Door
 
-Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of compile-time safety and automatic documentation generation. Here's the state diagram for our simple door:
+Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of compile-time safety and automatic documentation generation.
 
-<p>
+### Visual Representation
+
+Here's the state diagram:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/simple-door-dark.svg">
@@ -71,19 +75,17 @@ Let's start with a simple door state machine to demonstrate **Transit**'s core c
   <img alt="Simple Door state diagram" src="graphs/simple-door-light.svg">
 </picture>
 
-</p>
-
-The diagram shows a simple state machine with two states (`DoorOpen` and `DoorClosed`) and two transitions (`Close` and `Open`). The arrows indicate the valid transitions: you can close an open door, and you can open a closed door. This visual representation makes it easy to understand the state machine's behavior at a glance. Another way to represent this same information is a transition table, which provides a tabular view of all possible state transitions:
-
-<p>
+And here's the corresponding transition table:
 
 <!-- PD_START:raw
 filePath: graphs/simple-door.html
---><table><caption>Simple Door State Machine</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
+--><table><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table><!-- PD_END -->
 
-</p>
+The diagram shows a simple state machine with two states (`DoorOpen` and `DoorClosed`) and two transitions (`Close` and `Open`). The arrows indicate the valid transitions: you can close an open door, and you can open a closed door. The table provides a tabular view of the same information, clearly showing all valid transitions in a structured format. Both the diagram and table are automatically generated from the same **Transit** specification, ensuring they always stay in sync with the code.
 
-The table clearly shows all valid transitions in a structured format. Both the diagram and table are automatically generated from the same **Transit** specification, ensuring they always stay in sync with the code. Now let's see how we represent this state machine in PureScript code. We start by defining the states and messages as simple data types:
+Now let's see how we represent this state machine in PureScript code. We start by defining the states and messages as simple data types:
+
+### States and Messages
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -356,7 +358,7 @@ split: true
 
 - `writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit`
 
-<p align="right"><sup>🗎 <a href="src/Transit/Generators/Graphviz.purs#L211-L211">src/Transit/Generators/Graphviz.purs L211-L211</a></sup></p>
+<p align="right"><sup>🗎 <a href="src/Transit/Generators/Graphviz.purs#L212-L212">src/Transit/Generators/Graphviz.purs L212-L212</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -367,7 +369,7 @@ pick:
 
 ```purescript
 type Options =
-  { title :: String
+  { title :: Maybe String
   , theme :: Theme
   , globalAttrsRaw :: Maybe String
   , nodeAttrsRaw :: Maybe (String -> String)
@@ -377,7 +379,7 @@ type Options =
   }
 ```
 
-<p align="right"><sup>🗎 <a href="src/Transit/Generators/Graphviz.purs#L190-L198">src/Transit/Generators/Graphviz.purs L190-L198</a></sup></p>
+<p align="right"><sup>🗎 <a href="src/Transit/Generators/Graphviz.purs#L191-L199">src/Transit/Generators/Graphviz.purs L191-L199</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -398,12 +400,12 @@ main = do
     ]
     \opts ->
       TransitGraphviz.writeToFile opts.file transit _
-        { title = "Simple Door"
+        { title = Just "Simple Door"
         , theme = opts.theme
         }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L13-L26">test/Examples/GenerateStateDiagrams.purs L13-L26</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateStateDiagrams.purs#L14-L27">test/Examples/GenerateStateDiagrams.purs L14-L27</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -444,10 +446,10 @@ main = do
     transit = reflectType (Proxy @SimpleDoorTransit)
 
   TransitTable.writeToFile "graphs/simple-door.html" transit _
-    { title = "Simple Door" }
+    { title = Just "Simple Door" }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L11-L17">test/Examples/GenerateTransitionTables.purs L11-L17</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/GenerateTransitionTables.purs#L12-L18">test/Examples/GenerateTransitionTables.purs L12-L18</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
@@ -500,7 +502,7 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L23-L32">test/Examples/DoorWithPin.purs L23-L32</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L24-L33">test/Examples/DoorWithPin.purs L24-L33</a></sup></p>
 <!-- PD_END -->
 
 ### State updates: The Classic Approach
@@ -527,7 +529,7 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L38-L48">test/Examples/DoorWithPin.purs L38-L48</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L39-L49">test/Examples/DoorWithPin.purs L39-L49</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
@@ -557,7 +559,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L54-L63">test/Examples/DoorWithPin.purs L54-L63</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L55-L64">test/Examples/DoorWithPin.purs L55-L64</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -590,7 +592,7 @@ update = mkUpdateGeneric @DoorWithPinTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L65-L81">test/Examples/DoorWithPin.purs L65-L81</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L66-L82">test/Examples/DoorWithPin.purs L66-L82</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
@@ -864,7 +866,7 @@ assert1 =
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
---><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
+--><table><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
 
 The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
@@ -1125,7 +1127,7 @@ type HouseOfSantaClausTransit =
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
---><table><caption>Untitled</caption><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
+--><table><thead><tr><th>From State</th><th /><th>Transition</th><th /><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/house-of-santa-claus-dark.svg">

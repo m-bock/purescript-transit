@@ -107,7 +107,6 @@ main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @SimpleDoorTransit)
-    title = "Simple Door State Machine"
 
   for_
     [ { theme: themeHarmonyLight, file: "graphs/simple-door-light.dot" }
@@ -115,12 +114,10 @@ main = do
     ]
     \opts ->
       TransitGraphviz.writeToFile opts.file transit _
-        { title = title
-        , theme = opts.theme
+        { theme = opts.theme
         }
 
-  TransitTable.writeToFile "graphs/simple-door.html" transit _
-    { title = title }
+  TransitTable.writeToFile "graphs/simple-door.html" transit identity
 
 --------------------------------------------------------------------------------
 --- Instances

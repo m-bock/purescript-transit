@@ -22,7 +22,9 @@ import Unsafe.Coerce (unsafeCoerce)
 toHtml :: Options -> TransitCore -> Html.Node
 toHtml options transit@(TransitCore matches) = Html.table []
   $ join
-      [ pure $ Html.caption [] [ Html.text options.title ]
+      [ case options.title of
+          Just title -> [ Html.caption [] [ Html.text title ] ]
+          Nothing -> []
       , pure $ Html.thead [] [ mkHeader ]
       , Array.concatMap (mkMatch options transit) matches
       ]
@@ -85,13 +87,13 @@ mkHeader = Html.tr []
   ]
 
 type Options =
-  { title :: String
+  { title :: Maybe String
   , useUndirectedEdges :: Boolean
   }
 
 defaultOptions :: Options
 defaultOptions =
-  { title: "Untitled"
+  { title: Nothing
   , useUndirectedEdges: false
   }
 

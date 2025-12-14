@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000"
+rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000"
 layout=neato
 N_1 [pos="0,0!",shape = "box", label = <<b>N_1</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 N_2 [pos="2,0!",shape = "box", label = <<b>N_2</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]

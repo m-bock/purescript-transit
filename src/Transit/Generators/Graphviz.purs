@@ -95,15 +95,16 @@ mkDecisionEdges decisionNode colors = case _ of
 
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
-  [ D.rankDirTD
-  , D.fontNameArial
-  , D.labelHtmlBold options.title
-  , D.labelLocT
-  , D.fontSize 12
-  , D.bgColor options.theme.bgColor
-  , D.color options.theme.titleColor
-  , D.fontColor options.theme.titleColor
-  ]
+  catMaybes
+    [ pure D.rankDirTD
+    , pure D.fontNameArial
+    , map D.labelHtmlBold options.title
+    , pure D.labelLocT
+    , pure $ D.fontSize 12
+    , pure $ D.bgColor options.theme.bgColor
+    , pure $ D.color options.theme.titleColor
+    , pure $ D.fontColor options.theme.titleColor
+    ]
 
 mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
 mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
@@ -188,7 +189,7 @@ mkDecisionNode name colors = D.Node name Nothing
   ]
 
 type Options =
-  { title :: String
+  { title :: Maybe String
   , theme :: Theme
   , globalAttrsRaw :: Maybe String
   , nodeAttrsRaw :: Maybe (String -> String)
@@ -199,7 +200,7 @@ type Options =
 
 defaultOptions :: Options
 defaultOptions =
-  { title: "Untitled"
+  { title: Nothing
   , theme: themeHarmonyLight
   , globalAttrsRaw: Nothing
   , nodeAttrsRaw: Nothing

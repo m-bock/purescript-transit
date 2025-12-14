@@ -2,6 +2,7 @@ module Test.Examples.GenerateStateDiagrams (main) where
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Traversable (for_)
 import Effect (Effect)
@@ -21,7 +22,7 @@ main = do
     ]
     \opts ->
       TransitGraphviz.writeToFile opts.file transit _
-        { title = "Simple Door"
+        { title = Just "Simple Door"
         , theme = opts.theme
         }
 
