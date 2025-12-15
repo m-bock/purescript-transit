@@ -2,14 +2,15 @@ module Test.Examples.DoorWithPin (main, spec, DoorWithPinTransit, State(..), Msg
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
 import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
-import Data.Traversable (for_, scanl)
+import Data.Traversable (for_)
 import Effect (Effect)
+import Effect.Aff (Aff)
+import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:?), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, returnVia)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
@@ -33,7 +34,7 @@ data Msg
   | Unlock { enteredPin :: String }
 
 --------------------------------------------------------------------------------
---- TraditionalUpdate
+--- Classic Approach
 --------------------------------------------------------------------------------
 
 updateClassic :: State -> Msg -> State
@@ -49,7 +50,7 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 
 --------------------------------------------------------------------------------
---- transit Approach
+--- Transit Approach
 --------------------------------------------------------------------------------
 
 type DoorWithPinTransit =
@@ -85,44 +86,24 @@ update = mkUpdateGeneric @DoorWithPinTransit
 --- Tests
 --------------------------------------------------------------------------------
 
+assert4 :: Aff Unit
+assert4 =
+  for_ [ updateClassic, update ]
+    \fn ->
+      assertWalk fn
+        DoorOpen
+        [ Close ~> DoorClosed
+        , Open ~> DoorOpen
+        , Lock { newPin: "1234" } ~> DoorLocked { pin: "1234" }
+        , Unlock { enteredPin: "abcd" } ~> DoorLocked { pin: "1234" }
+        , Unlock { enteredPin: "1234" } ~> DoorClosed
+        , Open ~> DoorOpen
+        ]
+
 spec :: Spec Unit
-spec = describe "" do
-  let
-
-    initState = DoorOpen
-
-    walk =
-      [ { msg: Close
-        , state: DoorClosed
-        }
-      , { msg: Open
-        , state: DoorOpen
-        }
-      , { msg: Close
-        , state: DoorClosed
-        }
-      , { msg: Lock { newPin: "1234" }
-        , state: DoorLocked { pin: "1234" }
-        }
-      , { msg: Unlock { enteredPin: "abcd" }
-        , state: DoorLocked { pin: "1234" }
-        }
-      , { msg: Unlock { enteredPin: "1234" }
-        , state: DoorClosed
-        }
-      , { msg: Open
-        , state: DoorOpen
-        }
-      ]
-
-    msgs = map _.msg walk
-    expectedStates = map _.state walk
-
-  for_ [ updateClassic, update ] \updateFn ->
-    it "should follow the walk" do
-      let
-        actualStates = scanl updateFn initState msgs
-      actualStates `shouldEqual` expectedStates
+spec = describe "DoorWithPin" do
+  it "should follow the walk" do
+    assert4
 
 --------------------------------------------------------------------------------
 --- State diagram generation

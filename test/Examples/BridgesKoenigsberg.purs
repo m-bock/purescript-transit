@@ -2,30 +2,23 @@ module Test.Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
-import Data.Array (fromFoldable)
-import Data.Array as Array
 import Data.Generic.Rep (class Generic)
-import Data.Int as Int
 import Data.Reflectable (reflectType)
-import Data.Set as Set
 import Data.Show.Generic (genericShow)
 import Data.Traversable (for_)
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, hasEulerTrail)
-import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
-import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner.Node (runSpecAndExitProcess)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Test.Spec.Assertions (shouldEqual)
+import Transit (type (:*), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
-import Transit.Core (TransitCore(..))
-import Transit.Data.Graph as Graph
+import Transit.Core (TransitCore)
+import Transit.DSL (type (|<))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.StateGraph (StateGraph, StateNode, mkStateGraph)
+import Transit.StateGraph (StateGraph, mkStateGraph)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -51,21 +44,24 @@ data Msg
 updateClassic :: State -> Msg -> State
 updateClassic state msg = case state, msg of
   LandA, Cross_a -> LandB
-  LandA, Cross_b -> LandB
-  LandA, Cross_c -> LandC
-  LandA, Cross_d -> LandC
-  LandA, Cross_e -> LandD
-
   LandB, Cross_a -> LandA
+
+  LandA, Cross_b -> LandB
   LandB, Cross_b -> LandA
-  LandB, Cross_f -> LandD
 
+  LandA, Cross_c -> LandC
   LandC, Cross_c -> LandA
-  LandC, Cross_d -> LandA
-  LandC, Cross_g -> LandD
 
+  LandA, Cross_d -> LandC
+  LandC, Cross_d -> LandA
+
+  LandA, Cross_e -> LandD
   LandD, Cross_e -> LandA
+
+  LandB, Cross_f -> LandD
   LandD, Cross_f -> LandB
+
+  LandC, Cross_g -> LandD
   LandD, Cross_g -> LandC
 
   _, _ -> state
@@ -76,26 +72,13 @@ updateClassic state msg = case state, msg of
 
 type BridgesKoenigsbergTransit =
   Transit $ Empty
-    :* ("LandA" :@ "Cross_a" >| "LandB")
-    :* ("LandB" :@ "Cross_a" >| "LandA")
-
-    :* ("LandA" :@ "Cross_b" >| "LandB")
-    :* ("LandB" :@ "Cross_b" >| "LandA")
-
-    :* ("LandA" :@ "Cross_c" >| "LandC")
-    :* ("LandC" :@ "Cross_c" >| "LandA")
-
-    :* ("LandA" :@ "Cross_d" >| "LandC")
-    :* ("LandC" :@ "Cross_d" >| "LandA")
-
-    :* ("LandA" :@ "Cross_e" >| "LandD")
-    :* ("LandD" :@ "Cross_e" >| "LandA")
-
-    :* ("LandB" :@ "Cross_f" >| "LandD")
-    :* ("LandD" :@ "Cross_f" >| "LandB")
-
-    :* ("LandC" :@ "Cross_g" >| "LandD")
-    :* ("LandD" :@ "Cross_g" >| "LandC")
+    :* ("LandA" |< "Cross_a" >| "LandB")
+    :* ("LandA" |< "Cross_b" >| "LandB")
+    :* ("LandA" |< "Cross_c" >| "LandC")
+    :* ("LandA" |< "Cross_d" >| "LandC")
+    :* ("LandA" |< "Cross_e" >| "LandD")
+    :* ("LandB" |< "Cross_f" >| "LandD")
+    :* ("LandC" |< "Cross_g" >| "LandD")
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @BridgesKoenigsbergTransit

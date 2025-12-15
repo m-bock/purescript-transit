@@ -4,6 +4,7 @@ module Transit.DSL
   , type (:?)
   , type (:@)
   , type (>|)
+  , type (|<)
   , class ToTransitCore
   , class ToMatch
   , class ToReturn
@@ -12,6 +13,7 @@ module Transit.DSL
   , StateWithMsg
   , WithGuard
   , AddOut
+  , AddIn
   ) where
 
 import Data.Reflectable (class Reflectable, reflectType)
@@ -30,6 +32,9 @@ data AddMatch a b
 data StateWithMsg :: forall k1 k2. k1 -> k2 -> Type
 data StateWithMsg a b
 
+data AddIn :: forall k1 k2. k1 -> k2 -> Type
+data AddIn a b
+
 data AddOut :: forall k1 k2. k1 -> k2 -> Type
 data AddOut a b
 
@@ -45,6 +50,8 @@ infixr 0 type AddMatch as :*
 infixl 5 type StateWithMsg as :@
 
 infixl 5 type AddOut as >|
+
+infixl 5 type AddIn as |<
 
 infixl 9 type WithGuard as :?
 
@@ -77,6 +84,26 @@ instance ToTransitCore Empty (C.MkTransitCoreTL Nil')
 
 else instance (ToTransitCore xs (C.MkTransitCoreTL ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCoreTL ys)
 
+else instance
+  ( ToTransitCore xs (C.MkTransitCoreTL ys)
+  ) =>
+  ToTransitCore ((s1 |< ms >| s2) :* xs)
+    ( C.MkTransitCoreTL
+        ( C.MkMatchTL s1 ms (C.MkReturnTL s2 :> Nil')
+            :> C.MkMatchTL s2 ms (C.MkReturnTL s1 :> Nil')
+            :> ys
+        )
+    )
+
+else instance
+  ToTransitCore (s1 |< ms >| s2)
+    ( C.MkTransitCoreTL
+        ( C.MkMatchTL s1 ms (C.MkReturnTL s2 :> Nil')
+            :> C.MkMatchTL s2 ms (C.MkReturnTL s1 :> Nil')
+            :> Nil'
+        )
+    )
+
 else instance (ToMatch x t, ToTransitCore xs (C.MkTransitCoreTL ys)) => ToTransitCore (x :* xs) (C.MkTransitCoreTL (t :> ys))
 
 else instance (ToMatch x t) => ToTransitCore x (C.MkTransitCoreTL (t :> Nil'))
@@ -91,6 +118,8 @@ class ToMatch dsl a | dsl -> a
 instance (ToMatch x (C.MkMatchTL s m xs), ToReturn y y') => ToMatch (x >| y) (C.MkMatchTL s m (y' :> xs))
 
 instance ToMatch (x :@ y) (C.MkMatchTL x y Nil')
+
+instance ToMatch (x |< y >| z) (C.MkMatchTL x y Nil')
 
 --------------------------------------------------------------------------------
 -- ToReturn class and instances

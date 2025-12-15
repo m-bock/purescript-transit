@@ -335,9 +335,9 @@ pick:
 assert3 =
   assertWalk update
     DoorOpen
-    [ Close /\ DoorClosed
-    , Open /\ DoorOpen
-    , Close /\ DoorClosed
+    [ Close ~> DoorClosed
+    , Open ~> DoorOpen
+    , Close ~> DoorClosed
     ]
 ```
 
@@ -360,11 +360,11 @@ assert4 =
     \fn ->
       assertWalk fn
         DoorOpen
-        [ Close /\ DoorClosed
-        , Open /\ DoorOpen
-        , Open /\ DoorOpen
-        , Close /\ DoorClosed
-        , Open /\ DoorOpen
+        [ Close ~> DoorClosed
+        , Open ~> DoorOpen
+        , Open ~> DoorOpen
+        , Close ~> DoorClosed
+        , Open ~> DoorOpen
         ]
 ```
 
@@ -525,7 +525,7 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L24-L33">test/Examples/DoorWithPin.purs L24-L33</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L25-L34">test/Examples/DoorWithPin.purs L25-L34</a></sup></p>
 <!-- PD_END -->
 
 ### State updates: The Classic Approach
@@ -552,7 +552,7 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L39-L49">test/Examples/DoorWithPin.purs L39-L49</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L40-L50">test/Examples/DoorWithPin.purs L40-L50</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
@@ -582,7 +582,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L55-L64">test/Examples/DoorWithPin.purs L55-L64</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L56-L65">test/Examples/DoorWithPin.purs L56-L65</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -615,7 +615,7 @@ update = mkUpdateGeneric @DoorWithPinTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L66-L82">test/Examples/DoorWithPin.purs L66-L82</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L67-L83">test/Examples/DoorWithPin.purs L67-L83</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
@@ -790,7 +790,7 @@ data Msg
   | Cross_g
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L36-L45">test/Examples/BridgesKoenigsberg.purs L36-L45</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L29-L38">test/Examples/BridgesKoenigsberg.purs L29-L38</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -802,29 +802,16 @@ pick:
 ```purescript
 type BridgesKoenigsbergTransit =
   Transit $ Empty
-    :* ("LandA" :@ "Cross_a" >| "LandB")
-    :* ("LandB" :@ "Cross_a" >| "LandA")
-
-    :* ("LandA" :@ "Cross_b" >| "LandB")
-    :* ("LandB" :@ "Cross_b" >| "LandA")
-
-    :* ("LandA" :@ "Cross_c" >| "LandC")
-    :* ("LandC" :@ "Cross_c" >| "LandA")
-
-    :* ("LandA" :@ "Cross_d" >| "LandC")
-    :* ("LandC" :@ "Cross_d" >| "LandA")
-
-    :* ("LandA" :@ "Cross_e" >| "LandD")
-    :* ("LandD" :@ "Cross_e" >| "LandA")
-
-    :* ("LandB" :@ "Cross_f" >| "LandD")
-    :* ("LandD" :@ "Cross_f" >| "LandB")
-
-    :* ("LandC" :@ "Cross_g" >| "LandD")
-    :* ("LandD" :@ "Cross_g" >| "LandC")
+    :* ("LandA" |< "Cross_a" >| "LandB")
+    :* ("LandA" |< "Cross_b" >| "LandB")
+    :* ("LandA" |< "Cross_c" >| "LandC")
+    :* ("LandA" |< "Cross_d" >| "LandC")
+    :* ("LandA" |< "Cross_e" >| "LandD")
+    :* ("LandB" |< "Cross_f" >| "LandD")
+    :* ("LandC" |< "Cross_g" >| "LandD")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L77-L98">test/Examples/BridgesKoenigsberg.purs L77-L98</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L73-L81">test/Examples/BridgesKoenigsberg.purs L73-L81</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -858,7 +845,7 @@ update = mkUpdateGeneric @BridgesKoenigsbergTransit
   (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L100-L121">test/Examples/BridgesKoenigsberg.purs L100-L121</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L83-L104">test/Examples/BridgesKoenigsberg.purs L83-L104</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -884,7 +871,7 @@ assert1 =
       ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L127-L140">test/Examples/BridgesKoenigsberg.purs L127-L140</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L110-L123">test/Examples/BridgesKoenigsberg.purs L110-L123</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -916,7 +903,7 @@ nodeDegree :: StateNode -> StateGraph -> Int
 nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L18-L19">test/Examples/Common.purs L18-L19</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L17-L18">test/Examples/Common.purs L17-L18</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -941,7 +928,7 @@ hasEulerTrail graph =
     sumOddEdges == 2 || sumOddEdges == 0
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L21-L33">test/Examples/Common.purs L21-L33</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L20-L32">test/Examples/Common.purs L20-L32</a></sup></p>
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected **Transit** specification into a graph and then check its properties:
@@ -980,7 +967,7 @@ main = do
     { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L152-L179">test/Examples/BridgesKoenigsberg.purs L152-L179</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L135-L162">test/Examples/BridgesKoenigsberg.purs L135-L162</a></sup></p>
 <!-- PD_END -->
 
 The key steps are:
@@ -1000,7 +987,7 @@ nodeDegree :: StateNode -> StateGraph -> Int
 nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L18-L19">test/Examples/Common.purs L18-L19</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L17-L18">test/Examples/Common.purs L17-L18</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1025,7 +1012,7 @@ hasEulerTrail graph =
     sumOddEdges == 2 || sumOddEdges == 0
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L21-L33">test/Examples/Common.purs L21-L33</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L20-L32">test/Examples/Common.purs L20-L32</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1051,7 +1038,7 @@ assert1 =
       ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L127-L140">test/Examples/BridgesKoenigsberg.purs L127-L140</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L110-L123">test/Examples/BridgesKoenigsberg.purs L110-L123</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1066,7 +1053,7 @@ assert2 = do
   hasEulerTrail graph `shouldEqual` false
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L148-L150">test/Examples/BridgesKoenigsberg.purs L148-L150</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L131-L133">test/Examples/BridgesKoenigsberg.purs L131-L133</a></sup></p>
 <!-- PD_END -->
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:

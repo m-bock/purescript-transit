@@ -10,7 +10,7 @@ import Data.Traversable (for_, scanl)
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (assertWalk)
+import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
@@ -29,7 +29,7 @@ data State = DoorOpen | DoorClosed
 data Msg = Close | Open
 
 --------------------------------------------------------------------------------
---- Traditional Approach
+--- Classic Approach
 --------------------------------------------------------------------------------
 
 updateClassic :: State -> Msg -> State
@@ -72,9 +72,9 @@ assert3 :: Aff Unit
 assert3 =
   assertWalk update
     DoorOpen
-    [ Close /\ DoorClosed
-    , Open /\ DoorOpen
-    , Close /\ DoorClosed
+    [ Close ~> DoorClosed
+    , Open ~> DoorOpen
+    , Close ~> DoorClosed
     ]
 
 assert4 :: Aff Unit
@@ -83,24 +83,24 @@ assert4 =
     \fn ->
       assertWalk fn
         DoorOpen
-        [ Close /\ DoorClosed
-        , Open /\ DoorOpen
-        , Open /\ DoorOpen
-        , Close /\ DoorClosed
-        , Open /\ DoorOpen
+        [ Close ~> DoorClosed
+        , Open ~> DoorOpen
+        , Open ~> DoorOpen
+        , Close ~> DoorClosed
+        , Open ~> DoorOpen
         ]
 
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
-    it "" do
+    it "Tests" do
       assert1
       assert2
       assert3
       assert4
 
 --------------------------------------------------------------------------------
---- State diagram generation
+--- Diagram and Table generation
 --------------------------------------------------------------------------------
 
 generateStateDiagram :: Effect Unit

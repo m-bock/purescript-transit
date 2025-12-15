@@ -9,11 +9,10 @@ import Data.Set as Set
 import Data.Tuple (fst, snd)
 import Data.Tuple.Nested (type (/\))
 import Effect.Aff (Aff)
-import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Data.Graph (Graph)
 import Transit.Data.Graph as Graph
 import Transit.StateGraph (StateNode, StateGraph)
+import Data.Tuple (Tuple(..))
 
 nodeDegree :: StateNode -> StateGraph -> Int
 nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
@@ -31,6 +30,8 @@ hasEulerTrail graph =
     sumOddEdges = (Array.length <<< Array.filter Int.odd) countEdgesByNode
   in
     sumOddEdges == 2 || sumOddEdges == 0
+
+infixr 4 Tuple as ~>
 
 assertWalk
   :: forall msg state
