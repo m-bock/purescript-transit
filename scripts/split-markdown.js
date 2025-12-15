@@ -306,8 +306,8 @@ if (command === "split") {
   const outputFile = args[2];
 
   if (!fs.existsSync(inputDir)) {
-    console.error(`Error: Input directory not found: ${inputDir}`);
-    process.exit(1);
+    console.log(`Skipping merge: directory '${inputDir}' does not exist`);
+    process.exit(0);
   }
 
   mergeMarkdown(inputDir, outputFile);

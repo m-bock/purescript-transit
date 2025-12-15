@@ -52,8 +52,8 @@ attrStyle style = Attribute "style" style
 
 nodeToHtml :: Node -> String
 nodeToHtml = case _ of
-  Node name [] [] -> "<" <> name <> " />"
-  Node name attributes [] -> "<" <> name <> " " <> attrsToHtml attributes <> " />"
+  Node name [] [] -> "<" <> name <> ">" <> "</" <> name <> ">"
+  Node name attributes [] -> "<" <> name <> " " <> attrsToHtml attributes <> ">" <> "</" <> name <> ">"
   Node name [] children -> "<" <> name <> ">" <> Str.joinWith "" (map nodeToHtml children) <> "</" <> name <> ">"
   Node name attributes children -> Str.joinWith ""
     [ "<" <> name <> " " <> attrsToHtml attributes <> ">"

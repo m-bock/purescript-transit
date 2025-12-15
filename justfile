@@ -4,7 +4,6 @@ readme-split:
 
 readme-merge:
     scripts/split-markdown.js merge readme README.md
-    rm -rf readme
 
 gen-docs:
     PATCHDOWN_FILE_PATH=README.md npx spago run -m Docs.Main
@@ -29,6 +28,7 @@ gen-book:
 
 
 gen: 
+    just readme-merge && \
     just gen-docs && \
     just gen-svgs && \
     just gen-doctoc && \
