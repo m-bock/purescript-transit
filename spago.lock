@@ -70,6 +70,7 @@
         },
         "test": {
           "dependencies": [
+            "benchlib",
             "patchdown",
             "spec",
             "spec-node"
@@ -84,6 +85,7 @@
             "arraybuffer-types",
             "arrays",
             "avar",
+            "benchlib",
             "bifunctors",
             "catenable-lists",
             "codec",
@@ -718,6 +720,10 @@
       }
     },
     "extra_packages": {
+      "benchlib": {
+        "git": "https://github.com/m-bock/purescript-benchlib.git",
+        "ref": "8d52529213ead05b6e7ebd952528684c3f26e07d"
+      },
       "codec-argonaut": {
         "git": "https://github.com/garyb/purescript-codec-argonaut.git",
         "ref": "dc287c83b79f86f8d9a0045dcb740f0cf9d23ccd",
@@ -863,6 +869,38 @@
         "exceptions",
         "functions",
         "maybe"
+      ]
+    },
+    "benchlib": {
+      "type": "git",
+      "url": "https://github.com/m-bock/purescript-benchlib.git",
+      "rev": "8d52529213ead05b6e7ebd952528684c3f26e07d",
+      "dependencies": [
+        "aff",
+        "argonaut",
+        "arrays",
+        "codec-argonaut",
+        "console",
+        "datetime",
+        "effect",
+        "filterable",
+        "foldable-traversable",
+        "integers",
+        "maybe",
+        "newtype",
+        "node-buffer",
+        "node-fs",
+        "node-path",
+        "node-process",
+        "now",
+        "numbers",
+        "ordered-collections",
+        "prelude",
+        "profunctor",
+        "refs",
+        "strings",
+        "tuples",
+        "unfoldable"
       ]
     },
     "bifunctors": {

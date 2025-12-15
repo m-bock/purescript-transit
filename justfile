@@ -26,6 +26,17 @@ gen-book:
     cp -r assets site/assets
     cp -r graphs site/graphs
 
+build:
+    npx spago build
+
+build-es:
+    scripts/build-es.sh
+
+build-all:
+    just build && just build-es
+
+bench:
+    npx spago run -m Test.Bench
 
 gen: 
     just readme-merge && \
