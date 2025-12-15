@@ -94,6 +94,7 @@ assert4 =
         DoorOpen
         [ Close ~> DoorClosed
         , Open ~> DoorOpen
+        , Close ~> DoorClosed
         , Lock { newPin: "1234" } ~> DoorLocked { pin: "1234" }
         , Unlock { enteredPin: "abcd" } ~> DoorLocked { pin: "1234" }
         , Unlock { enteredPin: "1234" } ~> DoorClosed
