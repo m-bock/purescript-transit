@@ -37,6 +37,9 @@ build-all:
 
 bench:
     npx spago run -m Test.Bench
+    rm -rf output-es
+    npx purs-backend-es build
+    BACKEND=ES node run.js
 
 gen: 
     just readme-merge && \
