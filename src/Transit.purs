@@ -171,8 +171,8 @@ class Return (sym :: Symbol) a where
 instance (Row.Cons sym (ReturnState a) r1 r2, IsSymbol sym) => Return sym (a -> Variant r2) where
   return v = V.inj (Proxy :: _ sym) (ReturnState v)
 
-instance (Row.Cons sym (ReturnState Unit) r1 r2, IsSymbol sym) => Return sym (Variant r2) where
-  return = V.inj (Proxy :: _ sym) (ReturnState unit)
+instance (Row.Cons sym (ReturnState {}) r1 r2, IsSymbol sym) => Return sym (Variant r2) where
+  return = V.inj (Proxy :: _ sym) (ReturnState {})
 
 class ReturnVia (symGuard :: Symbol) (sym :: Symbol) a where
   returnVia :: a
@@ -180,8 +180,8 @@ class ReturnVia (symGuard :: Symbol) (sym :: Symbol) a where
 instance (Row.Cons sym (ReturnStateVia symGuard a) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (a -> Variant r2) where
   returnVia v = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard v)
 
-instance (Row.Cons sym (ReturnStateVia symGuard Unit) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
-  returnVia = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard unit)
+instance (Row.Cons sym (ReturnStateVia symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
+  returnVia = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard {})
 
 ---
 

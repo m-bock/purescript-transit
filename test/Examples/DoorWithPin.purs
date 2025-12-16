@@ -75,17 +75,17 @@ type DoorWithPinTransit =
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
-      return @"DoorClosed"
+      return @"DoorClosed" unit
   )
   ( match @"DoorClosed" @"Open" \_ _ ->
-      return @"DoorOpen"
+      return @"DoorOpen" unit
   )
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { pin: msg.newPin }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed"
+        returnVia @"PinCorrect" @"DoorClosed" unit
       else
         returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
   )

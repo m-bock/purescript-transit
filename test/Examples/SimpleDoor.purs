@@ -49,8 +49,8 @@ type SimpleDoorTransit =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @SimpleDoorTransit
-  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed" unit)
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen" unit)
 
 --------------------------------------------------------------------------------
 --- Tests

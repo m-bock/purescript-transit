@@ -4,9 +4,11 @@ import Prelude
 
 import Data.Symbol (class IsSymbol)
 import Data.Traversable (scanl)
+import Data.Tuple.Nested (type (/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
+import Test.Examples.Common ((~>))
 import Test.Examples.DoorWithPin (DoorWithPinTransit)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
@@ -15,14 +17,14 @@ import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 type State = Variant
-  ( "DoorOpen" :: Unit
-  , "DoorClosed" :: Unit
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
   , "DoorLocked" :: { pin :: String }
   )
 
 type Msg = Variant
-  ( "Close" :: Unit
-  , "Open" :: Unit
+  ( "Close" :: {}
+  , "Open" :: {}
   , "Lock" :: { newPin :: String }
   , "Unlock" :: { enteredPin :: String }
   )
@@ -33,13 +35,13 @@ updateClassic state msg =
       # on @"DoorOpen"
           ( \_ ->
               ( V.default state
-                  # on @"Close" (\_ -> inj @"DoorClosed" unit)
+                  # on @"Close" (\_ -> inj @"DoorClosed" {})
               ) msg
           )
       # on @"DoorClosed"
           ( \_ ->
               ( V.default state
-                  # on @"Open" (\_ -> inj @"DoorOpen" unit)
+                  # on @"Open" (\_ -> inj @"DoorOpen" {})
                   # on @"Lock" (\msg -> inj @"DoorLocked" { pin: msg.newPin })
               ) msg
           )
@@ -49,7 +51,7 @@ updateClassic state msg =
                   # on @"Unlock"
                       ( \msg ->
                           if st.pin == msg.enteredPin then
-                            inj @"DoorClosed" unit
+                            inj @"DoorClosed" {}
                           else
                             inj @"DoorLocked" { pin: st.pin }
                       )
@@ -81,23 +83,37 @@ inj = V.inj (Proxy :: _ sym)
 on :: forall @sym a b r1 r2. Row.Cons sym a r1 r2 => IsSymbol sym => (a -> b) -> (Variant r1 -> b) -> Variant r2 -> b
 on f = V.on (Proxy :: _ sym) f
 
+-- walk :: Array (Msg /\ State)
+-- walk =
+--   [ inj @"Close" ~> inj @"DoorClosed"
+--   , inj @"Open" ~> inj @"DoorOpen"
+--   , inj @"Close" ~> inj @"DoorClosed"
+--   , inj @"Lock" { newPin: "1234" }
+--       ~> inj @"DoorLocked" { pin: "1234" }
+--   , inj @"Unlock" { enteredPin: "abcd" }
+--       ~> inj @"DoorLocked" { pin: "1234" }
+--   , inj @"Unlock" { enteredPin: "1234" }
+--       ~> inj @"DoorClosed"
+--   , inj @"Open" ~> inj @"DoorOpen"
+--   ]
+
 spec :: Spec Unit
 spec = do
   describe "Variants" do
     let
       initState :: State
-      initState = V.inj (Proxy @"DoorOpen") unit
+      initState = V.inj (Proxy @"DoorOpen") {}
 
       walk :: Array { msg :: Msg, state :: State }
       walk =
-        [ { msg: inj @"Close" unit
-          , state: inj @"DoorClosed" unit
+        [ { msg: inj @"Close" {}
+          , state: inj @"DoorClosed" {}
           }
-        , { msg: inj @"Open" unit
-          , state: inj @"DoorOpen" unit
+        , { msg: inj @"Open" {}
+          , state: inj @"DoorOpen" {}
           }
-        , { msg: inj @"Close" unit
-          , state: inj @"DoorClosed" unit
+        , { msg: inj @"Close" {}
+          , state: inj @"DoorClosed" {}
           }
         , { msg: inj @"Lock" { newPin: "1234" }
           , state: inj @"DoorLocked" { pin: "1234" }
@@ -106,10 +122,10 @@ spec = do
           , state: inj @"DoorLocked" { pin: "1234" }
           }
         , { msg: inj @"Unlock" { enteredPin: "1234" }
-          , state: inj @"DoorClosed" unit
+          , state: inj @"DoorClosed" {}
           }
-        , { msg: inj @"Open" unit
-          , state: inj @"DoorOpen" unit
+        , { msg: inj @"Open" {}
+          , state: inj @"DoorOpen" {}
           }
         ]
 

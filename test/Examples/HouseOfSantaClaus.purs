@@ -105,29 +105,29 @@ type HouseOfSantaClausTransit =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @HouseOfSantaClausTransit
-  (match @"N_1" @"E_a" \_ _ -> return @"N_2")
-  (match @"N_2" @"E_a" \_ _ -> return @"N_1")
+  (match @"N_1" @"E_a" \_ _ -> return @"N_2" unit)
+  (match @"N_2" @"E_a" \_ _ -> return @"N_1" unit)
 
-  (match @"N_2" @"E_b" \_ _ -> return @"N_3")
-  (match @"N_3" @"E_b" \_ _ -> return @"N_2")
+  (match @"N_2" @"E_b" \_ _ -> return @"N_3" unit)
+  (match @"N_3" @"E_b" \_ _ -> return @"N_2" unit)
 
-  (match @"N_3" @"E_c" \_ _ -> return @"N_5")
-  (match @"N_5" @"E_c" \_ _ -> return @"N_3")
+  (match @"N_3" @"E_c" \_ _ -> return @"N_5" unit)
+  (match @"N_5" @"E_c" \_ _ -> return @"N_3" unit)
 
-  (match @"N_5" @"E_d" \_ _ -> return @"N_4")
-  (match @"N_4" @"E_d" \_ _ -> return @"N_5")
+  (match @"N_5" @"E_d" \_ _ -> return @"N_4" unit)
+  (match @"N_4" @"E_d" \_ _ -> return @"N_5" unit)
 
-  (match @"N_4" @"E_e" \_ _ -> return @"N_1")
-  (match @"N_1" @"E_e" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_e" \_ _ -> return @"N_1" unit)
+  (match @"N_1" @"E_e" \_ _ -> return @"N_4" unit)
 
-  (match @"N_1" @"E_f" \_ _ -> return @"N_3")
-  (match @"N_3" @"E_f" \_ _ -> return @"N_1")
+  (match @"N_1" @"E_f" \_ _ -> return @"N_3" unit)
+  (match @"N_3" @"E_f" \_ _ -> return @"N_1" unit)
 
-  (match @"N_2" @"E_g" \_ _ -> return @"N_4")
-  (match @"N_4" @"E_g" \_ _ -> return @"N_2")
+  (match @"N_2" @"E_g" \_ _ -> return @"N_4" unit)
+  (match @"N_4" @"E_g" \_ _ -> return @"N_2" unit)
 
-  (match @"N_3" @"E_h" \_ _ -> return @"N_4")
-  (match @"N_4" @"E_h" \_ _ -> return @"N_3")
+  (match @"N_3" @"E_h" \_ _ -> return @"N_4" unit)
+  (match @"N_4" @"E_h" \_ _ -> return @"N_3" unit)
 
 -- --------------------------------------------------------------------------------
 -- --- Tests

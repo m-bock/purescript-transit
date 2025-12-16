@@ -11,9 +11,9 @@ update :: State -> Msg -> Effect State
 update = mkUpdateGenericM @SimpleDoorTransit
   ( matchM @"DoorOpen" @"Close" \_ _ -> do
       Console.log "You just closed the door"
-      pure $ return @"DoorClosed"
+      pure $ return @"DoorClosed" unit
   )
   ( matchM @"DoorClosed" @"Open" \_ _ -> do
       Console.log "You just opened the door"
-      pure $ return @"DoorOpen"
+      pure $ return @"DoorOpen" unit
   )

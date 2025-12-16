@@ -82,26 +82,26 @@ type BridgesKoenigsbergTransit =
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @BridgesKoenigsbergTransit
-  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
-  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB" unit)
+  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA" unit)
 
-  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
-  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB" unit)
+  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA" unit)
 
-  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
-  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC" unit)
+  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA" unit)
 
-  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC")
-  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC" unit)
+  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA" unit)
 
-  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD")
-  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD" unit)
+  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA" unit)
 
-  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD")
-  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD" unit)
+  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB" unit)
 
-  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
-  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD" unit)
+  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC" unit)
 
 -- --------------------------------------------------------------------------------
 -- --- Tests

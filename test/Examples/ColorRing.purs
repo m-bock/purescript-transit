@@ -36,17 +36,17 @@ type ColorsFSM = Transit $ Empty
 
 update :: State -> Msg -> State
 update = mkUpdateGeneric @ColorsFSM
-  (match @"SpringGreen" @"MsgA" \_ _ -> return @"LemonYellow")
-  (match @"LemonYellow" @"MsgB" \_ _ -> return @"OceanBlue")
-  (match @"OceanBlue" @"MsgC" \_ _ -> return @"CoralPink")
-  (match @"CoralPink" @"MsgD" \_ _ -> return @"MintTeal")
-  (match @"MintTeal" @"MsgE" \_ _ -> return @"AquaBlue")
-  (match @"AquaBlue" @"MsgF" \_ _ -> return @"SunsetOrange")
-  (match @"SunsetOrange" @"MsgG" \_ _ -> return @"MagentaGlow")
-  (match @"MagentaGlow" @"MsgH" \_ _ -> return @"OliveGreen")
-  (match @"OliveGreen" @"MsgI" \_ _ -> return @"VividRed")
-  (match @"VividRed" @"MsgJ" \_ _ -> return @"SkyCyan")
-  (match @"SkyCyan" @"MsgK" \_ _ -> return @"SpringGreen")
+  (match @"SpringGreen" @"MsgA" \_ _ -> return @"LemonYellow" unit)
+  (match @"LemonYellow" @"MsgB" \_ _ -> return @"OceanBlue" unit)
+  (match @"OceanBlue" @"MsgC" \_ _ -> return @"CoralPink" unit)
+  (match @"CoralPink" @"MsgD" \_ _ -> return @"MintTeal" unit)
+  (match @"MintTeal" @"MsgE" \_ _ -> return @"AquaBlue" unit)
+  (match @"AquaBlue" @"MsgF" \_ _ -> return @"SunsetOrange" unit)
+  (match @"SunsetOrange" @"MsgG" \_ _ -> return @"MagentaGlow" unit)
+  (match @"MagentaGlow" @"MsgH" \_ _ -> return @"OliveGreen" unit)
+  (match @"OliveGreen" @"MsgI" \_ _ -> return @"VividRed" unit)
+  (match @"VividRed" @"MsgJ" \_ _ -> return @"SkyCyan" unit)
+  (match @"SkyCyan" @"MsgK" \_ _ -> return @"SpringGreen" unit)
 
 main :: Effect Unit
 main = do
