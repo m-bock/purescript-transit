@@ -7,6 +7,7 @@ import BenchLib as BenchLib
 import BenchLib.Reporters.Markdown (reportMarkdown)
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
+import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple.Nested ((/\))
 import Data.Variant as V
 import Effect (Effect)
@@ -40,6 +41,7 @@ main = do
     { reporters =
         [ reportMarkdown _
             { filePath = "bench/backend-" <> backend <> ".md"
+            , maxTime = Milliseconds 0.025
             }
         , reportConsole
         ]

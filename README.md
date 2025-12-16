@@ -28,6 +28,9 @@
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
   - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
+  - [Benchmarks](#benchmarks)
+    - [Running Benchmarks](#running-benchmarks)
+    - [Benchmark Results](#benchmark-results)
   - [More](#more)
     - [Monadic update functions](#monadic-update-functions)
 
@@ -1226,6 +1229,87 @@ main = do
 
 <p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L136-L211">test/Examples/HouseOfSantaClaus.purs L136-L211</a></sup></p>
 <!-- PD_END -->
+
+## Benchmarks
+
+<!-- PD_START:raw
+filePath: bench/backend-JS.md
+-->
+```mermaid
+---
+  config:
+    themeVariables:
+        xyChart:
+            plotColorPalette: "#ff3456, #00ff00, #0000ff, #ffff00, #ff00ff, #00ffff"
+---
+xychart
+  title "Update Functions"
+  x-axis "Input Size" [5, 10, 15, 20]
+  y-axis "Time (in ms)" 0 --> 0.025
+  line [0.0151, 0.019, 0.0297, 0.0437]
+  line [0.0008, 0.0009, 0.0013, 0.0015]
+  line [0.0035, 0.004, 0.006, 0.0062]
+```
+![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) update (Transit with ADTs)&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) updateClassic&nbsp;&nbsp;![0000ff](https://placehold.co/8x8/0000ff/0000ff.png) updateV (Transit with Variants)<!-- PD_END -->
+
+<!-- PD_START:raw
+filePath: bench/backend-ES.md
+-->
+```mermaid
+---
+  config:
+    themeVariables:
+        xyChart:
+            plotColorPalette: "#ff3456, #00ff00, #0000ff, #ffff00, #ff00ff, #00ffff"
+---
+xychart
+  title "Update Functions"
+  x-axis "Input Size" [5, 10, 15, 20]
+  y-axis "Time (in ms)" 0 --> 0.05
+  line [0.0029, 0.0011, 0.0008, 0.0012]
+  line [0.0006, 0.0012, 0.0011, 0.0004]
+  line [0.0005, 0.0008, 0.0009, 0.0007]
+```
+![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) update (Transit with ADTs)&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) updateClassic&nbsp;&nbsp;![0000ff](https://placehold.co/8x8/0000ff/0000ff.png) updateV (Transit with Variants)<!-- PD_END -->
+
+### Running Benchmarks
+
+To run benchmarks for both JavaScript and ES backends:
+
+```bash
+just bench
+```
+
+This will:
+
+- Run benchmarks for the JS backend and generate `report-JS.html`
+- Build the ES backend output
+- Run benchmarks for the ES backend and generate `report-ES.html`
+
+You can also run benchmarks for a specific backend:
+
+```bash
+# JavaScript backend only
+just bench-js
+
+# ES backend only
+just bench-es
+```
+
+To customize the number of iterations (default is 10000):
+
+```bash
+ITERATIONS=100000 just bench
+```
+
+### Benchmark Results
+
+The benchmark results are saved as HTML files:
+
+- `report-JS.html` - Results for the JavaScript backend
+- `report-ES.html` - Results for the ES backend
+
+Each report includes interactive charts showing the performance comparison across different state machine sizes. The results help you understand the performance characteristics of each approach and choose the best implementation for your use case.
 
 ## More
 
