@@ -36,7 +36,7 @@ build-all:
     just build && just build-es
 
 bench:
-    ITERATIONS=10000 just bench-js && just bench-es
+    export ITERATIONS=10000 && just bench-js && just bench-es
 
 bench-js:
     BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
