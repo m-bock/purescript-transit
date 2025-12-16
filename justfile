@@ -29,14 +29,9 @@ gen-book:
 build:
     npx spago build
 
-build-es:
-    scripts/build-es.sh
-
-build-all:
-    just build && just build-es
-
 bench:
-    export ITERATIONS=10000 && just bench-js && just bench-es
+    just build && \
+    export ITERATIONS=100000 && just bench-js && just bench-es
 
 bench-js:
     BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
