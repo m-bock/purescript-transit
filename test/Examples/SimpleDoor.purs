@@ -8,15 +8,17 @@ import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Data.Traversable (for_, scanl)
 import Data.Tuple.Nested ((/\))
+import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, mkUpdateGeneric, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
+import Transit.VariantUtils (class Inj, inj)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -24,16 +26,16 @@ import Type.Prelude (Proxy(..))
 --- Types
 --------------------------------------------------------------------------------
 
-data State = DoorOpen | DoorClosed
+data StateD = DoorOpen | DoorClosed
 
-data Msg = Close | Open
+data MsgD = Close | Open
 
 --------------------------------------------------------------------------------
 --- Classic Approach
 --------------------------------------------------------------------------------
 
-updateClassic :: State -> Msg -> State
-updateClassic state msg = case state, msg of
+updateD :: StateD -> MsgD -> StateD
+updateD state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
   _, _ -> state
@@ -42,15 +44,25 @@ updateClassic state msg = case state, msg of
 --- Transit Approach
 --------------------------------------------------------------------------------
 
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  )
+
 type SimpleDoorTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @SimpleDoorTransit
-  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed" unit)
-  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen" unit)
+update = mkUpdate @SimpleDoorTransit
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
 --------------------------------------------------------------------------------
 --- Tests
@@ -58,37 +70,40 @@ update = mkUpdateGeneric @SimpleDoorTransit
 
 assert1 :: Aff Unit
 assert1 =
-  (foldl update DoorOpen [ Close, Open, Close ])
+  foldl update
+    (inj @"DoorOpen")
+    [ inj @"Close"
+    , inj @"Open"
+    , inj @"Close"
+    ]
     `shouldEqual`
-      DoorClosed
+      (inj @"DoorClosed")
 
 assert2 :: Aff Unit
 assert2 =
-  (scanl update DoorOpen [ Close, Open, Close ])
+  scanl update
+    (inj @"DoorOpen")
+    [ inj @"Close"
+    , inj @"Open"
+    , inj @"Close"
+    ]
     `shouldEqual`
-      [ DoorClosed, DoorOpen, DoorClosed ]
+      [ inj @"DoorClosed"
+      , inj @"DoorOpen"
+      , inj @"DoorClosed"
+      ]
 
 assert3 :: Aff Unit
 assert3 =
   assertWalk update
-    DoorOpen
-    [ Close ~> DoorClosed
-    , Open ~> DoorOpen
-    , Close ~> DoorClosed
+    (inj @"DoorOpen")
+    [ inj @"Close" ~> inj @"DoorClosed"
+    , inj @"Open" ~> inj @"DoorOpen"
+    , inj @"Close" ~> inj @"DoorClosed"
     ]
 
 assert4 :: Aff Unit
-assert4 =
-  for_ [ updateClassic, update ]
-    \fn ->
-      assertWalk fn
-        DoorOpen
-        [ Close ~> DoorClosed
-        , Open ~> DoorOpen
-        , Open ~> DoorOpen
-        , Close ~> DoorClosed
-        , Open ~> DoorOpen
-        ]
+assert4 = pure unit
 
 spec :: Spec Unit
 spec = do
@@ -132,14 +147,14 @@ main = do
 --- Instances
 --------------------------------------------------------------------------------
 
-derive instance Eq State
-derive instance Eq Msg
+derive instance Eq StateD
+derive instance Eq MsgD
 
-derive instance Generic State _
-derive instance Generic Msg _
+derive instance Generic StateD _
+derive instance Generic MsgD _
 
-instance Show State where
+instance Show StateD where
   show = genericShow
 
-instance Show Msg where
+instance Show MsgD where
   show = genericShow

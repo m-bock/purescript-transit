@@ -14,15 +14,14 @@
     - [Installation](#installation)
   - [Example 1: A Simple Door](#example-1-a-simple-door)
     - [The State Machine](#the-state-machine)
-    - [States and Messages](#states-and-messages)
-    - [State updates: The Classic Approach](#state-updates-the-classic-approach)
-    - [State updates: The Transit Approach](#state-updates-the-transit-approach)
+    - [State Machine Implementation I: The Classic Approach](#state-machine-implementation-i-the-classic-approach)
+    - [State Machine Implementation II: The Transit Approach](#state-machine-implementation-ii-the-transit-approach)
     - [Writing Tests for the update function](#writing-tests-for-the-update-function)
     - [Generating Diagrams and Tables](#generating-diagrams-and-tables)
     - [Conclusion](#conclusion)
   - [Example 2: Door with Pin](#example-2-door-with-pin)
-    - [State updates: The Classic Approach](#state-updates-the-classic-approach-1)
-    - [State updates: The Transit Approach](#state-updates-the-transit-approach-1)
+    - [State updates: The Classic Approach](#state-updates-the-classic-approach)
+    - [State updates: The Transit Approach](#state-updates-the-transit-approach)
     - [Type signatures](#type-signatures)
     - [Variants](#variants)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
@@ -103,49 +102,51 @@ This table provides the same information in a structured format. Each row shows 
 
 Now let's see how we represent this in PureScript code.
 
-### States and Messages
 
-To represent our door in code, we need two things: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types:
+
+### State Machine Implementation I: The Classic Approach
+
+#### States and Message types
+
+To represent our door in code, we need two things: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types. We are using the suffix `D` to denote the traditional approach (D = data).
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
 pick:
-  - State
-  - Msg
+  - StateD
+  - MsgD
 -->
 
 ```purescript
-data State = DoorOpen | DoorClosed
+data StateD = DoorOpen | DoorClosed
 
-data Msg = Close | Open
+data MsgD = Close | Open
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L29-L31">test/Examples/SimpleDoor.purs L29-L31</a></sup></p>
 <!-- PD_END -->
 
 The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier—each state and each transition from the diagram has a corresponding value in these types.
 
-With these types in place, we can now implement the logic that handles state transitions. Let's first look at the traditional approach, then see how **Transit** improves upon it.
-
-### State updates: The Classic Approach
+#### The update function
 
 Now that we have our types, we need a function that takes the current state and a message, and returns the new state. The traditional way to implement this is with a pattern-matching function:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
 pick:
-  - updateClassic
+  - updateD
 -->
 
 ```purescript
-updateClassic :: State -> Msg -> State
-updateClassic state msg = case state, msg of
+updateD :: StateD -> MsgD -> StateD
+updateD state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L35-L39">test/Examples/SimpleDoor.purs L35-L39</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L37-L41">test/Examples/SimpleDoor.purs L37-L41</a></sup></p>
 <!-- PD_END -->
 
 This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
@@ -156,9 +157,33 @@ While this approach works and is straightforward, it has some drawbacks:
 - **Documentation drift**: If you update the state diagram, there's nothing ensuring the code stays in sync—you have to remember to update both manually
 - **Manual maintenance**: You need to manually ensure all cases are handled correctly, and there's no way to verify completeness at compile time
 
-### State updates: The Transit Approach
+### State Machine Implementation II: The Transit Approach
 
 With the **Transit** library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify.
+
+#### The Types
+
+<!-- PD_START:purs
+filePath: test/Examples/SimpleDoor.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  )
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L47-L55">test/Examples/SimpleDoor.purs L47-L55</a></sup></p>
+<!-- PD_END -->
 
 #### The Type-Level Specification
 
@@ -177,7 +202,7 @@ type SimpleDoorTransit =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L45-L48">test/Examples/SimpleDoor.purs L45-L48</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L57-L60">test/Examples/SimpleDoor.purs L57-L60</a></sup></p>
 <!-- PD_END -->
 
 Breaking down the syntax:
@@ -201,12 +226,12 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @SimpleDoorTransit
+update = mkUpdate @SimpleDoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L50-L53">test/Examples/SimpleDoor.purs L50-L53</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L62-L65">test/Examples/SimpleDoor.purs L62-L65</a></sup></p>
 <!-- PD_END -->
 
 Here's how this works:
@@ -263,12 +288,17 @@ pick:
 
 ```purescript
 assert1 =
-  (foldl update DoorOpen [ Close, Open, Close ])
+  foldl update
+    (inj @"DoorOpen")
+    [ inj @"Close"
+    , inj @"Open"
+    , inj @"Close"
+    ]
     `shouldEqual`
-      DoorClosed
+      (inj @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L60-L63">test/Examples/SimpleDoor.purs L60-L63</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L72-L80">test/Examples/SimpleDoor.purs L72-L80</a></sup></p>
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -284,12 +314,20 @@ pick:
 
 ```purescript
 assert2 =
-  (scanl update DoorOpen [ Close, Open, Close ])
+  scanl update
+    (inj @"DoorOpen")
+    [ inj @"Close"
+    , inj @"Open"
+    , inj @"Close"
+    ]
     `shouldEqual`
-      [ DoorClosed, DoorOpen, DoorClosed ]
+      [ inj @"DoorClosed"
+      , inj @"DoorOpen"
+      , inj @"DoorClosed"
+      ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L66-L69">test/Examples/SimpleDoor.purs L66-L69</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L83-L94">test/Examples/SimpleDoor.purs L83-L94</a></sup></p>
 <!-- PD_END -->
 
 This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -340,10 +378,10 @@ pick:
 ```purescript
 assert3 =
   assertWalk update
-    DoorOpen
-    [ Close ~> DoorClosed
-    , Open ~> DoorOpen
-    , Close ~> DoorClosed
+    (inj @"DoorOpen")
+    [ inj @"Close" ~> inj @"DoorClosed"
+    , inj @"Open" ~> inj @"DoorOpen"
+    , inj @"Close" ~> inj @"DoorClosed"
     ]
 ```
 
@@ -361,20 +399,10 @@ pick:
 -->
 
 ```purescript
-assert4 =
-  for_ [ updateClassic, update ]
-    \fn ->
-      assertWalk fn
-        DoorOpen
-        [ Close ~> DoorClosed
-        , Open ~> DoorOpen
-        , Open ~> DoorOpen
-        , Close ~> DoorClosed
-        , Open ~> DoorOpen
-        ]
+assert4 = pure unit
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L81-L91">test/Examples/SimpleDoor.purs L81-L91</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L106-L106">test/Examples/SimpleDoor.purs L106-L106</a></sup></p>
 <!-- PD_END -->
 
 ### Generating Diagrams and Tables
@@ -421,7 +449,7 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L106-L117">test/Examples/SimpleDoor.purs L106-L117</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L121-L132">test/Examples/SimpleDoor.purs L121-L132</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -468,7 +496,7 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L119-L124">test/Examples/SimpleDoor.purs L119-L124</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L134-L139">test/Examples/SimpleDoor.purs L134-L139</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
@@ -608,17 +636,17 @@ pick:
 update :: State -> Msg -> State
 update = mkUpdateGeneric @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
-      return @"DoorClosed"
+      return @"DoorClosed" unit
   )
   ( match @"DoorClosed" @"Open" \_ _ ->
-      return @"DoorOpen"
+      return @"DoorOpen" unit
   )
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { pin: msg.newPin }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed"
+        returnVia @"PinCorrect" @"DoorClosed" unit
       else
         returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
   )
@@ -718,14 +746,14 @@ pick:
 
 ```purescript
 type State = Variant
-  ( "DoorOpen" :: Unit
-  , "DoorClosed" :: Unit
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
   , "DoorLocked" :: { pin :: String }
   )
 
 type Msg = Variant
-  ( "Close" :: Unit
-  , "Open" :: Unit
+  ( "Close" :: {}
+  , "Open" :: {}
   , "Lock" :: { newPin :: String }
   , "Unlock" :: { enteredPin :: String }
   )
@@ -749,7 +777,7 @@ update = mkUpdate @DoorWithPinTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L17-L76">test/Examples/Variants.purs L17-L76</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L19-L78">test/Examples/Variants.purs L19-L78</a></sup></p>
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg
@@ -833,14 +861,14 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdateGeneric @BridgesKoenigsbergTransit
-  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
-  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB" unit)
+  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA" unit)
 
-  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
-  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB" unit)
+  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA" unit)
 
-  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
-  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
+  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC" unit)
+  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA" unit)
 
 -- And so on ... (13 lines omitted)
 ```
@@ -1336,19 +1364,10 @@ pick:
 -->
 
 ```purescript
-update :: State -> Msg -> Effect State
-update = mkUpdateGenericM @SimpleDoorTransit
-  ( matchM @"DoorOpen" @"Close" \_ _ -> do
-      Console.log "You just closed the door"
-      pure $ return @"DoorClosed"
-  )
-  ( matchM @"DoorClosed" @"Open" \_ _ -> do
-      Console.log "You just opened the door"
-      pure $ return @"DoorOpen"
-  )
+update = 1
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L10">test/Examples/Monadic.purs L10-L10</a></sup></p>
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
