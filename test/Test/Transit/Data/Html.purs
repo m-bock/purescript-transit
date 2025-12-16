@@ -23,8 +23,8 @@ spec = do
       it "converts text node to HTML string" do
         nodeToHtml (text "Hello World") `shouldEqual` "Hello World"
 
-      it "converts empty node to self-closing tag" do
-        nodeToHtml (Node "div" [] []) `shouldEqual` "<div />"
+      it "converts empty node to empty tag" do
+        nodeToHtml (Node "div" [] []) `shouldEqual` "<div></div>"
 
       it "converts node with children but no attributes" do
         nodeToHtml (Node "div" [] [ text "Hello" ]) `shouldEqual` "<div>Hello</div>"
@@ -33,7 +33,7 @@ spec = do
         nodeToHtml (Node "div" [] [ text "Hello", text "World" ]) `shouldEqual` "<div>HelloWorld</div>"
 
       it "converts node with attributes but no children" do
-        nodeToHtml (Node "div" [ Attribute "class" "container" ] []) `shouldEqual` "<div class=\"container\" />"
+        nodeToHtml (Node "div" [ Attribute "class" "container" ] []) `shouldEqual` "<div class=\"container\"></div>"
 
       it "converts node with attributes and children" do
         nodeToHtml (Node "div" [ Attribute "class" "container" ] [ text "Hello" ]) `shouldEqual` "<div class=\"container\">Hello</div>"
@@ -71,6 +71,4 @@ spec = do
                 ]
             ]
         nodeToHtml html `shouldEqual` "<table style=\"border: 1px solid black\"><tr><td>Cell</td></tr></table>"
-
-
 

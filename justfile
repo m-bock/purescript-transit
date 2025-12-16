@@ -48,3 +48,6 @@ gen:
     just gen-doctoc && \
     just gen-preview && \
     just gen-book
+
+test:
+    npx spago test

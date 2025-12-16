@@ -117,26 +117,26 @@ spec = do
       it "perform state updates on legal transitions" do
 
         update (inj @"State1" 1) (inj @"Msg1" 2)
-          `shouldEqual` Identity (Right (inj @"State2" "foo"))
+          `shouldEqual` Identity (Right (inj @"State2" "42"))
 
         update (inj @"State2" "foo") (inj @"Msg2" "bar")
           `shouldEqual` Identity (Right (inj @"State1" 99))
 
+      it "should return a Left on illegal transitions" do
         update (inj @"State3" {}) (inj @"Msg3" {})
-          `shouldEqual` Identity (Right (inj @"State3" {}))
+          `shouldEqual` Identity (Left (inj @"State3" {} /\ inj @"Msg3" {}))
 
-      it "should leave the state unchanged on illegal transitions" do
         update (inj @"State1" 1) (inj @"Msg3" {})
-          `shouldEqual` Identity (Right (inj @"State1" 1))
+          `shouldEqual` Identity (Left (inj @"State1" 1 /\ inj @"Msg3" {}))
 
         update (inj @"State2" "foo") (inj @"Msg1" 2)
-          `shouldEqual` Identity (Right (inj @"State2" "foo"))
+          `shouldEqual` Identity (Left (inj @"State2" "foo" /\ inj @"Msg1" 2))
 
         update (inj @"State3" {}) (inj @"Msg1" 2)
-          `shouldEqual` Identity (Right (inj @"State3" {}))
+          `shouldEqual` Identity (Left (inj @"State3" {} /\ inj @"Msg1" 2))
 
         update (inj @"State3" {}) (inj @"Msg2" "bar")
-          `shouldEqual` Identity (Right (inj @"State3" {}))
+          `shouldEqual` Identity (Left (inj @"State3" {} /\ inj @"Msg2" "bar"))
 
 type Id :: forall k. k -> k
 type Id a = a
