@@ -10,72 +10,46 @@ import Data.Reflectable (reflectType)
 import Data.Set as Set
 import Data.Show.Generic (genericShow)
 import Data.Traversable (for_, scanl)
+import Data.Variant (Variant)
 import Effect (Effect)
-import Test.Examples.Common (hasEulerTrail)
+import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, mkUpdateGeneric, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Data.Graph as Graph
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
+import Transit.VariantUtils (inj)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
---- Types
---------------------------------------------------------------------------------
-
-data State = N_1 | N_2 | N_3 | N_4 | N_5
-data Msg
-  = E_a
-  | E_b
-  | E_c
-  | E_d
-  | E_e
-  | E_f
-  | E_g
-  | E_h
-
--- --------------------------------------------------------------------------------
--- --- TraditionalUpdate
--- --------------------------------------------------------------------------------
-
-updateClassic :: State -> Msg -> State
-updateClassic state msg = case state, msg of
-  N_1, E_a -> N_2
-  N_2, E_a -> N_1
-
-  N_2, E_b -> N_3
-  N_3, E_b -> N_2
-
-  N_3, E_c -> N_5
-  N_5, E_c -> N_3
-
-  N_5, E_d -> N_4
-  N_4, E_d -> N_5
-
-  N_4, E_e -> N_1
-  N_1, E_e -> N_4
-
-  N_1, E_f -> N_3
-  N_3, E_f -> N_1
-
-  N_2, E_g -> N_4
-  N_4, E_g -> N_2
-
-  N_3, E_h -> N_4
-  N_4, E_h -> N_3
-
-  _, _ -> state
-
---------------------------------------------------------------------------------
 --- transit Approach
 --------------------------------------------------------------------------------
+
+type State = Variant
+  ( "N_1" :: {}
+  , "N_2" :: {}
+  , "N_3" :: {}
+  , "N_4" :: {}
+  , "N_5" :: {}
+  )
+
+type Msg = Variant
+  ( "E_a" :: {}
+  , "E_b" :: {}
+  , "E_c" :: {}
+  , "E_d" :: {}
+  , "E_e" :: {}
+  , "E_f" :: {}
+  , "E_g" :: {}
+  , "E_h" :: {}
+  )
 
 type HouseOfSantaClausTransit =
   Transit $ Empty
@@ -104,30 +78,30 @@ type HouseOfSantaClausTransit =
     :* ("N_4" :@ "E_h" >| "N_3")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @HouseOfSantaClausTransit
-  (match @"N_1" @"E_a" \_ _ -> return @"N_2" unit)
-  (match @"N_2" @"E_a" \_ _ -> return @"N_1" unit)
+update = mkUpdate @HouseOfSantaClausTransit
+  (match @"N_1" @"E_a" \_ _ -> return @"N_2")
+  (match @"N_2" @"E_a" \_ _ -> return @"N_1")
 
-  (match @"N_2" @"E_b" \_ _ -> return @"N_3" unit)
-  (match @"N_3" @"E_b" \_ _ -> return @"N_2" unit)
+  (match @"N_2" @"E_b" \_ _ -> return @"N_3")
+  (match @"N_3" @"E_b" \_ _ -> return @"N_2")
 
-  (match @"N_3" @"E_c" \_ _ -> return @"N_5" unit)
-  (match @"N_5" @"E_c" \_ _ -> return @"N_3" unit)
+  (match @"N_3" @"E_c" \_ _ -> return @"N_5")
+  (match @"N_5" @"E_c" \_ _ -> return @"N_3")
 
-  (match @"N_5" @"E_d" \_ _ -> return @"N_4" unit)
-  (match @"N_4" @"E_d" \_ _ -> return @"N_5" unit)
+  (match @"N_5" @"E_d" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_d" \_ _ -> return @"N_5")
 
-  (match @"N_4" @"E_e" \_ _ -> return @"N_1" unit)
-  (match @"N_1" @"E_e" \_ _ -> return @"N_4" unit)
+  (match @"N_4" @"E_e" \_ _ -> return @"N_1")
+  (match @"N_1" @"E_e" \_ _ -> return @"N_4")
 
-  (match @"N_1" @"E_f" \_ _ -> return @"N_3" unit)
-  (match @"N_3" @"E_f" \_ _ -> return @"N_1" unit)
+  (match @"N_1" @"E_f" \_ _ -> return @"N_3")
+  (match @"N_3" @"E_f" \_ _ -> return @"N_1")
 
-  (match @"N_2" @"E_g" \_ _ -> return @"N_4" unit)
-  (match @"N_4" @"E_g" \_ _ -> return @"N_2" unit)
+  (match @"N_2" @"E_g" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_g" \_ _ -> return @"N_2")
 
-  (match @"N_3" @"E_h" \_ _ -> return @"N_4" unit)
-  (match @"N_4" @"E_h" \_ _ -> return @"N_3" unit)
+  (match @"N_3" @"E_h" \_ _ -> return @"N_4")
+  (match @"N_4" @"E_h" \_ _ -> return @"N_3")
 
 -- --------------------------------------------------------------------------------
 -- --- Tests
@@ -140,43 +114,42 @@ spec = do
       let transit = reflectType (Proxy @HouseOfSantaClausTransit)
       let graph = mkStateGraph transit
 
-      let walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
+      let
+        walk =
+          [ inj @"E_f"
+          , inj @"E_h"
+          , inj @"E_g"
+          , inj @"E_a"
+          , inj @"E_e"
+          , inj @"E_d"
+          , inj @"E_c"
+          , inj @"E_b"
+          ]
 
       Array.length (Array.nub walk) `shouldEqual` 8
 
-      foldl update N_1 walk `shouldEqual` N_2
+      foldl update (inj @"N_1") walk `shouldEqual` inj @"N_2"
 
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
     describe "should follow the walk" do
       let
-        initState = N_1
+        initState = inj @"N_1"
 
         walk =
-          [ { msg: E_f, state: N_3 }
-          , { msg: E_h, state: N_4 }
-          , { msg: E_g, state: N_2 }
-          , { msg: E_a, state: N_1 }
-          , { msg: E_e, state: N_4 }
-          , { msg: E_d, state: N_5 }
-          , { msg: E_c, state: N_3 }
-          , { msg: E_b, state: N_2 }
+          [ inj @"E_f" ~> inj @"N_3"
+          , inj @"E_h" ~> inj @"N_4"
+          , inj @"E_g" ~> inj @"N_2"
+          , inj @"E_a" ~> inj @"N_1"
+          , inj @"E_e" ~> inj @"N_4"
+          , inj @"E_d" ~> inj @"N_5"
+          , inj @"E_c" ~> inj @"N_3"
+          , inj @"E_b" ~> inj @"N_2"
           ]
 
-      let
-        msgs = map _.msg walk
-        expectedStates = map _.state walk
-
-      describe "classic update" do
-        it "should follow the walk" do
-          let actualStates = scanl updateClassic initState msgs
-          actualStates `shouldEqual` expectedStates
-
-      describe "transit update" do
-        it "should follow the walk" do
-          let actualStates = scanl update initState msgs
-          actualStates `shouldEqual` expectedStates
+      it "should follow the walk" do
+        assertWalk update initState walk
 
 --------------------------------------------------------------------------------
 --- State diagram generation
@@ -210,20 +183,3 @@ main = do
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }
 
---------------------------------------------------------------------------------
---- Instances
---------------------------------------------------------------------------------
-
-derive instance Eq State
-derive instance Eq Msg
-
-derive instance Ord Msg
-
-derive instance Generic State _
-derive instance Generic Msg _
-
-instance Show State where
-  show = genericShow
-
-instance Show Msg where
-  show = genericShow

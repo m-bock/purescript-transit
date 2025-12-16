@@ -2,73 +2,45 @@ module Test.Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
-import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
-import Data.Show.Generic (genericShow)
 import Data.Traversable (for_)
-import Data.Tuple.Nested ((/\))
+import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (assertWalk, hasEulerTrail)
+import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Transit (type (:*), type (>|), Empty, Transit, match, mkUpdate, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Core (TransitCore)
 import Transit.DSL (type (|<))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (StateGraph, mkStateGraph)
+import Transit.VariantUtils (inj)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
---- Types
---------------------------------------------------------------------------------
-
-data State = LandA | LandB | LandC | LandD
-
-data Msg
-  = Cross_a
-  | Cross_b
-  | Cross_c
-  | Cross_d
-  | Cross_e
-  | Cross_f
-  | Cross_g
-
--- --------------------------------------------------------------------------------
--- --- TraditionalUpdate
--- --------------------------------------------------------------------------------
-
-updateClassic :: State -> Msg -> State
-updateClassic state msg = case state, msg of
-  LandA, Cross_a -> LandB
-  LandB, Cross_a -> LandA
-
-  LandA, Cross_b -> LandB
-  LandB, Cross_b -> LandA
-
-  LandA, Cross_c -> LandC
-  LandC, Cross_c -> LandA
-
-  LandA, Cross_d -> LandC
-  LandC, Cross_d -> LandA
-
-  LandA, Cross_e -> LandD
-  LandD, Cross_e -> LandA
-
-  LandB, Cross_f -> LandD
-  LandD, Cross_f -> LandB
-
-  LandC, Cross_g -> LandD
-  LandD, Cross_g -> LandC
-
-  _, _ -> state
-
---------------------------------------------------------------------------------
 --- transit Approach
 --------------------------------------------------------------------------------
+
+type State = Variant
+  ( "LandA" :: {}
+  , "LandB" :: {}
+  , "LandC" :: {}
+  , "LandD" :: {}
+  )
+
+type Msg = Variant
+  ( "Cross_a" :: {}
+  , "Cross_b" :: {}
+  , "Cross_c" :: {}
+  , "Cross_d" :: {}
+  , "Cross_e" :: {}
+  , "Cross_f" :: {}
+  , "Cross_g" :: {}
+  )
 
 type BridgesKoenigsbergTransit =
   Transit $ Empty
@@ -81,27 +53,27 @@ type BridgesKoenigsbergTransit =
     :* ("LandC" |< "Cross_g" >| "LandD")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @BridgesKoenigsbergTransit
-  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB" unit)
-  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA" unit)
+update = mkUpdate @BridgesKoenigsbergTransit
+  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
 
-  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB" unit)
-  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA" unit)
+  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
 
-  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC" unit)
-  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA" unit)
+  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
 
-  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC" unit)
-  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA" unit)
+  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA")
 
-  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD" unit)
-  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA" unit)
+  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA")
 
-  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD" unit)
-  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB" unit)
+  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB")
 
-  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD" unit)
-  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC" unit)
+  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
+  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
 
 -- --------------------------------------------------------------------------------
 -- --- Tests
@@ -109,18 +81,17 @@ update = mkUpdateGeneric @BridgesKoenigsbergTransit
 
 assert1 :: Aff Unit
 assert1 =
-  for_ [ updateClassic, update ] \fn ->
-    assertWalk fn
-      LandA
-      [ Cross_a /\ LandB
-      , Cross_f /\ LandD
-      , Cross_g /\ LandC
-      , Cross_c /\ LandA
-      , Cross_e /\ LandD
-      , Cross_g /\ LandC
-      , Cross_d /\ LandA
-      , Cross_b /\ LandB
-      ]
+  assertWalk update
+    (inj @"LandA")
+    [ inj @"Cross_a" ~> inj @"LandB"
+    , inj @"Cross_f" ~> inj @"LandD"
+    , inj @"Cross_g" ~> inj @"LandC"
+    , inj @"Cross_c" ~> inj @"LandA"
+    , inj @"Cross_e" ~> inj @"LandD"
+    , inj @"Cross_g" ~> inj @"LandC"
+    , inj @"Cross_d" ~> inj @"LandA"
+    , inj @"Cross_b" ~> inj @"LandB"
+    ]
 
 bridgesKoenigsbergTransit :: TransitCore
 bridgesKoenigsbergTransit = reflectType (Proxy @BridgesKoenigsbergTransit)
@@ -161,18 +132,3 @@ main = do
   TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }
 
---------------------------------------------------------------------------------
---- Instances
---------------------------------------------------------------------------------
-
-derive instance Eq State
-derive instance Eq Msg
-
-derive instance Generic State _
-derive instance Generic Msg _
-
-instance Show State where
-  show = genericShow
-
-instance Show Msg where
-  show = genericShow
