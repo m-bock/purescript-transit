@@ -35,6 +35,6 @@ workspace:
       # git: https://github.com/m-bock/purescript-patchdown.git
       # ref: 4a0d7e56720def547efa176e45fca923c07b529c
     benchlib:
-      # path: ../purescript-benchlib
-      git: https://github.com/m-bock/purescript-benchlib.git
-      ref: 8d52529213ead05b6e7ebd952528684c3f26e07d
+      path: ../purescript-benchlib
+      # git: https://github.com/m-bock/purescript-benchlib.git
+      # ref: 8d52529213ead05b6e7ebd952528684c3f26e07d

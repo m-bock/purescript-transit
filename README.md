@@ -531,7 +531,7 @@ data Msg
   | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L25-L34">test/Examples/DoorWithPin.purs L25-L34</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L33-L42">test/Examples/DoorWithPin.purs L33-L42</a></sup></p>
 <!-- PD_END -->
 
 ### State updates: The Classic Approach
@@ -558,7 +558,7 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L40-L50">test/Examples/DoorWithPin.purs L40-L50</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L48-L58">test/Examples/DoorWithPin.purs L48-L58</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
@@ -588,7 +588,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L56-L65">test/Examples/DoorWithPin.purs L56-L65</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L73">test/Examples/DoorWithPin.purs L64-L73</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -621,7 +621,7 @@ update = mkUpdateGeneric @DoorWithPinTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L67-L83">test/Examples/DoorWithPin.purs L67-L83</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L75-L91">test/Examples/DoorWithPin.purs L75-L91</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:

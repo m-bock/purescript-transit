@@ -36,10 +36,15 @@ build-all:
     just build && just build-es
 
 bench:
-    npx spago run -m Test.Bench
+    ITERATIONS=10000 just bench-js && just bench-es
+
+bench-js:
+    BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
+
+bench-es:
     rm -rf output-es
     npx purs-backend-es build
-    BACKEND=ES node run.js
+    BACKEND=ES node -e 'import { main } from "./output-es/Test.Bench/index.js"; main();'
 
 gen: 
     just readme-merge && \
