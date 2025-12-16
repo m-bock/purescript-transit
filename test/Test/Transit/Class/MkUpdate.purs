@@ -7,17 +7,15 @@ module Test.Transit.Class.MkUpdate
 import Prelude
 
 import Data.Either (Either(..))
-import Data.Generic.Rep (class Generic)
 import Data.Identity (Identity(..))
-import Data.Show.Generic (genericShow)
-import Data.Tuple.Nested (type (/\), (/\))
+import Data.Tuple.Nested ((/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdate)
-import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkReturnViaTL, MkTransitCoreTL, ReturnState(..), ReturnStateVia, TransitCoreTL)
-import Transit.Util (Generically(..))
+import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, ReturnState(..), TransitCoreTL)
+import Transit.VariantUtils (inj)
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
@@ -85,21 +83,17 @@ check = unit
 -- Spec
 ------------------------------------------------------------------------------
 
-data State = State1 Int | State2 String | State3
+type State = Variant
+  ( "State1" :: Int
+  , "State2" :: String
+  , "State3" :: {}
+  )
 
-data Msg = Msg1 Int | Msg2 String | Msg3
-
-derive instance Generic State _
-derive instance Generic Msg _
-
-derive instance Eq State
-derive instance Eq Msg
-
-instance Show State where
-  show = genericShow
-
-instance Show Msg where
-  show = genericShow
+type Msg = Variant
+  ( "Msg1" :: Int
+  , "Msg2" :: String
+  , "Msg3" :: {}
+  )
 
 type MyStateGraph :: TransitCoreTL
 type MyStateGraph = MkTransitCoreTL
@@ -108,15 +102,12 @@ type MyStateGraph = MkTransitCoreTL
       :> Nil'
   )
 
-type GState = Generically State
-type GMsg = Generically Msg
-
 spec :: Spec Unit
 spec = do
   describe "Transit.Class.MkUpdate" do
     describe "mkUpdate" do
       let
-        update :: GState -> GMsg -> Identity (Either (TransitError GState GMsg) GState)
+        update :: State -> Msg -> Identity (Either (TransitError State Msg) State)
         update = mkUpdate @MyStateGraph @Identity
           ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (ReturnState "42"))
               /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (ReturnState 99))
@@ -125,28 +116,29 @@ spec = do
 
       it "perform state updates on legal transitions" do
 
-        update (Generically (State1 1)) (Generically (Msg1 2))
-          `shouldEqual` Identity (Right (Generically (State2 "42")))
+        update (inj @"State1" 1) (inj @"Msg1" 2)
+          `shouldEqual` Identity (Right (inj @"State2" "foo"))
 
-        update (Generically (State2 "foo")) (Generically (Msg2 "bar"))
-          `shouldEqual` Identity (Right (Generically (State1 99)))
+        update (inj @"State2" "foo") (inj @"Msg2" "bar")
+          `shouldEqual` Identity (Right (inj @"State1" 99))
 
-        update (Generically State3) (Generically Msg3)
-          `shouldEqual` Identity (Right (Generically State3))
+        update (inj @"State3" {}) (inj @"Msg3" {})
+          `shouldEqual` Identity (Right (inj @"State3" {}))
 
       it "should leave the state unchanged on illegal transitions" do
-        update (Generically (State1 1)) (Generically Msg3)
-          `shouldEqual` Identity (Right (Generically (State1 1)))
+        update (inj @"State1" 1) (inj @"Msg3" {})
+          `shouldEqual` Identity (Right (inj @"State1" 1))
 
-        update (Generically (State2 "foo")) (Generically (Msg1 2))
-          `shouldEqual` Identity (Right (Generically (State2 "foo")))
+        update (inj @"State2" "foo") (inj @"Msg1" 2)
+          `shouldEqual` Identity (Right (inj @"State2" "foo"))
 
-        update (Generically State3) (Generically (Msg1 2))
-          `shouldEqual` Identity (Right (Generically State3))
+        update (inj @"State3" {}) (inj @"Msg1" 2)
+          `shouldEqual` Identity (Right (inj @"State3" {}))
 
-        update (Generically State3) (Generically (Msg2 "bar"))
-          `shouldEqual` Identity (Right (Generically State3))
+        update (inj @"State3" {}) (inj @"Msg2" "bar")
+          `shouldEqual` Identity (Right (inj @"State3" {}))
 
+type Id :: forall k. k -> k
 type Id a = a
 
 iden :: forall a. a -> a

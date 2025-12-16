@@ -7,32 +7,34 @@ module Test.Transit.Class.MatchBySym
 
 import Prelude
 
-import Data.Generic.Rep (class Generic)
 import Data.Int as Int
+import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym)
-import Transit.Util (Generically(..))
+import Transit.VariantUtils (inj)
 
 check :: forall @sym @a @b. MatchBySym sym a b => Unit
 check = unit
-
-data Test = Foo Int | Bar String | Baz
-
-derive instance Generic Test _
 
 --------------------------------------------------------------------------------
 -- Test 1
 --------------------------------------------------------------------------------
 
+type Test = Variant
+  ( "Foo" :: Int
+  , "Bar" :: String
+  , "Baz" :: Unit
+  )
+
 test1 :: Unit
-test1 = check @"Foo" @(Generically Test) @Int
+test1 = check @"Foo" @Test @Int
 
 test2 :: Unit
-test2 = check @"Bar" @(Generically Test) @String
+test2 = check @"Bar" @Test @String
 
 test3 :: Unit
-test3 = check @"Baz" @(Generically Test) @Unit
+test3 = check @"Baz" @Test @Unit
 
 --------------------------------------------------------------------------------
 -- Spec
@@ -43,8 +45,8 @@ spec = do
   describe "Transit.Class.MatchBySym" do
     describe "matchBySym" do
       it "should match by symbol" do
-        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (Generically (Foo 42)) `shouldEqual` 42.0
+        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (inj @"Foo" 42 :: Test) `shouldEqual` 42.0
       it "should match by symbol with default" do
-        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (Generically (Bar "")) `shouldEqual` 99.0
+        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (inj @"Bar" "" :: Test) `shouldEqual` 99.0
       it "should match by symbol with unit payload" do
-        matchBySym @"Baz" (\u -> u) (\_ -> unit) (Generically Baz) `shouldEqual` unit
+        matchBySym @"Baz" (\u -> u) (\_ -> unit) (inj @"Baz" unit :: Test) `shouldEqual` unit

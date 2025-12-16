@@ -7,7 +7,6 @@ package:
     - variant
     - typelevel-lists
     - maybe
-    - labeled-data
     - colors
   test:
     main: Test.Main

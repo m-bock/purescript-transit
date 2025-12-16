@@ -29,18 +29,7 @@ import Transit.Class.MkUpdate (class MkUpdate, TransitError)
 import Transit.Class.MkUpdate as MU
 import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
 import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Empty, StateWithMsg, Transit, WithGuard) as Export
-import Transit.Util (Generically(..))
 import Type.Prelude (Proxy(..))
-
--- mkUpdateEitherM
--- mkUpdateEither
--- mkUpdateM
--- mkUpdate
-
--- mkUpdateGenericEitherM
--- mkUpdateGenericEither
--- mkUpdateGenericM
--- mkUpdateGeneric
 
 mkUpdateEitherM
   :: forall @spec tcore msg state args m a

@@ -6,40 +6,30 @@ module Test.Transit.Class.GetSubset
 
 import Prelude
 
-import Data.Generic.Rep (class Generic)
-import Data.Show.Generic (genericShow)
 import Data.Variant (Variant)
-import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.GetSubset (class GetSubset, getSubset)
 import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ReturnState(..), ReturnStateVia(..))
-import Transit.Util (Generically(..))
+import Transit.VariantUtils (inj)
 import Type.Data.List (type (:>), List', Nil')
-import Type.Proxy (Proxy(..))
 
 check :: forall @syms @t @a. (GetSubset syms t a) => Unit
 check = unit
 
-data D
-  = Foo Int
-  | Bar String
-  | Baz
-  | Qux Int
-
-derive instance Generic D _
-
-derive instance Eq D
+type D = Variant
+  ( "Foo" :: Int
+  , "Bar" :: String
+  , "Baz" :: Unit
+  , "Qux" :: Int
+  )
 
 --------------------------------------------------------------------------------
 -- TL Test 1
 --------------------------------------------------------------------------------
 
-instance Show D where
-  show = genericShow
-
 type Test1A = Nil' :: List' ReturnTL
-type Test1B = Generically D
+type Test1B = D
 type Test1C = Variant ()
 
 test1 :: Unit
@@ -50,7 +40,7 @@ test1 = check @Test1A @Test1B @Test1C
 --------------------------------------------------------------------------------
 
 type Test2A = MkReturnTL "Foo" :> MkReturnViaTL "Tansition" "Bar" :> Nil'
-type Test2B = Generically D
+type Test2B = D
 type Test2C = Variant
   ( "Foo" :: ReturnState Int
   , "Bar" :: ReturnStateVia "Tansition" String
@@ -70,13 +60,13 @@ spec = do
   describe "Transit.Class.GetSubset" do
     describe "getSubset" do
       it "should inject whitelisted case with payload" do
-        getSubset @L1 (V.inj (Proxy @"Foo") (ReturnState 1))
-          `shouldEqual` (Generically (Foo 1))
+        getSubset @L1 (inj @"Foo" (ReturnState 1))
+          `shouldEqual` (inj @"Foo" 1 :: D)
 
       it "should inject whitelisted case with payload and guard" do
-        getSubset @L1 (V.inj (Proxy @"Qux") (ReturnStateVia @"Guard1" 1))
-          `shouldEqual` (Generically (Qux 1))
+        getSubset @L1 (inj @"Qux" (ReturnStateVia @"Guard1" 1))
+          `shouldEqual` (inj @"Qux" 1 :: D)
 
       it "should inject whitelisted case with unit payload" do
-        getSubset @L1 (V.inj (Proxy @"Baz") (ReturnState unit))
-          `shouldEqual` (Generically Baz)
+        getSubset @L1 (inj @"Baz" (ReturnState unit))
+          `shouldEqual` (inj @"Baz" unit :: D)
