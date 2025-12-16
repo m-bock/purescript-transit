@@ -4,7 +4,7 @@ import Prelude
 
 import Data.Variant (Variant)
 import Test.Examples.DoorWithPin (Msg, State, DoorWithPinTransit)
-import Transit (match, mkUpdateGeneric)
+import Transit (match, mkUpdate, mkUpdateGeneric)
 import Transit.Core (ReturnState, ReturnStateVia)
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -16,21 +16,21 @@ unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorWithPinTransit
+update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close"
-      ( \(state :: Unit) (msg :: Unit) ->
+      ( \(state :: {}) (msg :: {}) ->
           unimplemented
-            :: Variant ("DoorClosed" :: ReturnState Unit)
+            :: Variant ("DoorClosed" :: ReturnState {})
       )
   )
   ( match @"DoorClosed" @"Open"
-      ( \(state :: Unit) (msg :: Unit) ->
+      ( \(state :: {}) (msg :: {}) ->
           unimplemented
-            :: Variant ("DoorOpen" :: ReturnState Unit)
+            :: Variant ("DoorOpen" :: ReturnState {})
       )
   )
   ( match @"DoorClosed" @"Lock"
-      ( \(state :: Unit) (msg :: { newPin :: String }) ->
+      ( \(state :: {}) (msg :: { newPin :: String }) ->
           unimplemented
             :: Variant ("DoorLocked" :: ReturnState { pin :: String })
       )
@@ -39,7 +39,7 @@ update = mkUpdateGeneric @DoorWithPinTransit
       ( \(state :: { pin :: String }) (msg :: { enteredPin :: String }) ->
           unimplemented
             :: Variant
-                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" Unit
+                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
                  , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
                  )
       )

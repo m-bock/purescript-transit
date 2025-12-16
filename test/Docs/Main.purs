@@ -12,7 +12,6 @@ import Test.Examples.HouseOfSantaClaus as Test.Examples.HouseOfSantaClaus
 import Test.Spec (Spec)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
-import Test.Examples.Variants as Test.Examples.Variants
 
 spec :: Spec Unit
 spec = do
@@ -21,7 +20,6 @@ spec = do
   Test.Examples.BridgesKoenigsberg.spec
   Test.Examples.HouseOfSantaClaus.spec
   Test.Examples.ColorRing.spec
-  Test.Examples.Variants.spec
 
 main :: Effect Unit
 main = do

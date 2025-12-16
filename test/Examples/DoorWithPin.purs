@@ -2,7 +2,6 @@ module Test.Examples.DoorWithPin
   ( main
   , spec
   , update
-  , updateClassic
   , DoorWithPinTransit
   , State(..)
   , Msg(..)
@@ -10,19 +9,19 @@ module Test.Examples.DoorWithPin
 
 import Prelude
 
-import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
-import Data.Show.Generic (genericShow)
 import Data.Traversable (for_)
+import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
-import Transit (type (:*), type (:?), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return, returnVia)
+import Transit (type (:*), type (:?), type (:@), type (>|), Empty, Transit, match, mkUpdate, return, returnVia)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
+import Transit.VariantUtils (inj)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
@@ -30,12 +29,12 @@ import Type.Proxy (Proxy(..))
 --- Types
 --------------------------------------------------------------------------------
 
-data State
+data StateD
   = DoorOpen
   | DoorClosed
   | DoorLocked { pin :: String }
 
-data Msg
+data MsgD
   = Close
   | Open
   | Lock { newPin :: String }
@@ -45,7 +44,7 @@ data Msg
 --- Classic Approach
 --------------------------------------------------------------------------------
 
-updateClassic :: State -> Msg -> State
+updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
@@ -61,6 +60,19 @@ updateClassic state msg = case state, msg of
 --- Transit Approach
 --------------------------------------------------------------------------------
 
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  , "DoorLocked" :: { pin :: String }
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  , "Lock" :: { newPin :: String }
+  , "Unlock" :: { enteredPin :: String }
+  )
+
 type DoorWithPinTransit =
   Transit $ Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
@@ -73,19 +85,19 @@ type DoorWithPinTransit =
       )
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorWithPinTransit
+update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
-      return @"DoorClosed" unit
+      return @"DoorClosed"
   )
   ( match @"DoorClosed" @"Open" \_ _ ->
-      return @"DoorOpen" unit
+      return @"DoorOpen"
   )
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { pin: msg.newPin }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed" unit
+        returnVia @"PinCorrect" @"DoorClosed"
       else
         returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
   )
@@ -96,18 +108,19 @@ update = mkUpdateGeneric @DoorWithPinTransit
 
 assert4 :: Aff Unit
 assert4 =
-  for_ [ updateClassic, update ]
-    \fn ->
-      assertWalk fn
-        DoorOpen
-        [ Close ~> DoorClosed
-        , Open ~> DoorOpen
-        , Close ~> DoorClosed
-        , Lock { newPin: "1234" } ~> DoorLocked { pin: "1234" }
-        , Unlock { enteredPin: "abcd" } ~> DoorLocked { pin: "1234" }
-        , Unlock { enteredPin: "1234" } ~> DoorClosed
-        , Open ~> DoorOpen
-        ]
+  assertWalk update
+    (inj @"DoorOpen")
+    [ inj @"Close" ~> inj @"DoorClosed"
+    , inj @"Open" ~> inj @"DoorOpen"
+    , inj @"Close" ~> inj @"DoorClosed"
+    , inj @"Lock" { newPin: "1234" }
+        ~> inj @"DoorLocked" { pin: "1234" }
+    , inj @"Unlock" { enteredPin: "abcd" }
+        ~> inj @"DoorLocked" { pin: "1234" }
+    , inj @"Unlock" { enteredPin: "1234" }
+        ~> inj @"DoorClosed"
+    , inj @"Open" ~> inj @"DoorOpen"
+    ]
 
 spec :: Spec Unit
 spec = describe "DoorWithPin" do
@@ -136,19 +149,3 @@ main = do
 
   TransitTable.writeToFile "graphs/door-with-pin.html" transit _
     { title = Just "Door with Pin" }
-
---------------------------------------------------------------------------------
---- Instances
---------------------------------------------------------------------------------
-
-derive instance Eq State
-derive instance Eq Msg
-
-derive instance Generic State _
-derive instance Generic Msg _
-
-instance Show State where
-  show = genericShow
-
-instance Show Msg where
-  show = genericShow

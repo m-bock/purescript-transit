@@ -102,8 +102,6 @@ This table provides the same information in a structured format. Each row shows 
 
 Now let's see how we represent this in PureScript code.
 
-
-
 ### State Machine Implementation I: The Classic Approach
 
 #### States and Message types
@@ -216,7 +214,7 @@ This type-level specification fully defines the state machine's structure. The c
 
 #### The Update Function
 
-Based on this specification, we create an update function using `mkUpdateGeneric`:
+Based on this specification, we create an update function using `mkUpdate`:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -236,11 +234,11 @@ update = mkUpdate @SimpleDoorTransit
 
 Here's how this works:
 
-- `mkUpdateGeneric @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application, passing the specification to the function.
+- `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application, passing the specification to the function. We use `mkUpdate` (not `mkUpdateGeneric`) because we're working with Variant types.
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
 
-Notice that the type signature is identical to the classic approach—`State -> Msg -> State`. This means you can use **Transit**'s update function as a drop-in replacement without changing any calling code.
+Note that the Transit approach uses `Variant` types for `State` and `Msg`, while the classic approach uses ADTs (`StateD` and `MsgD`). This means they are not drop-in replacements—you'll need to use Variants when adopting the Transit approach. The benefit is that Variants work seamlessly with Transit's type-level machinery, and you can use helper functions like `inj` to construct Variant values.
 
 #### How This Solves the Classic Approach's Problems
 
@@ -1263,6 +1261,7 @@ main = do
 <!-- PD_START:raw
 filePath: bench/backend-JS.md
 -->
+
 ```mermaid
 ---
   config:
@@ -1278,11 +1277,13 @@ xychart
   line [0.0011, 0.0007, 0.0009, 0.001, 0.001, 0.0011, 0.001, 0.001, 0.0014, 0.0012, 0.0013, 0.0014, 0.0016, 0.0015, 0.0017, 0.0016, 0.0015, 0.0016, 0.0016, 0.0016, 0.0017, 0.0017, 0.0017, 0.0015, 0.0016, 0.0016, 0.0016, 0.0017, 0.0016, 0.0017, 0.0018, 0.0016, 0.0019, 0.0016, 0.0018, 0.0018, 0.0019, 0.002, 0.002, 0.0024, 0.0021, 0.002, 0.002, 0.0021, 0.0022, 0.0023, 0.0021, 0.0023, 0.0022]
   line [0.0024, 0.0023, 0.002, 0.0023, 0.0026, 0.0026, 0.0031, 0.0032, 0.0034, 0.0038, 0.0038, 0.005, 0.0045, 0.0045, 0.0048, 0.0053, 0.0056, 0.0057, 0.0061, 0.0062, 0.0066, 0.0065, 0.007, 0.0072, 0.0073, 0.0077, 0.008, 0.0092, 0.0085, 0.0081, 0.0083, 0.0083, 0.0088, 0.0088, 0.0091, 0.0092, 0.0095, 0.0106, 0.0099, 0.0099, 0.0109, 0.0113, 0.0114, 0.0117, 0.0118, 0.0122, 0.0124, 0.0125, 0.0121]
 ```
+
 ![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) update (Transit with ADTs)&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) updateClassic&nbsp;&nbsp;![0000ff](https://placehold.co/8x8/0000ff/0000ff.png) updateV (Transit with Variants)<!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: bench/backend-ES.md
 -->
+
 ```mermaid
 ---
   config:
@@ -1298,6 +1299,7 @@ xychart
   line [0.0007, 0.0009, 0.0005, 0.0007, 0.0006, 0.0012, 0.0004, 0.0006, 0.0007, 0.001, 0.0005, 0.0005, 0.0008, 0.0007, 0.0004, 0.0005, 0.0007, 0.0012, 0.0004, 0.0004, 0.0008, 0.001, 0.0006, 0.0004, 0.001, 0.0009, 0.0005, 0.0005, 0.0006, 0.001, 0.0004, 0.0006, 0.0007, 0.0007, 0.0007, 0.0004, 0.0006, 0.0012, 0.0004, 0.0005, 0.0007, 0.0007, 0.0005, 0.0005, 0.0007, 0.0011, 0.0005, 0.0006, 0.0006]
   line [0.0007, 0.0006, 0.0005, 0.0008, 0.0007, 0.0006, 0.0005, 0.0006, 0.0008, 0.0005, 0.0006, 0.0007, 0.0012, 0.0004, 0.0004, 0.0007, 0.0009, 0.0006, 0.0005, 0.0007, 0.0007, 0.0004, 0.0005, 0.0008, 0.0007, 0.0005, 0.0006, 0.0006, 0.0008, 0.0005, 0.0005, 0.0006, 0.0009, 0.0005, 0.0004, 0.0008, 0.0007, 0.0005, 0.0006, 0.0006, 0.0009, 0.0004, 0.0004, 0.0007, 0.001, 0.0007, 0.0006, 0.0006, 0.0009]
 ```
+
 ![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) update (Transit with ADTs)&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) updateClassic&nbsp;&nbsp;![0000ff](https://placehold.co/8x8/0000ff/0000ff.png) updateV (Transit with Variants)<!-- PD_END -->
 
 ### Running Benchmarks
@@ -1371,4 +1373,3 @@ update = 1
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
-
