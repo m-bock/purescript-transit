@@ -6,10 +6,6 @@ module Transit
   , mkUpdate
   , match
   , matchM
-  , mkUpdateGenericEitherM
-  , mkUpdateGenericEither
-  , mkUpdateGenericM
-  , mkUpdateGeneric
   , return
   , returnVia
   , class Return
@@ -96,62 +92,6 @@ mkUpdate = curryN @args f
   f :: args -> state -> msg -> state
   f impl state msg =
     fromRight state $ safeUnwrap @Identity $ (MU.mkUpdate @tcore impl state msg)
-
-mkUpdateGenericEitherM
-  :: forall @spec tcore msg state args m a
-   . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> m (Either (TransitError state msg) state)) a)
-  => (MkUpdate tcore m args (Generically msg) (Generically state))
-  => Functor m
-  => a
-mkUpdateGenericEitherM = curryN @args f
-  where
-  f :: args -> state -> msg -> m (Either (TransitError state msg) state)
-  f impl state msg =
-    map Safe.coerce
-      $ MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg)
-
-mkUpdateGenericEither
-  :: forall @spec tcore msg state args a
-   . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> Either (TransitError state msg) state) a)
-  => (MkUpdate tcore Identity args (Generically msg) (Generically state))
-  => a
-mkUpdateGenericEither = curryN @args f
-  where
-  f :: args -> state -> msg -> Either (TransitError state msg) state
-  f impl state msg =
-    Safe.coerce
-      $ (safeUnwrap @Identity)
-      $ MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg)
-
-mkUpdateGenericM
-  :: forall @spec tcore msg state args m a
-   . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> m state) a)
-  => (MkUpdate tcore m args (Generically msg) (Generically state))
-  => Functor m
-  => a
-mkUpdateGenericM = curryN @args f
-  where
-  f :: args -> state -> msg -> m state
-  f impl state msg =
-    map (Safe.coerce <<< fromRight (safeWrap @Generically state))
-      $ MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg)
-
-mkUpdateGeneric
-  :: forall @spec tcore msg state args a
-   . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> state) a)
-  => (MkUpdate tcore Identity args (Generically msg) (Generically state))
-  => a
-mkUpdateGeneric = curryN @args f
-  where
-  f :: args -> state -> msg -> state
-  f impl state msg =
-    (Safe.coerce <<< fromRight (safeWrap @Generically state))
-      $ safeUnwrap @Identity
-      $ (MU.mkUpdate @tcore impl (safeWrap @Generically state) (safeWrap @Generically msg))
 
 safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a
 safeUnwrap = Safe.coerce

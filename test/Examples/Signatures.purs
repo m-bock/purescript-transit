@@ -4,7 +4,7 @@ import Prelude
 
 import Data.Variant (Variant)
 import Test.Examples.DoorWithPin (Msg, State, DoorWithPinTransit)
-import Transit (match, mkUpdate, mkUpdateGeneric)
+import Transit (match, mkUpdate)
 import Transit.Core (ReturnState, ReturnStateVia)
 import Unsafe.Coerce (unsafeCoerce)
 

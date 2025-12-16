@@ -4,23 +4,17 @@ import Prelude
 
 import Data.Array as Array
 import Data.Foldable (foldl)
-import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
-import Data.Set as Set
-import Data.Show.Generic (genericShow)
-import Data.Traversable (for_, scanl)
+import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner.Node (runSpecAndExitProcess)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, mkUpdateGeneric, return)
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
-import Transit.Data.Graph as Graph
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)

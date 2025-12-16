@@ -5,21 +5,42 @@ import Prelude
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
+import Data.Variant (Variant)
 import Effect (Effect)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdateGeneric, return)
+import Test.Spec (Spec)
+import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, return)
 import Transit.Colors (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
-import Test.Spec (Spec)
 
-data State = SpringGreen | LemonYellow | OceanBlue | CoralPink | MintTeal | AquaBlue | SunsetOrange | MagentaGlow | OliveGreen | VividRed | SkyCyan
+type State = Variant
+  ( "SpringGreen" :: {}
+  , "LemonYellow" :: {}
+  , "OceanBlue" :: {}
+  , "CoralPink" :: {}
+  , "MintTeal" :: {}
+  , "AquaBlue" :: {}
+  , "SunsetOrange" :: {}
+  , "MagentaGlow" :: {}
+  , "OliveGreen" :: {}
+  , "VividRed" :: {}
+  , "SkyCyan" :: {}
+  )
 
-derive instance Generic State _
-
-data Msg = MsgA | MsgB | MsgC | MsgD | MsgE | MsgF | MsgG | MsgH | MsgI | MsgJ | MsgK
-
-derive instance Generic Msg _
+type Msg = Variant
+  ( "MsgA" :: {}
+  , "MsgB" :: {}
+  , "MsgC" :: {}
+  , "MsgD" :: {}
+  , "MsgE" :: {}
+  , "MsgF" :: {}
+  , "MsgG" :: {}
+  , "MsgH" :: {}
+  , "MsgI" :: {}
+  , "MsgJ" :: {}
+  , "MsgK" :: {}
+  )
 
 type ColorsFSM = Transit $ Empty
   :* ("SpringGreen" :@ "MsgA" >| "LemonYellow")
@@ -35,18 +56,18 @@ type ColorsFSM = Transit $ Empty
   :* ("SkyCyan" :@ "MsgK" >| "SpringGreen")
 
 update :: State -> Msg -> State
-update = mkUpdateGeneric @ColorsFSM
-  (match @"SpringGreen" @"MsgA" \_ _ -> return @"LemonYellow" unit)
-  (match @"LemonYellow" @"MsgB" \_ _ -> return @"OceanBlue" unit)
-  (match @"OceanBlue" @"MsgC" \_ _ -> return @"CoralPink" unit)
-  (match @"CoralPink" @"MsgD" \_ _ -> return @"MintTeal" unit)
-  (match @"MintTeal" @"MsgE" \_ _ -> return @"AquaBlue" unit)
-  (match @"AquaBlue" @"MsgF" \_ _ -> return @"SunsetOrange" unit)
-  (match @"SunsetOrange" @"MsgG" \_ _ -> return @"MagentaGlow" unit)
-  (match @"MagentaGlow" @"MsgH" \_ _ -> return @"OliveGreen" unit)
-  (match @"OliveGreen" @"MsgI" \_ _ -> return @"VividRed" unit)
-  (match @"VividRed" @"MsgJ" \_ _ -> return @"SkyCyan" unit)
-  (match @"SkyCyan" @"MsgK" \_ _ -> return @"SpringGreen" unit)
+update = mkUpdate @ColorsFSM
+  (match @"SpringGreen" @"MsgA" \_ _ -> return @"LemonYellow")
+  (match @"LemonYellow" @"MsgB" \_ _ -> return @"OceanBlue")
+  (match @"OceanBlue" @"MsgC" \_ _ -> return @"CoralPink")
+  (match @"CoralPink" @"MsgD" \_ _ -> return @"MintTeal")
+  (match @"MintTeal" @"MsgE" \_ _ -> return @"AquaBlue")
+  (match @"AquaBlue" @"MsgF" \_ _ -> return @"SunsetOrange")
+  (match @"SunsetOrange" @"MsgG" \_ _ -> return @"MagentaGlow")
+  (match @"MagentaGlow" @"MsgH" \_ _ -> return @"OliveGreen")
+  (match @"OliveGreen" @"MsgI" \_ _ -> return @"VividRed")
+  (match @"VividRed" @"MsgJ" \_ _ -> return @"SkyCyan")
+  (match @"SkyCyan" @"MsgK" \_ _ -> return @"SpringGreen")
 
 main :: Effect Unit
 main = do
