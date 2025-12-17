@@ -61,6 +61,9 @@ spago install transit
 
 ## Example 1: A Simple Door
 
+> [!TIP]
+> Full source code: _[test/Examples/SimpleDoor.purs](test/Examples/SimpleDoor.purs)_
+
 Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of the latter.
 
 ### The State Machine
@@ -346,7 +349,7 @@ assertWalk updateFn initState walk = do
   actualStates `shouldEqual` expectedStates
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L36-L55">test/Examples/Common.purs L36-L55</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L35-L54">test/Examples/Common.purs L35-L54</a></sup></p>
 <!-- PD_END -->
 
 The function extracts the messages from the pairs, applies them sequentially using `scanl`, and verifies that the resulting states match the expected ones. Here's how we use it:
@@ -482,6 +485,9 @@ The key advantage is that your specification, implementation, and documentation 
 While this example was simple, it demonstrates **Transit**'s fundamental approach. In the next example, we'll see how **Transit** handles more complex scenarios with states that contain data and conditional transitions.
 
 ## Example 2: Door with Pin
+
+> [!TIP]
+> Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
 
 Now let's extend our door to support PIN-based locking. In this enhanced version, you can lock the door with a PIN code, and then unlock it by entering the correct PIN. This introduces two important concepts: **states with data** and **conditional transitions**.
 
@@ -654,7 +660,8 @@ The match handlers receive both the current state and the message, giving you ac
 
 Understanding the type signatures that **Transit** enforces helps clarify how the type system ensures correctness. This section demonstrates the exact types that each match handler must satisfy, showing how **Transit** uses `Variant` types to represent subsets of possible states.
 
-Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
+> [!TIP]
+> Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
 
 This chapter demonstrates the type signatures that **Transit** enforces for your update functions. To show these signatures without implementing the actual logic, we use an `unimplemented` helper function that satisfies the type checker:
 
@@ -725,6 +732,9 @@ type Handler4 =
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg
+
+> [!TIP]
+> Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
 So far, we've seen how **Transit** helps you build type-safe state machines and generate state diagrams and transition tables. But the power of **Transit** extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
@@ -879,11 +889,11 @@ pick:
 -->
 
 ```purescript
-nodeDegree :: StateNode -> StateGraph -> Int
-nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
+nodeDegree :: StateGraph -> StateNode -> Int
+nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L17-L18">test/Examples/Common.purs L17-L18</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L16-L17">test/Examples/Common.purs L16-L17</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -900,15 +910,15 @@ hasEulerTrail graph =
     nodes = fromFoldable (Graph.getNodes graph)
 
     countEdgesByNode :: Array Int
-    countEdgesByNode = map (\node -> Set.size (Graph.getOutgoingEdges node graph)) nodes
+    countEdgesByNode = map (nodeDegree graph) nodes
 
     sumOddEdges :: Int
-    sumOddEdges = (Array.length <<< Array.filter Int.odd) countEdgesByNode
+    sumOddEdges = Array.length (Array.filter Int.odd countEdgesByNode)
   in
     sumOddEdges == 2 || sumOddEdges == 0
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L20-L32">test/Examples/Common.purs L20-L32</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L19-L31">test/Examples/Common.purs L19-L31</a></sup></p>
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected **Transit** specification into a graph and then check its properties:
@@ -926,11 +936,11 @@ pick:
 -->
 
 ```purescript
-nodeDegree :: StateNode -> StateGraph -> Int
-nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
+nodeDegree :: StateGraph -> StateNode -> Int
+nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L17-L18">test/Examples/Common.purs L17-L18</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L16-L17">test/Examples/Common.purs L16-L17</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -947,15 +957,15 @@ hasEulerTrail graph =
     nodes = fromFoldable (Graph.getNodes graph)
 
     countEdgesByNode :: Array Int
-    countEdgesByNode = map (\node -> Set.size (Graph.getOutgoingEdges node graph)) nodes
+    countEdgesByNode = map (nodeDegree graph) nodes
 
     sumOddEdges :: Int
-    sumOddEdges = (Array.length <<< Array.filter Int.odd) countEdgesByNode
+    sumOddEdges = Array.length (Array.filter Int.odd countEdgesByNode)
   in
     sumOddEdges == 2 || sumOddEdges == 0
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L20-L32">test/Examples/Common.purs L20-L32</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L19-L31">test/Examples/Common.purs L19-L31</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1018,7 +1028,8 @@ In the next example, we'll see a graph that **does** have an Eulerian trail, dem
 
 ## Example 4: The house of Santa Claus
 
-Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
+> [!TIP]
+> Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
 This example uses "Das Haus vom Nikolaus" (The house of Santa Claus), a well-known German drawing puzzle. The challenge is to draw a house shape in one continuous stroke without lifting the pen and without retracing any line. In German-speaking countries, this puzzle is commonly associated with Saint Nicholas (Nikolaus), hence the name. The puzzle is equivalent to finding an Eulerian trail in the graph representing the house's edges.
 
@@ -1059,7 +1070,7 @@ type HouseOfSantaClausTransit =
     :* ("N_3" |< "E_h" >| "N_4")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L50-L59">test/Examples/HouseOfSantaClaus.purs L50-L59</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L47-L56">test/Examples/HouseOfSantaClaus.purs L47-L56</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -1094,7 +1105,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L92-L104">test/Examples/HouseOfSantaClaus.purs L92-L104</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L89-L101">test/Examples/HouseOfSantaClaus.purs L89-L101</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1112,7 +1123,7 @@ assert2 =
     hasEulerTrail graph `shouldEqual` true
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L106-L111">test/Examples/HouseOfSantaClaus.purs L106-L111</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L103-L108">test/Examples/HouseOfSantaClaus.purs L103-L108</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
@@ -1124,7 +1135,8 @@ assert2 =
 
 ### Monadic update functions
 
-Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
+> [!TIP]
+> Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
 
 So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
 

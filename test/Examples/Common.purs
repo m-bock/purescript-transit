@@ -6,16 +6,15 @@ import Data.Array (fromFoldable, scanl)
 import Data.Array as Array
 import Data.Int as Int
 import Data.Set as Set
-import Data.Tuple (fst, snd)
+import Data.Tuple (Tuple(..), fst, snd)
 import Data.Tuple.Nested (type (/\))
 import Effect.Aff (Aff)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Data.Graph as Graph
 import Transit.StateGraph (StateNode, StateGraph)
-import Data.Tuple (Tuple(..))
 
-nodeDegree :: StateNode -> StateGraph -> Int
-nodeDegree state graph = Set.size (Graph.getOutgoingEdges state graph)
+nodeDegree :: StateGraph -> StateNode -> Int
+nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 
 hasEulerTrail :: StateGraph -> Boolean
 hasEulerTrail graph =
@@ -24,10 +23,10 @@ hasEulerTrail graph =
     nodes = fromFoldable (Graph.getNodes graph)
 
     countEdgesByNode :: Array Int
-    countEdgesByNode = map (\node -> Set.size (Graph.getOutgoingEdges node graph)) nodes
+    countEdgesByNode = map (nodeDegree graph) nodes
 
     sumOddEdges :: Int
-    sumOddEdges = (Array.length <<< Array.filter Int.odd) countEdgesByNode
+    sumOddEdges = Array.length (Array.filter Int.odd countEdgesByNode)
   in
     sumOddEdges == 2 || sumOddEdges == 0
 
@@ -54,9 +53,3 @@ assertWalk updateFn initState walk = do
 
   actualStates `shouldEqual` expectedStates
 
-sameLengthPermutations :: forall a. Eq a => Array a -> Array (Array a)
-sameLengthPermutations xs
-  | Array.null xs = [ [] ]
-  | otherwise =
-      xs >>= \x ->
-        (Array.cons x) <$> sameLengthPermutations (Array.delete x xs)

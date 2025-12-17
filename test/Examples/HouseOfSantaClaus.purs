@@ -2,8 +2,6 @@ module Test.Examples.HouseOfSantaClaus (main, spec) where
 
 import Prelude
 
-import Data.Array as Array
-import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Traversable (for_)
@@ -21,7 +19,6 @@ import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
 import Transit.VariantUtils (v)
-import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
