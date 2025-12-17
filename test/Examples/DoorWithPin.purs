@@ -144,5 +144,4 @@ main = do
         , entryPoints = [ "DoorOpen" ]
         }
 
-  TransitTable.writeToFile "graphs/door-with-pin.html" transit _
-    { title = Just "Door with Pin" }
+  TransitTable.writeToFile_ "graphs/door-with-pin.html" transit

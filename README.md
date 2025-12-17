@@ -93,7 +93,7 @@ For a more structured view, here's the corresponding transition table:
 filePath: graphs/simple-door.html
 wrapNl: true
 -->
-<table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table>
+<table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table>
 <!-- PD_END -->
 
 Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions—like trying to open an already open door—simply don't appear in the table.
@@ -501,10 +501,12 @@ The transition table shows both possible outcomes:
 filePath: graphs/door-with-pin.html
 wrapNl: true
 -->
-<table><caption>Door with Pin</caption><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table>
+<table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>Guard</th><th></th><th>State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td></td><td></td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td></td><td></td><td>⟶</td><td>DoorOpen</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td></td><td></td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>?</td><td>PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>?</td><td>PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table>
 <!-- PD_END -->
 
 ### State machine implementation I: The Classic Approach
+
+#### States and Message types
 
 The PureScript types now include data in both states and messages:
 
@@ -530,6 +532,8 @@ data MsgD
 
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L33-L42">test/Examples/DoorWithPin.purs L33-L42</a></sup></p>
 <!-- PD_END -->
+
+#### The update function
 
 The classic update function now needs to handle state and message data:
 
@@ -747,7 +751,7 @@ Even not immediately obvious, this can be represented as a graph:
 filePath: graphs/bridges-koenigsberg.html
 wrapNl: true
 -->
-<table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandD</td></tr></tbody></table>
+<table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandD</td></tr></tbody></table>
 <!-- PD_END -->
 
 While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
@@ -1060,7 +1064,7 @@ type HouseOfSantaClausTransit =
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
---><table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>N_1</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_5</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_1</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_4</td></tr></tbody></table><!-- PD_END -->
+--><table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>N_1</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_5</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_1</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_4</td></tr></tbody></table><!-- PD_END -->
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/house-of-santa-claus-dark.svg">

@@ -26,12 +26,25 @@ toHtml options transit@(TransitCore matches) = Html.table []
       [ case options.title of
           Just title -> [ Html.caption [] [ Html.text title ] ]
           Nothing -> []
-      , pure $ Html.thead [] [ mkHeader ]
-      , join $ mapWithIndex (mkMatch options transit) matches
+      , pure $ Html.thead [] [ mkHeader hasGuards ]
+      , join $ mapWithIndex (mkMatch options transit hasGuards) matches
       ]
+  where
+  hasGuards = getHasGuards matches
 
-mkMatch :: Options -> TransitCore -> Int -> Match -> Array Html.Node
-mkMatch options transit index (Match from msg returns) =
+getHasGuards :: Array Match -> Boolean
+getHasGuards matches = Array.any
+  ( \(Match _ _ returns) -> Array.any
+      ( case _ of
+          ReturnVia _ _ -> true
+          Return _ -> false
+      )
+      returns
+  )
+  matches
+
+mkMatch :: Options -> TransitCore -> Boolean -> Int -> Match -> Array Html.Node
+mkMatch options transit hasGuards index (Match from msg returns) =
   case returns of
     [ Return to ] ->
       if options.useUndirectedEdges then
@@ -39,9 +52,9 @@ mkMatch options transit index (Match from msg returns) =
           Just i | i > index -> [ mkUndirectedRow options from msg to ]
           _ -> []
       else
-        [ mkDirectedRow options from msg (Return to) ]
+        [ mkDirectedRow hasGuards options from msg (Return to) ]
     manyReturns ->
-      map (mkDirectedRow options from msg) manyReturns
+      map (mkDirectedRow hasGuards options from msg) manyReturns
 
 mkUndirectedRow :: Options -> String -> String -> String -> Html.Node
 mkUndirectedRow options fromState msg toState =
@@ -55,21 +68,26 @@ mkUndirectedRow options fromState msg toState =
         ]
     ]
 
-mkDirectedRow :: Options -> String -> String -> Return -> Html.Node
-mkDirectedRow options fromState msg ret =
+mkDirectedRow :: Boolean -> Options -> String -> String -> Return -> Html.Node
+mkDirectedRow hasGuards options fromState msg ret =
   Html.tbody []
-    [ Html.tr []
-        [ Html.td [] [ Html.text fromState ]
-        , Html.td [] [ Html.text "⟶" ]
-        , Html.td []
-            [ Html.text
-                ( case guard of
-                    Just guard -> msg <> " ? " <> guard
-                    Nothing -> msg
-                )
-            ]
-        , Html.td [] [ Html.text "⟶" ]
-        , Html.td [] [ Html.text toState ]
+    [ Html.tr [] $ join
+        [ pure $ Html.td [] [ Html.text fromState ]
+        , pure $ Html.td [] [ Html.text "⟶" ]
+        , pure $ Html.td [] [ Html.text msg ]
+        , if hasGuards then case guard of
+            Just guard ->
+              [ Html.td [] [ Html.text "?" ]
+              , Html.td [] [ Html.text guard ]
+              ]
+            Nothing ->
+              [ Html.td [] []
+              , Html.td [] []
+              ]
+          else
+            []
+        , pure $ Html.td [] [ Html.text "⟶" ]
+        , pure $ Html.td [] [ Html.text toState ]
         ]
     ]
   where
@@ -77,13 +95,19 @@ mkDirectedRow options fromState msg ret =
     Return to -> { toState: to, guard: Nothing }
     ReturnVia guard to -> { toState: to, guard: Just guard }
 
-mkHeader :: Html.Node
-mkHeader = Html.tr []
-  [ Html.th [] [ Html.text "From State" ]
-  , Html.th [] []
-  , Html.th [] [ Html.text "Transition" ]
-  , Html.th [] []
-  , Html.th [] [ Html.text "To State" ]
+mkHeader :: Boolean -> Html.Node
+mkHeader hasGuards = Html.tr [] $ join
+  [ pure $ Html.th [] [ Html.text "State" ]
+  , pure $ Html.th [] []
+  , pure $ Html.th [] [ Html.text "Message" ]
+  , if hasGuards then
+      [ Html.th [] []
+      , Html.th [] [ Html.text "Guard" ]
+      ]
+    else
+      []
+  , pure $ Html.th [] []
+  , pure $ Html.th [] [ Html.text "State" ]
   ]
 
 type Options =
