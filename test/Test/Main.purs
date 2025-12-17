@@ -16,7 +16,7 @@ import Test.Transit.Generators.Graphviz as Test.Transit.Generators.Graphviz
 import Test.Transit.Generators.TransitionTable as Test.Transit.Generators.TransitionTable
 import Test.Transit.StateGraph as Test.Transit.StateGraph
 import Test.Transit.Util as Test.Transit.Util
-import Test.Transit.Class.GetSubset as Test.Transit.Class.GetSubset
+import Test.Transit.Class.ExpandReturn as Test.Transit.Class.ExpandReturn
 import Test.Transit.Class.MatchBySym as Test.Transit.Class.MatchBySym
 import Test.Transit.Class.MkUpdate as Test.Transit.Class.MkUpdate
 
@@ -34,6 +34,6 @@ main = do
     Test.Transit.Generators.TransitionTable.spec
     Test.Transit.StateGraph.spec
     Test.Transit.Util.spec
-    Test.Transit.Class.GetSubset.spec
+    Test.Transit.Class.ExpandReturn.spec
     Test.Transit.Class.MatchBySym.spec
     Test.Transit.Class.MkUpdate.spec

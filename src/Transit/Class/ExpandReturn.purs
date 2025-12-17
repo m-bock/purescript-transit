@@ -1,6 +1,6 @@
-module Transit.Class.GetSubset
-  ( class GetSubset
-  , getSubset
+module Transit.Class.ExpandReturn
+  ( class ExpandReturn
+  , expandReturn
   , class RemoveWrappers
   , removeWrappers
   ) where
@@ -16,17 +16,17 @@ import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 
 class
-  GetSubset (syms :: List' ReturnTL) ty a
+  ExpandReturn (syms :: List' ReturnTL) ty a
   | syms ty -> a
   where
-  getSubset :: a -> ty
+  expandReturn :: a -> ty
 
-instance getSubsetInst ::
+instance expandReturnInst ::
   ( RemoveWrappers syms r r'
   , Row.Union r' rx r''
   ) =>
-  GetSubset syms (Variant r'') (Variant r) where
-  getSubset v = y
+  ExpandReturn syms (Variant r'') (Variant r) where
+  expandReturn v = y
     where
     y :: Variant r''
     y = V.expand x

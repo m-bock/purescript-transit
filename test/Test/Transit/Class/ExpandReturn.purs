@@ -1,4 +1,4 @@
-module Test.Transit.Class.GetSubset
+module Test.Transit.Class.ExpandReturn
   ( test1
   , test2
   , testRW1
@@ -12,12 +12,12 @@ import Prelude
 import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Class.GetSubset (class GetSubset, class RemoveWrappers, getSubset)
+import Transit.Class.ExpandReturn (class ExpandReturn, class RemoveWrappers, expandReturn)
 import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Via(..))
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Cons', List', Nil')
 
-check :: forall @syms @t @a. (GetSubset syms t a) => Unit
+check :: forall @syms @t @a. (ExpandReturn syms t a) => Unit
 check = unit
 
 type D = Variant
@@ -60,18 +60,18 @@ type L1 = MkReturnTL "Foo" :> MkReturnTL "Baz" :> MkReturnViaTL "Guard1" "Qux" :
 
 spec :: Spec Unit
 spec = do
-  describe "Transit.Class.GetSubset" do
-    describe "getSubset" do
+  describe "Transit.Class.ExpandReturn" do
+    describe "expandReturn" do
       it "should inject whitelisted case with payload" do
-        getSubset @L1 (v @"Foo" 1)
+        expandReturn @L1 (v @"Foo" 1)
           `shouldEqual` (v @"Foo" 1 :: D)
 
       it "should inject whitelisted case with payload and guard" do
-        getSubset @L1 (v @"Qux" (Via @"Guard1" 1))
+        expandReturn @L1 (v @"Qux" (Via @"Guard1" 1))
           `shouldEqual` (v @"Qux" 1 :: D)
 
       it "should inject whitelisted case with unit payload" do
-        getSubset @L1 (v @"Baz" unit)
+        expandReturn @L1 (v @"Baz" unit)
           `shouldEqual` (v @"Baz" unit :: D)
 
 ---

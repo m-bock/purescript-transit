@@ -10,7 +10,7 @@ import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 import Data.Tuple.Nested (type (/\), (/\))
-import Transit.Class.GetSubset (class GetSubset, getSubset)
+import Transit.Class.ExpandReturn (class ExpandReturn, expandReturn)
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
 import Type.Data.List (type (:>), Nil')
@@ -33,7 +33,7 @@ instance mkUpdateNil :: (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Uni
 
 instance mkUpdateCons ::
   ( MatchBySym symStateIn state stateIn
-  , GetSubset returns state stateOut
+  , ExpandReturn returns state stateOut
   , MatchBySym symMsg msg msgIn
   , MkUpdate (MkTransitCoreTL rest1) m rest2 msg state
   , Applicative m
@@ -47,7 +47,7 @@ instance mkUpdateCons ::
   where
   mkUpdate (MatchImpl fn /\ rest) state msg =
     matchBySym2 @symStateIn @symMsg
-      (\s m -> Right <$> (getSubset @returns <$> fn s m))
+      (\s m -> Right <$> (expandReturn @returns <$> fn s m))
       (\_ -> mkUpdate @(MkTransitCoreTL rest1) rest state msg)
       state
       msg
