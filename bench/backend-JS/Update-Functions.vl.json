@@ -8,27 +8,27 @@
         "size": 1
       },
       {
-        "ms": 0.001,
+        "ms": 0.0014,
         "series": "updateClassic",
         "size": 2
       },
       {
-        "ms": 0.0008,
+        "ms": 0.0009,
         "series": "updateClassic",
         "size": 3
       },
       {
-        "ms": 0.001,
+        "ms": 0.0011,
         "series": "updateClassic",
         "size": 4
       },
       {
-        "ms": 0.001,
+        "ms": 0.0013,
         "series": "updateClassic",
         "size": 5
       },
       {
-        "ms": 0.001,
+        "ms": 0.0012,
         "series": "updateClassic",
         "size": 6
       },
@@ -38,27 +38,27 @@
         "size": 7
       },
       {
-        "ms": 0.0008,
+        "ms": 0.0013,
         "series": "updateClassic",
         "size": 8
       },
       {
-        "ms": 0.0008,
+        "ms": 0.0009,
         "series": "updateClassic",
         "size": 9
       },
       {
-        "ms": 0.0009,
+        "ms": 0.0014,
         "series": "updateClassic",
         "size": 10
       },
       {
-        "ms": 0.0014,
+        "ms": 0.0015,
         "series": "updateClassic",
         "size": 11
       },
       {
-        "ms": 0.0012,
+        "ms": 0.001,
         "series": "updateClassic",
         "size": 12
       },
@@ -68,12 +68,12 @@
         "size": 13
       },
       {
-        "ms": 0.0011,
+        "ms": 0.0013,
         "series": "updateClassic",
         "size": 14
       },
       {
-        "ms": 0.001,
+        "ms": 0.0013,
         "series": "updateClassic",
         "size": 15
       },
@@ -83,27 +83,27 @@
         "size": 16
       },
       {
-        "ms": 0.001,
+        "ms": 0.0011,
         "series": "updateClassic",
         "size": 17
       },
       {
-        "ms": 0.0011,
+        "ms": 0.0012,
         "series": "updateClassic",
         "size": 18
       },
       {
-        "ms": 0.0011,
+        "ms": 0.0012,
         "series": "updateClassic",
         "size": 19
       },
       {
-        "ms": 0.0012,
+        "ms": 0.0011,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 0.0011,
+        "ms": 0.0012,
         "series": "updateClassic",
         "size": 21
       },
@@ -113,7 +113,7 @@
         "size": 22
       },
       {
-        "ms": 0.0012,
+        "ms": 0.0015,
         "series": "updateClassic",
         "size": 23
       },
@@ -133,7 +133,7 @@
         "size": 26
       },
       {
-        "ms": 0.0014,
+        "ms": 0.0013,
         "series": "updateClassic",
         "size": 27
       },
@@ -143,12 +143,12 @@
         "size": 28
       },
       {
-        "ms": 0.0013,
+        "ms": 0.0015,
         "series": "updateClassic",
         "size": 29
       },
       {
-        "ms": 0.0014,
+        "ms": 0.0016,
         "series": "updateClassic",
         "size": 30
       },
@@ -158,47 +158,47 @@
         "size": 31
       },
       {
-        "ms": 0.0015,
+        "ms": 0.0016,
         "series": "updateClassic",
         "size": 32
       },
       {
-        "ms": 0.0015,
+        "ms": 0.0024,
         "series": "updateClassic",
         "size": 33
       },
       {
-        "ms": 0.0015,
+        "ms": 0.0027,
         "series": "updateClassic",
         "size": 34
       },
       {
-        "ms": 0.0016,
+        "ms": 0.0034,
         "series": "updateClassic",
         "size": 35
       },
       {
-        "ms": 0.0015,
+        "ms": 0.0023,
         "series": "updateClassic",
         "size": 36
       },
       {
-        "ms": 0.0015,
+        "ms": 0.002,
         "series": "updateClassic",
         "size": 37
       },
       {
-        "ms": 0.0015,
+        "ms": 0.0024,
         "series": "updateClassic",
         "size": 38
       },
       {
-        "ms": 0.0017,
+        "ms": 0.0021,
         "series": "updateClassic",
         "size": 39
       },
       {
-        "ms": 0.0016,
+        "ms": 0.0017,
         "series": "updateClassic",
         "size": 40
       },
@@ -213,52 +213,52 @@
         "size": 42
       },
       {
-        "ms": 0.0018,
+        "ms": 0.0017,
         "series": "updateClassic",
         "size": 43
       },
       {
-        "ms": 0.0019,
+        "ms": 0.0017,
         "series": "updateClassic",
         "size": 44
       },
       {
-        "ms": 0.0017,
+        "ms": 0.0018,
         "series": "updateClassic",
         "size": 45
       },
       {
-        "ms": 0.002,
+        "ms": 0.0017,
         "series": "updateClassic",
         "size": 46
       },
       {
-        "ms": 0.0044,
+        "ms": 0.0017,
         "series": "updateClassic",
         "size": 47
       },
       {
-        "ms": 0.0046,
+        "ms": 0.0018,
         "series": "updateClassic",
         "size": 48
       },
       {
-        "ms": 0.0019,
+        "ms": 0.0018,
         "series": "updateClassic",
         "size": 49
       },
       {
-        "ms": 0.0038,
+        "ms": 0.0025,
         "series": "update",
         "size": 1
       },
       {
-        "ms": 0.0022,
+        "ms": 0.0025,
         "series": "update",
         "size": 2
       },
       {
-        "ms": 0.0017,
+        "ms": 0.0021,
         "series": "update",
         "size": 3
       },
@@ -268,47 +268,47 @@
         "size": 4
       },
       {
-        "ms": 0.0019,
+        "ms": 0.0023,
         "series": "update",
         "size": 5
       },
       {
-        "ms": 0.0022,
+        "ms": 0.0026,
         "series": "update",
         "size": 6
       },
       {
-        "ms": 0.0025,
+        "ms": 0.0024,
         "series": "update",
         "size": 7
       },
       {
-        "ms": 0.0025,
+        "ms": 0.0028,
         "series": "update",
         "size": 8
       },
       {
-        "ms": 0.0026,
+        "ms": 0.0032,
         "series": "update",
         "size": 9
       },
       {
-        "ms": 0.0027,
+        "ms": 0.0033,
         "series": "update",
         "size": 10
       },
       {
-        "ms": 0.0031,
+        "ms": 0.0033,
         "series": "update",
         "size": 11
       },
       {
-        "ms": 0.003,
+        "ms": 0.0042,
         "series": "update",
         "size": 12
       },
       {
-        "ms": 0.0032,
+        "ms": 0.0034,
         "series": "update",
         "size": 13
       },
@@ -318,7 +318,7 @@
         "size": 14
       },
       {
-        "ms": 0.0035,
+        "ms": 0.0038,
         "series": "update",
         "size": 15
       },
@@ -328,12 +328,12 @@
         "size": 16
       },
       {
-        "ms": 0.004,
+        "ms": 0.0038,
         "series": "update",
         "size": 17
       },
       {
-        "ms": 0.0039,
+        "ms": 0.004,
         "series": "update",
         "size": 18
       },
@@ -348,147 +348,147 @@
         "size": 20
       },
       {
-        "ms": 0.0043,
+        "ms": 0.0045,
         "series": "update",
         "size": 21
       },
       {
-        "ms": 0.0043,
+        "ms": 0.0044,
         "series": "update",
         "size": 22
       },
       {
-        "ms": 0.0045,
+        "ms": 0.0048,
         "series": "update",
         "size": 23
       },
       {
-        "ms": 0.0046,
+        "ms": 0.0051,
         "series": "update",
         "size": 24
       },
       {
-        "ms": 0.0048,
+        "ms": 0.0054,
         "series": "update",
         "size": 25
       },
       {
-        "ms": 0.0048,
+        "ms": 0.0053,
         "series": "update",
         "size": 26
       },
       {
-        "ms": 0.0052,
+        "ms": 0.0054,
         "series": "update",
         "size": 27
       },
       {
-        "ms": 0.0052,
+        "ms": 0.0054,
         "series": "update",
         "size": 28
       },
       {
-        "ms": 0.0054,
+        "ms": 0.0057,
         "series": "update",
         "size": 29
       },
       {
-        "ms": 0.006,
+        "ms": 0.0059,
         "series": "update",
         "size": 30
       },
       {
-        "ms": 0.0055,
+        "ms": 0.0061,
         "series": "update",
         "size": 31
       },
       {
-        "ms": 0.0058,
+        "ms": 0.0065,
         "series": "update",
         "size": 32
       },
       {
-        "ms": 0.0055,
+        "ms": 0.0065,
         "series": "update",
         "size": 33
       },
       {
-        "ms": 0.0057,
+        "ms": 0.007,
         "series": "update",
         "size": 34
       },
       {
-        "ms": 0.0058,
+        "ms": 0.0069,
         "series": "update",
         "size": 35
       },
       {
-        "ms": 0.006,
+        "ms": 0.0071,
         "series": "update",
         "size": 36
       },
       {
-        "ms": 0.0061,
+        "ms": 0.008,
         "series": "update",
         "size": 37
       },
       {
-        "ms": 0.006,
+        "ms": 0.0081,
         "series": "update",
         "size": 38
       },
       {
-        "ms": 0.0064,
+        "ms": 0.0084,
         "series": "update",
         "size": 39
       },
       {
-        "ms": 0.0063,
+        "ms": 0.0145,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 0.0064,
+        "ms": 0.0085,
         "series": "update",
         "size": 41
       },
       {
-        "ms": 0.0066,
+        "ms": 0.0076,
         "series": "update",
         "size": 42
       },
       {
-        "ms": 0.0066,
+        "ms": 0.0075,
         "series": "update",
         "size": 43
       },
       {
-        "ms": 0.0069,
+        "ms": 0.0078,
         "series": "update",
         "size": 44
       },
       {
-        "ms": 0.0072,
+        "ms": 0.0081,
         "series": "update",
         "size": 45
       },
       {
-        "ms": 0.007,
+        "ms": 0.0081,
         "series": "update",
         "size": 46
       },
       {
-        "ms": 0.0073,
+        "ms": 0.0083,
         "series": "update",
         "size": 47
       },
       {
-        "ms": 0.0074,
+        "ms": 0.0084,
         "series": "update",
         "size": 48
       },
       {
-        "ms": 0.0084,
+        "ms": 0.0087,
         "series": "update",
         "size": 49
       }

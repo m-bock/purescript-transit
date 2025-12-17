@@ -1,6 +1,9 @@
 module Test.Transit.Class.GetSubset
   ( test1
   , test2
+  , testRW1
+  , testRW2
+  , testRW3
   , spec
   ) where
 
@@ -9,10 +12,10 @@ import Prelude
 import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Class.GetSubset (class GetSubset, getSubset)
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ReturnState(..), Via(..))
+import Transit.Class.GetSubset (class GetSubset, class RemoveWrappers, getSubset)
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Via(..))
 import Transit.VariantUtils (v)
-import Type.Data.List (type (:>), List', Nil')
+import Type.Data.List (type (:>), Cons', List', Nil')
 
 check :: forall @syms @t @a. (GetSubset syms t a) => Unit
 check = unit
@@ -70,3 +73,27 @@ spec = do
       it "should inject whitelisted case with unit payload" do
         getSubset @L1 (v @"Baz" unit)
           `shouldEqual` (v @"Baz" unit :: D)
+
+---
+
+checkRemoveWrappers :: forall @syms @rin @rout. (RemoveWrappers syms rin rout) => Unit
+checkRemoveWrappers = unit
+
+testRW1 :: Unit
+testRW1 = checkRemoveWrappers
+  @Nil'
+  @()
+  @()
+
+testRW2 :: Unit
+testRW2 = checkRemoveWrappers
+  @(Cons' (MkReturnTL "Foo") Nil')
+  @("Foo" :: Int)
+  @("Foo" :: Int)
+
+testRW3 :: Unit
+testRW3 = checkRemoveWrappers
+  @(Cons' (MkReturnTL "Foo") (Cons' (MkReturnViaTL "Transition" "Bar") Nil'))
+  @("Foo" :: Int, "Bar" :: Via "Transition" String)
+  @("Foo" :: Int, "Bar" :: String)
+
