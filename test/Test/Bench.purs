@@ -49,12 +49,8 @@ main = do
 
   BenchLib.runNode _
     { reporters =
-        [ reportMarkdown _
-            { filePath = "bench/backend-" <> backend <> ".md"
-            , maxTime = maxTime
-            }
-        , reportConsole
-        , reportVegaLite_
+        [ reportConsole
+        , reportVegaLite _ { folderPath = "bench/backend-" <> backend }
         ]
     } $
     suite_

@@ -48,6 +48,7 @@ bench-es:
 gen: 
     just gen-docs && \
     just gen-svgs && \
+    just gen-vega && \
     just gen-doctoc && \
     just gen-preview && \
     just gen-book
@@ -57,3 +58,7 @@ test:
 
 nix:
     nix --extra-experimental-features "nix-command flakes" develop
+
+gen-vega:
+    find bench -name "*vl.json" -type f -exec sh -c 'vl2vg "$1" > "${1%.vl.json}.vg.json"' _ {} \; && \
+    find bench -name "*.vg.json" -type f -exec sh -c 'vg2svg "$1" > "${1%.vg.json}.svg"' _ {} \;

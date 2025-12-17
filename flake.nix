@@ -16,7 +16,8 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            python312Packages.vl-convert-python
+            nodePackages.vega-lite
+            nodePackages.vega-cli
             pandoc
           ];
         };
