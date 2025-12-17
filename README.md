@@ -27,10 +27,9 @@
     - [Graph Analysis](#graph-analysis)
   - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
   - [Benchmarks](#benchmarks)
-    - [Running Benchmarks](#running-benchmarks)
-    - [Benchmark Results](#benchmark-results)
   - [More](#more)
     - [Monadic update functions](#monadic-update-functions)
+    - [Error handling](#error-handling)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -1109,7 +1108,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L105-L117">test/Examples/HouseOfSantaClaus.purs L105-L117</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L106-L118">test/Examples/HouseOfSantaClaus.purs L106-L118</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1127,52 +1126,13 @@ assert2 =
     hasEulerTrail graph `shouldEqual` true
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L119-L124">test/Examples/HouseOfSantaClaus.purs L119-L124</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L120-L125">test/Examples/HouseOfSantaClaus.purs L120-L125</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
 
 <img src="bench/backend-JS/Update-Functions.svg" />
 <img src="bench/backend-ES/Update-Functions.svg" />
-
-### Running Benchmarks
-
-To run benchmarks for both JavaScript and ES backends:
-
-```bash
-just bench
-```
-
-This will:
-
-- Run benchmarks for the JS backend and generate `report-JS.html`
-- Build the ES backend output
-- Run benchmarks for the ES backend and generate `report-ES.html`
-
-You can also run benchmarks for a specific backend:
-
-```bash
-# JavaScript backend only
-just bench-js
-
-# ES backend only
-just bench-es
-```
-
-To customize the number of iterations (default is 10000):
-
-```bash
-ITERATIONS=100000 just bench
-```
-
-### Benchmark Results
-
-The benchmark results are saved as HTML files:
-
-- `report-JS.html` - Results for the JavaScript backend
-- `report-ES.html` - Results for the ES backend
-
-Each report includes interactive charts showing the performance comparison across different state machine sizes. The results help you understand the performance characteristics of each approach and choose the best implementation for your use case.
 
 ## More
 
@@ -1199,10 +1159,81 @@ pick:
 -->
 
 ```purescript
-update = 1
+update :: State -> Msg -> Effect State
+update = mkUpdateM @SimpleDoorTransit
+  ( matchM @"DoorOpen" @"Close" \_ _ -> do
+      Console.log "You just closed the door"
+      pure $ return @"DoorClosed"
+  )
+  ( matchM @"DoorClosed" @"Open" \_ _ -> do
+      Console.log "You just opened the door"
+      pure $ return @"DoorOpen"
+  )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L10">test/Examples/Monadic.purs L10-L10</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p>
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
+
+### Error handling
+
+Sometimes you need to handle errors during state transitions. For example, you might want to log an error message if a transition is not allowed, or handle invalid state/message combinations gracefully.
+
+If you use `mkUpdate`, it will always silently return the unchanged state on an illegal transition. This is useful if you don't need to know whether a transition is valid or not, but it's not very flexible.
+
+Instead you can use `mkUpdateEither` to get an `Either TransitError State` result. This allows you to distinguish between successful transitions (wrapped in `Right`) and invalid transitions (wrapped in `Left` with `IllegalTransitionRequest`).
+
+<!-- PD_START:purs
+filePath: test/Examples/ErrorHandling.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> Either TransitError State
+update = mkUpdateEither @SimpleDoorTransit
+  ( match @"DoorOpen" @"Close" \_ _ ->
+      return @"DoorClosed"
+  )
+  ( match @"DoorClosed" @"Open" \_ _ ->
+      return @"DoorOpen"
+  )
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L14-L21">test/Examples/ErrorHandling.purs L14-L21</a></sup></p>
+<!-- PD_END -->
+
+As we see in the following assertion, a valid transition occurs when the door is `DoorOpen` and receives the `Close` message: the update function successfully transitions to `DoorClosed`, returning `Right (v @"DoorClosed")`.
+
+<!-- PD_START:purs
+filePath: test/Examples/ErrorHandling.purs
+pick:
+  - tag: value
+    name: assert1
+-->
+
+```purescript
+assert1 =
+  update (v @"DoorOpen") (v @"Close") `shouldEqual` Right (v @"DoorClosed")
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L24-L25">test/Examples/ErrorHandling.purs L24-L25</a></sup></p>
+<!-- PD_END -->
+
+When the door is already `DoorClosed` and receives the `Close` message, this is an invalid transition (you can't close a door that's already closed). As shown below, since this transition is not defined in the transit specification, `mkUpdateEither` returns `Left IllegalTransitionRequest` instead of crashing or silently failing.
+
+<!-- PD_START:purs
+filePath: test/Examples/ErrorHandling.purs
+pick:
+  - tag: value
+    name: assert2
+-->
+
+```purescript
+assert2 =
+  update (v @"DoorClosed") (v @"Close") `shouldEqual` Left IllegalTransitionRequest
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L28-L29">test/Examples/ErrorHandling.purs L28-L29</a></sup></p>
+<!-- PD_END -->

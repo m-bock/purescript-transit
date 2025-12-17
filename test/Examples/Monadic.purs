@@ -7,15 +7,14 @@ import Effect.Class.Console as Console
 import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
 import Transit (matchM, mkUpdateM, return)
 
-update = 1
+update :: State -> Msg -> Effect State
+update = mkUpdateM @SimpleDoorTransit
+  ( matchM @"DoorOpen" @"Close" \_ _ -> do
+      Console.log "You just closed the door"
+      pure $ return @"DoorClosed"
+  )
+  ( matchM @"DoorClosed" @"Open" \_ _ -> do
+      Console.log "You just opened the door"
+      pure $ return @"DoorOpen"
+  )
 
--- update :: State -> Msg -> Effect State
--- update = mkUpdateGenericM @SimpleDoorTransit
---   ( matchM @"DoorOpen" @"Close" \_ _ -> do
---       Console.log "You just closed the door"
---       pure $ return @"DoorClosed" unit
---   )
---   ( matchM @"DoorClosed" @"Open" \_ _ -> do
---       Console.log "You just opened the door"
---       pure $ return @"DoorOpen" unit
---   )

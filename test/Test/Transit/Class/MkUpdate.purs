@@ -13,7 +13,7 @@ import Data.Variant (Variant)
 import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdate)
+import Transit.Class.MkUpdate (class MkUpdate, TransitError(..), mkUpdate)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, ReturnState(..), TransitCoreTL)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Nil')
@@ -107,7 +107,7 @@ spec = do
   describe "Transit.Class.MkUpdate" do
     describe "mkUpdate" do
       let
-        update :: State -> Msg -> Identity (Either (TransitError State Msg) State)
+        update :: State -> Msg -> Identity (Either TransitError State)
         update = mkUpdate @MyStateGraph @Identity
           ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (ReturnState "42"))
               /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (ReturnState 99))
@@ -124,19 +124,19 @@ spec = do
 
       it "should return a Left on illegal transitions" do
         update (v @"State3" {}) (v @"Msg3" {})
-          `shouldEqual` Identity (Left (v @"State3" {} /\ v @"Msg3" {}))
+          `shouldEqual` Identity (Left IllegalTransitionRequest)
 
         update (v @"State1" 1) (v @"Msg3" {})
-          `shouldEqual` Identity (Left (v @"State1" 1 /\ v @"Msg3" {}))
+          `shouldEqual` Identity (Left IllegalTransitionRequest)
 
         update (v @"State2" "foo") (v @"Msg1" 2)
-          `shouldEqual` Identity (Left (v @"State2" "foo" /\ v @"Msg1" 2))
+          `shouldEqual` Identity (Left IllegalTransitionRequest)
 
         update (v @"State3" {}) (v @"Msg1" 2)
-          `shouldEqual` Identity (Left (v @"State3" {} /\ v @"Msg1" 2))
+          `shouldEqual` Identity (Left IllegalTransitionRequest)
 
         update (v @"State3" {}) (v @"Msg2" "bar")
-          `shouldEqual` Identity (Left (v @"State3" {} /\ v @"Msg2" "bar"))
+          `shouldEqual` Identity (Left IllegalTransitionRequest)
 
 type Id :: forall k. k -> k
 type Id a = a

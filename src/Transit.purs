@@ -14,11 +14,9 @@ module Transit
 
 import Prelude
 
-import Data.Bifunctor (bimap)
 import Data.Either (Either, fromRight)
 import Data.Identity (Identity(..))
 import Data.Symbol (class IsSymbol)
-import Data.Tuple.Nested ((/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Coerce (class Coercible)
@@ -34,24 +32,24 @@ import Type.Prelude (Proxy(..))
 mkUpdateEitherM
   :: forall @spec tcore msg state args m a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> m (Either (TransitError state msg) state)) a)
+  => (CurryN args (state -> msg -> m (Either TransitError state)) a)
   => (MkUpdate tcore m args msg state)
   => a
 mkUpdateEitherM = curryN @args f
   where
-  f :: args -> state -> msg -> m (Either (TransitError state msg) state)
+  f :: args -> state -> msg -> m (Either TransitError state)
   f impl state msg =
     MU.mkUpdate @tcore impl state msg
 
 mkUpdateEither
   :: forall @spec tcore msg state args a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> Either (TransitError state msg) state) a)
+  => (CurryN args (state -> msg -> Either TransitError state) a)
   => (MkUpdate tcore Identity args msg state)
   => a
 mkUpdateEither = curryN @args f
   where
-  f :: args -> state -> msg -> Either (TransitError state msg) state
+  f :: args -> state -> msg -> Either TransitError state
   f impl state msg =
     safeUnwrap @Identity $
       (MU.mkUpdate @tcore impl state msg)
@@ -111,11 +109,3 @@ instance (Row.Cons sym (ReturnStateVia symGuard a) r1 r2, IsSymbol sym) => Retur
 
 instance (Row.Cons sym (ReturnStateVia symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
   returnVia = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard {})
-
----
-
-mapTransitError :: forall msg1 msg2 state1 state2. (msg1 -> msg2) -> (state1 -> state2) -> TransitError state1 msg1 -> TransitError state2 msg2
-mapTransitError mapMsg mapState (state /\ msg) = (mapState state /\ mapMsg msg)
-
-mapTransitResult :: forall msg1 msg2 state1 state2. (msg1 -> msg2) -> (state1 -> state2) -> Either (TransitError state1 msg1) state1 -> Either (TransitError state2 msg2) state2
-mapTransitResult mapMsg mapState = bimap (mapTransitError mapMsg mapState) mapState
