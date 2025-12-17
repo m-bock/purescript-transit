@@ -8,7 +8,9 @@ module Transit.Generators.TransitionTable
 
 import Prelude
 
+import Data.Array (catMaybes)
 import Data.Array as Array
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class.Console as Console
@@ -26,22 +28,21 @@ toHtml options transit@(TransitCore matches) = Html.table []
           Just title -> [ Html.caption [] [ Html.text title ] ]
           Nothing -> []
       , pure $ Html.thead [] [ mkHeader ]
-      , Array.concatMap (mkMatch options transit) matches
+      , join $ mapWithIndex (mkMatch options transit) matches
       ]
 
-mkMatch :: Options -> TransitCore -> Match -> Array Html.Node
-mkMatch options transit (Match from msg returns) =
+mkMatch :: Options -> TransitCore -> Int -> Match -> Array Html.Node
+mkMatch options transit index (Match from msg returns) =
   case returns of
     [ Return to ] ->
-      if options.useUndirectedEdges && hasComplementaryEdge from to msg transit then
-        if isCanonicalFirst from to then
-          [ mkUndirectedRow options from msg to ]
-        else
-          []
+      if options.useUndirectedEdges then
+        case hasComplementaryEdge from to msg transit of
+          Just i | i > index -> [ mkUndirectedRow options from msg to ]
+          _ -> []
       else
         [ mkDirectedRow options from msg (Return to) ]
     manyReturns ->
-      map (mkDirectedRow options from msg) returns
+      map (mkDirectedRow options from msg) manyReturns
 
 mkUndirectedRow :: Options -> String -> String -> String -> Html.Node
 mkUndirectedRow options fromState msg toState =
@@ -106,12 +107,15 @@ writeToFile path sg mkOptions = do
 writeToFile_ :: FilePath -> TransitCore -> Effect Unit
 writeToFile_ path sg = writeToFile path sg identity
 
----
-
-isCanonicalFirst :: String -> String -> Boolean
-isCanonicalFirst from to = (from > to)
-
-hasComplementaryEdge :: String -> String -> String -> TransitCore -> Boolean
+hasComplementaryEdge :: String -> String -> String -> TransitCore -> Maybe Int
 hasComplementaryEdge from to msg (TransitCore matches) =
-  Array.any (\(Match from' msg' returns') -> from' == to && msg' == msg && returns' == [ Return from ]) matches
-
+  matches
+    # mapWithIndex
+        ( \i (Match from' msg' returns') ->
+            if from' == to && msg' == msg && returns' == [ Return from ] then
+              Just i
+            else
+              Nothing
+        )
+    # catMaybes
+    # Array.head

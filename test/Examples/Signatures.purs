@@ -18,29 +18,28 @@ unimplemented = unsafeCoerce "not yet implemented"
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close"
-      ( \(state :: {}) (msg :: {}) ->
-          unimplemented
-            :: Variant ("DoorClosed" :: ReturnState {})
-      )
+      (unimplemented :: Handler1)
   )
   ( match @"DoorClosed" @"Open"
-      ( \(state :: {}) (msg :: {}) ->
-          unimplemented
-            :: Variant ("DoorOpen" :: ReturnState {})
-      )
+      (unimplemented :: Handler2)
   )
   ( match @"DoorClosed" @"Lock"
-      ( \(state :: {}) (msg :: { newPin :: String }) ->
-          unimplemented
-            :: Variant ("DoorLocked" :: ReturnState { pin :: String })
-      )
+      (unimplemented :: Handler3)
   )
   ( match @"DoorLocked" @"Unlock"
-      ( \(state :: { pin :: String }) (msg :: { enteredPin :: String }) ->
-          unimplemented
-            :: Variant
-                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
-                 , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
-                 )
-      )
+      (unimplemented :: Handler4)
   )
+
+type Handler1 = {} -> {} -> Variant ("DoorClosed" :: ReturnState {})
+
+type Handler2 = {} -> {} -> Variant ("DoorOpen" :: ReturnState {})
+
+type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: ReturnState { pin :: String })
+
+type Handler4 =
+  { pin :: String }
+  -> { enteredPin :: String }
+  -> Variant
+       ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
+       , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
+       )

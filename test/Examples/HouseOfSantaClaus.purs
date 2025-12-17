@@ -14,7 +14,8 @@ import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, return)
+import Transit (type (:*), type (>|), Empty, Transit, match, mkUpdate, return)
+import Transit.DSL (type (|<))
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -48,29 +49,14 @@ type Msg = Variant
 
 type HouseOfSantaClausTransit =
   Transit $ Empty
-    :* ("N_1" :@ "E_a" >| "N_2")
-    :* ("N_2" :@ "E_a" >| "N_1")
-
-    :* ("N_2" :@ "E_b" >| "N_3")
-    :* ("N_3" :@ "E_b" >| "N_2")
-
-    :* ("N_3" :@ "E_c" >| "N_5")
-    :* ("N_5" :@ "E_c" >| "N_3")
-
-    :* ("N_5" :@ "E_d" >| "N_4")
-    :* ("N_4" :@ "E_d" >| "N_5")
-
-    :* ("N_4" :@ "E_e" >| "N_1")
-    :* ("N_1" :@ "E_e" >| "N_4")
-
-    :* ("N_1" :@ "E_f" >| "N_3")
-    :* ("N_3" :@ "E_f" >| "N_1")
-
-    :* ("N_2" :@ "E_g" >| "N_4")
-    :* ("N_4" :@ "E_g" >| "N_2")
-
-    :* ("N_3" :@ "E_h" >| "N_4")
-    :* ("N_4" :@ "E_h" >| "N_3")
+    :* ("N_1" |< "E_a" >| "N_2")
+    :* ("N_2" |< "E_b" >| "N_3")
+    :* ("N_3" |< "E_c" >| "N_5")
+    :* ("N_5" |< "E_d" >| "N_4")
+    :* ("N_4" |< "E_e" >| "N_1")
+    :* ("N_1" |< "E_f" >| "N_3")
+    :* ("N_2" |< "E_g" >| "N_4")
+    :* ("N_3" |< "E_h" >| "N_4")
 
 update :: State -> Msg -> State
 update =

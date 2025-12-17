@@ -427,11 +427,7 @@ The process works in two steps:
 1. `reflectType` converts your type-level DSL specification to a term-level equivalent
 2. `TransitGraphviz.writeToFile` uses that to render a Graphviz `.dot` file
 
-The `writeToFile` function accepts an options record that lets you customize the diagram. The `theme` option controls the color scheme. **Transit** provides six built-in themes:
-
-- `themeHarmonyLight` and `themeHarmonyDark` - Harmonious color palettes
-- `themeContrastLight` and `themeContrastDark` - High-contrast palettes for better visibility
-- `themeGradientLight` and `themeGradientDark` - Gradient-based color schemes
+The `writeToFile` function accepts an options record that lets you customize the diagram. E.g. the `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own.
 
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
@@ -469,7 +465,7 @@ generateTransitionTable = do
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L120-L125">test/Examples/SimpleDoor.purs L120-L125</a></sup></p>
 <!-- PD_END -->
 
-This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
+This generates an HTML file containing a table with columns for "From State", "Message", and "To State".
 
 Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
 
@@ -478,7 +474,7 @@ Since both the state diagram and transition table are generated from the same DS
 In this example, we've seen how **Transit** helps you build type-safe state machines. We started with a simple door that can be open or closed, and learned the core workflow:
 
 1. **Define the state machine** using **Transit**'s type-level DSL specification
-2. **Implement the update function** using `mkUpdateGeneric` with `match` clauses that the compiler verifies against the specification
+2. **Implement the update function** using `mkUpdate` with `match` clauses that the compiler verifies against the specification
 3. **Generate documentation** automatically—both state diagrams and transition tables—from the same specification
 
 The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.
@@ -487,9 +483,7 @@ While this example was simple, it demonstrates **Transit**'s fundamental approac
 
 ## Example 2: Door with Pin
 
-Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
-
-Now let's add a PIN code to our door lock. This introduces two important concepts: **states with data** and **conditional transitions**.
+Now let's extend our door to support PIN-based locking. In this enhanced version, you can lock the door with a PIN code, and then unlock it by entering the correct PIN. This introduces two important concepts: **states with data** and **conditional transitions**.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/door-with-pin-dark.svg">
@@ -690,35 +684,48 @@ pick:
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close"
-      ( \(state :: {}) (msg :: {}) ->
-          unimplemented
-            :: Variant ("DoorClosed" :: ReturnState {})
-      )
+      (unimplemented :: Handler1)
   )
   ( match @"DoorClosed" @"Open"
-      ( \(state :: {}) (msg :: {}) ->
-          unimplemented
-            :: Variant ("DoorOpen" :: ReturnState {})
-      )
+      (unimplemented :: Handler2)
   )
   ( match @"DoorClosed" @"Lock"
-      ( \(state :: {}) (msg :: { newPin :: String }) ->
-          unimplemented
-            :: Variant ("DoorLocked" :: ReturnState { pin :: String })
-      )
+      (unimplemented :: Handler3)
   )
   ( match @"DoorLocked" @"Unlock"
-      ( \(state :: { pin :: String }) (msg :: { enteredPin :: String }) ->
-          unimplemented
-            :: Variant
-                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
-                 , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
-                 )
-      )
+      (unimplemented :: Handler4)
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L46">test/Examples/Signatures.purs L18-L46</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L31">test/Examples/Signatures.purs L18-L31</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/Signatures.purs
+pick:
+  - Handler1
+  - Handler2
+  - Handler3
+  - Handler4
+-->
+
+```purescript
+type Handler1 = {} -> {} -> Variant ("DoorClosed" :: ReturnState {})
+
+type Handler2 = {} -> {} -> Variant ("DoorOpen" :: ReturnState {})
+
+type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: ReturnState { pin :: String })
+
+type Handler4 =
+  { pin :: String }
+  -> { enteredPin :: String }
+  -> Variant
+       ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
+       , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
+       )
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L33-L45">test/Examples/Signatures.purs L33-L45</a></sup></p>
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg
@@ -748,7 +755,7 @@ Even not immediately obvious, this can be represented as a graph:
 filePath: graphs/bridges-koenigsberg.html
 wrapNl: true
 -->
-<table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table>
+<table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandD</td></tr></tbody></table>
 <!-- PD_END -->
 
 While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
@@ -1046,37 +1053,22 @@ pick:
 ```purescript
 type HouseOfSantaClausTransit =
   Transit $ Empty
-    :* ("N_1" :@ "E_a" >| "N_2")
-    :* ("N_2" :@ "E_a" >| "N_1")
-
-    :* ("N_2" :@ "E_b" >| "N_3")
-    :* ("N_3" :@ "E_b" >| "N_2")
-
-    :* ("N_3" :@ "E_c" >| "N_5")
-    :* ("N_5" :@ "E_c" >| "N_3")
-
-    :* ("N_5" :@ "E_d" >| "N_4")
-    :* ("N_4" :@ "E_d" >| "N_5")
-
-    :* ("N_4" :@ "E_e" >| "N_1")
-    :* ("N_1" :@ "E_e" >| "N_4")
-
-    :* ("N_1" :@ "E_f" >| "N_3")
-    :* ("N_3" :@ "E_f" >| "N_1")
-
-    :* ("N_2" :@ "E_g" >| "N_4")
-    :* ("N_4" :@ "E_g" >| "N_2")
-
-    :* ("N_3" :@ "E_h" >| "N_4")
-    :* ("N_4" :@ "E_h" >| "N_3")
+    :* ("N_1" |< "E_a" >| "N_2")
+    :* ("N_2" |< "E_b" >| "N_3")
+    :* ("N_3" |< "E_c" >| "N_5")
+    :* ("N_5" |< "E_d" >| "N_4")
+    :* ("N_4" |< "E_e" >| "N_1")
+    :* ("N_1" |< "E_f" >| "N_3")
+    :* ("N_2" |< "E_g" >| "N_4")
+    :* ("N_3" |< "E_h" >| "N_4")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L49-L73">test/Examples/HouseOfSantaClaus.purs L49-L73</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L50-L59">test/Examples/HouseOfSantaClaus.purs L50-L59</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
---><table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>N_2</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_3</td></tr></tbody></table><!-- PD_END -->
+--><table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>N_1</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_5</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_1</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_4</td></tr></tbody></table><!-- PD_END -->
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/house-of-santa-claus-dark.svg">
@@ -1106,7 +1098,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L106-L118">test/Examples/HouseOfSantaClaus.purs L106-L118</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L92-L104">test/Examples/HouseOfSantaClaus.purs L92-L104</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1124,7 +1116,7 @@ assert2 =
     hasEulerTrail graph `shouldEqual` true
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L120-L125">test/Examples/HouseOfSantaClaus.purs L120-L125</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L106-L111">test/Examples/HouseOfSantaClaus.purs L106-L111</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
