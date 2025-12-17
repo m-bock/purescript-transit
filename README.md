@@ -35,7 +35,7 @@
 
 # Transit - Type-Safe State Machines
 
-**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using a type-level specification, and the compiler ensures your implementation matches that specification—eliminating bugs from invalid transitions, missing cases, or documentation drift.
+**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using this specification, and the compiler ensures your implementation matches it—eliminating bugs from invalid transitions, missing cases, or documentation drift.
 
 ## Introduction
 
@@ -45,7 +45,7 @@
 - **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
 - **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
 
-> If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, **Transit** follows a similar philosophy: just as Servant uses a REST API type-level specification to generate type-safe routing functions and OpenAPI documentation, **Transit** uses a state machine graph type-level specification to generate type-safe update functions and state diagrams.
+> If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, **Transit** follows a similar philosophy: just as Servant uses a REST API type-level specification to ensure type-safe routing functions and generate OpenAPI documentation, **Transit** uses a state machine graph type-level specification to ensure type-safe update functions and generate state diagrams.
 
 ### About This Documentation
 
@@ -61,7 +61,7 @@ spago install transit
 
 ## Example 1: A Simple Door
 
-Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of compile-time safety and automatic documentation generation.
+Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of the latter.
 
 ### The State Machine
 
@@ -102,11 +102,11 @@ Now let's see how we represent this in PureScript code.
 
 ### State Machine Implementation I: The Classic Approach
 
-Before diving into **Transit**, let's first look at how state machines are typically implemented in PureScript using pattern matching. This classic approach is familiar to most PureScript developers and serves as a baseline for understanding what **Transit** improves upon. By seeing the traditional implementation first, you'll better appreciate how **Transit**'s type-level specification eliminates common pitfalls and provides compile-time guarantees.
+Before diving into **Transit**, let's first look at how state machines are typically implemented in PureScript using pattern matching. This classic approach is familiar to most PureScript developers and serves as a baseline for understanding what **Transit** improves upon.
 
 #### States and Message types
 
-To represent our door in code, we need two things: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types. We are using the suffix `D` to denote the traditional approach (D = data).
+To represent our door in code, we need two major types: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types. We are using the suffix `D` to denote the traditional approach (D = data).
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -153,35 +153,10 @@ While this approach works and is straightforward, it has some drawbacks:
 
 - **No compile-time safety**: The compiler won't catch if you forget to handle a valid transition or if you add a new state but forget to update the function
 - **Documentation drift**: If you update the state diagram, there's nothing ensuring the code stays in sync—you have to remember to update both manually
-- **Manual maintenance**: You need to manually ensure all cases are handled correctly, and there's no way to verify completeness at compile time
 
 ### State Machine Implementation II: The Transit Approach
 
-With the **Transit** library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify.
-
-#### The Types
-
-<!-- PD_START:purs
-filePath: test/Examples/SimpleDoor.purs
-pick:
-  - State
-  - Msg
--->
-
-```purescript
-type State = Variant
-  ( "DoorOpen" :: {}
-  , "DoorClosed" :: {}
-  )
-
-type Msg = Variant
-  ( "Close" :: {}
-  , "Open" :: {}
-  )
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L46-L54">test/Examples/SimpleDoor.purs L46-L54</a></sup></p>
-<!-- PD_END -->
+With the **Transit** library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify against your implementation.
 
 #### The Type-Level Specification
 
@@ -212,6 +187,34 @@ Breaking down the syntax:
 
 This type-level specification fully defines the state machine's structure. The compiler can now use this specification to ensure our implementation is correct.
 
+#### State and Message Types
+
+**Transit** uses `Variant` types (from `purescript-variant`) for both `State` and `Msg` instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like `"DoorOpen"` or `"Close"`).
+
+This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
+
+<!-- PD_START:purs
+filePath: test/Examples/SimpleDoor.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  )
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L46-L54">test/Examples/SimpleDoor.purs L46-L54</a></sup></p>
+<!-- PD_END -->
+
 #### The Update Function
 
 Based on this specification, we create an update function using `mkUpdate`:
@@ -234,23 +237,18 @@ update = mkUpdate @SimpleDoorTransit
 
 Here's how this works:
 
-- `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application, passing the specification to the function. We use `mkUpdate` (not `mkUpdateGeneric`) because we're working with Variant types.
+- `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application, passing the specification to the function.
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
-
-Note that the Transit approach uses `Variant` types for `State` and `Msg`, while the classic approach uses ADTs (`StateD` and `MsgD`). This means they are not drop-in replacements—you'll need to use Variants when adopting the Transit approach. The benefit is that Variants work seamlessly with Transit's type-level machinery, and you can use helper functions like `v` to construct Variant values.
 
 #### How This Solves the Classic Approach's Problems
 
 This approach addresses all the drawbacks we saw earlier:
 
-- **Compile-time safety**: The compiler verifies that your `match` lines exactly correspond to the specification. If you miss a transition or add an invalid one, the code won't compile.
-- **No documentation drift**: The specification is the source of truth. If you change the spec, the compiler forces you to update the implementation to match.
-- **Automatic verification**: You don't need to manually check completeness—the compiler does it for you. Every transition in the spec must have a corresponding `match` line, and you can't add extra matches that aren't in the spec.
+- **Compile-time safety**: The compiler verifies that your `match` lines exactly correspond to the specification. Every transition in the spec must have a corresponding `match` line, and you can't add extra matches that aren't in the spec. If you miss a transition or add an invalid one, the code won't compile.
+- **No documentation drift**: The specification is the source of truth. If you change the spec, the compiler forces you to update the implementation to match, ensuring code and specification stay in sync.
 
 ### Writing Tests for the update function
-
-Since both the classic and **Transit** approaches have the same type signature (`State -> Msg -> State`), they can be used interchangeably. Let's see how to write tests for the update function and verify that both approaches behave identically.
 
 #### Testing State Transitions
 
@@ -317,7 +315,7 @@ assert2 =
 
 This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
 
-Since we'll want to write many of these tests, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
+Since we'll want to write more of these tests for further examples, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
