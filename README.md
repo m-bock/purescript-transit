@@ -23,7 +23,6 @@
     - [State updates: The Classic Approach](#state-updates-the-classic-approach)
     - [State updates: The Transit Approach](#state-updates-the-transit-approach)
     - [Type signatures](#type-signatures)
-    - [Variants](#variants)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
   - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
@@ -121,7 +120,7 @@ data StateD = DoorOpen | DoorClosed
 data MsgD = Close | Open
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L29-L31">test/Examples/SimpleDoor.purs L29-L31</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L28-L30">test/Examples/SimpleDoor.purs L28-L30</a></sup></p>
 <!-- PD_END -->
 
 The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier—each state and each transition from the diagram has a corresponding value in these types.
@@ -144,7 +143,7 @@ updateD state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L37-L41">test/Examples/SimpleDoor.purs L37-L41</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L36-L40">test/Examples/SimpleDoor.purs L36-L40</a></sup></p>
 <!-- PD_END -->
 
 This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
@@ -180,7 +179,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L47-L55">test/Examples/SimpleDoor.purs L47-L55</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L46-L54">test/Examples/SimpleDoor.purs L46-L54</a></sup></p>
 <!-- PD_END -->
 
 #### The Type-Level Specification
@@ -200,7 +199,7 @@ type SimpleDoorTransit =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L57-L60">test/Examples/SimpleDoor.purs L57-L60</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L56-L59">test/Examples/SimpleDoor.purs L56-L59</a></sup></p>
 <!-- PD_END -->
 
 Breaking down the syntax:
@@ -229,7 +228,7 @@ update = mkUpdate @SimpleDoorTransit
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L62-L65">test/Examples/SimpleDoor.purs L62-L65</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L61-L64">test/Examples/SimpleDoor.purs L61-L64</a></sup></p>
 <!-- PD_END -->
 
 Here's how this works:
@@ -296,7 +295,7 @@ assert1 =
       (inj @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L72-L80">test/Examples/SimpleDoor.purs L72-L80</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L71-L79">test/Examples/SimpleDoor.purs L71-L79</a></sup></p>
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -325,7 +324,7 @@ assert2 =
       ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L83-L94">test/Examples/SimpleDoor.purs L83-L94</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L82-L93">test/Examples/SimpleDoor.purs L82-L93</a></sup></p>
 <!-- PD_END -->
 
 This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -400,7 +399,7 @@ pick:
 assert4 = pure unit
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L106-L106">test/Examples/SimpleDoor.purs L106-L106</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L105-L105">test/Examples/SimpleDoor.purs L105-L105</a></sup></p>
 <!-- PD_END -->
 
 ### Generating Diagrams and Tables
@@ -447,7 +446,7 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L121-L132">test/Examples/SimpleDoor.purs L121-L132</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L120-L131">test/Examples/SimpleDoor.purs L120-L131</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -494,7 +493,7 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L134-L139">test/Examples/SimpleDoor.purs L134-L139</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L133-L138">test/Examples/SimpleDoor.purs L133-L138</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
@@ -548,19 +547,21 @@ pick:
 -->
 
 ```purescript
-data State
-  = DoorOpen
-  | DoorClosed
-  | DoorLocked { pin :: String }
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  , "DoorLocked" :: { pin :: String }
+  )
 
-data Msg
-  = Close
-  | Open
-  | Lock { newPin :: String }
-  | Unlock { enteredPin :: String }
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  , "Lock" :: { newPin :: String }
+  , "Unlock" :: { enteredPin :: String }
+  )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L33-L42">test/Examples/DoorWithPin.purs L33-L42</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L63-L74">test/Examples/DoorWithPin.purs L63-L74</a></sup></p>
 <!-- PD_END -->
 
 ### State updates: The Classic Approach
@@ -574,7 +575,7 @@ pick:
 -->
 
 ```purescript
-updateClassic :: State -> Msg -> State
+updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
@@ -587,7 +588,7 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L48-L58">test/Examples/DoorWithPin.purs L48-L58</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L47-L57">test/Examples/DoorWithPin.purs L47-L57</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
@@ -617,7 +618,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L64-L73">test/Examples/DoorWithPin.purs L64-L73</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L76-L85">test/Examples/DoorWithPin.purs L76-L85</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -632,25 +633,25 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorWithPinTransit
+update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
-      return @"DoorClosed" unit
+      return @"DoorClosed"
   )
   ( match @"DoorClosed" @"Open" \_ _ ->
-      return @"DoorOpen" unit
+      return @"DoorOpen"
   )
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { pin: msg.newPin }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       if state.pin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed" unit
+        returnVia @"PinCorrect" @"DoorClosed"
       else
         returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L75-L91">test/Examples/DoorWithPin.purs L75-L91</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L87-L103">test/Examples/DoorWithPin.purs L87-L103</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
@@ -695,21 +696,21 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @DoorWithPinTransit
+update = mkUpdate @DoorWithPinTransit
   ( match @"DoorOpen" @"Close"
-      ( \(state :: Unit) (msg :: Unit) ->
+      ( \(state :: {}) (msg :: {}) ->
           unimplemented
-            :: Variant ("DoorClosed" :: ReturnState Unit)
+            :: Variant ("DoorClosed" :: ReturnState {})
       )
   )
   ( match @"DoorClosed" @"Open"
-      ( \(state :: Unit) (msg :: Unit) ->
+      ( \(state :: {}) (msg :: {}) ->
           unimplemented
-            :: Variant ("DoorOpen" :: ReturnState Unit)
+            :: Variant ("DoorOpen" :: ReturnState {})
       )
   )
   ( match @"DoorClosed" @"Lock"
-      ( \(state :: Unit) (msg :: { newPin :: String }) ->
+      ( \(state :: {}) (msg :: { newPin :: String }) ->
           unimplemented
             :: Variant ("DoorLocked" :: ReturnState { pin :: String })
       )
@@ -718,7 +719,7 @@ update = mkUpdateGeneric @DoorWithPinTransit
       ( \(state :: { pin :: String }) (msg :: { enteredPin :: String }) ->
           unimplemented
             :: Variant
-                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" Unit
+                 ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
                  , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
                  )
       )
@@ -726,56 +727,6 @@ update = mkUpdateGeneric @DoorWithPinTransit
 ```
 
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L46">test/Examples/Signatures.purs L18-L46</a></sup></p>
-<!-- PD_END -->
-
-### Variants
-
-Full source code: _[test/Examples/Variants.purs](test/Examples/Variants.purs)_
-
-Instead of using ADTs for `State` and `Msg`, you can define them directly as `Variant` types. This eliminates the conversion overhead between ADT and `Variant` representations, and you use `mkUpdate` instead of `mkUpdateGeneric`:
-
-<!-- PD_START:purs
-filePath: test/Examples/Variants.purs
-pick:
-  - State
-  - Msg
-  - update
--->
-
-```purescript
-type State = Variant
-  ( "DoorOpen" :: {}
-  , "DoorClosed" :: {}
-  , "DoorLocked" :: { pin :: String }
-  )
-
-type Msg = Variant
-  ( "Close" :: {}
-  , "Open" :: {}
-  , "Lock" :: { newPin :: String }
-  , "Unlock" :: { enteredPin :: String }
-  )
-
-update :: State -> Msg -> State
-update = mkUpdate @DoorWithPinTransit
-  ( match @"DoorOpen" @"Close" \_ _ ->
-      return @"DoorClosed"
-  )
-  ( match @"DoorClosed" @"Open" \_ _ ->
-      return @"DoorOpen"
-  )
-  ( match @"DoorClosed" @"Lock" \_ msg ->
-      return @"DoorLocked" { pin: msg.newPin }
-  )
-  ( match @"DoorLocked" @"Unlock" \state msg ->
-      if state.pin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed"
-      else
-        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
-  )
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Variants.purs#L19-L78">test/Examples/Variants.purs L19-L78</a></sup></p>
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg
@@ -813,19 +764,25 @@ pick:
 -->
 
 ```purescript
-data State = LandA | LandB | LandC | LandD
+type State = Variant
+  ( "LandA" :: {}
+  , "LandB" :: {}
+  , "LandC" :: {}
+  , "LandD" :: {}
+  )
 
-data Msg
-  = Cross_a
-  | Cross_b
-  | Cross_c
-  | Cross_d
-  | Cross_e
-  | Cross_f
-  | Cross_g
+type Msg = Variant
+  ( "Cross_a" :: {}
+  , "Cross_b" :: {}
+  , "Cross_c" :: {}
+  , "Cross_d" :: {}
+  , "Cross_e" :: {}
+  , "Cross_f" :: {}
+  , "Cross_g" :: {}
+  )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L29-L38">test/Examples/BridgesKoenigsberg.purs L29-L38</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L43">test/Examples/BridgesKoenigsberg.purs L28-L43</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -846,7 +803,7 @@ type BridgesKoenigsbergTransit =
     :* ("LandC" |< "Cross_g" >| "LandD")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L73-L81">test/Examples/BridgesKoenigsberg.purs L73-L81</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L45-L53">test/Examples/BridgesKoenigsberg.purs L45-L53</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -858,20 +815,20 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdateGeneric @BridgesKoenigsbergTransit
-  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB" unit)
-  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA" unit)
+update = mkUpdate @BridgesKoenigsbergTransit
+  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
 
-  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB" unit)
-  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA" unit)
+  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
+  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
 
-  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC" unit)
-  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA" unit)
+  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
+  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
 
 -- And so on ... (13 lines omitted)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L83-L104">test/Examples/BridgesKoenigsberg.purs L83-L104</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L55-L76">test/Examples/BridgesKoenigsberg.purs L55-L76</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -883,21 +840,20 @@ pick:
 ```purescript
 assert1 :: Aff Unit
 assert1 =
-  for_ [ updateClassic, update ] \fn ->
-    assertWalk fn
-      LandA
-      [ Cross_a /\ LandB
-      , Cross_f /\ LandD
-      , Cross_g /\ LandC
-      , Cross_c /\ LandA
-      , Cross_e /\ LandD
-      , Cross_g /\ LandC
-      , Cross_d /\ LandA
-      , Cross_b /\ LandB
-      ]
+  assertWalk update
+    (inj @"LandA")
+    [ inj @"Cross_a" ~> inj @"LandB"
+    , inj @"Cross_f" ~> inj @"LandD"
+    , inj @"Cross_g" ~> inj @"LandC"
+    , inj @"Cross_c" ~> inj @"LandA"
+    , inj @"Cross_e" ~> inj @"LandD"
+    , inj @"Cross_g" ~> inj @"LandC"
+    , inj @"Cross_d" ~> inj @"LandA"
+    , inj @"Cross_b" ~> inj @"LandB"
+    ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L110-L123">test/Examples/BridgesKoenigsberg.purs L110-L123</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L82-L94">test/Examples/BridgesKoenigsberg.purs L82-L94</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -993,7 +949,7 @@ main = do
     { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L135-L162">test/Examples/BridgesKoenigsberg.purs L135-L162</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L106-L133">test/Examples/BridgesKoenigsberg.purs L106-L133</a></sup></p>
 <!-- PD_END -->
 
 The key steps are:
@@ -1050,21 +1006,20 @@ pick:
 ```purescript
 assert1 :: Aff Unit
 assert1 =
-  for_ [ updateClassic, update ] \fn ->
-    assertWalk fn
-      LandA
-      [ Cross_a /\ LandB
-      , Cross_f /\ LandD
-      , Cross_g /\ LandC
-      , Cross_c /\ LandA
-      , Cross_e /\ LandD
-      , Cross_g /\ LandC
-      , Cross_d /\ LandA
-      , Cross_b /\ LandB
-      ]
+  assertWalk update
+    (inj @"LandA")
+    [ inj @"Cross_a" ~> inj @"LandB"
+    , inj @"Cross_f" ~> inj @"LandD"
+    , inj @"Cross_g" ~> inj @"LandC"
+    , inj @"Cross_c" ~> inj @"LandA"
+    , inj @"Cross_e" ~> inj @"LandD"
+    , inj @"Cross_g" ~> inj @"LandC"
+    , inj @"Cross_d" ~> inj @"LandA"
+    , inj @"Cross_b" ~> inj @"LandB"
+    ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L110-L123">test/Examples/BridgesKoenigsberg.purs L110-L123</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L82-L94">test/Examples/BridgesKoenigsberg.purs L82-L94</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1079,7 +1034,7 @@ assert2 = do
   hasEulerTrail graph `shouldEqual` false
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L131-L133">test/Examples/BridgesKoenigsberg.purs L131-L133</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L102-L104">test/Examples/BridgesKoenigsberg.purs L102-L104</a></sup></p>
 <!-- PD_END -->
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
@@ -1158,7 +1113,7 @@ type HouseOfSantaClausTransit =
     :* ("N_4" :@ "E_h" >| "N_3")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L80-L104">test/Examples/HouseOfSantaClaus.purs L80-L104</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L48-L72">test/Examples/HouseOfSantaClaus.purs L48-L72</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -1186,43 +1141,42 @@ spec = do
       let transit = reflectType (Proxy @HouseOfSantaClausTransit)
       let graph = mkStateGraph transit
 
-      let walk = [ E_f, E_h, E_g, E_a, E_e, E_d, E_c, E_b ]
+      let
+        walk =
+          [ inj @"E_f"
+          , inj @"E_h"
+          , inj @"E_g"
+          , inj @"E_a"
+          , inj @"E_e"
+          , inj @"E_d"
+          , inj @"E_c"
+          , inj @"E_b"
+          ]
 
       Array.length (Array.nub walk) `shouldEqual` 8
 
-      foldl update N_1 walk `shouldEqual` N_2
+      foldl update (inj @"N_1") walk `shouldEqual` inj @"N_2"
 
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
     describe "should follow the walk" do
       let
-        initState = N_1
+        initState = inj @"N_1"
 
         walk =
-          [ { msg: E_f, state: N_3 }
-          , { msg: E_h, state: N_4 }
-          , { msg: E_g, state: N_2 }
-          , { msg: E_a, state: N_1 }
-          , { msg: E_e, state: N_4 }
-          , { msg: E_d, state: N_5 }
-          , { msg: E_c, state: N_3 }
-          , { msg: E_b, state: N_2 }
+          [ inj @"E_f" ~> inj @"N_3"
+          , inj @"E_h" ~> inj @"N_4"
+          , inj @"E_g" ~> inj @"N_2"
+          , inj @"E_a" ~> inj @"N_1"
+          , inj @"E_e" ~> inj @"N_4"
+          , inj @"E_d" ~> inj @"N_5"
+          , inj @"E_c" ~> inj @"N_3"
+          , inj @"E_b" ~> inj @"N_2"
           ]
 
-      let
-        msgs = map _.msg walk
-        expectedStates = map _.state walk
-
-      describe "classic update" do
-        it "should follow the walk" do
-          let actualStates = scanl updateClassic initState msgs
-          actualStates `shouldEqual` expectedStates
-
-      describe "transit update" do
-        it "should follow the walk" do
-          let actualStates = scanl update initState msgs
-          actualStates `shouldEqual` expectedStates
+      it "should follow the walk" do
+        assertWalk update initState walk
 
 main :: Effect Unit
 main = do
@@ -1253,7 +1207,7 @@ main = do
     { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L136-L211">test/Examples/HouseOfSantaClaus.purs L136-L211</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L104-L178">test/Examples/HouseOfSantaClaus.purs L104-L178</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
@@ -1261,7 +1215,6 @@ main = do
 <!-- PD_START:raw
 filePath: bench/backend-JS.md
 -->
-
 ```mermaid
 ---
   config:
@@ -1273,17 +1226,14 @@ xychart
   title "Update Functions"
   x-axis "Input Size" [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
   y-axis "Time (in ms)" 0 --> 0.05
-  line [0.0176, 0.0121, 0.011, 0.012, 0.013, 0.0144, 0.0173, 0.0182, 0.0224, 0.0275, 0.032, 0.0342, 0.0377, 0.0417, 0.0461, 0.0505, 0.0536, 0.0554, 0.0651, 0.0736, 0.0791, 0.1111, 0.1271, 0.1125, 0.1027, 0.1158, 0.1315, 0.1298, 0.1497, 0.1523, 0.1757, 0.1803, 0.1843, 0.2098, 0.2585, 0.2516, 0.2513, 0.3111, 0.2746, 0.3022, 0.3251, 0.3348, 0.3675, 0.3786, 0.3905, 0.4326, 0.4715, 0.4784, 0.2658]
-  line [0.0011, 0.0007, 0.0009, 0.001, 0.001, 0.0011, 0.001, 0.001, 0.0014, 0.0012, 0.0013, 0.0014, 0.0016, 0.0015, 0.0017, 0.0016, 0.0015, 0.0016, 0.0016, 0.0016, 0.0017, 0.0017, 0.0017, 0.0015, 0.0016, 0.0016, 0.0016, 0.0017, 0.0016, 0.0017, 0.0018, 0.0016, 0.0019, 0.0016, 0.0018, 0.0018, 0.0019, 0.002, 0.002, 0.0024, 0.0021, 0.002, 0.002, 0.0021, 0.0022, 0.0023, 0.0021, 0.0023, 0.0022]
-  line [0.0024, 0.0023, 0.002, 0.0023, 0.0026, 0.0026, 0.0031, 0.0032, 0.0034, 0.0038, 0.0038, 0.005, 0.0045, 0.0045, 0.0048, 0.0053, 0.0056, 0.0057, 0.0061, 0.0062, 0.0066, 0.0065, 0.007, 0.0072, 0.0073, 0.0077, 0.008, 0.0092, 0.0085, 0.0081, 0.0083, 0.0083, 0.0088, 0.0088, 0.0091, 0.0092, 0.0095, 0.0106, 0.0099, 0.0099, 0.0109, 0.0113, 0.0114, 0.0117, 0.0118, 0.0122, 0.0124, 0.0125, 0.0121]
+  line [0.0038, 0.0023, 0.002, 0.0014, 0.0011, 0.0012, 0.0011, 0.0015, 0.001, 0.0011, 0.0012, 0.0012, 0.0012, 0.0014, 0.0014, 0.0012, 0.0014, 0.0013, 0.0014, 0.0014, 0.0016, 0.0015, 0.0014, 0.0015, 0.0015, 0.0015, 0.0016, 0.0017, 0.0016, 0.0016, 0.0018, 0.0019, 0.0018, 0.0021, 0.002, 0.0018, 0.0018, 0.0025, 0.0038, 0.0055, 0.003, 0.0023, 0.0033, 0.0027, 0.0023, 0.0023, 0.0025, 0.0029, 0.0026]
+  line [0.0047, 0.0042, 0.0023, 0.0028, 0.0029, 0.0029, 0.003, 0.0042, 0.0045, 0.0038, 0.004, 0.0041, 0.0042, 0.0045, 0.0045, 0.0047, 0.0046, 0.0047, 0.0049, 0.0049, 0.0054, 0.006, 0.0056, 0.0054, 0.0058, 0.0059, 0.0059, 0.006, 0.0062, 0.0065, 0.0065, 0.0067, 0.0069, 0.0072, 0.0078, 0.0079, 0.0084, 0.0082, 0.0085, 0.0085, 0.0088, 0.0089, 0.0094, 0.0095, 0.0102, 0.0092, 0.0094, 0.0093, 0.0093]
 ```
-
-![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) update (Transit with ADTs)&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) updateClassic&nbsp;&nbsp;![0000ff](https://placehold.co/8x8/0000ff/0000ff.png) updateV (Transit with Variants)<!-- PD_END -->
+![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) updateClassic&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) update<!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: bench/backend-ES.md
 -->
-
 ```mermaid
 ---
   config:
@@ -1295,12 +1245,10 @@ xychart
   title "Update Functions"
   x-axis "Input Size" [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
   y-axis "Time (in ms)" 0 --> 0.05
-  line [0.0026, 0.0014, 0.0005, 0.0007, 0.0008, 0.0012, 0.0013, 0.0006, 0.0006, 0.0006, 0.0007, 0.0005, 0.0004, 0.0007, 0.0007, 0.0005, 0.0004, 0.0005, 0.0007, 0.0004, 0.0006, 0.0006, 0.0009, 0.0005, 0.0004, 0.0007, 0.0007, 0.0009, 0.0004, 0.0005, 0.0007, 0.0009, 0.0005, 0.0005, 0.0006, 0.0007, 0.001, 0.0004, 0.0006, 0.0006, 0.0009, 0.0004, 0.0004, 0.0006, 0.0007, 0.0011, 0.0005, 0.0004, 0.0008]
-  line [0.0007, 0.0009, 0.0005, 0.0007, 0.0006, 0.0012, 0.0004, 0.0006, 0.0007, 0.001, 0.0005, 0.0005, 0.0008, 0.0007, 0.0004, 0.0005, 0.0007, 0.0012, 0.0004, 0.0004, 0.0008, 0.001, 0.0006, 0.0004, 0.001, 0.0009, 0.0005, 0.0005, 0.0006, 0.001, 0.0004, 0.0006, 0.0007, 0.0007, 0.0007, 0.0004, 0.0006, 0.0012, 0.0004, 0.0005, 0.0007, 0.0007, 0.0005, 0.0005, 0.0007, 0.0011, 0.0005, 0.0006, 0.0006]
-  line [0.0007, 0.0006, 0.0005, 0.0008, 0.0007, 0.0006, 0.0005, 0.0006, 0.0008, 0.0005, 0.0006, 0.0007, 0.0012, 0.0004, 0.0004, 0.0007, 0.0009, 0.0006, 0.0005, 0.0007, 0.0007, 0.0004, 0.0005, 0.0008, 0.0007, 0.0005, 0.0006, 0.0006, 0.0008, 0.0005, 0.0005, 0.0006, 0.0009, 0.0005, 0.0004, 0.0008, 0.0007, 0.0005, 0.0006, 0.0006, 0.0009, 0.0004, 0.0004, 0.0007, 0.001, 0.0007, 0.0006, 0.0006, 0.0009]
+  line [0.0028, 0.0011, 0.0007, 0.0012, 0.0007, 0.001, 0.0014, 0.0004, 0.0005, 0.0008, 0.0009, 0.0005, 0.0006, 0.0006, 0.0008, 0.0003, 0.0005, 0.0008, 0.0006, 0.0004, 0.0006, 0.0006, 0.001, 0.0004, 0.0004, 0.0007, 0.001, 0.0005, 0.0004, 0.0006, 0.0009, 0.0004, 0.0005, 0.0007, 0.0007, 0.0006, 0.0004, 0.0006, 0.0009, 0.0003, 0.0005, 0.0007, 0.0008, 0.0004, 0.0006, 0.0006, 0.0007, 0.0004, 0.0004]
+  line [0.0007, 0.0007, 0.0004, 0.0005, 0.0006, 0.0006, 0.0005, 0.0006, 0.0006, 0.0009, 0.0004, 0.0004, 0.0007, 0.0006, 0.0004, 0.0006, 0.0005, 0.0007, 0.0004, 0.0004, 0.0008, 0.0006, 0.0005, 0.0005, 0.0005, 0.0006, 0.0005, 0.0004, 0.0006, 0.0008, 0.0004, 0.0004, 0.0008, 0.0006, 0.0004, 0.0005, 0.0006, 0.0007, 0.0005, 0.0004, 0.0008, 0.0006, 0.0004, 0.0006, 0.0005, 0.0009, 0.0005, 0.0004, 0.0006]
 ```
-
-![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) update (Transit with ADTs)&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) updateClassic&nbsp;&nbsp;![0000ff](https://placehold.co/8x8/0000ff/0000ff.png) updateV (Transit with Variants)<!-- PD_END -->
+![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) updateClassic&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) update<!-- PD_END -->
 
 ### Running Benchmarks
 

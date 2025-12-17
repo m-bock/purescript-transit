@@ -29,9 +29,13 @@ gen-book:
 build:
     npx spago build
 
+bench-quick:
+    just build && \
+    export ITERATIONS=10000 && export MAX_TIME=0.05 && just bench-js && just bench-es
+
 bench:
     just build && \
-    export ITERATIONS=10000 && just bench-js && just bench-es
+    export ITERATIONS=1000000 && export MAX_TIME=0.05 && just bench-js && just bench-es
 
 bench-js:
     BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
@@ -42,7 +46,6 @@ bench-es:
     BACKEND=ES node -e 'import { main } from "./output-es/Test.Bench/index.js"; main();'
 
 gen: 
-    just readme-merge && \
     just gen-docs && \
     just gen-svgs && \
     just gen-doctoc && \
