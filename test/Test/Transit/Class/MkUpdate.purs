@@ -14,7 +14,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError(..), mkUpdate)
-import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, ReturnState(..), TransitCoreTL)
+import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, Ret(..), RetVia(..), TransitCoreTL)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($))
@@ -109,8 +109,8 @@ spec = do
       let
         update :: State -> Msg -> Identity (Either TransitError State)
         update = mkUpdate @MyStateGraph @Identity
-          ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") "42")
-              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") 99)
+          ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (Ret "42"))
+              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (Ret 99))
               /\ unit
           )
 

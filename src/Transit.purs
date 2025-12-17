@@ -26,7 +26,7 @@ import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError)
 import Transit.Class.MkUpdate as MU
-import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), Via(..))
+import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
 import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Empty, StateWithMsg, WithGuard) as Export
 import Type.Prelude (Proxy(..))
 
@@ -96,17 +96,17 @@ matchM f = MatchImpl (\msg state -> f msg state)
 class Return (sym :: Symbol) a where
   return :: a
 
-instance (Row.Cons sym a r1 r2, IsSymbol sym) => Return sym (a -> Variant r2) where
-  return v = V.inj (Proxy :: _ sym) v
+instance (Row.Cons sym (Ret a) r1 r2, IsSymbol sym) => Return sym (a -> Variant r2) where
+  return v = V.inj (Proxy :: _ sym) (Ret v)
 
-instance (Row.Cons sym {} r1 r2, IsSymbol sym) => Return sym (Variant r2) where
-  return = V.inj (Proxy :: _ sym) {}
+instance (Row.Cons sym (Ret {}) r1 r2, IsSymbol sym) => Return sym (Variant r2) where
+  return = V.inj (Proxy :: _ sym) (Ret {})
 
 class ReturnVia (symGuard :: Symbol) (sym :: Symbol) a where
   returnVia :: a
 
-instance (Row.Cons sym (Via symGuard a) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (a -> Variant r2) where
-  returnVia v = V.inj (Proxy :: _ sym) (Via @symGuard v)
+instance (Row.Cons sym (RetVia symGuard a) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (a -> Variant r2) where
+  returnVia v = V.inj (Proxy :: _ sym) (RetVia @symGuard v)
 
-instance (Row.Cons sym (Via symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
-  returnVia = V.inj (Proxy :: _ sym) (Via @symGuard {})
+instance (Row.Cons sym (RetVia symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
+  returnVia = V.inj (Proxy :: _ sym) (RetVia @symGuard {})

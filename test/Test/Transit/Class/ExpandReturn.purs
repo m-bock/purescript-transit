@@ -13,7 +13,7 @@ import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.ExpandReturn (class ExpandReturn, class RemoveWrappers, expandReturn)
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Via(..))
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Cons', List', Nil')
 
@@ -45,8 +45,8 @@ test1 = check @Test1A @Test1B @Test1C
 type Test2A = MkReturnTL "Foo" :> MkReturnViaTL "Tansition" "Bar" :> Nil'
 type Test2B = D
 type Test2C = Variant
-  ( "Foo" :: Int
-  , "Bar" :: Via "Tansition" String
+  ( "Foo" :: Ret Int
+  , "Bar" :: RetVia "Tansition" String
   )
 
 test2 :: Unit
@@ -63,15 +63,15 @@ spec = do
   describe "Transit.Class.ExpandReturn" do
     describe "expandReturn" do
       it "should inject whitelisted case with payload" do
-        expandReturn @L1 (v @"Foo" 1)
+        expandReturn @L1 (v @"Foo" (Ret 1))
           `shouldEqual` (v @"Foo" 1 :: D)
 
       it "should inject whitelisted case with payload and guard" do
-        expandReturn @L1 (v @"Qux" (Via @"Guard1" 1))
+        expandReturn @L1 (v @"Qux" (RetVia @"Guard1" 1))
           `shouldEqual` (v @"Qux" 1 :: D)
 
       it "should inject whitelisted case with unit payload" do
-        expandReturn @L1 (v @"Baz" unit)
+        expandReturn @L1 (v @"Baz" (Ret unit))
           `shouldEqual` (v @"Baz" unit :: D)
 
 ---
@@ -88,12 +88,12 @@ testRW1 = checkRemoveWrappers
 testRW2 :: Unit
 testRW2 = checkRemoveWrappers
   @(Cons' (MkReturnTL "Foo") Nil')
-  @("Foo" :: Int)
+  @("Foo" :: Ret Int)
   @("Foo" :: Int)
 
 testRW3 :: Unit
 testRW3 = checkRemoveWrappers
   @(Cons' (MkReturnTL "Foo") (Cons' (MkReturnViaTL "Transition" "Bar") Nil'))
-  @("Foo" :: Int, "Bar" :: Via "Transition" String)
+  @("Foo" :: Ret Int, "Bar" :: RetVia "Transition" String)
   @("Foo" :: Int, "Bar" :: String)
 

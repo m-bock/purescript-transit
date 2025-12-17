@@ -19,7 +19,7 @@ import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:?), type (:@), type (>|), Empty, match, match', mkUpdate, return, returnVia)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
-import Transit.Core (ReturnState, Via(..))
+import Transit.Core (Ret(..), RetVia(..))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
@@ -83,13 +83,13 @@ type DoorWithPinTransit =
 
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
-  ( match' @"DoorOpen" @"Close" \{} ->
+  ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
-  ( match' @"DoorClosed" @"Open" \_ ->
+  ( match @"DoorClosed" @"Open" \_ _ ->
       return @"DoorOpen"
   )
-  ( match' @"DoorClosed" @"Lock" \{ msg } ->
+  ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { activePin: msg.newPin }
   )
   ( match' @"DoorLocked" @"Unlock" \{ state, msg } ->

@@ -11,7 +11,7 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Via(..))
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 
@@ -45,23 +45,23 @@ instance removeWrappersNil :: RemoveWrappers Nil' () ()
 
 instance removeWrappersConsState ::
   ( Row.Cons symState a rout' rout
-  , Row.Cons symState a rin' rin
+  , Row.Cons symState (Ret a) rin' rin
   , RemoveWrappers syms rin' rout'
   , IsSymbol symState
   , Row.Union rout' routx rout
   ) =>
   RemoveWrappers (MkReturnTL symState :> syms) rin rout
   where
-  removeWrappers v = V.on (Proxy @symState) (V.inj (Proxy @symState)) (removeWrappers @syms @rin' >>> V.expand) v
+  removeWrappers v = V.on (Proxy @symState) (\(Ret x) -> V.inj (Proxy @symState) x) (removeWrappers @syms @rin' >>> V.expand) v
 
 instance removeWrappersConsStateVia ::
   ( Row.Cons symState a rout' rout
-  , Row.Cons symState (Via symGuard a) rin' rin
+  , Row.Cons symState (RetVia symGuard a) rin' rin
   , RemoveWrappers syms rin' rout'
   , IsSymbol symState
   , Row.Union rout' routx rout
   ) =>
   RemoveWrappers (MkReturnViaTL symGuard symState :> syms) rin rout
   where
-  removeWrappers = V.on (Proxy @symState) (\(Via x) -> V.inj (Proxy @symState) x) (removeWrappers @syms @rin' >>> V.expand)
+  removeWrappers = V.on (Proxy @symState) (\(RetVia x) -> V.inj (Proxy @symState) x) (removeWrappers @syms @rin' >>> V.expand)
 

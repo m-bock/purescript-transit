@@ -645,13 +645,13 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
-  ( match' @"DoorOpen" @"Close" \{} ->
+  ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
-  ( match' @"DoorClosed" @"Open" \_ ->
+  ( match @"DoorClosed" @"Open" \_ _ ->
       return @"DoorOpen"
   )
-  ( match' @"DoorClosed" @"Lock" \{ msg } ->
+  ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { activePin: msg.newPin }
   )
   ( match' @"DoorLocked" @"Unlock" \{ state, msg } ->
@@ -727,18 +727,18 @@ pick:
 -->
 
 ```purescript
-type Handler1 = {} -> {} -> Variant ("DoorClosed" :: {})
+type Handler1 = {} -> {} -> Variant ("DoorClosed" :: Ret {})
 
-type Handler2 = {} -> {} -> Variant ("DoorOpen" :: {})
+type Handler2 = {} -> {} -> Variant ("DoorOpen" :: Ret {})
 
-type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: { activePin :: String })
+type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
 
 type Handler4 =
   { activePin :: String }
   -> { enteredPin :: String }
   -> Variant
-       ( "DoorClosed" :: Via "PinCorrect" {}
-       , "DoorLocked" :: Via "PinIncorrect" { activePin :: String }
+       ( "DoorClosed" :: RetVia "PinCorrect" {}
+       , "DoorLocked" :: RetVia "PinIncorrect" { activePin :: String }
        )
 ```
 

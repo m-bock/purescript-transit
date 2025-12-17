@@ -6,7 +6,7 @@ import Data.Identity (Identity)
 import Data.Variant (Variant)
 import Test.Examples.DoorWithPin (Msg, State, DoorWithPinTransit)
 import Transit (match, match', mkUpdate)
-import Transit.Core (MatchImpl, ReturnState, Via)
+import Transit.Core (MatchImpl, Ret(..), RetVia(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 --------------------------------------------------------------------------------
@@ -23,16 +23,16 @@ update = mkUpdate @DoorWithPinTransit
   (match @"DoorClosed" @"Lock" (unimplemented :: Handler3))
   (match @"DoorLocked" @"Unlock" (unimplemented :: Handler4))
 
-type Handler1 = {} -> {} -> Variant ("DoorClosed" :: {})
+type Handler1 = {} -> {} -> Variant ("DoorClosed" :: Ret {})
 
-type Handler2 = {} -> {} -> Variant ("DoorOpen" :: {})
+type Handler2 = {} -> {} -> Variant ("DoorOpen" :: Ret {})
 
-type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: { activePin :: String })
+type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
 
 type Handler4 =
   { activePin :: String }
   -> { enteredPin :: String }
   -> Variant
-       ( "DoorClosed" :: Via "PinCorrect" {}
-       , "DoorLocked" :: Via "PinIncorrect" { activePin :: String }
+       ( "DoorClosed" :: RetVia "PinCorrect" {}
+       , "DoorLocked" :: RetVia "PinIncorrect" { activePin :: String }
        )

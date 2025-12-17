@@ -10,8 +10,8 @@ module Transit.Core
   , MkTransitCoreTL
   , MsgName
   , Return(..)
-  , ReturnState(..)
-  , Via(..)
+  , Ret(..)
+  , RetVia(..)
   , ReturnTL
   , StateName
   , TransitCore(..)
@@ -152,13 +152,13 @@ newtype MatchImpl' (symState :: Symbol) (symMsg :: Symbol) (m :: Type -> Type) s
 
 derive instance Newtype (MatchImpl symState symMsg m msgIn stateIn stateOut) _
 
-newtype Via (symGuard :: Symbol) a = Via a
+newtype RetVia (symGuard :: Symbol) a = RetVia a
 
-derive instance Newtype (Via symGuard a) _
+derive instance Newtype (RetVia symGuard a) _
 
-newtype ReturnState a = ReturnState a
+newtype Ret a = Ret a
 
-derive instance Newtype (ReturnState a) _
+derive instance Newtype (Ret a) _
 
 ---
 

@@ -12,7 +12,6 @@ import Transit.Core (class IsTransitSpec, MkTransitCoreTL)
 import Transit.Core as C
 import Transit.DSL (type (:*), type (:?), type (:@), type (>|), Empty)
 import Type.Data.List (type (:>), Nil')
-import Type.Function (type ($))
 
 check :: forall @a @b. (IsTransitSpec a b) => Unit
 check = unit
