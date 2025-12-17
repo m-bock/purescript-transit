@@ -1,12 +1,9 @@
 module Test.Examples.Signatures (update) where
 
-import Prelude
-
-import Data.Identity (Identity)
 import Data.Variant (Variant)
 import Test.Examples.DoorWithPin (Msg, State, DoorWithPinTransit)
-import Transit (match, match', mkUpdate)
-import Transit.Core (MatchImpl, Ret(..), RetVia(..))
+import Transit (match, mkUpdate)
+import Transit.Core (Ret, RetVia)
 import Unsafe.Coerce (unsafeCoerce)
 
 --------------------------------------------------------------------------------

@@ -13,7 +13,7 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, match, mkUpdate, return)
+import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -22,16 +22,12 @@ import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
---- Types
+--- Classic Approach
 --------------------------------------------------------------------------------
 
 data StateD = DoorOpen | DoorClosed
 
 data MsgD = Close | Open
-
---------------------------------------------------------------------------------
---- Classic Approach
---------------------------------------------------------------------------------
 
 updateD :: StateD -> MsgD -> StateD
 updateD state msg = case state, msg of
@@ -54,7 +50,7 @@ type Msg = Variant
   )
 
 type SimpleDoorTransit =
-  Empty
+  Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 

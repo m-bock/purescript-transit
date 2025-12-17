@@ -2,7 +2,6 @@ module Transit
   ( class Return
   , class ReturnVia
   , match
-  , match'
   , matchM
   , mkUpdate
   , mkUpdateEither
@@ -24,10 +23,9 @@ import Prim.Coerce (class Coercible)
 import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
-import Transit.Class.MkUpdate (class MkUpdate, TransitError)
-import Transit.Class.MkUpdate as MU
+import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdateCore)
 import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
-import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Empty, StateWithMsg, WithGuard) as Export
+import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Transit, StateWithMsg, WithGuard) as Export
 import Type.Prelude (Proxy(..))
 
 mkUpdateEitherM
@@ -40,7 +38,7 @@ mkUpdateEitherM = curryN @args f
   where
   f :: args -> state -> msg -> m (Either TransitError state)
   f impl state msg =
-    MU.mkUpdate @tcore impl state msg
+    mkUpdateCore @tcore impl state msg
 
 mkUpdateEither
   :: forall @spec tcore msg state args a
@@ -53,7 +51,7 @@ mkUpdateEither = curryN @args f
   f :: args -> state -> msg -> Either TransitError state
   f impl state msg =
     safeUnwrap @Identity $
-      (MU.mkUpdate @tcore impl state msg)
+      (mkUpdateCore @tcore impl state msg)
 
 mkUpdateM
   :: forall @spec tcore msg state args m a
@@ -67,7 +65,7 @@ mkUpdateM = curryN @args f
   f :: args -> state -> msg -> m state
   f impl state msg =
     map (fromRight state)
-      (MU.mkUpdate @tcore impl state msg)
+      (mkUpdateCore @tcore impl state msg)
 
 mkUpdate
   :: forall @spec tcore msg state args a
@@ -79,19 +77,22 @@ mkUpdate = curryN @args f
   where
   f :: args -> state -> msg -> state
   f impl state msg =
-    fromRight state $ safeUnwrap @Identity $ (MU.mkUpdate @tcore impl state msg)
+    fromRight state $ safeUnwrap @Identity $ (mkUpdateCore @tcore impl state msg)
 
 safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a
 safeUnwrap = Safe.coerce
 
-match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg Identity msgIn stateIn stateOut
+match
+  :: forall @symStateIn @symMsgIn stateIn msgIn stateOut
+   . (stateIn -> msgIn -> stateOut)
+  -> MatchImpl symStateIn symMsgIn stateIn msgIn Identity stateOut
 match f = MatchImpl (\msg state -> pure $ f msg state)
 
-match' :: forall @symState @symMsg msgIn stateIn stateOut. ({ msg :: msgIn, state :: stateIn } -> stateOut) -> MatchImpl symState symMsg Identity stateIn msgIn stateOut
-match' f = MatchImpl (\state msg -> pure $ f { msg, state })
-
-matchM :: forall @symState @symMsg m msgIn stateIn stateOut. (msgIn -> stateIn -> m stateOut) -> MatchImpl symState symMsg m msgIn stateIn stateOut
-matchM f = MatchImpl (\msg state -> f msg state)
+matchM
+  :: forall @symStateIn @symMsgIn m stateIn msgIn stateOut
+   . (stateIn -> msgIn -> m stateOut)
+  -> MatchImpl symStateIn symMsgIn stateIn msgIn m stateOut
+matchM f = MatchImpl (\state msg -> f state msg)
 
 class Return (sym :: Symbol) a where
   return :: a

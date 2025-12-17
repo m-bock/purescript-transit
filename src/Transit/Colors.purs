@@ -57,17 +57,28 @@ allBaseColors = NEA.cons' bottom (drop 1 $ enumFromTo bottom top)
 
 baseColorToColor :: BaseColor -> Color
 baseColorToColor = case _ of
-  OceanBlue -> Color.hsl 214.4 0.841 0.557
-  AquaBlue -> Color.hsl 194.6 0.857 0.643
-  SpringGreen -> Color.hsl 82.7 0.780 0.555
-  MintTeal -> Color.hsl 147.6 0.628 0.471
-  LemonYellow -> Color.hsl 46.8 1.000 0.500
-  SunsetOrange -> Color.hsl 28.2 0.866 0.620
-  VividRed -> Color.hsl 0.0 0.787 0.631
-  CoralPink -> Color.hsl 345.5 1.000 0.661
-  SkyCyan -> Color.hsl 203.2 0.709 0.514
-  MagentaGlow -> Color.hsl 279.3 0.857 0.690
-  OliveGreen -> Color.hsl 151.0 0.635 0.410
+  OceanBlue ->
+    Color.hsl 214.4 0.841 0.557
+  AquaBlue ->
+    Color.hsl 194.6 0.857 0.643
+  SpringGreen ->
+    Color.hsl 82.7 0.780 0.555
+  MintTeal ->
+    Color.hsl 147.6 0.628 0.471
+  LemonYellow ->
+    Color.hsl 46.8 1.000 0.500
+  SunsetOrange ->
+    Color.hsl 28.2 0.866 0.620
+  VividRed ->
+    Color.hsl 0.0 0.787 0.631
+  CoralPink ->
+    Color.hsl 345.5 1.000 0.661
+  SkyCyan ->
+    Color.hsl 203.2 0.709 0.514
+  MagentaGlow ->
+    Color.hsl 279.3 0.857 0.690
+  OliveGreen ->
+    Color.hsl 151.0 0.635 0.410
 
 mkLightColorHarmony :: BaseColor -> Color -> ColorHarmony
 mkLightColorHarmony = case _ of

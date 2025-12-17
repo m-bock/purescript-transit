@@ -16,27 +16,27 @@ import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 
 class
-  ExpandReturn (syms :: List' ReturnTL) ty a
-  | syms ty -> a
+  ExpandReturn (returns :: List' ReturnTL) full part
+  | returns full -> part
   where
-  expandReturn :: a -> ty
+  expandReturn :: part -> full
 
 instance expandReturnInst ::
-  ( RemoveWrappers syms r r'
+  ( RemoveWrappers returns r r'
   , Row.Union r' rx r''
   ) =>
-  ExpandReturn syms (Variant r'') (Variant r) where
-  expandReturn v = y
+  ExpandReturn returns (Variant r'') (Variant r) where
+  expandReturn part = full
     where
-    y :: Variant r''
-    y = V.expand x
+    full :: Variant r''
+    full = V.expand cleanedPart
 
-    x :: Variant r'
-    x = removeWrappers @syms @r v
+    cleanedPart :: Variant r'
+    cleanedPart = removeWrappers @returns @r part
 
 ---
 
-class RemoveWrappers (syms :: List' ReturnTL) (rin :: Row Type) (rout :: Row Type) | syms -> rin rout where
+class RemoveWrappers (returns :: List' ReturnTL) (rin :: Row Type) (rout :: Row Type) | returns -> rin rout where
   removeWrappers :: Variant rin -> Variant rout
 
 instance removeWrappersNil :: RemoveWrappers Nil' () ()
@@ -46,22 +46,33 @@ instance removeWrappersNil :: RemoveWrappers Nil' () ()
 instance removeWrappersConsState ::
   ( Row.Cons symState a rout' rout
   , Row.Cons symState (Ret a) rin' rin
-  , RemoveWrappers syms rin' rout'
+  , RemoveWrappers returns rin' rout'
   , IsSymbol symState
   , Row.Union rout' routx rout
   ) =>
-  RemoveWrappers (MkReturnTL symState :> syms) rin rout
+  RemoveWrappers (MkReturnTL symState :> returns) rin rout
   where
-  removeWrappers v = V.on (Proxy @symState) (\(Ret x) -> V.inj (Proxy @symState) x) (removeWrappers @syms @rin' >>> V.expand) v
+  removeWrappers = V.on (Proxy @symState) handleHead handleRest
+    where
+    handleHead :: Ret a -> Variant rout
+    handleHead (Ret x) = V.inj (Proxy @symState) x
+
+    handleRest :: Variant rin' -> Variant rout
+    handleRest = removeWrappers @returns @rin' >>> V.expand
 
 instance removeWrappersConsStateVia ::
   ( Row.Cons symState a rout' rout
   , Row.Cons symState (RetVia symGuard a) rin' rin
-  , RemoveWrappers syms rin' rout'
+  , RemoveWrappers returns rin' rout'
   , IsSymbol symState
   , Row.Union rout' routx rout
   ) =>
-  RemoveWrappers (MkReturnViaTL symGuard symState :> syms) rin rout
+  RemoveWrappers (MkReturnViaTL symGuard symState :> returns) rin rout
   where
-  removeWrappers = V.on (Proxy @symState) (\(RetVia x) -> V.inj (Proxy @symState) x) (removeWrappers @syms @rin' >>> V.expand)
+  removeWrappers = V.on (Proxy @symState) handleHead handleRest
+    where
+    handleHead :: RetVia symGuard a -> Variant rout
+    handleHead (RetVia x) = V.inj (Proxy @symState) x
 
+    handleRest :: Variant rin' -> Variant rout
+    handleRest = removeWrappers @returns @rin' >>> V.expand

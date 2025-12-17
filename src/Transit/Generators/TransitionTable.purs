@@ -49,15 +49,15 @@ mkMatch options transit hasGuards index (Match from msg returns) =
     [ Return to ] ->
       if options.useUndirectedEdges then
         case hasComplementaryEdge from to msg transit of
-          Just i | i > index -> [ mkUndirectedRow options from msg to ]
+          Just i | i > index -> [ mkUndirectedRow from msg to ]
           _ -> []
       else
-        [ mkDirectedRow hasGuards options from msg (Return to) ]
+        [ mkDirectedRow hasGuards from msg (Return to) ]
     manyReturns ->
-      map (mkDirectedRow hasGuards options from msg) manyReturns
+      map (mkDirectedRow hasGuards from msg) manyReturns
 
-mkUndirectedRow :: Options -> String -> String -> String -> Html.Node
-mkUndirectedRow options fromState msg toState =
+mkUndirectedRow :: String -> String -> String -> Html.Node
+mkUndirectedRow fromState msg toState =
   Html.tbody []
     [ Html.tr []
         [ Html.td [] [ Html.text fromState ]
@@ -68,8 +68,8 @@ mkUndirectedRow options fromState msg toState =
         ]
     ]
 
-mkDirectedRow :: Boolean -> Options -> String -> String -> Return -> Html.Node
-mkDirectedRow hasGuards options fromState msg ret =
+mkDirectedRow :: Boolean -> String -> String -> Return -> Html.Node
+mkDirectedRow hasGuards fromState msg ret =
   Html.tbody []
     [ Html.tr [] $ join
         [ pure $ Html.td [] [ Html.text fromState ]

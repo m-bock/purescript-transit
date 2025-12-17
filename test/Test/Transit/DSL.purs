@@ -10,20 +10,20 @@ module Test.Transit.DSL
 import Data.Unit (Unit, unit)
 import Transit.Core (class IsTransitSpec, MkTransitCoreTL)
 import Transit.Core as C
-import Transit.DSL (type (:*), type (:?), type (:@), type (>|), Empty)
+import Transit.DSL (type (:*), type (:?), type (:@), type (>|), Transit)
 import Type.Data.List (type (:>), Nil')
 
 check :: forall @a @b. (IsTransitSpec a b) => Unit
 check = unit
 
 --------------------------------------------------------------------------------
--- Test 1: Empty DSL
+-- Test 1: Transit DSL
 --------------------------------------------------------------------------------
 
 test1 :: Unit
 test1 = check @Test1In @Test1Out
 
-type Test1In = Empty
+type Test1In = Transit
 
 type Test1Out = MkTransitCoreTL Nil'
 
@@ -35,7 +35,7 @@ test2 :: Unit
 test2 = check @Test2In @Test2Out
 
 type Test2In =
-  Empty
+  Transit
     :* ("State3" :@ "Msg3" >| "State3")
     :* ("State2" :@ "Msg2" >| "State3")
     :* ("State3" :@ "Msg3" >| "State3")
@@ -55,7 +55,7 @@ test3 :: Unit
 test3 = check @Test3In @Test3Out
 
 type Test3In =
-  Empty
+  Transit
     :*
       ( "State1" :@ "Msg1"
           >| "State3"
@@ -76,7 +76,7 @@ test4 :: Unit
 test4 = check @Test4In @Test4Out
 
 type Test4In =
-  Empty
+  Transit
     :* ("State1" :@ "Msg1" >| ("guard" :? "State2"))
 
 type Test4Out = MkTransitCoreTL
@@ -92,7 +92,7 @@ test5 :: Unit
 test5 = check @Test5In @Test5Out
 
 type Test5In =
-  Empty
+  Transit
     :*
       ( "State1" :@ "Msg1"
           >| ("guard" :? "State3")

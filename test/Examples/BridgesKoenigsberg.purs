@@ -10,7 +10,7 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Empty, match, mkUpdate, return)
+import Transit (type (:*), type (>|), Transit, match, mkUpdate, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Core (TransitCore)
 import Transit.DSL (type (|<))
@@ -18,11 +18,10 @@ import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (StateGraph, mkStateGraph)
 import Transit.VariantUtils (v)
-import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
---- transit Approach
+--- Transit Approach
 --------------------------------------------------------------------------------
 
 type State = Variant
@@ -43,7 +42,7 @@ type Msg = Variant
   )
 
 type BridgesKoenigsbergTransit =
-  Empty
+  Transit
     :* ("LandA" |< "Cross_a" >| "LandB")
     :* ("LandA" |< "Cross_b" >| "LandB")
     :* ("LandA" |< "Cross_c" >| "LandC")
@@ -75,9 +74,9 @@ update = mkUpdate @BridgesKoenigsbergTransit
   (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
   (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
 
--- --------------------------------------------------------------------------------
--- --- Tests
--- --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Tests
+--------------------------------------------------------------------------------
 
 assert1 :: Aff Unit
 assert1 =

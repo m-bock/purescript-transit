@@ -17,13 +17,11 @@ import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
-import Transit (type (:*), type (:?), type (:@), type (>|), Empty, match, match', mkUpdate, return, returnVia)
+import Transit (type (:*), type (:?), type (:@), type (>|), Transit, match, mkUpdate, return, returnVia)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
-import Transit.Core (Ret(..), RetVia(..))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
-import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
 --------------------------------------------------------------------------------
@@ -71,7 +69,7 @@ type Msg = Variant
   )
 
 type DoorWithPinTransit =
-  Empty
+  Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
     :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
@@ -92,11 +90,14 @@ update = mkUpdate @DoorWithPinTransit
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { activePin: msg.newPin }
   )
-  ( match' @"DoorLocked" @"Unlock" \{ state, msg } ->
-      if state.activePin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed"
-      else
-        returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      let
+        isCorrect = state.activePin == msg.enteredPin
+      in
+        if isCorrect then
+          returnVia @"PinCorrect" @"DoorClosed"
+        else
+          returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
   )
 
 --------------------------------------------------------------------------------

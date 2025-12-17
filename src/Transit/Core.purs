@@ -2,7 +2,6 @@ module Transit.Core
   ( GuardName
   , Match(..)
   , MatchImpl(..)
-  , MatchImpl'(..)
   , MatchTL
   , MkMatchTL
   , MkReturnTL
@@ -16,9 +15,6 @@ module Transit.Core
   , StateName
   , TransitCore(..)
   , TransitCoreTL
-  , class IsGuardSym
-  , class IsMsgSym
-  , class IsStateSym
   , class IsTransitSpec
   , getMatchesForState
   , getStateNames
@@ -53,16 +49,6 @@ foreign import data MkMatchTL :: StateName -> MsgName -> List' ReturnTL -> Match
 foreign import data ReturnTL :: Type
 foreign import data MkReturnTL :: StateName -> ReturnTL
 foreign import data MkReturnViaTL :: GuardName -> StateName -> ReturnTL
-
---------------------------------------------------------------------------------
---- Classes
---------------------------------------------------------------------------------
-
-class IsStateSym (sym :: Symbol) (state :: TransitCoreTL)
-
-class IsMsgSym (sym :: Symbol) (state :: TransitCoreTL)
-
-class IsGuardSym (sym :: Symbol) (state :: TransitCoreTL)
 
 --------------------------------------------------------------------------------
 --- Reflection types
@@ -146,11 +132,10 @@ instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnViaTL 
 --- Update implementation types
 --------------------------------------------------------------------------------
 
-newtype MatchImpl (symState :: Symbol) (symMsg :: Symbol) (m :: Type -> Type) stateIn msgIn stateOut = MatchImpl (stateIn -> msgIn -> m stateOut)
+newtype MatchImpl (symStateIn :: Symbol) (symMsgIn :: Symbol) stateIn msgIn (m :: Type -> Type) stateOut =
+  MatchImpl (stateIn -> msgIn -> m stateOut)
 
-newtype MatchImpl' (symState :: Symbol) (symMsg :: Symbol) (m :: Type -> Type) stateIn msgIn stateOut = MatchImpl' ({ state :: stateIn, msg :: msgIn } -> m stateOut)
-
-derive instance Newtype (MatchImpl symState symMsg m msgIn stateIn stateOut) _
+derive instance Newtype (MatchImpl symStateIn symMsgIn stateIn msgIn m stateOut) _
 
 newtype RetVia (symGuard :: Symbol) a = RetVia a
 

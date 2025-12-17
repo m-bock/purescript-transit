@@ -8,7 +8,7 @@ module Transit.DSL
   , class ToTransitCore
   , class ToMatch
   , class ToReturn
-  , Empty
+  , Transit
   , StateWithMsg
   , WithGuard
   , AddOut
@@ -27,10 +27,6 @@ import Type.Proxy (Proxy(..))
 
 data AddMatch :: forall k1 k2. k1 -> k2 -> Type
 data AddMatch a b
-
--- foreign import data X :: Type
-
--- foreign import data AddMatch :: forall k1 k2. k1 -> k2 -> X
 
 data StateWithMsg :: forall k1 k2. k1 -> k2 -> Type
 data StateWithMsg a b
@@ -66,17 +62,12 @@ instance (IsTransitSpec (AddMatch a b) o, Reflectable o TransitCore) => Reflecta
   reflectType _ = reflectType (Proxy @o)
 
 --------------------------------------------------------------------------------
--- Transit type and Empty
+-- Transit type and Transit
 --------------------------------------------------------------------------------
 
--- data Transit :: forall k. k -> Type
--- data Transit a
+data Transit
 
-data Empty
-
---instance (ToTransitCore a a') => IsTransitSpec (Transit a) a'
-
-instance IsTransitSpec Empty (C.MkTransitCoreTL Nil')
+instance IsTransitSpec Transit (C.MkTransitCoreTL Nil')
 
 instance (ToTransitCore (AddMatch a b) c) => IsTransitSpec (AddMatch a b) c
 
@@ -87,9 +78,9 @@ instance (ToTransitCore (AddMatch a b) c) => IsTransitSpec (AddMatch a b) c
 class ToTransitCore :: forall k. k -> C.TransitCoreTL -> Constraint
 class ToTransitCore dsl a | dsl -> a
 
-instance ToTransitCore Empty (C.MkTransitCoreTL Nil')
+instance ToTransitCore Transit (C.MkTransitCoreTL Nil')
 
-else instance (ToTransitCore xs (C.MkTransitCoreTL ys)) => ToTransitCore (Empty :* xs) (C.MkTransitCoreTL ys)
+else instance (ToTransitCore xs (C.MkTransitCoreTL ys)) => ToTransitCore (Transit :* xs) (C.MkTransitCoreTL ys)
 
 else instance
   ( ToTransitCore xs (C.MkTransitCoreTL ys)

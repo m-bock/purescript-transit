@@ -13,10 +13,10 @@ import Prim.Row as Row
 import Type.Prelude (Proxy(..))
 
 class
-  MatchBySym (sym :: Symbol) ty a
-  | sym ty -> a
+  MatchBySym (sym :: Symbol) full a
+  | sym full -> a
   where
-  matchBySym :: forall z. (a -> z) -> (Unit -> z) -> ty -> z
+  matchBySym :: forall z. (a -> z) -> (Unit -> z) -> full -> z
 
 instance matchBySymInst :: (Row.Cons sym a r1 r2, IsSymbol sym) => MatchBySym sym (Variant r2) a where
   matchBySym onMatch onDefault = V.on (Proxy @sym) onMatch (\_ -> onDefault unit)

@@ -8,7 +8,7 @@ import Data.Reflectable (reflectType)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Test.Spec (Spec)
-import Transit (type (:*), type (:@), type (>|), Empty, match, mkUpdate, return)
+import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
 import Transit.Colors (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Type.Function (type ($))
@@ -42,7 +42,7 @@ type Msg = Variant
   , "MsgK" :: {}
   )
 
-type ColorsFSM = Empty
+type ColorsFSM = Transit
   :* ("SpringGreen" :@ "MsgA" >| "LemonYellow")
   :* ("LemonYellow" :@ "MsgB" >| "OceanBlue")
   :* ("OceanBlue" :@ "MsgC" >| "CoralPink")

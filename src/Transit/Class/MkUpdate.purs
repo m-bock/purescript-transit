@@ -1,6 +1,6 @@
 module Transit.Class.MkUpdate
   ( class MkUpdate
-  , mkUpdate
+  , mkUpdateCore
   , TransitError(..)
   ) where
 
@@ -25,10 +25,10 @@ instance Show TransitError where
   show = genericShow
 
 class MkUpdate (spec :: TransitCoreTL) m impl msg state | spec msg state m -> impl where
-  mkUpdate :: impl -> state -> msg -> m (Either TransitError state)
+  mkUpdateCore :: impl -> state -> msg -> m (Either TransitError state)
 
 instance mkUpdateNil :: (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
-  mkUpdate _ _ _ = pure
+  mkUpdateCore _ _ _ = pure
     (Left IllegalTransitionRequest)
 
 instance mkUpdateCons ::
@@ -41,13 +41,13 @@ instance mkUpdateCons ::
   MkUpdate
     (MkTransitCoreTL ((MkMatchTL symStateIn symMsg returns) :> rest1))
     m
-    (MatchImpl symStateIn symMsg m stateIn msgIn stateOut /\ rest2)
+    (MatchImpl symStateIn symMsg stateIn msgIn m stateOut /\ rest2)
     msg
     state
   where
-  mkUpdate (MatchImpl fn /\ rest) state msg =
+  mkUpdateCore (MatchImpl fn /\ rest) state msg =
     matchBySym2 @symStateIn @symMsg
       (\s m -> Right <$> (expandReturn @returns <$> fn s m))
-      (\_ -> mkUpdate @(MkTransitCoreTL rest1) rest state msg)
+      (\_ -> mkUpdateCore @(MkTransitCoreTL rest1) rest state msg)
       state
       msg

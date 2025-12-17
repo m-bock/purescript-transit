@@ -12,7 +12,7 @@ import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Empty, match, mkUpdate, return)
+import Transit (type (:*), type (>|), Transit, match, mkUpdate, return)
 import Transit.DSL (type (|<))
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
@@ -45,7 +45,7 @@ type Msg = Variant
   )
 
 type HouseOfSantaClausTransit =
-  Empty
+  Transit
     :* ("N_1" |< "E_a" >| "N_2")
     :* ("N_2" |< "E_b" >| "N_3")
     :* ("N_3" |< "E_c" >| "N_5")
@@ -82,9 +82,9 @@ update =
     (match @"N_3" @"E_h" \_ _ -> return @"N_4")
     (match @"N_4" @"E_h" \_ _ -> return @"N_3")
 
--- --------------------------------------------------------------------------------
--- --- Tests
--- --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Tests
+--------------------------------------------------------------------------------
 
 assert1 :: Aff Unit
 assert1 =
@@ -131,17 +131,19 @@ main = do
       _ -> ""
     globalAttrs = Just "layout=neato"
 
-  for_
-    [ { theme: themeHarmonyLight, file: "graphs/house-of-santa-claus-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/house-of-santa-claus-dark.dot" }
-    ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { useUndirectedEdges = true
-        , nodeAttrsRaw = nodeAttrs
-        , globalAttrsRaw = globalAttrs
-        , theme = opts.theme
-        }
+  TransitGraphviz.writeToFile "graphs/house-of-santa-claus-light.dot" transit _
+    { useUndirectedEdges = true
+    , nodeAttrsRaw = nodeAttrs
+    , globalAttrsRaw = globalAttrs
+    , theme = themeHarmonyLight
+    }
+
+  TransitGraphviz.writeToFile "graphs/house-of-santa-claus-dark.dot" transit _
+    { useUndirectedEdges = true
+    , nodeAttrsRaw = nodeAttrs
+    , globalAttrsRaw = globalAttrs
+    , theme = themeHarmonyDark
+    }
 
   TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
     { useUndirectedEdges = true }

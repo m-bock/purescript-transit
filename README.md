@@ -172,7 +172,7 @@ pick:
 
 ```purescript
 type SimpleDoorTransit =
-  Empty
+  Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
@@ -182,7 +182,7 @@ type SimpleDoorTransit =
 
 Breaking down the syntax:
 
-- `Empty` initializes an empty transition list
+- `Transit` initializes an empty transition list
 - `:*` is an infix operator that appends each transition to the list
 - `"DoorOpen" :@ "Close" >| "DoorClosed"` means: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`
 - The `@` operator connects a state to a message, and `>|` indicates the target state
@@ -230,11 +230,13 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdate @SimpleDoorTransit
-  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
+  do
+    match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed"
+  do
+    match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen"
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L61-L64">test/Examples/SimpleDoor.purs L61-L64</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L61-L66">test/Examples/SimpleDoor.purs L61-L66</a></sup></p>
 <!-- PD_END -->
 
 Here's how this works:
@@ -256,7 +258,7 @@ This approach addresses all the drawbacks we saw earlier:
 
 To create values of type `Variant`, **Transit** provides the `v` function from `Transit.VariantUtils`. It's a convenience wrapper around `Variant`'s `inj` function that uses type application (no Proxy needed) and allows omitting empty record arguments:
 
-- Empty record payload (argument can be omitted)
+- Transit record payload (argument can be omitted)
 
   ```purescript
   v @"DoorOpen" :: State
@@ -308,7 +310,7 @@ assert1 =
       (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L71-L74">test/Examples/SimpleDoor.purs L71-L74</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L73-L76">test/Examples/SimpleDoor.purs L73-L76</a></sup></p>
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -329,7 +331,7 @@ assert2 =
       [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L77-L80">test/Examples/SimpleDoor.purs L77-L80</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L79-L82">test/Examples/SimpleDoor.purs L79-L82</a></sup></p>
 <!-- PD_END -->
 
 This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -391,7 +393,7 @@ assert3 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L83-L93">test/Examples/SimpleDoor.purs L83-L93</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L85-L95">test/Examples/SimpleDoor.purs L85-L95</a></sup></p>
 <!-- PD_END -->
 
 ### Generating Diagrams and Tables
@@ -438,7 +440,7 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L107-L118">test/Examples/SimpleDoor.purs L107-L118</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L109-L120">test/Examples/SimpleDoor.purs L109-L120</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -481,7 +483,7 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L120-L125">test/Examples/SimpleDoor.purs L120-L125</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L122-L127">test/Examples/SimpleDoor.purs L122-L127</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State".
@@ -551,7 +553,7 @@ data MsgD
   | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L33-L42">test/Examples/DoorWithPin.purs L33-L42</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L31-L40">test/Examples/DoorWithPin.purs L31-L40</a></sup></p>
 <!-- PD_END -->
 
 #### The update function
@@ -578,7 +580,7 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L44-L54">test/Examples/DoorWithPin.purs L44-L54</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L42-L52">test/Examples/DoorWithPin.purs L42-L52</a></sup></p>
 <!-- PD_END -->
 
 ### State machine implementation II: The Transit Approach
@@ -607,7 +609,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L60-L71">test/Examples/DoorWithPin.purs L60-L71</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L58-L69">test/Examples/DoorWithPin.purs L58-L69</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -618,7 +620,7 @@ pick:
 
 ```purescript
 type DoorWithPinTransit =
-  Empty
+  Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
     :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
@@ -629,7 +631,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L73-L82">test/Examples/DoorWithPin.purs L73-L82</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L71-L80">test/Examples/DoorWithPin.purs L71-L80</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -654,15 +656,18 @@ update = mkUpdate @DoorWithPinTransit
   ( match @"DoorClosed" @"Lock" \_ msg ->
       return @"DoorLocked" { activePin: msg.newPin }
   )
-  ( match' @"DoorLocked" @"Unlock" \{ state, msg } ->
-      if state.activePin == msg.enteredPin then
-        returnVia @"PinCorrect" @"DoorClosed"
-      else
-        returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      let
+        isCorrect = state.activePin == msg.enteredPin
+      in
+        if isCorrect then
+          returnVia @"PinCorrect" @"DoorClosed"
+        else
+          returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L84-L100">test/Examples/DoorWithPin.purs L84-L100</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L82-L101">test/Examples/DoorWithPin.purs L82-L101</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
@@ -805,7 +810,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L28-L43">test/Examples/BridgesKoenigsberg.purs L28-L43</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L27-L42">test/Examples/BridgesKoenigsberg.purs L27-L42</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -816,7 +821,7 @@ pick:
 
 ```purescript
 type BridgesKoenigsbergTransit =
-  Empty
+  Transit
     :* ("LandA" |< "Cross_a" >| "LandB")
     :* ("LandA" |< "Cross_b" >| "LandB")
     :* ("LandA" |< "Cross_c" >| "LandC")
@@ -826,7 +831,7 @@ type BridgesKoenigsbergTransit =
     :* ("LandC" |< "Cross_g" >| "LandD")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L45-L53">test/Examples/BridgesKoenigsberg.purs L45-L53</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L44-L52">test/Examples/BridgesKoenigsberg.purs L44-L52</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -851,7 +856,7 @@ update = mkUpdate @BridgesKoenigsbergTransit
 -- And so on ... (13 lines omitted)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L55-L76">test/Examples/BridgesKoenigsberg.purs L55-L76</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L54-L75">test/Examples/BridgesKoenigsberg.purs L54-L75</a></sup></p>
 <!-- PD_END -->
 
 <img src="assets/bridges-walk.png" width="450" />
@@ -878,7 +883,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L82-L94">test/Examples/BridgesKoenigsberg.purs L82-L94</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L81-L93">test/Examples/BridgesKoenigsberg.purs L81-L93</a></sup></p>
 <!-- PD_END -->
 
 The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
@@ -1003,7 +1008,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L82-L94">test/Examples/BridgesKoenigsberg.purs L82-L94</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L81-L93">test/Examples/BridgesKoenigsberg.purs L81-L93</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1018,7 +1023,7 @@ assert2 = do
   hasEulerTrail graph `shouldEqual` false
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L102-L104">test/Examples/BridgesKoenigsberg.purs L102-L104</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L101-L103">test/Examples/BridgesKoenigsberg.purs L101-L103</a></sup></p>
 <!-- PD_END -->
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
@@ -1071,7 +1076,7 @@ pick:
 
 ```purescript
 type HouseOfSantaClausTransit =
-  Empty
+  Transit
     :* ("N_1" |< "E_a" >| "N_2")
     :* ("N_2" |< "E_b" >| "N_3")
     :* ("N_3" |< "E_c" >| "N_5")
