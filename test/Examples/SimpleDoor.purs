@@ -13,7 +13,7 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, return)
+import Transit (type (:*), type (:@), type (>|), Empty, match, mkUpdate, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
@@ -54,7 +54,7 @@ type Msg = Variant
   )
 
 type SimpleDoorTransit =
-  Transit $ Empty
+  Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 

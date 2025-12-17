@@ -8,19 +8,19 @@ import Prelude
 import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Prim.Row as Row
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ReturnState, ReturnStateVia)
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ReturnState, Via)
 import Type.Data.List (type (:>), List', Nil')
 import Unsafe.Coerce (unsafeCoerce)
 
 class FilterRow (syms :: List' ReturnTL) (rin :: Row Type) (rout :: Row Type) (rout2 :: Row Type) | syms rin -> rout rout2 where
   filterRow :: Variant rout -> Variant rout2
 
-instance FilterRow Nil' r () ()
+instance filterRowNil :: FilterRow Nil' r () ()
   where
   filterRow = identity
 
-instance
-  ( Row.Cons symState (ReturnState a) rout' rout
+instance filterRowConsState ::
+  ( Row.Cons symState a rout' rout
   , Row.Cons symState a rout2' rout2
   , Row.Cons symState a rin' rin
   , FilterRow syms rin rout' rout2'
@@ -29,8 +29,8 @@ instance
   where
   filterRow = unsafeCoerce
 
-instance
-  ( Row.Cons symState (ReturnStateVia symGuard a) rout' rout
+instance filterRowConsStateVia ::
+  ( Row.Cons symState (Via symGuard a) rout' rout
   , Row.Cons symState a rout2' rout2
   , Row.Cons symState a rin' rin
   , FilterRow syms rin rout' rout2'

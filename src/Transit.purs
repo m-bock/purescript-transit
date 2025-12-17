@@ -1,15 +1,16 @@
 module Transit
-  ( module Export
-  , mkUpdateEitherM
-  , mkUpdateEither
-  , mkUpdateM
-  , mkUpdate
+  ( class Return
+  , class ReturnVia
   , match
+  , match'
   , matchM
+  , mkUpdate
+  , mkUpdateEither
+  , mkUpdateEitherM
+  , mkUpdateM
+  , module Export
   , return
   , returnVia
-  , class Return
-  , class ReturnVia
   ) where
 
 import Prelude
@@ -25,8 +26,8 @@ import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError)
 import Transit.Class.MkUpdate as MU
-import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), ReturnStateVia(..))
-import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Empty, StateWithMsg, Transit, WithGuard) as Export
+import Transit.Core (class IsTransitSpec, MatchImpl(..), ReturnState(..), Via(..))
+import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Empty, StateWithMsg, WithGuard) as Export
 import Type.Prelude (Proxy(..))
 
 mkUpdateEitherM
@@ -83,11 +84,11 @@ mkUpdate = curryN @args f
 safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a
 safeUnwrap = Safe.coerce
 
-safeWrap :: forall @f a. Coercible a (f a) => a -> f a
-safeWrap = Safe.coerce
-
 match :: forall @symState @symMsg msgIn stateIn stateOut. (msgIn -> stateIn -> stateOut) -> MatchImpl symState symMsg Identity msgIn stateIn stateOut
 match f = MatchImpl (\msg state -> pure $ f msg state)
+
+match' :: forall @symState @symMsg msgIn stateIn stateOut. ({ msg :: msgIn, state :: stateIn } -> stateOut) -> MatchImpl symState symMsg Identity stateIn msgIn stateOut
+match' f = MatchImpl (\state msg -> pure $ f { msg, state })
 
 matchM :: forall @symState @symMsg m msgIn stateIn stateOut. (msgIn -> stateIn -> m stateOut) -> MatchImpl symState symMsg m msgIn stateIn stateOut
 matchM f = MatchImpl (\msg state -> f msg state)
@@ -95,17 +96,17 @@ matchM f = MatchImpl (\msg state -> f msg state)
 class Return (sym :: Symbol) a where
   return :: a
 
-instance (Row.Cons sym (ReturnState a) r1 r2, IsSymbol sym) => Return sym (a -> Variant r2) where
-  return v = V.inj (Proxy :: _ sym) (ReturnState v)
+instance (Row.Cons sym a r1 r2, IsSymbol sym) => Return sym (a -> Variant r2) where
+  return v = V.inj (Proxy :: _ sym) v
 
-instance (Row.Cons sym (ReturnState {}) r1 r2, IsSymbol sym) => Return sym (Variant r2) where
-  return = V.inj (Proxy :: _ sym) (ReturnState {})
+instance (Row.Cons sym {} r1 r2, IsSymbol sym) => Return sym (Variant r2) where
+  return = V.inj (Proxy :: _ sym) {}
 
 class ReturnVia (symGuard :: Symbol) (sym :: Symbol) a where
   returnVia :: a
 
-instance (Row.Cons sym (ReturnStateVia symGuard a) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (a -> Variant r2) where
-  returnVia v = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard v)
+instance (Row.Cons sym (Via symGuard a) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (a -> Variant r2) where
+  returnVia v = V.inj (Proxy :: _ sym) (Via @symGuard v)
 
-instance (Row.Cons sym (ReturnStateVia symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
-  returnVia = V.inj (Proxy :: _ sym) (ReturnStateVia @symGuard {})
+instance (Row.Cons sym (Via symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
+  returnVia = V.inj (Proxy :: _ sym) (Via @symGuard {})

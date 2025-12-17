@@ -17,9 +17,8 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Core (Match(..), MsgName, Return(..), TransitCore(..), StateName)
+import Transit.Core (Match(..), Return(..), TransitCore(..))
 import Transit.Data.Html as Html
-import Unsafe.Coerce (unsafeCoerce)
 
 toHtml :: Options -> TransitCore -> Html.Node
 toHtml options transit@(TransitCore matches) = Html.table []

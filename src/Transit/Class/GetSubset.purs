@@ -16,7 +16,7 @@ class
   where
   getSubset :: a -> ty
 
-instance
+instance getSubsetInst ::
   ( FilterRow syms r r' r2'
   , Row.Union r2' rx r
   ) =>

@@ -2,6 +2,7 @@ module Transit.Core
   ( GuardName
   , Match(..)
   , MatchImpl(..)
+  , MatchImpl'(..)
   , MatchTL
   , MkMatchTL
   , MkReturnTL
@@ -10,7 +11,7 @@ module Transit.Core
   , MsgName
   , Return(..)
   , ReturnState(..)
-  , ReturnStateVia(..)
+  , Via(..)
   , ReturnTL
   , StateName
   , TransitCore(..)
@@ -147,11 +148,13 @@ instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnViaTL 
 
 newtype MatchImpl (symState :: Symbol) (symMsg :: Symbol) (m :: Type -> Type) stateIn msgIn stateOut = MatchImpl (stateIn -> msgIn -> m stateOut)
 
+newtype MatchImpl' (symState :: Symbol) (symMsg :: Symbol) (m :: Type -> Type) stateIn msgIn stateOut = MatchImpl' ({ state :: stateIn, msg :: msgIn } -> m stateOut)
+
 derive instance Newtype (MatchImpl symState symMsg m msgIn stateIn stateOut) _
 
-newtype ReturnStateVia (symGuard :: Symbol) a = ReturnStateVia a
+newtype Via (symGuard :: Symbol) a = Via a
 
-derive instance Newtype (ReturnStateVia symGuard a) _
+derive instance Newtype (Via symGuard a) _
 
 newtype ReturnState a = ReturnState a
 

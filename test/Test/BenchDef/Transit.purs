@@ -2,7 +2,7 @@ module Test.BenchDef.Transit where
 
 import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
-import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate, return)
+import Transit (type (:*), type (:@), type (>|), Empty, match, mkUpdate, return)
 import Transit.VariantUtils (v)
 import Type.Function (type ($))
 
@@ -113,7 +113,7 @@ type Msg = Variant
   )
 
 type Size5Transit =
-  Transit $ Empty
+  Empty
     :* ("State01" :@ "Msg01" >| "State02")
     :* ("State02" :@ "Msg02" >| "State03")
     :* ("State03" :@ "Msg03" >| "State04")

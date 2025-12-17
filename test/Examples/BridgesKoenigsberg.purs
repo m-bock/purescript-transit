@@ -10,7 +10,7 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Empty, Transit, match, mkUpdate, return)
+import Transit (type (:*), type (>|), Empty, match, mkUpdate, return)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Core (TransitCore)
 import Transit.DSL (type (|<))
@@ -43,7 +43,7 @@ type Msg = Variant
   )
 
 type BridgesKoenigsbergTransit =
-  Transit $ Empty
+  Empty
     :* ("LandA" |< "Cross_a" >| "LandB")
     :* ("LandA" |< "Cross_b" >| "LandB")
     :* ("LandA" |< "Cross_c" >| "LandC")

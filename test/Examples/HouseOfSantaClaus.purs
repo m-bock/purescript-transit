@@ -14,7 +14,7 @@ import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Empty, Transit, match, mkUpdate, return)
+import Transit (type (:*), type (>|), Empty, match, mkUpdate, return)
 import Transit.DSL (type (|<))
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
@@ -48,7 +48,7 @@ type Msg = Variant
   )
 
 type HouseOfSantaClausTransit =
-  Transit $ Empty
+  Empty
     :* ("N_1" |< "E_a" >| "N_2")
     :* ("N_2" |< "E_b" >| "N_3")
     :* ("N_3" |< "E_c" >| "N_5")

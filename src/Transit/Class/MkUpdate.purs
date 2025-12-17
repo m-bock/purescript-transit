@@ -7,13 +7,13 @@ module Transit.Class.MkUpdate
 import Prelude
 
 import Data.Either (Either(..))
+import Data.Generic.Rep (class Generic)
+import Data.Show.Generic (genericShow)
 import Data.Tuple.Nested (type (/\), (/\))
 import Transit.Class.GetSubset (class GetSubset, getSubset)
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
 import Type.Data.List (type (:>), Nil')
-import Data.Generic.Rep (class Generic)
-import Data.Show.Generic (genericShow)
 
 data TransitError = IllegalTransitionRequest
 
@@ -27,11 +27,11 @@ instance Show TransitError where
 class MkUpdate (spec :: TransitCoreTL) m impl msg state | spec msg state m -> impl where
   mkUpdate :: impl -> state -> msg -> m (Either TransitError state)
 
-instance (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
+instance mkUpdateNil :: (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
   mkUpdate _ _ _ = pure
     (Left IllegalTransitionRequest)
 
-instance
+instance mkUpdateCons ::
   ( MatchBySym symStateIn state stateIn
   , GetSubset returns state stateOut
   , MatchBySym symMsg msg msgIn
@@ -51,4 +51,3 @@ instance
       (\_ -> mkUpdate @(MkTransitCoreTL rest1) rest state msg)
       state
       msg
-

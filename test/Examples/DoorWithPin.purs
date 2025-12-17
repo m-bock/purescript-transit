@@ -17,8 +17,9 @@ import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
-import Transit (type (:*), type (:?), type (:@), type (>|), Empty, Transit, match, mkUpdate, return, returnVia)
+import Transit (type (:*), type (:?), type (:@), type (>|), Empty, match, match', mkUpdate, return, returnVia)
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
+import Transit.Core (ReturnState, Via(..))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
@@ -32,7 +33,7 @@ import Type.Proxy (Proxy(..))
 data StateD
   = DoorOpen
   | DoorClosed
-  | DoorLocked { pin :: String }
+  | DoorLocked { activePin :: String }
 
 data MsgD
   = Close
@@ -44,12 +45,12 @@ updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
-  DoorClosed, Lock { newPin } -> DoorLocked { pin: newPin }
-  DoorLocked { pin }, Unlock { enteredPin } ->
-    if pin == enteredPin then
+  DoorClosed, Lock { newPin } -> DoorLocked { activePin: newPin }
+  DoorLocked { activePin }, Unlock { enteredPin } ->
+    if activePin == enteredPin then
       DoorClosed
     else
-      DoorLocked { pin }
+      DoorLocked { activePin }
   _, _ -> state
 
 --------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ updateClassic state msg = case state, msg of
 type State = Variant
   ( "DoorOpen" :: {}
   , "DoorClosed" :: {}
-  , "DoorLocked" :: { pin :: String }
+  , "DoorLocked" :: { activePin :: String }
   )
 
 type Msg = Variant
@@ -70,7 +71,7 @@ type Msg = Variant
   )
 
 type DoorWithPinTransit =
-  Transit $ Empty
+  Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
     :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
@@ -82,20 +83,20 @@ type DoorWithPinTransit =
 
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
-  ( match @"DoorOpen" @"Close" \_ _ ->
+  ( match' @"DoorOpen" @"Close" \{} ->
       return @"DoorClosed"
   )
-  ( match @"DoorClosed" @"Open" \_ _ ->
+  ( match' @"DoorClosed" @"Open" \_ ->
       return @"DoorOpen"
   )
-  ( match @"DoorClosed" @"Lock" \_ msg ->
-      return @"DoorLocked" { pin: msg.newPin }
+  ( match' @"DoorClosed" @"Lock" \{ msg } ->
+      return @"DoorLocked" { activePin: msg.newPin }
   )
-  ( match @"DoorLocked" @"Unlock" \state msg ->
-      if state.pin == msg.enteredPin then
+  ( match' @"DoorLocked" @"Unlock" \{ state, msg } ->
+      if state.activePin == msg.enteredPin then
         returnVia @"PinCorrect" @"DoorClosed"
       else
-        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
+        returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
   )
 
 --------------------------------------------------------------------------------
@@ -110,9 +111,9 @@ assert4 =
     , v @"Open" ~> v @"DoorOpen"
     , v @"Close" ~> v @"DoorClosed"
     , v @"Lock" { newPin: "1234" }
-        ~> v @"DoorLocked" { pin: "1234" }
+        ~> v @"DoorLocked" { activePin: "1234" }
     , v @"Unlock" { enteredPin: "abcd" }
-        ~> v @"DoorLocked" { pin: "1234" }
+        ~> v @"DoorLocked" { activePin: "1234" }
     , v @"Unlock" { enteredPin: "1234" }
         ~> v @"DoorClosed"
     , v @"Open" ~> v @"DoorOpen"

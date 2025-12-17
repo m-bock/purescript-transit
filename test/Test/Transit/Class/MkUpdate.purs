@@ -65,7 +65,7 @@ check = unit
 -- type T2 = MatchImpl "TestState2" "TestMsg2" String String
 --   ( Variant
 --       ( "TestState1" :: ReturnState Int
---       , "TestState3" :: ReturnStateVia "foo" Boolean
+--       , "TestState3" :: Via "foo" Boolean
 --       )
 --   )
 
@@ -109,8 +109,8 @@ spec = do
       let
         update :: State -> Msg -> Identity (Either TransitError State)
         update = mkUpdate @MyStateGraph @Identity
-          ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (ReturnState "42"))
-              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (ReturnState 99))
+          ( iden (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") "42")
+              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") 99)
               /\ unit
           )
 

@@ -9,7 +9,6 @@ module Transit.DSL
   , class ToMatch
   , class ToReturn
   , Empty
-  , Transit
   , StateWithMsg
   , WithGuard
   , AddOut
@@ -28,6 +27,10 @@ import Type.Proxy (Proxy(..))
 
 data AddMatch :: forall k1 k2. k1 -> k2 -> Type
 data AddMatch a b
+
+-- foreign import data X :: Type
+
+-- foreign import data AddMatch :: forall k1 k2. k1 -> k2 -> X
 
 data StateWithMsg :: forall k1 k2. k1 -> k2 -> Type
 data StateWithMsg a b
@@ -59,19 +62,23 @@ infixl 9 type WithGuard as :?
 -- Reflection instance
 --------------------------------------------------------------------------------
 
-instance (IsTransitSpec (Transit dsl) o, Reflectable o TransitCore) => Reflectable (Transit dsl) TransitCore where
+instance (IsTransitSpec (AddMatch a b) o, Reflectable o TransitCore) => Reflectable (AddMatch a b) TransitCore where
   reflectType _ = reflectType (Proxy @o)
 
 --------------------------------------------------------------------------------
 -- Transit type and Empty
 --------------------------------------------------------------------------------
 
-data Transit :: forall k. k -> Type
-data Transit a
+-- data Transit :: forall k. k -> Type
+-- data Transit a
 
 data Empty
 
-instance (ToTransitCore a a') => IsTransitSpec (Transit a) a'
+--instance (ToTransitCore a a') => IsTransitSpec (Transit a) a'
+
+instance IsTransitSpec Empty (C.MkTransitCoreTL Nil')
+
+instance (ToTransitCore (AddMatch a b) c) => IsTransitSpec (AddMatch a b) c
 
 --------------------------------------------------------------------------------
 -- ToTransitCore class and instances

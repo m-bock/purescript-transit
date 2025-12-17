@@ -170,7 +170,7 @@ pick:
 
 ```purescript
 type SimpleDoorTransit =
-  Transit $ Empty
+  Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
@@ -519,7 +519,7 @@ pick:
 data StateD
   = DoorOpen
   | DoorClosed
-  | DoorLocked { pin :: String }
+  | DoorLocked { activePin :: String }
 
 data MsgD
   = Close
@@ -528,7 +528,7 @@ data MsgD
   | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L32-L41">test/Examples/DoorWithPin.purs L32-L41</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L33-L42">test/Examples/DoorWithPin.purs L33-L42</a></sup></p>
 <!-- PD_END -->
 
 The classic update function now needs to handle state and message data:
@@ -544,16 +544,16 @@ updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
-  DoorClosed, Lock { newPin } -> DoorLocked { pin: newPin }
-  DoorLocked { pin }, Unlock { enteredPin } ->
-    if pin == enteredPin then
+  DoorClosed, Lock { newPin } -> DoorLocked { activePin: newPin }
+  DoorLocked { activePin }, Unlock { enteredPin } ->
+    if activePin == enteredPin then
       DoorClosed
     else
-      DoorLocked { pin }
+      DoorLocked { activePin }
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L43-L53">test/Examples/DoorWithPin.purs L43-L53</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L44-L54">test/Examples/DoorWithPin.purs L44-L54</a></sup></p>
 <!-- PD_END -->
 
 ### State machine implementation II: The Transit Approach
@@ -571,7 +571,7 @@ pick:
 type State = Variant
   ( "DoorOpen" :: {}
   , "DoorClosed" :: {}
-  , "DoorLocked" :: { pin :: String }
+  , "DoorLocked" :: { activePin :: String }
   )
 
 type Msg = Variant
@@ -582,7 +582,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L59-L70">test/Examples/DoorWithPin.purs L59-L70</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L60-L71">test/Examples/DoorWithPin.purs L60-L71</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -593,7 +593,7 @@ pick:
 
 ```purescript
 type DoorWithPinTransit =
-  Transit $ Empty
+  Empty
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
     :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
@@ -604,7 +604,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L72-L81">test/Examples/DoorWithPin.purs L72-L81</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L73-L82">test/Examples/DoorWithPin.purs L73-L82</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -620,24 +620,24 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
-  ( match @"DoorOpen" @"Close" \_ _ ->
+  ( match' @"DoorOpen" @"Close" \{} ->
       return @"DoorClosed"
   )
-  ( match @"DoorClosed" @"Open" \_ _ ->
+  ( match' @"DoorClosed" @"Open" \_ ->
       return @"DoorOpen"
   )
-  ( match @"DoorClosed" @"Lock" \_ msg ->
-      return @"DoorLocked" { pin: msg.newPin }
+  ( match' @"DoorClosed" @"Lock" \{ msg } ->
+      return @"DoorLocked" { activePin: msg.newPin }
   )
-  ( match @"DoorLocked" @"Unlock" \state msg ->
-      if state.pin == msg.enteredPin then
+  ( match' @"DoorLocked" @"Unlock" \{ state, msg } ->
+      if state.activePin == msg.enteredPin then
         returnVia @"PinCorrect" @"DoorClosed"
       else
-        returnVia @"PinIncorrect" @"DoorLocked" { pin: state.pin }
+        returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L83-L99">test/Examples/DoorWithPin.purs L83-L99</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L84-L100">test/Examples/DoorWithPin.purs L84-L100</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
@@ -665,7 +665,7 @@ unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L15-L16">test/Examples/Signatures.purs L15-L16</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L16-L17">test/Examples/Signatures.purs L16-L17</a></sup></p>
 <!-- PD_END -->
 
 The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
@@ -683,21 +683,13 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdate @DoorWithPinTransit
-  ( match @"DoorOpen" @"Close"
-      (unimplemented :: Handler1)
-  )
-  ( match @"DoorClosed" @"Open"
-      (unimplemented :: Handler2)
-  )
-  ( match @"DoorClosed" @"Lock"
-      (unimplemented :: Handler3)
-  )
-  ( match @"DoorLocked" @"Unlock"
-      (unimplemented :: Handler4)
-  )
+  (match @"DoorOpen" @"Close" (unimplemented :: Handler1))
+  (match @"DoorClosed" @"Open" (unimplemented :: Handler2))
+  (match @"DoorClosed" @"Lock" (unimplemented :: Handler3))
+  (match @"DoorLocked" @"Unlock" (unimplemented :: Handler4))
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L18-L31">test/Examples/Signatures.purs L18-L31</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L19-L24">test/Examples/Signatures.purs L19-L24</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -710,22 +702,22 @@ pick:
 -->
 
 ```purescript
-type Handler1 = {} -> {} -> Variant ("DoorClosed" :: ReturnState {})
+type Handler1 = {} -> {} -> Variant ("DoorClosed" :: {})
 
-type Handler2 = {} -> {} -> Variant ("DoorOpen" :: ReturnState {})
+type Handler2 = {} -> {} -> Variant ("DoorOpen" :: {})
 
-type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: ReturnState { pin :: String })
+type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: { activePin :: String })
 
 type Handler4 =
-  { pin :: String }
+  { activePin :: String }
   -> { enteredPin :: String }
   -> Variant
-       ( "DoorClosed" :: ReturnStateVia "PinCorrect" {}
-       , "DoorLocked" :: ReturnStateVia "PinIncorrect" { pin :: String }
+       ( "DoorClosed" :: Via "PinCorrect" {}
+       , "DoorLocked" :: Via "PinIncorrect" { activePin :: String }
        )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L33-L45">test/Examples/Signatures.purs L33-L45</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L26-L38">test/Examples/Signatures.purs L26-L38</a></sup></p>
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg
@@ -797,7 +789,7 @@ pick:
 
 ```purescript
 type BridgesKoenigsbergTransit =
-  Transit $ Empty
+  Empty
     :* ("LandA" |< "Cross_a" >| "LandB")
     :* ("LandA" |< "Cross_b" >| "LandB")
     :* ("LandA" |< "Cross_c" >| "LandC")
@@ -1052,7 +1044,7 @@ pick:
 
 ```purescript
 type HouseOfSantaClausTransit =
-  Transit $ Empty
+  Empty
     :* ("N_1" |< "E_a" >| "N_2")
     :* ("N_2" |< "E_b" >| "N_3")
     :* ("N_3" |< "E_c" >| "N_5")

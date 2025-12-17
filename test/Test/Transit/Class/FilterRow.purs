@@ -7,7 +7,7 @@ module Test.Transit.Class.FilterRow
 import Prelude
 
 import Transit.Class.FilterRow (class FilterRow)
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnState, ReturnStateVia)
+import Transit.Core (MkReturnTL, MkReturnViaTL, Via)
 import Type.Data.List (Cons', Nil')
 
 check :: forall @syms @rin @rout @rout2. (FilterRow syms rin rout rout2) => Unit
@@ -24,5 +24,5 @@ test2 :: Unit
 test2 = check
   @(Cons' (MkReturnTL "Foo") (Cons' (MkReturnViaTL "Transition" "Bar") Nil'))
   @("Foo" :: Int, "Bar" :: String, "Baz" :: Boolean)
-  @("Foo" :: ReturnState Int, "Bar" :: ReturnStateVia "Transition" String)
+  @("Foo" :: Int, "Bar" :: Via "Transition" String)
   @("Foo" :: Int, "Bar" :: String)
