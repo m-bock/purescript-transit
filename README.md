@@ -45,7 +45,7 @@
 - **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
 - **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
 
-> If you're familiar with [Servant](https://haskell-servant.readthedocs.io/) from Haskell, **Transit** follows a similar philosophy: just as Servant uses a REST API type-level specification to ensure type-safe routing functions and generate OpenAPI documentation, **Transit** uses a state machine graph type-level specification to ensure type-safe update functions and generate state diagrams.
+> If you're familiar with Servant[^servant] from Haskell, **Transit** follows a similar philosophy: just as Servant uses a REST API type-level specification to ensure type-safe routing functions and generate OpenAPI documentation, **Transit** uses a state machine graph type-level specification to ensure type-safe update functions and generate state diagrams.
 
 ### About This Documentation
 
@@ -53,7 +53,7 @@ All code examples in this documentation are extracted from actual, type-checked 
 
 ### Installation
 
-Transit is published to Pursuit. You can install it with `spago`:
+Transit is published to Pursuit[^pursuit]. You can install it with `spago`:
 
 ```bash
 spago install transit
@@ -191,7 +191,7 @@ This type-level specification fully defines the state machine's structure. The c
 
 #### State and Message Types
 
-**Transit** uses `Variant` types (from `purescript-variant`) for both `State` and `Msg` instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like `"DoorOpen"` or `"Close"`).
+**Transit** uses `Variant` types (from `purescript-variant`)[^variant] for both `State` and `Msg` instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like `"DoorOpen"` or `"Close"`).
 
 This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
 
@@ -239,7 +239,7 @@ update = mkUpdate @SimpleDoorTransit
 
 Here's how this works:
 
-- `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application, passing the specification to the function.
+- `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application[^type-app], passing the specification to the function.
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
 
@@ -431,7 +431,7 @@ The process works in two steps:
 
 The `writeToFile` function accepts an options record that lets you customize the diagram. E.g. the `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own.
 
-To convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
+To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
 ```bash
 dot -Tsvg graphs/simple-door.dot -o graphs/simple-door.svg
@@ -734,7 +734,7 @@ type Handler4 =
 
 So far, we've seen how **Transit** helps you build type-safe state machines and generate state diagrams and transition tables. But the power of **Transit** extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
-This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler was asked whether it was possible to walk through the city of Königsberg crossing each of its seven bridges exactly once. Euler's solution to this problem laid the foundation for graph theory.
+This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler[^euler] was asked whether it was possible to walk through the city of Königsberg crossing each of its seven bridges exactly once. Euler's solution to this problem laid the foundation for graph theory.
 
 The problem can be modeled as a graph where:
 
@@ -872,7 +872,7 @@ The real power of **Transit** becomes apparent when we convert the reflected dat
 
 Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
 
-Euler's theorem states that:
+Euler's theorem[^euler-theorem] states that:
 
 - An undirected graph has an Eulerian trail if and only if it is connected and has exactly zero or two vertices of odd degree
 
@@ -1026,7 +1026,7 @@ In the next example, we'll see a graph that **does** have an Eulerian trail, dem
 
 > Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
-This example uses "Das Haus vom Nikolaus" (The house of Santa Claus), a well-known German drawing puzzle. The challenge is to draw a house shape in one continuous stroke without lifting the pen and without retracing any line. In German-speaking countries, this puzzle is commonly associated with Saint Nicholas (Nikolaus), hence the name. The puzzle is equivalent to finding an Eulerian trail in the graph representing the house's edges.
+This example uses "Das Haus vom Nikolaus" (The house of Santa Claus)[^haus-nikolaus], a well-known German drawing puzzle. The challenge is to draw a house shape in one continuous stroke without lifting the pen and without retracing any line. In German-speaking countries, this puzzle is commonly associated with Saint Nicholas (Nikolaus), hence the name. The puzzle is equivalent to finding an Eulerian trail in the graph representing the house's edges.
 
 <img src="assets/das-haus-vom-nikolaus-solution.webp" />
 
@@ -1134,7 +1134,7 @@ assert2 =
 
 So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
 
-For these cases, **Transit** provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad` (commonly `Effect`, `Aff`, or `ReaderT`).
+For these cases, **Transit** provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad`[^monads] (commonly `Effect`, `Aff`, or `ReaderT`).
 
 The key differences from pure update functions are:
 
@@ -1229,3 +1229,13 @@ assert2 =
 
 <p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L28-L29">test/Examples/ErrorHandling.purs L28-L29</a></sup></p>
 <!-- PD_END -->
+
+[^pursuit]: [Pursuit](https://pursuit.purescript.org/) is the package database for PureScript, similar to Hackage for Haskell or npm for JavaScript.
+[^variant]: The `purescript-variant` library provides row-polymorphic sum types. See the [documentation](https://pursuit.purescript.org/packages/purescript-variant) for more details.
+[^type-app]: In PureScript, the `@` symbol is used for explicit type application, allowing you to pass type-level arguments to functions. This is similar to `@` in Haskell or `::` in some other languages.
+[^graphviz]: [Graphviz](https://graphviz.org/) is a graph visualization software that uses the DOT language. The `.dot` files generated by Transit can be rendered into various formats (SVG, PNG, PDF, etc.) using Graphviz's command-line tools.
+[^euler]: Leonhard Euler (1707–1783) was a Swiss mathematician who made fundamental contributions to many areas of mathematics, including graph theory, number theory, and analysis.
+[^euler-theorem]: Euler's theorem on Eulerian paths states that a connected graph has an Eulerian circuit if and only if every vertex has even degree, and has an Eulerian trail if and only if exactly zero or two vertices have odd degree.
+[^haus-nikolaus]: "Das Haus vom Nikolaus" is a traditional German puzzle that dates back to at least the 19th century. The name comes from the fact that the phrase "Das ist das Haus vom Nikolaus" (This is the house of Santa Claus) has exactly 8 syllables, matching the 8 edges of the house graph.
+[^monads]: In PureScript, `Effect` represents synchronous side effects, `Aff` represents asynchronous effects, and `ReaderT` is a monad transformer that provides a read-only environment. These are commonly used for different kinds of side effects in PureScript applications.
+[^servant]: [Servant](https://haskell-servant.readthedocs.io/) is a Haskell library for building type-safe web APIs. It uses type-level programming to ensure that API routes, request/response types, and documentation stay in sync, similar to how Transit ensures state machine specifications and implementations stay in sync.
