@@ -25,6 +25,7 @@ gen-book:
     pandoc README.md -t chunkedhtml --split-level=3 --toc --toc-depth=3 -o site --highlight-style=zenburn  --template=assets/gh-template.html
     cp -r assets site/assets
     cp -r graphs site/graphs
+    cp -r bench site/bench
 
 build:
     npx spago build

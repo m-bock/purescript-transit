@@ -26,7 +26,7 @@ import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
 --------------------------------------------------------------------------------
---- Types
+--- Classic Approach
 --------------------------------------------------------------------------------
 
 data StateD
@@ -39,10 +39,6 @@ data MsgD
   | Open
   | Lock { newPin :: String }
   | Unlock { enteredPin :: String }
-
---------------------------------------------------------------------------------
---- Classic Approach
---------------------------------------------------------------------------------
 
 updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of

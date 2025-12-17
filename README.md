@@ -20,8 +20,8 @@
     - [Generating Diagrams and Tables](#generating-diagrams-and-tables)
     - [Conclusion](#conclusion)
   - [Example 2: Door with Pin](#example-2-door-with-pin)
-    - [State updates: The Classic Approach](#state-updates-the-classic-approach)
-    - [State updates: The Transit Approach](#state-updates-the-transit-approach)
+    - [State machine implementation I: The Classic Approach](#state-machine-implementation-i-the-classic-approach)
+    - [State machine implementation II: The Transit Approach](#state-machine-implementation-ii-the-transit-approach)
     - [Type signatures](#type-signatures)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
@@ -512,34 +512,32 @@ wrapNl: true
 <table><caption>Door with Pin</caption><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock ? PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table>
 <!-- PD_END -->
 
+### State machine implementation I: The Classic Approach
+
 The PureScript types now include data in both states and messages:
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorWithPin.purs
 pick:
-  - State
-  - Msg
+  - StateD
+  - MsgD
 -->
 
 ```purescript
-type State = Variant
-  ( "DoorOpen" :: {}
-  , "DoorClosed" :: {}
-  , "DoorLocked" :: { pin :: String }
-  )
+data StateD
+  = DoorOpen
+  | DoorClosed
+  | DoorLocked { pin :: String }
 
-type Msg = Variant
-  ( "Close" :: {}
-  , "Open" :: {}
-  , "Lock" :: { newPin :: String }
-  , "Unlock" :: { enteredPin :: String }
-  )
+data MsgD
+  = Close
+  | Open
+  | Lock { newPin :: String }
+  | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L63-L74">test/Examples/DoorWithPin.purs L63-L74</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L32-L41">test/Examples/DoorWithPin.purs L32-L41</a></sup></p>
 <!-- PD_END -->
-
-### State updates: The Classic Approach
 
 The classic update function now needs to handle state and message data:
 
@@ -563,16 +561,41 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L47-L57">test/Examples/DoorWithPin.purs L47-L57</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L43-L53">test/Examples/DoorWithPin.purs L43-L53</a></sup></p>
 <!-- PD_END -->
 
 <p align="right">
   <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
 </p>
 
-### State updates: The Transit Approach
+### State machine implementation II: The Transit Approach
 
 In the DSL specification, we express conditional transitions by listing multiple possible target states:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorWithPin.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  , "DoorLocked" :: { pin :: String }
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  , "Lock" :: { newPin :: String }
+  , "Unlock" :: { enteredPin :: String }
+  )
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L59-L70">test/Examples/DoorWithPin.purs L59-L70</a></sup></p>
+<!-- PD_END -->
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorWithPin.purs
@@ -593,7 +616,7 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L76-L85">test/Examples/DoorWithPin.purs L76-L85</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L72-L81">test/Examples/DoorWithPin.purs L72-L81</a></sup></p>
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -626,7 +649,7 @@ update = mkUpdate @DoorWithPinTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L87-L103">test/Examples/DoorWithPin.purs L87-L103</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L83-L99">test/Examples/DoorWithPin.purs L83-L99</a></sup></p>
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
