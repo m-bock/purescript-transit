@@ -5,6 +5,7 @@ import Prelude
 import BenchLib (bench_, group, reportConsole, suite_)
 import BenchLib as BenchLib
 import BenchLib.Reporters.Markdown (reportMarkdown)
+import BenchLib.Reporters.VegaLite (reportVegaLite, reportVegaLite_)
 import Data.Array (range, (!!))
 import Data.Array as Array
 import Data.Int as Int
@@ -53,6 +54,7 @@ main = do
             , maxTime = maxTime
             }
         , reportConsole
+        , reportVegaLite_
         ]
     } $
     suite_

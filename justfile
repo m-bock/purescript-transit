@@ -54,3 +54,6 @@ gen:
 
 test:
     npx spago test
+
+nix:
+    nix --extra-experimental-features "nix-command flakes" develop
