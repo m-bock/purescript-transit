@@ -82,7 +82,7 @@ The state diagram below shows all possible states and the valid transitions betw
 
 In this diagram, you can see:
 
-- **Two states**: `DoorOpen` and `DoorClosed` (shown as rounded rectangles)
+- **Two states**: `DoorOpen` and `DoorClosed` (shown as rectangles)
 - **Two transitions**: The `Close` transition moves from `DoorOpen` to `DoorClosed`, and the `Open` transition moves from `DoorClosed` to `DoorOpen`
 - **Arrows**: The direction of each arrow shows which state changes are valid
 
@@ -97,11 +97,13 @@ wrapNl: true
 <table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table>
 <!-- PD_END -->
 
-This table provides the same information in a structured format. Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions—like trying to open an already open door—simply don't appear in the table.
+Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions—like trying to open an already open door—simply don't appear in the table.
 
 Now let's see how we represent this in PureScript code.
 
 ### State Machine Implementation I: The Classic Approach
+
+Before diving into **Transit**, let's first look at how state machines are typically implemented in PureScript using pattern matching. This classic approach is familiar to most PureScript developers and serves as a baseline for understanding what **Transit** improves upon. By seeing the traditional implementation first, you'll better appreciate how **Transit**'s type-level specification eliminates common pitfalls and provides compile-time guarantees.
 
 #### States and Message types
 
@@ -237,7 +239,7 @@ Here's how this works:
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
 
-Note that the Transit approach uses `Variant` types for `State` and `Msg`, while the classic approach uses ADTs (`StateD` and `MsgD`). This means they are not drop-in replacements—you'll need to use Variants when adopting the Transit approach. The benefit is that Variants work seamlessly with Transit's type-level machinery, and you can use helper functions like `inj` to construct Variant values.
+Note that the Transit approach uses `Variant` types for `State` and `Msg`, while the classic approach uses ADTs (`StateD` and `MsgD`). This means they are not drop-in replacements—you'll need to use Variants when adopting the Transit approach. The benefit is that Variants work seamlessly with Transit's type-level machinery, and you can use helper functions like `v` to construct Variant values.
 
 #### How This Solves the Classic Approach's Problems
 
@@ -285,17 +287,12 @@ pick:
 
 ```purescript
 assert1 =
-  foldl update
-    (inj @"DoorOpen")
-    [ inj @"Close"
-    , inj @"Open"
-    , inj @"Close"
-    ]
+  foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
     `shouldEqual`
-      (inj @"DoorClosed")
+      (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L71-L79">test/Examples/SimpleDoor.purs L71-L79</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L71-L74">test/Examples/SimpleDoor.purs L71-L74</a></sup></p>
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -311,20 +308,12 @@ pick:
 
 ```purescript
 assert2 =
-  scanl update
-    (inj @"DoorOpen")
-    [ inj @"Close"
-    , inj @"Open"
-    , inj @"Close"
-    ]
+  scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
     `shouldEqual`
-      [ inj @"DoorClosed"
-      , inj @"DoorOpen"
-      , inj @"DoorClosed"
-      ]
+      [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L82-L93">test/Examples/SimpleDoor.purs L82-L93</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L77-L80">test/Examples/SimpleDoor.purs L77-L80</a></sup></p>
 <!-- PD_END -->
 
 This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -375,31 +364,17 @@ pick:
 ```purescript
 assert3 =
   assertWalk update
-    (inj @"DoorOpen")
-    [ inj @"Close" ~> inj @"DoorClosed"
-    , inj @"Open" ~> inj @"DoorOpen"
-    , inj @"Close" ~> inj @"DoorClosed"
+    (v @"DoorOpen")
+    [ v @"Close" ~> v @"DoorClosed"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Close" ~> v @"DoorClosed"
+    , v @"Close" ~> v @"DoorClosed"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Open" ~> v @"DoorOpen"
     ]
 ```
 
-<!-- PD_END -->
-
-#### Verifying Interchangeability
-
-Since both approaches have identical type signatures, we should verify they produce the same results. The following test runs the same sequence of messages through both `updateClassic` and `update`, checking that all intermediate states match:
-
-<!-- PD_START:purs
-filePath: test/Examples/SimpleDoor.purs
-pick:
-  - tag: value
-    name: assert4
--->
-
-```purescript
-assert4 = pure unit
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L105-L105">test/Examples/SimpleDoor.purs L105-L105</a></sup></p>
 <!-- PD_END -->
 
 ### Generating Diagrams and Tables
@@ -446,7 +421,7 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L120-L131">test/Examples/SimpleDoor.purs L120-L131</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L107-L118">test/Examples/SimpleDoor.purs L107-L118</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -493,7 +468,7 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L133-L138">test/Examples/SimpleDoor.purs L133-L138</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L120-L125">test/Examples/SimpleDoor.purs L120-L125</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State". The table can be embedded directly in documentation (as shown in the examples above) or viewed in a browser.
@@ -841,15 +816,15 @@ pick:
 assert1 :: Aff Unit
 assert1 =
   assertWalk update
-    (inj @"LandA")
-    [ inj @"Cross_a" ~> inj @"LandB"
-    , inj @"Cross_f" ~> inj @"LandD"
-    , inj @"Cross_g" ~> inj @"LandC"
-    , inj @"Cross_c" ~> inj @"LandA"
-    , inj @"Cross_e" ~> inj @"LandD"
-    , inj @"Cross_g" ~> inj @"LandC"
-    , inj @"Cross_d" ~> inj @"LandA"
-    , inj @"Cross_b" ~> inj @"LandB"
+    (v @"LandA")
+    [ v @"Cross_a" ~> v @"LandB"
+    , v @"Cross_f" ~> v @"LandD"
+    , v @"Cross_g" ~> v @"LandC"
+    , v @"Cross_c" ~> v @"LandA"
+    , v @"Cross_e" ~> v @"LandD"
+    , v @"Cross_g" ~> v @"LandC"
+    , v @"Cross_d" ~> v @"LandA"
+    , v @"Cross_b" ~> v @"LandB"
     ]
 ```
 
@@ -1007,15 +982,15 @@ pick:
 assert1 :: Aff Unit
 assert1 =
   assertWalk update
-    (inj @"LandA")
-    [ inj @"Cross_a" ~> inj @"LandB"
-    , inj @"Cross_f" ~> inj @"LandD"
-    , inj @"Cross_g" ~> inj @"LandC"
-    , inj @"Cross_c" ~> inj @"LandA"
-    , inj @"Cross_e" ~> inj @"LandD"
-    , inj @"Cross_g" ~> inj @"LandC"
-    , inj @"Cross_d" ~> inj @"LandA"
-    , inj @"Cross_b" ~> inj @"LandB"
+    (v @"LandA")
+    [ v @"Cross_a" ~> v @"LandB"
+    , v @"Cross_f" ~> v @"LandD"
+    , v @"Cross_g" ~> v @"LandC"
+    , v @"Cross_c" ~> v @"LandA"
+    , v @"Cross_e" ~> v @"LandD"
+    , v @"Cross_g" ~> v @"LandC"
+    , v @"Cross_d" ~> v @"LandA"
+    , v @"Cross_b" ~> v @"LandB"
     ]
 ```
 
@@ -1143,36 +1118,36 @@ spec = do
 
       let
         walk =
-          [ inj @"E_f"
-          , inj @"E_h"
-          , inj @"E_g"
-          , inj @"E_a"
-          , inj @"E_e"
-          , inj @"E_d"
-          , inj @"E_c"
-          , inj @"E_b"
+          [ v @"E_f"
+          , v @"E_h"
+          , v @"E_g"
+          , v @"E_a"
+          , v @"E_e"
+          , v @"E_d"
+          , v @"E_c"
+          , v @"E_b"
           ]
 
       Array.length (Array.nub walk) `shouldEqual` 8
 
-      foldl update (inj @"N_1") walk `shouldEqual` inj @"N_2"
+      foldl update (v @"N_1") walk `shouldEqual` v @"N_2"
 
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
     describe "should follow the walk" do
       let
-        initState = inj @"N_1"
+        initState = v @"N_1"
 
         walk =
-          [ inj @"E_f" ~> inj @"N_3"
-          , inj @"E_h" ~> inj @"N_4"
-          , inj @"E_g" ~> inj @"N_2"
-          , inj @"E_a" ~> inj @"N_1"
-          , inj @"E_e" ~> inj @"N_4"
-          , inj @"E_d" ~> inj @"N_5"
-          , inj @"E_c" ~> inj @"N_3"
-          , inj @"E_b" ~> inj @"N_2"
+          [ v @"E_f" ~> v @"N_3"
+          , v @"E_h" ~> v @"N_4"
+          , v @"E_g" ~> v @"N_2"
+          , v @"E_a" ~> v @"N_1"
+          , v @"E_e" ~> v @"N_4"
+          , v @"E_d" ~> v @"N_5"
+          , v @"E_c" ~> v @"N_3"
+          , v @"E_b" ~> v @"N_2"
           ]
 
       it "should follow the walk" do
@@ -1226,8 +1201,8 @@ xychart
   title "Update Functions"
   x-axis "Input Size" [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
   y-axis "Time (in ms)" 0 --> 0.05
-  line [0.0038, 0.0023, 0.002, 0.0014, 0.0011, 0.0012, 0.0011, 0.0015, 0.001, 0.0011, 0.0012, 0.0012, 0.0012, 0.0014, 0.0014, 0.0012, 0.0014, 0.0013, 0.0014, 0.0014, 0.0016, 0.0015, 0.0014, 0.0015, 0.0015, 0.0015, 0.0016, 0.0017, 0.0016, 0.0016, 0.0018, 0.0019, 0.0018, 0.0021, 0.002, 0.0018, 0.0018, 0.0025, 0.0038, 0.0055, 0.003, 0.0023, 0.0033, 0.0027, 0.0023, 0.0023, 0.0025, 0.0029, 0.0026]
-  line [0.0047, 0.0042, 0.0023, 0.0028, 0.0029, 0.0029, 0.003, 0.0042, 0.0045, 0.0038, 0.004, 0.0041, 0.0042, 0.0045, 0.0045, 0.0047, 0.0046, 0.0047, 0.0049, 0.0049, 0.0054, 0.006, 0.0056, 0.0054, 0.0058, 0.0059, 0.0059, 0.006, 0.0062, 0.0065, 0.0065, 0.0067, 0.0069, 0.0072, 0.0078, 0.0079, 0.0084, 0.0082, 0.0085, 0.0085, 0.0088, 0.0089, 0.0094, 0.0095, 0.0102, 0.0092, 0.0094, 0.0093, 0.0093]
+  line [0.002233, 0.001927, 0.001859, 0.001501, 0.001554, 0.001663, 0.001594, 0.002023, 0.001505, 0.002063, 0.001468, 0.001554, 0.001709, 0.00133, 0.001429, 0.001668, 0.00133, 0.001615, 0.001399, 0.001421, 0.001471, 0.001468, 0.001638, 0.001395, 0.001776, 0.001388, 0.001629, 0.001875, 0.001903, 0.001947, 0.001604, 0.001938, 0.001514, 0.001484, 0.001616, 0.001666, 0.001289, 0.001683, 0.001475, 0.002009, 0.001609, 0.001496, 0.00165, 0.001699, 0.001577, 0.00152, 0.002148, 0.001529, 0.001691]
+  line [0.002553, 0.002186, 0.00251, 0.002918, 0.003028, 0.003, 0.0034, 0.003593, 0.003387, 0.003864, 0.004602, 0.004065, 0.004674, 0.004233, 0.004922, 0.00588, 0.004733, 0.005842, 0.006638, 0.005599, 0.006356, 0.005697, 0.007222, 0.006472, 0.007189, 0.008653, 0.006757, 0.008093, 0.009273, 0.007091, 0.008885, 0.008846, 0.00847, 0.008418, 0.009648, 0.008682, 0.008655, 0.009604, 0.009276, 0.009539, 0.009609, 0.009765, 0.010929, 0.01251, 0.010473, 0.011633, 0.012771, 0.010841, 0.011458]
 ```
 ![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) updateClassic&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) update<!-- PD_END -->
 
@@ -1245,8 +1220,8 @@ xychart
   title "Update Functions"
   x-axis "Input Size" [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
   y-axis "Time (in ms)" 0 --> 0.05
-  line [0.0028, 0.0011, 0.0007, 0.0012, 0.0007, 0.001, 0.0014, 0.0004, 0.0005, 0.0008, 0.0009, 0.0005, 0.0006, 0.0006, 0.0008, 0.0003, 0.0005, 0.0008, 0.0006, 0.0004, 0.0006, 0.0006, 0.001, 0.0004, 0.0004, 0.0007, 0.001, 0.0005, 0.0004, 0.0006, 0.0009, 0.0004, 0.0005, 0.0007, 0.0007, 0.0006, 0.0004, 0.0006, 0.0009, 0.0003, 0.0005, 0.0007, 0.0008, 0.0004, 0.0006, 0.0006, 0.0007, 0.0004, 0.0004]
-  line [0.0007, 0.0007, 0.0004, 0.0005, 0.0006, 0.0006, 0.0005, 0.0006, 0.0006, 0.0009, 0.0004, 0.0004, 0.0007, 0.0006, 0.0004, 0.0006, 0.0005, 0.0007, 0.0004, 0.0004, 0.0008, 0.0006, 0.0005, 0.0005, 0.0005, 0.0006, 0.0005, 0.0004, 0.0006, 0.0008, 0.0004, 0.0004, 0.0008, 0.0006, 0.0004, 0.0005, 0.0006, 0.0007, 0.0005, 0.0004, 0.0008, 0.0006, 0.0004, 0.0006, 0.0005, 0.0009, 0.0005, 0.0004, 0.0006]
+  line [0.001719, 0.001422, 0.001705, 0.001346, 0.001445, 0.001447, 0.001612, 0.00143, 0.001843, 0.001103, 0.001584, 0.001265, 0.001367, 0.001431, 0.001183, 0.001243, 0.001476, 0.001384, 0.001115, 0.001488, 0.00142, 0.001678, 0.001198, 0.001783, 0.001314, 0.00135, 0.001431, 0.001598, 0.001795, 0.001304, 0.001536, 0.001116, 0.001353, 0.001265, 0.001397, 0.001436, 0.001148, 0.001608, 0.001245, 0.0012, 0.001578, 0.001148, 0.001202, 0.001489, 0.001225, 0.001499, 0.001661, 0.001343, 0.001445]
+  line [0.001736, 0.001246, 0.001333, 0.001603, 0.001529, 0.00202, 0.001412, 0.001634, 0.001645, 0.001714, 0.001754, 0.001582, 0.001878, 0.00129, 0.001167, 0.001719, 0.00118, 0.001166, 0.001698, 0.001143, 0.001242, 0.001401, 0.001225, 0.001181, 0.001739, 0.001227, 0.001171, 0.001616, 0.001225, 0.001162, 0.001524, 0.001196, 0.001443, 0.001144, 0.001258, 0.001229, 0.001433, 0.001222, 0.001198, 0.001523, 0.00119, 0.001245, 0.001482, 0.001146, 0.001342, 0.001319, 0.001423, 0.001286, 0.001297]
 ```
 ![ff3456](https://placehold.co/8x8/ff3456/ff3456.png) updateClassic&nbsp;&nbsp;![00ff00](https://placehold.co/8x8/00ff00/00ff00.png) update<!-- PD_END -->
 

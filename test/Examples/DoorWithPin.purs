@@ -21,7 +21,7 @@ import Transit (type (:*), type (:?), type (:@), type (>|), Empty, Transit, matc
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
 
@@ -109,17 +109,17 @@ update = mkUpdate @DoorWithPinTransit
 assert4 :: Aff Unit
 assert4 =
   assertWalk update
-    (inj @"DoorOpen")
-    [ inj @"Close" ~> inj @"DoorClosed"
-    , inj @"Open" ~> inj @"DoorOpen"
-    , inj @"Close" ~> inj @"DoorClosed"
-    , inj @"Lock" { newPin: "1234" }
-        ~> inj @"DoorLocked" { pin: "1234" }
-    , inj @"Unlock" { enteredPin: "abcd" }
-        ~> inj @"DoorLocked" { pin: "1234" }
-    , inj @"Unlock" { enteredPin: "1234" }
-        ~> inj @"DoorClosed"
-    , inj @"Open" ~> inj @"DoorOpen"
+    (v @"DoorOpen")
+    [ v @"Close" ~> v @"DoorClosed"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Close" ~> v @"DoorClosed"
+    , v @"Lock" { newPin: "1234" }
+        ~> v @"DoorLocked" { pin: "1234" }
+    , v @"Unlock" { enteredPin: "abcd" }
+        ~> v @"DoorLocked" { pin: "1234" }
+    , v @"Unlock" { enteredPin: "1234" }
+        ~> v @"DoorClosed"
+    , v @"Open" ~> v @"DoorOpen"
     ]
 
 spec :: Spec Unit

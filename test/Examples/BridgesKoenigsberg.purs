@@ -17,7 +17,7 @@ import Transit.DSL (type (|<))
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (StateGraph, mkStateGraph)
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -82,15 +82,15 @@ update = mkUpdate @BridgesKoenigsbergTransit
 assert1 :: Aff Unit
 assert1 =
   assertWalk update
-    (inj @"LandA")
-    [ inj @"Cross_a" ~> inj @"LandB"
-    , inj @"Cross_f" ~> inj @"LandD"
-    , inj @"Cross_g" ~> inj @"LandC"
-    , inj @"Cross_c" ~> inj @"LandA"
-    , inj @"Cross_e" ~> inj @"LandD"
-    , inj @"Cross_g" ~> inj @"LandC"
-    , inj @"Cross_d" ~> inj @"LandA"
-    , inj @"Cross_b" ~> inj @"LandB"
+    (v @"LandA")
+    [ v @"Cross_a" ~> v @"LandB"
+    , v @"Cross_f" ~> v @"LandD"
+    , v @"Cross_g" ~> v @"LandC"
+    , v @"Cross_c" ~> v @"LandA"
+    , v @"Cross_e" ~> v @"LandD"
+    , v @"Cross_g" ~> v @"LandC"
+    , v @"Cross_d" ~> v @"LandA"
+    , v @"Cross_b" ~> v @"LandB"
     ]
 
 bridgesKoenigsbergTransit :: TransitCore

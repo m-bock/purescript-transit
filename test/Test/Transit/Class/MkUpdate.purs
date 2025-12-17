@@ -15,7 +15,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdate)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, ReturnState(..), TransitCoreTL)
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Nil')
 import Type.Function (type ($))
 import Type.Proxy (Proxy(..))
@@ -116,27 +116,27 @@ spec = do
 
       it "perform state updates on legal transitions" do
 
-        update (inj @"State1" 1) (inj @"Msg1" 2)
-          `shouldEqual` Identity (Right (inj @"State2" "42"))
+        update (v @"State1" 1) (v @"Msg1" 2)
+          `shouldEqual` Identity (Right (v @"State2" "42"))
 
-        update (inj @"State2" "foo") (inj @"Msg2" "bar")
-          `shouldEqual` Identity (Right (inj @"State1" 99))
+        update (v @"State2" "foo") (v @"Msg2" "bar")
+          `shouldEqual` Identity (Right (v @"State1" 99))
 
       it "should return a Left on illegal transitions" do
-        update (inj @"State3" {}) (inj @"Msg3" {})
-          `shouldEqual` Identity (Left (inj @"State3" {} /\ inj @"Msg3" {}))
+        update (v @"State3" {}) (v @"Msg3" {})
+          `shouldEqual` Identity (Left (v @"State3" {} /\ v @"Msg3" {}))
 
-        update (inj @"State1" 1) (inj @"Msg3" {})
-          `shouldEqual` Identity (Left (inj @"State1" 1 /\ inj @"Msg3" {}))
+        update (v @"State1" 1) (v @"Msg3" {})
+          `shouldEqual` Identity (Left (v @"State1" 1 /\ v @"Msg3" {}))
 
-        update (inj @"State2" "foo") (inj @"Msg1" 2)
-          `shouldEqual` Identity (Left (inj @"State2" "foo" /\ inj @"Msg1" 2))
+        update (v @"State2" "foo") (v @"Msg1" 2)
+          `shouldEqual` Identity (Left (v @"State2" "foo" /\ v @"Msg1" 2))
 
-        update (inj @"State3" {}) (inj @"Msg1" 2)
-          `shouldEqual` Identity (Left (inj @"State3" {} /\ inj @"Msg1" 2))
+        update (v @"State3" {}) (v @"Msg1" 2)
+          `shouldEqual` Identity (Left (v @"State3" {} /\ v @"Msg1" 2))
 
-        update (inj @"State3" {}) (inj @"Msg2" "bar")
-          `shouldEqual` Identity (Left (inj @"State3" {} /\ inj @"Msg2" "bar"))
+        update (v @"State3" {}) (v @"Msg2" "bar")
+          `shouldEqual` Identity (Left (v @"State3" {} /\ v @"Msg2" "bar"))
 
 type Id :: forall k. k -> k
 type Id a = a

@@ -12,7 +12,7 @@ import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym)
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 
 check :: forall @sym @a @b. MatchBySym sym a b => Unit
 check = unit
@@ -45,8 +45,8 @@ spec = do
   describe "Transit.Class.MatchBySym" do
     describe "matchBySym" do
       it "should match by symbol" do
-        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (inj @"Foo" 42 :: Test) `shouldEqual` 42.0
+        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (v @"Foo" 42 :: Test) `shouldEqual` 42.0
       it "should match by symbol with default" do
-        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (inj @"Bar" "" :: Test) `shouldEqual` 99.0
+        matchBySym @"Foo" (\n -> Int.toNumber n) (\_ -> 99.0) (v @"Bar" "" :: Test) `shouldEqual` 99.0
       it "should match by symbol with unit payload" do
-        matchBySym @"Baz" (\u -> u) (\_ -> unit) (inj @"Baz" unit :: Test) `shouldEqual` unit
+        matchBySym @"Baz" (\u -> u) (\_ -> unit) (v @"Baz" unit :: Test) `shouldEqual` unit

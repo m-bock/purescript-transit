@@ -17,7 +17,7 @@ import Transit (type (:*), type (:@), type (>|), Empty, Transit, match, mkUpdate
 import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -69,40 +69,28 @@ update = mkUpdate @SimpleDoorTransit
 
 assert1 :: Aff Unit
 assert1 =
-  foldl update
-    (inj @"DoorOpen")
-    [ inj @"Close"
-    , inj @"Open"
-    , inj @"Close"
-    ]
+  foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
     `shouldEqual`
-      (inj @"DoorClosed")
+      (v @"DoorClosed")
 
 assert2 :: Aff Unit
 assert2 =
-  scanl update
-    (inj @"DoorOpen")
-    [ inj @"Close"
-    , inj @"Open"
-    , inj @"Close"
-    ]
+  scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
     `shouldEqual`
-      [ inj @"DoorClosed"
-      , inj @"DoorOpen"
-      , inj @"DoorClosed"
-      ]
+      [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 
 assert3 :: Aff Unit
 assert3 =
   assertWalk update
-    (inj @"DoorOpen")
-    [ inj @"Close" ~> inj @"DoorClosed"
-    , inj @"Open" ~> inj @"DoorOpen"
-    , inj @"Close" ~> inj @"DoorClosed"
+    (v @"DoorOpen")
+    [ v @"Close" ~> v @"DoorClosed"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Close" ~> v @"DoorClosed"
+    , v @"Close" ~> v @"DoorClosed"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Open" ~> v @"DoorOpen"
+    , v @"Open" ~> v @"DoorOpen"
     ]
-
-assert4 :: Aff Unit
-assert4 = pure unit
 
 spec :: Spec Unit
 spec = do
@@ -111,7 +99,6 @@ spec = do
       assert1
       assert2
       assert3
-      assert4
 
 --------------------------------------------------------------------------------
 --- Diagram and Table generation

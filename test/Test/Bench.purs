@@ -17,7 +17,7 @@ import Effect (Effect)
 import Node.Process (lookupEnv)
 import Partial.Unsafe (unsafeCrashWith)
 import Test.BenchDef.Transit (Msg(..), MsgD(..), State(..), StateD(..), inputs, inputsD, update, updateClassic)
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Proxy (Proxy(..))
 
 type Config =

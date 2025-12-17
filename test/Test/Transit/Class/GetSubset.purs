@@ -11,7 +11,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.GetSubset (class GetSubset, getSubset)
 import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ReturnState(..), ReturnStateVia(..))
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), List', Nil')
 
 check :: forall @syms @t @a. (GetSubset syms t a) => Unit
@@ -60,13 +60,13 @@ spec = do
   describe "Transit.Class.GetSubset" do
     describe "getSubset" do
       it "should inject whitelisted case with payload" do
-        getSubset @L1 (inj @"Foo" (ReturnState 1))
-          `shouldEqual` (inj @"Foo" 1 :: D)
+        getSubset @L1 (v @"Foo" (ReturnState 1))
+          `shouldEqual` (v @"Foo" 1 :: D)
 
       it "should inject whitelisted case with payload and guard" do
-        getSubset @L1 (inj @"Qux" (ReturnStateVia @"Guard1" 1))
-          `shouldEqual` (inj @"Qux" 1 :: D)
+        getSubset @L1 (v @"Qux" (ReturnStateVia @"Guard1" 1))
+          `shouldEqual` (v @"Qux" 1 :: D)
 
       it "should inject whitelisted case with unit payload" do
-        getSubset @L1 (inj @"Baz" (ReturnState unit))
-          `shouldEqual` (inj @"Baz" unit :: D)
+        getSubset @L1 (v @"Baz" (ReturnState unit))
+          `shouldEqual` (v @"Baz" unit :: D)

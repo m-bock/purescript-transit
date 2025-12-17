@@ -18,7 +18,7 @@ import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
 import Transit.Generators.Graphviz as TransitGraphviz
 import Transit.Generators.TransitionTable as TransitTable
 import Transit.StateGraph (mkStateGraph)
-import Transit.VariantUtils (inj)
+import Transit.VariantUtils (v)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
@@ -110,36 +110,36 @@ spec = do
 
       let
         walk =
-          [ inj @"E_f"
-          , inj @"E_h"
-          , inj @"E_g"
-          , inj @"E_a"
-          , inj @"E_e"
-          , inj @"E_d"
-          , inj @"E_c"
-          , inj @"E_b"
+          [ v @"E_f"
+          , v @"E_h"
+          , v @"E_g"
+          , v @"E_a"
+          , v @"E_e"
+          , v @"E_d"
+          , v @"E_c"
+          , v @"E_b"
           ]
 
       Array.length (Array.nub walk) `shouldEqual` 8
 
-      foldl update (inj @"N_1") walk `shouldEqual` inj @"N_2"
+      foldl update (v @"N_1") walk `shouldEqual` v @"N_2"
 
       hasEulerTrail graph `shouldEqual` true
       pure unit
 
     describe "should follow the walk" do
       let
-        initState = inj @"N_1"
+        initState = v @"N_1"
 
         walk =
-          [ inj @"E_f" ~> inj @"N_3"
-          , inj @"E_h" ~> inj @"N_4"
-          , inj @"E_g" ~> inj @"N_2"
-          , inj @"E_a" ~> inj @"N_1"
-          , inj @"E_e" ~> inj @"N_4"
-          , inj @"E_d" ~> inj @"N_5"
-          , inj @"E_c" ~> inj @"N_3"
-          , inj @"E_b" ~> inj @"N_2"
+          [ v @"E_f" ~> v @"N_3"
+          , v @"E_h" ~> v @"N_4"
+          , v @"E_g" ~> v @"N_2"
+          , v @"E_a" ~> v @"N_1"
+          , v @"E_e" ~> v @"N_4"
+          , v @"E_d" ~> v @"N_5"
+          , v @"E_c" ~> v @"N_3"
+          , v @"E_b" ~> v @"N_2"
           ]
 
       it "should follow the walk" do
