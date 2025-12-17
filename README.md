@@ -252,6 +252,23 @@ This approach addresses all the drawbacks we saw earlier:
 
 ### Writing Tests for the update function
 
+#### Creating Variant Values
+
+To create values of type `Variant`, **Transit** provides the `v` function from `Transit.VariantUtils`. It's a convenience wrapper around `Variant`'s `inj` function that uses type application (no Proxy needed) and allows omitting empty record arguments:
+
+- Empty record payload (argument can be omitted)
+
+  ```purescript
+  v @"DoorOpen" :: State
+  ```
+
+- Non-empty payload (must provide the data)
+  ```purescript
+  v @"DoorLocked" { activePin: "1234" } :: State
+  ```
+
+This is more ergonomic than using `V.inj (Proxy :: _ "DoorOpen") {}` directly.
+
 #### Testing State Transitions
 
 To test our update function, we'll use two useful functions from the `Data.Array` module:
