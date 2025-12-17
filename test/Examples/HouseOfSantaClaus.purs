@@ -9,6 +9,7 @@ import Data.Reflectable (reflectType)
 import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
+import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
@@ -101,49 +102,33 @@ update = mkUpdate @HouseOfSantaClausTransit
 -- --- Tests
 -- --------------------------------------------------------------------------------
 
+assert1 :: Aff Unit
+assert1 =
+  assertWalk update
+    (v @"N_1")
+    [ v @"E_f" ~> v @"N_3"
+    , v @"E_h" ~> v @"N_4"
+    , v @"E_g" ~> v @"N_2"
+    , v @"E_a" ~> v @"N_1"
+    , v @"E_e" ~> v @"N_4"
+    , v @"E_d" ~> v @"N_5"
+    , v @"E_c" ~> v @"N_3"
+    , v @"E_b" ~> v @"N_2"
+    ]
+
+assert2 :: Aff Unit
+assert2 =
+  let
+    graph = mkStateGraph (reflectType (Proxy @HouseOfSantaClausTransit))
+  in
+    hasEulerTrail graph `shouldEqual` true
+
 spec :: Spec Unit
 spec = do
   describe "House of Santa Claus" do
-    it "should have 8 states" do
-      let transit = reflectType (Proxy @HouseOfSantaClausTransit)
-      let graph = mkStateGraph transit
-
-      let
-        walk =
-          [ v @"E_f"
-          , v @"E_h"
-          , v @"E_g"
-          , v @"E_a"
-          , v @"E_e"
-          , v @"E_d"
-          , v @"E_c"
-          , v @"E_b"
-          ]
-
-      Array.length (Array.nub walk) `shouldEqual` 8
-
-      foldl update (v @"N_1") walk `shouldEqual` v @"N_2"
-
-      hasEulerTrail graph `shouldEqual` true
-      pure unit
-
-    describe "should follow the walk" do
-      let
-        initState = v @"N_1"
-
-        walk =
-          [ v @"E_f" ~> v @"N_3"
-          , v @"E_h" ~> v @"N_4"
-          , v @"E_g" ~> v @"N_2"
-          , v @"E_a" ~> v @"N_1"
-          , v @"E_e" ~> v @"N_4"
-          , v @"E_d" ~> v @"N_5"
-          , v @"E_c" ~> v @"N_3"
-          , v @"E_b" ~> v @"N_2"
-          ]
-
-      it "should follow the walk" do
-        assertWalk update initState walk
+    it "asserts" do
+      assert1
+      assert2
 
 --------------------------------------------------------------------------------
 --- State diagram generation

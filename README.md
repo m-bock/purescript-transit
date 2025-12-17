@@ -321,10 +321,9 @@ This test does the same thing—starts with the door open, closes it, opens it, 
 Since we'll want to write many of these tests, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
 
 <!-- PD_START:purs
+filePath: test/Examples/Common.purs
 pick:
-  - tag: any
-    name: assertWalk
-    filePath: test/Examples/Common.purs
+  - assertWalk
 -->
 
 ```purescript
@@ -350,15 +349,16 @@ assertWalk updateFn initState walk = do
   actualStates `shouldEqual` expectedStates
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L36-L55">test/Examples/Common.purs L36-L55</a></sup></p>
 <!-- PD_END -->
 
 The function extracts the messages from the pairs, applies them sequentially using `scanl`, and verifies that the resulting states match the expected ones. Here's how we use it:
 
 <!-- PD_START:purs
+filePath: test/Examples/SimpleDoor.purs
 pick:
   - tag: value
     name: assert3
-    filePath: test/Examples/SimpleDoor.purs
 -->
 
 ```purescript
@@ -375,6 +375,7 @@ assert3 =
     ]
 ```
 
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L83-L93">test/Examples/SimpleDoor.purs L83-L93</a></sup></p>
 <!-- PD_END -->
 
 ### Generating Diagrams and Tables
@@ -564,10 +565,6 @@ updateClassic state msg = case state, msg of
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L43-L53">test/Examples/DoorWithPin.purs L43-L53</a></sup></p>
 <!-- PD_END -->
 
-<p align="right">
-  <sup>🗎 <a href="test/Examples/DoorWithPin.purs">Examples/DoorWithPin.purs</a></sup>
-</p>
-
 ### State machine implementation II: The Transit Approach
 
 In the DSL specification, we express conditional transitions by listing multiple possible target states:
@@ -742,8 +739,6 @@ The following picture shows roughly how the actual map looked like back then:
 
 <img src="assets/bridges.png" width="450" />
 
-<img src="assets/bridges-walk.png" width="450" />
-
 Even not immediately obvious, this can be represented as a graph:
 
 <picture>
@@ -751,6 +746,13 @@ Even not immediately obvious, this can be represented as a graph:
   <source media="(prefers-color-scheme: light)" srcset="graphs/bridges-koenigsberg-light.svg">
   <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
 </picture>
+
+<!-- PD_START:raw
+filePath: graphs/bridges-koenigsberg.html
+wrapNl: true
+-->
+<table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table>
+<!-- PD_END -->
 
 While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
 
@@ -829,6 +831,8 @@ update = mkUpdate @BridgesKoenigsbergTransit
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L55-L76">test/Examples/BridgesKoenigsberg.purs L55-L76</a></sup></p>
 <!-- PD_END -->
 
+<img src="assets/bridges-walk.png" width="450" />
+
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -853,10 +857,6 @@ assert1 =
 
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L82-L94">test/Examples/BridgesKoenigsberg.purs L82-L94</a></sup></p>
 <!-- PD_END -->
-
-<!-- PD_START:raw
-filePath: graphs/bridges-koenigsberg.html
---><table><thead><tr><th>From State</th><th></th><th>Transition</th><th></th><th>To State</th></tr></thead><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandA</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandD</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandC</td></tr></tbody></table><!-- PD_END -->
 
 The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
@@ -912,43 +912,6 @@ hasEulerTrail graph =
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected **Transit** specification into a graph and then check its properties:
-
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - spec
-  - main
--->
-
-```purescript
-spec :: Spec Unit
-spec = do
-  describe ".." do
-    it "should assert1" do
-      assert1
-      assert2
-
-main :: Effect Unit
-main = do
-  let
-    transit = reflectType (Proxy @BridgesKoenigsbergTransit)
-
-  for_
-    [ { theme: themeHarmonyLight, file: "graphs/bridges-koenigsberg-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/bridges-koenigsberg-dark.dot" }
-    ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { useUndirectedEdges = true
-        , theme = opts.theme
-        }
-
-  TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
-    { useUndirectedEdges = true }
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L106-L133">test/Examples/BridgesKoenigsberg.purs L106-L133</a></sup></p>
-<!-- PD_END -->
 
 The key steps are:
 
@@ -1111,7 +1074,7 @@ type HouseOfSantaClausTransit =
     :* ("N_4" :@ "E_h" >| "N_3")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L48-L72">test/Examples/HouseOfSantaClaus.purs L48-L72</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L49-L73">test/Examples/HouseOfSantaClaus.purs L49-L73</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -1127,85 +1090,44 @@ filePath: graphs/house-of-santa-claus.html
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
 pick:
-  - spec
-  - main
+  - assert1
 -->
 
 ```purescript
-spec :: Spec Unit
-spec = do
-  describe "House of Santa Claus" do
-    it "should have 8 states" do
-      let transit = reflectType (Proxy @HouseOfSantaClausTransit)
-      let graph = mkStateGraph transit
-
-      let
-        walk =
-          [ v @"E_f"
-          , v @"E_h"
-          , v @"E_g"
-          , v @"E_a"
-          , v @"E_e"
-          , v @"E_d"
-          , v @"E_c"
-          , v @"E_b"
-          ]
-
-      Array.length (Array.nub walk) `shouldEqual` 8
-
-      foldl update (v @"N_1") walk `shouldEqual` v @"N_2"
-
-      hasEulerTrail graph `shouldEqual` true
-      pure unit
-
-    describe "should follow the walk" do
-      let
-        initState = v @"N_1"
-
-        walk =
-          [ v @"E_f" ~> v @"N_3"
-          , v @"E_h" ~> v @"N_4"
-          , v @"E_g" ~> v @"N_2"
-          , v @"E_a" ~> v @"N_1"
-          , v @"E_e" ~> v @"N_4"
-          , v @"E_d" ~> v @"N_5"
-          , v @"E_c" ~> v @"N_3"
-          , v @"E_b" ~> v @"N_2"
-          ]
-
-      it "should follow the walk" do
-        assertWalk update initState walk
-
-main :: Effect Unit
-main = do
-  let
-    transit = reflectType (Proxy @HouseOfSantaClausTransit)
-    nodeAttrs = Just \node -> case node of
-      "N_1" -> "pos=\"0,0!\""
-      "N_2" -> "pos=\"2,0!\""
-      "N_3" -> "pos=\"2,2!\""
-      "N_4" -> "pos=\"0,2!\""
-      "N_5" -> "pos=\"1,3!\""
-      _ -> ""
-    globalAttrs = Just "layout=neato"
-
-  for_
-    [ { theme: themeHarmonyLight, file: "graphs/house-of-santa-claus-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/house-of-santa-claus-dark.dot" }
+assert1 :: Aff Unit
+assert1 =
+  assertWalk update
+    (v @"N_1")
+    [ v @"E_f" ~> v @"N_3"
+    , v @"E_h" ~> v @"N_4"
+    , v @"E_g" ~> v @"N_2"
+    , v @"E_a" ~> v @"N_1"
+    , v @"E_e" ~> v @"N_4"
+    , v @"E_d" ~> v @"N_5"
+    , v @"E_c" ~> v @"N_3"
+    , v @"E_b" ~> v @"N_2"
     ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { useUndirectedEdges = true
-        , nodeAttrsRaw = nodeAttrs
-        , globalAttrsRaw = globalAttrs
-        , theme = opts.theme
-        }
-
-  TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
-    { useUndirectedEdges = true }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L104-L178">test/Examples/HouseOfSantaClaus.purs L104-L178</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L105-L117">test/Examples/HouseOfSantaClaus.purs L105-L117</a></sup></p>
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/HouseOfSantaClaus.purs
+pick:
+  - assert2
+-->
+
+```purescript
+assert2 :: Aff Unit
+assert2 =
+  let
+    graph = mkStateGraph (reflectType (Proxy @HouseOfSantaClausTransit))
+  in
+    hasEulerTrail graph `shouldEqual` true
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L119-L124">test/Examples/HouseOfSantaClaus.purs L119-L124</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
