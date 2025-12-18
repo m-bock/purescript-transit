@@ -30,7 +30,7 @@ spec = do
           harmony1 = getColorHarmony themeHarmonyLight 0
           harmony2 = getColorHarmony themeHarmonyLight (-1)
         -- Should cycle to last harmony
-        harmony2.nodeBg `shouldEqual` harmony2.nodeBg
+        harmony1.nodeBg `shouldEqual` harmony2.nodeBg
 
     describe "themeHarmonyLight" do
       it "has white background" do

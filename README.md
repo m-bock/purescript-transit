@@ -19,10 +19,12 @@
     - [Writing Tests for the update function](#writing-tests-for-the-update-function)
     - [Generating Diagrams and Tables](#generating-diagrams-and-tables)
     - [Conclusion](#conclusion)
+- [Split (temporary)](#split-temporary)
   - [Example 2: Door with Pin](#example-2-door-with-pin)
     - [State machine implementation I: The Classic Approach](#state-machine-implementation-i-the-classic-approach)
     - [State machine implementation II: The Transit Approach](#state-machine-implementation-ii-the-transit-approach)
     - [Type signatures](#type-signatures)
+    - [Conclusion](#conclusion-1)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
     - [Graph Analysis](#graph-analysis)
   - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
@@ -157,12 +159,11 @@ This function handles the two valid transitions we saw in the diagram: closing a
 
 While this approach works and is straightforward, it has some drawbacks:
 
----
+- **Implicit state machine specification**: The state machine's structure is only defined implicitly within the update function's pattern matching and return values.
 
----
+- **Documentation drift**: If you maintain a state diagram for documentation purposes, there's nothing ensuring the code stays in sync — you have to remember to update both manually.
 
-- **No compile-time safety**: The compiler won't catch if you forget to handle a valid transition or if you add a new state but forget to update the function
-- **Documentation drift**: If you update the state diagram, there's nothing ensuring the code stays in sync — you have to remember to update both manually
+- **Limited analysis capabilities**: There's no way to analyze the state machine's structure or behavior statically — you can only understand it by running the code.
 
 ### State Machine Implementation II: The Transit Approach
 
@@ -255,10 +256,15 @@ Here's how this works:
 
 This approach addresses all the drawbacks we saw earlier:
 
-- **Compile-time safety**: The compiler verifies that your `match` lines exactly correspond to the specification. Every transition in the spec must have a corresponding `match` line, and you can't add extra matches that aren't in the spec. If you miss a transition or add an invalid one, the code won't compile.
-- **No documentation drift**: The specification is the source of truth. If you change the spec, the compiler forces you to update the implementation to match, ensuring code and specification stay in sync.
+- **Explicit state machine specification**: The state machine's structure is defined explicitly in the type-level DSL. This specification serves as a single source of truth that is accessible for various purposes.
+
+- **No documentation drift**: Documentation such as state diagrams and transition tables can be generated directly from the specification, ensuring they always stay in sync with the code.
+
+- **Static analysis capabilities**: The specification can be converted into a graph data structure, enabling sophisticated static analysis of the state machine's properties without running the code.
 
 ### Writing Tests for the update function
+
+Before we move further, let's actually verify that our implementation of the update function works as we expect it to. We'll do this by writing some tests.
 
 #### Creating Variant Values
 
@@ -514,6 +520,12 @@ The key advantage is that your specification, implementation, and documentation 
 
 While this example was simple, it demonstrates **Transit**'s fundamental approach. In the next example, we'll see how **Transit** handles more complex scenarios with states that contain data and conditional transitions.
 
+---
+
+# Split (temporary)
+
+---
+
 ## Example 2: Door with Pin
 
 > Full source code: _[test/Examples/DoorWithPin.purs](test/Examples/DoorWithPin.purs)_
@@ -539,7 +551,11 @@ wrapNl: true
 <table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>Guard</th><th></th><th>State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td></td><td></td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td></td><td></td><td>⟶</td><td>DoorOpen</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td></td><td></td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>?</td><td>PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>?</td><td>PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table>
 <!-- PD_END -->
 
+Notice the **Guard** column in the transition table. For most transitions, this column is empty — these are unconditional transitions that always succeed. However, the `Unlock` message from `DoorLocked` shows two rows with guards: `PinIncorrect` and `PinCorrect`. These **guards** represent the conditions that determine which transition path is taken at runtime. When the `Unlock` message is received, the implementation checks whether the entered PIN matches the stored PIN, and the guard label (`PinCorrect` or `PinIncorrect`) indicates which condition was met. This allows a single message type to have multiple possible outcomes based on runtime data.
+
 ### State machine implementation I: The Classic Approach
+
+Let's briefly recap how we would implement this using the classic approach.
 
 #### States and Message types
 
@@ -734,6 +750,12 @@ update = mkUpdate @DoorWithPinTransit
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L19-L24">test/Examples/Signatures.purs L19-L24</a></sup></p>
 <!-- PD_END -->
 
+Similar to the main type signature of the `update` function, each handler is a function of the following pattern.
+
+- first argument is the data of the **input state**
+- second argument is the data of the **input message**
+- return type is the data of the possible **output states**
+
 <!-- PD_START:purs
 filePath: test/Examples/Signatures.purs
 pick:
@@ -744,11 +766,14 @@ pick:
 -->
 
 ```purescript
-type Handler1 = {} -> {} -> Variant ("DoorClosed" :: Ret {})
+type Handler1 =
+  {} -> {} -> Variant ("DoorClosed" :: Ret {})
 
-type Handler2 = {} -> {} -> Variant ("DoorOpen" :: Ret {})
+type Handler2 =
+  {} -> {} -> Variant ("DoorOpen" :: Ret {})
 
-type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
+type Handler3 =
+  {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
 
 type Handler4 =
   { activePin :: String }
@@ -759,8 +784,17 @@ type Handler4 =
        )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L26-L38">test/Examples/Signatures.purs L26-L38</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L26-L41">test/Examples/Signatures.purs L26-L41</a></sup></p>
 <!-- PD_END -->
+
+### Conclusion
+
+This example demonstrates how **Transit** extends beyond simple state machines to handle real-world complexity:
+
+- **States and messages with data**: Both states and messages can carry data (like `activePin` in `DoorLocked` or `newPin` in `Lock`), and handlers receive this data.
+- **Conditional transitions**: The DSL supports transitions with multiple possible outcomes using guard labels (`PinCorrect` and `PinIncorrect`). The type system ensures that conditional transitions can only return valid target states, and each outcome must be associated with its corresponding guard label using `RetVia`
+
+By leveraging PureScript's `Variant` types to express subsets of possible states (which traditional ADTs cannot represent), **Transit** provides compile-time guarantees that your implementation matches your specification. The type system catches errors at compile time, ensuring that all transitions are handled correctly.
 
 ## Example 3: Seven Bridges of Königsberg
 

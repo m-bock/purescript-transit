@@ -65,7 +65,8 @@
             "benchlib",
             "patchdown",
             "spec",
-            "spec-node"
+            "spec-node",
+            "undefined"
           ],
           "build_plan": [
             "aff",
@@ -149,6 +150,7 @@
             "tuples",
             "type-equality",
             "typelevel-prelude",
+            "undefined",
             "unfoldable",
             "unicode",
             "unsafe-coerce",
@@ -1946,6 +1948,12 @@
         "prelude",
         "type-equality"
       ]
+    },
+    "undefined": {
+      "type": "registry",
+      "version": "2.0.0",
+      "integrity": "sha256-gYH4KixWI/3G4g0In80XQpTEzBurU+MpcEq1nLYD5KE=",
+      "dependencies": []
     },
     "unfoldable": {
       "type": "registry",

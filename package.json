@@ -1,5 +1,5 @@
 {
-  "name": "purescript-transit",
+  "name": "purescript-transit-dev",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "purs-tidy": "^0.11.1",
     "remark": "^15.0.1",
     "remark-parse": "^11.0.0",
-    "spago": "^0.93.44",
-    "unified": "^11.0.4"
+    "spago": "^0.93.44"
   }
 }

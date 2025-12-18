@@ -23,11 +23,14 @@ update = mkUpdate @DoorWithPinTransit
   (match @"DoorClosed" @"Lock" (unimplemented :: Handler3))
   (match @"DoorLocked" @"Unlock" (unimplemented :: Handler4))
 
-type Handler1 = {} -> {} -> Variant ("DoorClosed" :: Ret {})
+type Handler1 =
+  {} -> {} -> Variant ("DoorClosed" :: Ret {})
 
-type Handler2 = {} -> {} -> Variant ("DoorOpen" :: Ret {})
+type Handler2 =
+  {} -> {} -> Variant ("DoorOpen" :: Ret {})
 
-type Handler3 = {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
+type Handler3 =
+  {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
 
 type Handler4 =
   { activePin :: String }

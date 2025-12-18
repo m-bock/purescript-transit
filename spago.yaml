@@ -15,6 +15,7 @@ package:
       - spec
       - spec-node
       - benchlib
+      - undefined
 workspace:
   packageSet:
     registry: 68.1.1
