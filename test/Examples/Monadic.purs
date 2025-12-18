@@ -6,6 +6,7 @@ import Effect (Effect)
 import Effect.Class.Console as Console
 import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
 import Transit (matchM, mkUpdateM, return)
+import Test.Spec (Spec)
 
 update :: State -> Msg -> Effect State
 update = mkUpdateM @SimpleDoorTransit
@@ -18,3 +19,10 @@ update = mkUpdateM @SimpleDoorTransit
       pure $ return @"DoorOpen"
   )
 
+spec :: Spec Unit
+spec = do
+  pure unit
+
+main :: Effect Unit
+main = do
+  pure unit

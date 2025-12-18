@@ -22,7 +22,7 @@ type TestStateGraph = MkTransitCoreTL
 
 type TestStateGraphWithGuards :: TransitCoreTL
 type TestStateGraphWithGuards = MkTransitCoreTL
-  ( (MkMatchTL "State1" "Msg1"
+  ( ( MkMatchTL "State1" "Msg1"
         ( MkReturnTL "State2"
             :> MkReturnViaTL "Guard1" "State3"
             :> Nil'
@@ -65,11 +65,12 @@ spec = do
         getStateNames transitCore `shouldEqual` []
 
       it "returns all unique state names from matches" do
-        let transitCore = TransitCore
-              [ Match "State1" "Msg1" [ Return "State2" ]
-              , Match "State2" "Msg2" [ Return "State3" ]
-              , Match "State1" "Msg3" [ Return "State1" ]
-              ]
+        let
+          transitCore = TransitCore
+            [ Match "State1" "Msg1" [ Return "State2" ]
+            , Match "State2" "Msg2" [ Return "State3" ]
+            , Match "State1" "Msg3" [ Return "State1" ]
+            ]
         let stateNames = getStateNames transitCore
         Array.length stateNames `shouldEqual` 3
         Array.elem "State1" stateNames `shouldEqual` true
@@ -77,12 +78,13 @@ spec = do
         Array.elem "State3" stateNames `shouldEqual` true
 
       it "includes states from ReturnVia returns" do
-        let transitCore = TransitCore
-              [ Match "State1" "Msg1"
-                  [ Return "State2"
-                  , ReturnVia "Guard1" "State3"
-                  ]
-              ]
+        let
+          transitCore = TransitCore
+            [ Match "State1" "Msg1"
+                [ Return "State2"
+                , ReturnVia "Guard1" "State3"
+                ]
+            ]
         let stateNames = getStateNames transitCore
         Array.length stateNames `shouldEqual` 3
         Array.elem "State1" stateNames `shouldEqual` true
@@ -91,29 +93,32 @@ spec = do
 
     describe "getMatchesForState" do
       it "returns empty array when state has no matches" do
-        let transitCore = TransitCore
-              [ Match "State1" "Msg1" [ Return "State2" ]
-              ]
+        let
+          transitCore = TransitCore
+            [ Match "State1" "Msg1" [ Return "State2" ]
+            ]
         getMatchesForState "State3" transitCore `shouldEqual` []
 
       it "returns all matches for a given state" do
-        let transitCore = TransitCore
-              [ Match "State1" "Msg1" [ Return "State2" ]
-              , Match "State1" "Msg2" [ Return "State3" ]
-              , Match "State2" "Msg3" [ Return "State1" ]
-              ]
+        let
+          transitCore = TransitCore
+            [ Match "State1" "Msg1" [ Return "State2" ]
+            , Match "State1" "Msg2" [ Return "State3" ]
+            , Match "State2" "Msg3" [ Return "State1" ]
+            ]
         let matches = getMatchesForState "State1" transitCore
         Array.length matches `shouldEqual` 2
         Array.elem (Match "State1" "Msg1" [ Return "State2" ]) matches `shouldEqual` true
         Array.elem (Match "State1" "Msg2" [ Return "State3" ]) matches `shouldEqual` true
 
       it "returns matches with guards" do
-        let transitCore = TransitCore
-              [ Match "State1" "Msg1"
-                  [ Return "State2"
-                  , ReturnVia "Guard1" "State3"
-                  ]
-              ]
+        let
+          transitCore = TransitCore
+            [ Match "State1" "Msg1"
+                [ Return "State2"
+                , ReturnVia "Guard1" "State3"
+                ]
+            ]
         let matches = getMatchesForState "State1" transitCore
         Array.length matches `shouldEqual` 1
         case Array.head matches of

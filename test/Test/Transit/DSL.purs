@@ -116,7 +116,7 @@ type MultipleGuardsIn =
       )
 
 type MultipleGuardsOut = MkTransitCoreTL
-  ( (C.MkMatchTL "State1" "Msg1"
+  ( ( C.MkMatchTL "State1" "Msg1"
         ( C.MkReturnViaTL "guardB" "State3"
             :> C.MkReturnViaTL "guardA" "State2"
             :> Nil'

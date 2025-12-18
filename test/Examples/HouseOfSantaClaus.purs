@@ -4,12 +4,10 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
-import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
-import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), Transit, match, mkUpdate, return, mkStateGraph, type (|<))

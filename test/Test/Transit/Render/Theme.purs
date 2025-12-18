@@ -7,7 +7,7 @@ import Prelude
 import Color as Color
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
+import Transit.Render.Theme (getColorHarmony, themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
 
 spec :: Spec Unit
 spec = do

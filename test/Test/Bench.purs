@@ -4,22 +4,18 @@ import Prelude
 
 import BenchLib (bench_, group, reportConsole, suite_)
 import BenchLib as BenchLib
-import BenchLib.Reporters.Markdown (reportMarkdown)
-import BenchLib.Reporters.VegaLite (reportVegaLite, reportVegaLite_)
-import Data.Array (range, (!!))
+import BenchLib.Reporters.VegaLite (reportVegaLite)
+import Data.Array ((!!))
 import Data.Array as Array
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Number as Number
 import Data.Time.Duration (Milliseconds(..))
-import Data.Tuple.Nested (type (/\), (/\))
-import Data.Variant as V
+import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Node.Process (lookupEnv)
 import Partial.Unsafe (unsafeCrashWith)
-import Test.BenchDef.Transit (Msg(..), MsgD(..), State(..), StateD(..), inputs, inputsD, update, updateClassic)
-import Transit.VariantUtils (v)
-import Type.Proxy (Proxy(..))
+import Test.BenchDef.Transit (inputs, inputsD, update, updateClassic)
 
 type Config =
   { backend :: String

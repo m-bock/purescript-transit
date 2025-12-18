@@ -125,7 +125,7 @@ data StateD = DoorOpen | DoorClosed
 data MsgD = Close | Open
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L28-L30">test/Examples/SimpleDoor.purs L28-L30</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p>
 <!-- PD_END -->
 
 The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier — each state and each transition from the diagram has a corresponding value in these types.
@@ -148,7 +148,7 @@ updateD state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L32-L36">test/Examples/SimpleDoor.purs L32-L36</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L31-L35">test/Examples/SimpleDoor.purs L31-L35</a></sup></p>
 <!-- PD_END -->
 
 We pattern match on both the current state and the message at once. It could also be written as a nested pattern match.
@@ -185,7 +185,7 @@ type SimpleDoorTransit =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L52-L55">test/Examples/SimpleDoor.purs L52-L55</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L51-L54">test/Examples/SimpleDoor.purs L51-L54</a></sup></p>
 <!-- PD_END -->
 
 Breaking down the syntax:
@@ -222,7 +222,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L42-L50">test/Examples/SimpleDoor.purs L42-L50</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L41-L49">test/Examples/SimpleDoor.purs L41-L49</a></sup></p>
 <!-- PD_END -->
 
 #### The Update Function
@@ -242,7 +242,7 @@ update = mkUpdate @SimpleDoorTransit
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L57-L60">test/Examples/SimpleDoor.purs L57-L60</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L56-L59">test/Examples/SimpleDoor.purs L56-L59</a></sup></p>
 <!-- PD_END -->
 
 Here's how this works:
@@ -316,7 +316,7 @@ assert1 =
       (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L67-L70">test/Examples/SimpleDoor.purs L67-L70</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L66-L69">test/Examples/SimpleDoor.purs L66-L69</a></sup></p>
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -337,7 +337,7 @@ assert2 =
       [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L73-L76">test/Examples/SimpleDoor.purs L73-L76</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L72-L75">test/Examples/SimpleDoor.purs L72-L75</a></sup></p>
 <!-- PD_END -->
 
 This test does the same thing — starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -399,7 +399,7 @@ assert3 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L79-L89">test/Examples/SimpleDoor.purs L79-L89</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L78-L88">test/Examples/SimpleDoor.purs L78-L88</a></sup></p>
 <!-- PD_END -->
 
 The `~>` operator is an infix alias for `Tuple`. So `v @"Close" ~> v @"DoorClosed"` is equivalent to `Tuple (v @"Close") (v @"DoorClosed")`.
@@ -451,7 +451,7 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L103-L115">test/Examples/SimpleDoor.purs L103-L115</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L102-L114">test/Examples/SimpleDoor.purs L102-L114</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -495,7 +495,7 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L117-L123">test/Examples/SimpleDoor.purs L117-L123</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L116-L122">test/Examples/SimpleDoor.purs L116-L122</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State".
@@ -707,7 +707,7 @@ unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L13-L14">test/Examples/Signatures.purs L13-L14</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L16-L17">test/Examples/Signatures.purs L16-L17</a></sup></p>
 <!-- PD_END -->
 
 The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types — each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
@@ -731,7 +731,7 @@ update = mkUpdate @DoorWithPinTransit
   (match @"DoorLocked" @"Unlock" (unimplemented :: Handler4))
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L16-L21">test/Examples/Signatures.purs L16-L21</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L19-L24">test/Examples/Signatures.purs L19-L24</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -759,7 +759,7 @@ type Handler4 =
        )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L23-L35">test/Examples/Signatures.purs L23-L35</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L26-L38">test/Examples/Signatures.purs L26-L38</a></sup></p>
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg
@@ -1099,7 +1099,7 @@ type HouseOfSantaClausTransit =
     :* ("N_3" |< "E_h" >| "N_4")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L45-L54">test/Examples/HouseOfSantaClaus.purs L45-L54</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L43-L52">test/Examples/HouseOfSantaClaus.purs L43-L52</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -1134,7 +1134,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L87-L99">test/Examples/HouseOfSantaClaus.purs L87-L99</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L85-L97">test/Examples/HouseOfSantaClaus.purs L85-L97</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1152,7 +1152,7 @@ assert2 =
     hasEulerTrail graph `shouldEqual` true
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L101-L106">test/Examples/HouseOfSantaClaus.purs L101-L106</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L99-L104">test/Examples/HouseOfSantaClaus.purs L99-L104</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
@@ -1197,7 +1197,7 @@ update = mkUpdateM @SimpleDoorTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L11-L20">test/Examples/Monadic.purs L11-L20</a></sup></p>
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way — you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
@@ -1227,7 +1227,7 @@ update = mkUpdateEither @SimpleDoorTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L13-L20">test/Examples/ErrorHandling.purs L13-L20</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L14-L21">test/Examples/ErrorHandling.purs L14-L21</a></sup></p>
 <!-- PD_END -->
 
 As we see in the following assertion, a valid transition occurs when the door is `DoorOpen` and receives the `Close` message: the update function successfully transitions to `DoorClosed`, returning `Right (v @"DoorClosed")`.
@@ -1244,7 +1244,7 @@ assert1 =
   update (v @"DoorOpen") (v @"Close") `shouldEqual` Right (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L23-L24">test/Examples/ErrorHandling.purs L23-L24</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L24-L25">test/Examples/ErrorHandling.purs L24-L25</a></sup></p>
 <!-- PD_END -->
 
 When the door is already `DoorClosed` and receives the `Close` message, this is an invalid transition (you can't close a door that's already closed). As shown below, since this transition is not defined in the transit specification, `mkUpdateEither` returns `Left IllegalTransitionRequest` instead of crashing or silently failing.
@@ -1261,7 +1261,7 @@ assert2 =
   update (v @"DoorClosed") (v @"Close") `shouldEqual` Left IllegalTransitionRequest
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L27-L28">test/Examples/ErrorHandling.purs L27-L28</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L28-L29">test/Examples/ErrorHandling.purs L28-L29</a></sup></p>
 <!-- PD_END -->
 
 [^pursuit]: [Pursuit](https://pursuit.purescript.org/) is the package database for PureScript, similar to Hackage for Haskell or npm for JavaScript.

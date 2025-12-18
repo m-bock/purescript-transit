@@ -21,7 +21,7 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..))
+import Transit.Core (Match(..), MsgName, Return(..), StateName, TransitCore(..))
 import Transit.Data.Html as Html
 
 -- | Generates an HTML table from a transit specification.

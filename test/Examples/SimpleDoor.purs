@@ -13,12 +13,11 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Transit, TransitCore(..), match, mkUpdate, return)
+import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
-import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------

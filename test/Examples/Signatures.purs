@@ -1,10 +1,13 @@
-module Test.Examples.Signatures (update) where
+module Test.Examples.Signatures (main, spec, update) where
 
 import Data.Variant (Variant)
 import Test.Examples.DoorWithPin (Msg, State, DoorWithPinTransit)
 import Transit (match, mkUpdate)
 import Transit.Core (Ret, RetVia)
 import Unsafe.Coerce (unsafeCoerce)
+import Test.Spec (Spec)
+import Effect (Effect)
+import Prelude
 
 --------------------------------------------------------------------------------
 --- transit Approach
@@ -33,3 +36,11 @@ type Handler4 =
        ( "DoorClosed" :: RetVia "PinCorrect" {}
        , "DoorLocked" :: RetVia "PinIncorrect" { activePin :: String }
        )
+
+spec :: Spec Unit
+spec = do
+  pure unit
+
+main :: Effect Unit
+main = do
+  pure unit

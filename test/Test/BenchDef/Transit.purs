@@ -4,7 +4,6 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
 import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
 import Transit.VariantUtils (v)
-import Type.Function (type ($))
 
 type State = Variant
   ( "State01" :: {}
