@@ -7,8 +7,7 @@ import Data.Tuple.Nested ((/\))
 import Effect.Aff (Aff)
 import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (match, mkUpdateEither, return)
-import Transit.Class.MkUpdate (TransitError(..))
+import Transit (match, mkUpdateEither, return, TransitError(..))
 import Transit.VariantUtils (v)
 
 update :: State -> Msg -> Either TransitError State

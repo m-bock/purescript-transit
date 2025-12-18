@@ -12,7 +12,10 @@ module Transit
   , mkUpdateEither
   , mkUpdateEitherM
   , mkUpdateM
-  , module Export
+  , module ExportCore
+  , module ExportDSL
+  , module ExportMkUpdate
+  , module ExportStateGraph
   , return
   , returnVia
   ) where
@@ -29,8 +32,12 @@ import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdateCore)
+import Transit.Class.MkUpdate (TransitError(..)) as ExportMkUpdate
+import Transit.Class.MkUpdate as MkUpdate
 import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
-import Transit.DSL (class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), AddMatch, AddOut, Transit, StateWithMsg, WithGuard) as Export
+import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames) as ExportCore
+import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), Transit) as ExportDSL
+import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------
@@ -51,7 +58,7 @@ mkUpdateEitherM
   :: forall @spec tcore msg state args m a
    . (IsTransitSpec spec tcore)
   => (CurryN args (state -> msg -> m (Either TransitError state)) a)
-  => (MkUpdate tcore m args msg state)
+  => (MkUpdate.MkUpdate tcore m args msg state)
   => a
 mkUpdateEitherM = curryN @args f
   where
@@ -96,7 +103,7 @@ mkUpdateM
   :: forall @spec tcore msg state args m a
    . (IsTransitSpec spec tcore)
   => (CurryN args (state -> msg -> m state) a)
-  => (MkUpdate tcore m args msg state)
+  => (MkUpdate.MkUpdate tcore m args msg state)
   => Functor m
   => a
 mkUpdateM = curryN @args f

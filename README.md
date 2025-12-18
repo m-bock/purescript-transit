@@ -808,7 +808,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L27-L42">test/Examples/BridgesKoenigsberg.purs L27-L42</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L24-L39">test/Examples/BridgesKoenigsberg.purs L24-L39</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -829,7 +829,7 @@ type BridgesKoenigsbergTransit =
     :* ("LandC" |< "Cross_g" >| "LandD")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L44-L52">test/Examples/BridgesKoenigsberg.purs L44-L52</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L41-L49">test/Examples/BridgesKoenigsberg.purs L41-L49</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -854,7 +854,7 @@ update = mkUpdate @BridgesKoenigsbergTransit
 -- And so on ... (13 lines omitted)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L54-L75">test/Examples/BridgesKoenigsberg.purs L54-L75</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L51-L72">test/Examples/BridgesKoenigsberg.purs L51-L72</a></sup></p>
 <!-- PD_END -->
 
 <img src="assets/bridges-walk.png" width="450" />
@@ -881,7 +881,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L81-L93">test/Examples/BridgesKoenigsberg.purs L81-L93</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90">test/Examples/BridgesKoenigsberg.purs L78-L90</a></sup></p>
 <!-- PD_END -->
 
 The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
@@ -1006,7 +1006,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L81-L93">test/Examples/BridgesKoenigsberg.purs L81-L93</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90">test/Examples/BridgesKoenigsberg.purs L78-L90</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1021,7 +1021,7 @@ assert2 = do
   hasEulerTrail graph `shouldEqual` false
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L101-L103">test/Examples/BridgesKoenigsberg.purs L101-L103</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L98-L100">test/Examples/BridgesKoenigsberg.purs L98-L100</a></sup></p>
 <!-- PD_END -->
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
@@ -1085,7 +1085,7 @@ type HouseOfSantaClausTransit =
     :* ("N_3" |< "E_h" >| "N_4")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L47-L56">test/Examples/HouseOfSantaClaus.purs L47-L56</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L45-L54">test/Examples/HouseOfSantaClaus.purs L45-L54</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:raw
@@ -1120,7 +1120,7 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L89-L101">test/Examples/HouseOfSantaClaus.purs L89-L101</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L87-L99">test/Examples/HouseOfSantaClaus.purs L87-L99</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -1138,7 +1138,7 @@ assert2 =
     hasEulerTrail graph `shouldEqual` true
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L103-L108">test/Examples/HouseOfSantaClaus.purs L103-L108</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L101-L106">test/Examples/HouseOfSantaClaus.purs L101-L106</a></sup></p>
 <!-- PD_END -->
 
 ## Benchmarks
@@ -1213,7 +1213,7 @@ update = mkUpdateEither @SimpleDoorTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L14-L21">test/Examples/ErrorHandling.purs L14-L21</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L13-L20">test/Examples/ErrorHandling.purs L13-L20</a></sup></p>
 <!-- PD_END -->
 
 As we see in the following assertion, a valid transition occurs when the door is `DoorOpen` and receives the `Close` message: the update function successfully transitions to `DoorClosed`, returning `Right (v @"DoorClosed")`.
@@ -1230,7 +1230,7 @@ assert1 =
   update (v @"DoorOpen") (v @"Close") `shouldEqual` Right (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L24-L25">test/Examples/ErrorHandling.purs L24-L25</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L23-L24">test/Examples/ErrorHandling.purs L23-L24</a></sup></p>
 <!-- PD_END -->
 
 When the door is already `DoorClosed` and receives the `Close` message, this is an invalid transition (you can't close a door that's already closed). As shown below, since this transition is not defined in the transit specification, `mkUpdateEither` returns `Left IllegalTransitionRequest` instead of crashing or silently failing.
@@ -1247,7 +1247,7 @@ assert2 =
   update (v @"DoorClosed") (v @"Close") `shouldEqual` Left IllegalTransitionRequest
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L28-L29">test/Examples/ErrorHandling.purs L28-L29</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L27-L28">test/Examples/ErrorHandling.purs L27-L28</a></sup></p>
 <!-- PD_END -->
 
 [^pursuit]: [Pursuit](https://pursuit.purescript.org/) is the package database for PureScript, similar to Hackage for Haskell or npm for JavaScript.

@@ -10,14 +10,11 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Transit, match, mkUpdate, return)
-import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
-import Transit.Core (TransitCore)
-import Transit.DSL (type (|<))
-import Transit.Render.Graphviz as TransitGraphviz
-import Transit.Render.TransitionTable as TransitTable
-import Transit.StateGraph (StateGraph, mkStateGraph)
+import Transit (type (:*), type (>|), type (|<), StateGraph, Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
 import Transit.VariantUtils (v)
+import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
+import Transit.Render.TransitionTable as TransitTable
 import Type.Prelude (Proxy(..))
 
 --------------------------------------------------------------------------------

@@ -12,12 +12,10 @@ import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Transit, match, mkUpdate, return)
-import Transit.DSL (type (|<))
+import Transit (type (:*), type (>|), Transit, match, mkUpdate, return, mkStateGraph, type (|<))
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.TransitionTable as TransitTable
-import Transit.StateGraph (mkStateGraph)
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
 
