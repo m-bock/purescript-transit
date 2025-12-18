@@ -23,9 +23,11 @@
   - [Example 2: Door with Pin](#example-2-door-with-pin)
     - [State machine implementation I: The Classic Approach](#state-machine-implementation-i-the-classic-approach)
     - [State machine implementation II: The Transit Approach](#state-machine-implementation-ii-the-transit-approach)
-    - [Type signatures](#type-signatures)
     - [Conclusion](#conclusion-1)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
+    - [Problem Description](#problem-description)
+    - [State Machine Definition](#state-machine-definition)
+    - [A sample walk](#a-sample-walk)
     - [Graph Analysis](#graph-analysis)
   - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
   - [Benchmarks](#benchmarks)
@@ -251,6 +253,7 @@ Here's how this works:
 - `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application[^type-app], passing the specification to the function.
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
+- **Important**: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in `SimpleDoorTransit`: `DoorOpen :@ Close`, then `DoorClosed :@ Open`.
 
 #### How This Solves the Classic Approach's Problems
 
@@ -698,94 +701,12 @@ update = mkUpdate @DoorWithPinTransit
 <p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L82-L101">test/Examples/DoorWithPin.purs L82-L101</a></sup></p>
 <!-- PD_END -->
 
-The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that:
+The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that only valid target states can be returned.
 
-- 🔴 You can only return states that are valid targets for that transition
-- 🔴 You handle all required transitions
-- 🟢 The conditional logic is type-safe
+> **Important**: The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification.
 
-### Type signatures
-
-Understanding the type signatures that **Transit** enforces helps clarify how the type system ensures correctness. This section demonstrates the exact types that each match handler must satisfy, showing how **Transit** uses `Variant` types to represent subsets of possible states.
-
-> Full source code: _[test/Examples/Signatures.purs](test/Examples/Signatures.purs)_
-
-This chapter demonstrates the type signatures that **Transit** enforces for your update functions. To show these signatures without implementing the actual logic, we use an `unimplemented` helper function that satisfies the type checker:
-
-<!-- PD_START:purs
-filePath: test/Examples/Signatures.purs
-pick:
-  - unimplemented
--->
-
-```purescript
-unimplemented :: forall a. a
-unimplemented = unsafeCoerce "not yet implemented"
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L16-L17">test/Examples/Signatures.purs L16-L17</a></sup></p>
-<!-- PD_END -->
-
-The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types — each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
-
-Unfortunately, PureScript's ADTs (Algebraic Data Types) don't allow expressing a subset of cases from a union type. This is where `Variant` comes in — it's perfect for representing a subset of cases from a union type. Each match handler must return a `Variant` type that precisely matches the possible target states defined in the DSL specification.
-
-This approach requires internal conversion between ADT and `Variant` representations. If you'd like to avoid this conversion overhead, you can define your `State` and `Msg` types as `Variant` directly from the start, as shown in the next chapter.
-
-<!-- PD_START:purs
-filePath: test/Examples/Signatures.purs
-pick:
-  - update
--->
-
-```purescript
-update :: State -> Msg -> State
-update = mkUpdate @DoorWithPinTransit
-  (match @"DoorOpen" @"Close" (unimplemented :: Handler1))
-  (match @"DoorClosed" @"Open" (unimplemented :: Handler2))
-  (match @"DoorClosed" @"Lock" (unimplemented :: Handler3))
-  (match @"DoorLocked" @"Unlock" (unimplemented :: Handler4))
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L19-L24">test/Examples/Signatures.purs L19-L24</a></sup></p>
-<!-- PD_END -->
-
-Similar to the main type signature of the `update` function, each handler is a function of the following pattern.
-
-- first argument is the data of the **input state**
-- second argument is the data of the **input message**
-- return type is the data of the possible **output states**
-
-<!-- PD_START:purs
-filePath: test/Examples/Signatures.purs
-pick:
-  - Handler1
-  - Handler2
-  - Handler3
-  - Handler4
--->
-
-```purescript
-type Handler1 =
-  {} -> {} -> Variant ("DoorClosed" :: Ret {})
-
-type Handler2 =
-  {} -> {} -> Variant ("DoorOpen" :: Ret {})
-
-type Handler3 =
-  {} -> { newPin :: String } -> Variant ("DoorLocked" :: Ret { activePin :: String })
-
-type Handler4 =
-  { activePin :: String }
-  -> { enteredPin :: String }
-  -> Variant
-       ( "DoorClosed" :: RetVia "PinCorrect" {}
-       , "DoorLocked" :: RetVia "PinIncorrect" { activePin :: String }
-       )
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L26-L41">test/Examples/Signatures.purs L26-L41</a></sup></p>
-<!-- PD_END -->
+> **Limitation**: The compiler cannot detect if an implementation forgets to return a possible case.
+> For example, if a transition can return either `DoorClosed` or `DoorLocked`, your handler always returns `DoorClosed` then the compiler would not detect this error. Obviously the compiler cannot detect if your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
 
 ### Conclusion
 
@@ -794,7 +715,11 @@ This example demonstrates how **Transit** extends beyond simple state machines t
 - **States and messages with data**: Both states and messages can carry data (like `activePin` in `DoorLocked` or `newPin` in `Lock`), and handlers receive this data.
 - **Conditional transitions**: The DSL supports transitions with multiple possible outcomes using guard labels (`PinCorrect` and `PinIncorrect`). The type system ensures that conditional transitions can only return valid target states, and each outcome must be associated with its corresponding guard label using `RetVia`
 
-By leveraging PureScript's `Variant` types to express subsets of possible states (which traditional ADTs cannot represent), **Transit** provides compile-time guarantees that your implementation matches your specification. The type system catches errors at compile time, ensuring that all transitions are handled correctly.
+By leveraging PureScript's `Variant` types to express subsets of possible states (which traditional ADTs cannot represent), **Transit** provides compile-time guarantees that your implementation matches your specification. The type system catches errors at compile time, ensuring that:
+
+- You cannot return invalid target states
+- You cannot return more cases than specified
+- However, the compiler cannot detect if you forget to return a possible case (you can return fewer cases than specified)
 
 ## Example 3: Seven Bridges of Königsberg
 
@@ -803,6 +728,8 @@ By leveraging PureScript's `Variant` types to express subsets of possible states
 So far, we've seen how **Transit** helps you build type-safe state machines and generate state diagrams and transition tables. But the power of **Transit** extends far beyond documentation generation. The reflected data structure — the term-level representation of your type-level DSL specification — can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
 This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler[^euler] was asked whether it was possible to walk through the city of Königsberg crossing each of its seven bridges exactly once. Euler's solution to this problem laid the foundation for graph theory.
+
+### Problem Description
 
 The problem can be modeled as a graph where:
 
@@ -815,11 +742,15 @@ The following picture shows roughly how the actual map looked like back then:
 
 Even not immediately obvious, this can be represented as a graph:
 
+#### State diagram
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/bridges-koenigsberg-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="graphs/bridges-koenigsberg-light.svg">
   <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
 </picture>
+
+#### Transition table
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
@@ -828,7 +759,34 @@ wrapNl: true
 <table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandD</td></tr></tbody></table>
 <!-- PD_END -->
 
+### State Machine Definition
+
 While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions — one in each direction:
+
+#### Type level specification
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - BridgesKoenigsbergTransit
+-->
+
+```purescript
+type BridgesKoenigsbergTransit =
+  Transit
+    :* ("LandA" |< "Cross_a" >| "LandB")
+    :* ("LandA" |< "Cross_b" >| "LandB")
+    :* ("LandA" |< "Cross_c" >| "LandC")
+    :* ("LandA" |< "Cross_d" >| "LandC")
+    :* ("LandA" |< "Cross_e" >| "LandD")
+    :* ("LandB" |< "Cross_f" >| "LandD")
+    :* ("LandC" |< "Cross_g" >| "LandD")
+```
+
+<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L41-L49">test/Examples/BridgesKoenigsberg.purs L41-L49</a></sup></p>
+<!-- PD_END -->
+
+#### State and message types
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -859,26 +817,7 @@ type Msg = Variant
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L24-L39">test/Examples/BridgesKoenigsberg.purs L24-L39</a></sup></p>
 <!-- PD_END -->
 
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - BridgesKoenigsbergTransit
--->
-
-```purescript
-type BridgesKoenigsbergTransit =
-  Transit
-    :* ("LandA" |< "Cross_a" >| "LandB")
-    :* ("LandA" |< "Cross_b" >| "LandB")
-    :* ("LandA" |< "Cross_c" >| "LandC")
-    :* ("LandA" |< "Cross_d" >| "LandC")
-    :* ("LandA" |< "Cross_e" >| "LandD")
-    :* ("LandB" |< "Cross_f" >| "LandD")
-    :* ("LandC" |< "Cross_g" >| "LandD")
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L41-L49">test/Examples/BridgesKoenigsberg.purs L41-L49</a></sup></p>
-<!-- PD_END -->
+#### Update function
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -904,6 +843,8 @@ update = mkUpdate @BridgesKoenigsbergTransit
 
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L51-L72">test/Examples/BridgesKoenigsberg.purs L51-L72</a></sup></p>
 <!-- PD_END -->
+
+### A sample walk
 
 <img src="assets/bridges-walk.png" width="450" />
 
@@ -931,8 +872,6 @@ assert1 =
 
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90">test/Examples/BridgesKoenigsberg.purs L78-L90</a></sup></p>
 <!-- PD_END -->
-
-The transition table shows the undirected nature of the graph — each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
 ### Graph Analysis
 
@@ -992,70 +931,6 @@ The key steps are:
 1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesKoenigsbergTransit)` converts the type-level DSL to a term-level representation
 2. **Convert to a graph**: `mkStateGraph transit` transforms the **Transit** specification into a `StateGraph` — a general-purpose graph data structure
 3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
-
-<!-- PD_START:purs
-filePath: test/Examples/Common.purs
-pick:
-  - nodeDegree
--->
-
-```purescript
-nodeDegree :: StateGraph -> StateNode -> Int
-nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L16-L17">test/Examples/Common.purs L16-L17</a></sup></p>
-<!-- PD_END -->
-
-<!-- PD_START:purs
-filePath: test/Examples/Common.purs
-pick:
-  - hasEulerTrail
--->
-
-```purescript
-hasEulerTrail :: StateGraph -> Boolean
-hasEulerTrail graph =
-  let
-    nodes :: Array StateNode
-    nodes = fromFoldable (Graph.getNodes graph)
-
-    countEdgesByNode :: Array Int
-    countEdgesByNode = map (nodeDegree graph) nodes
-
-    sumOddEdges :: Int
-    sumOddEdges = Array.length (Array.filter Int.odd countEdgesByNode)
-  in
-    sumOddEdges == 2 || sumOddEdges == 0
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L19-L31">test/Examples/Common.purs L19-L31</a></sup></p>
-<!-- PD_END -->
-
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - assert1
--->
-
-```purescript
-assert1 :: Aff Unit
-assert1 =
-  assertWalk update
-    (v @"LandA")
-    [ v @"Cross_a" ~> v @"LandB"
-    , v @"Cross_f" ~> v @"LandD"
-    , v @"Cross_g" ~> v @"LandC"
-    , v @"Cross_c" ~> v @"LandA"
-    , v @"Cross_e" ~> v @"LandD"
-    , v @"Cross_g" ~> v @"LandC"
-    , v @"Cross_d" ~> v @"LandA"
-    , v @"Cross_b" ~> v @"LandB"
-    ]
-```
-
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90">test/Examples/BridgesKoenigsberg.purs L78-L90</a></sup></p>
-<!-- PD_END -->
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
