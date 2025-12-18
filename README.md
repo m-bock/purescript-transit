@@ -151,6 +151,8 @@ updateD state msg = case state, msg of
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L32-L36">test/Examples/SimpleDoor.purs L32-L36</a></sup></p>
 <!-- PD_END -->
 
+We pattern match on both the current state and the message at once. It could also be written as a nested pattern match.
+
 This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
 
 While this approach works and is straightforward, it has some drawbacks:
@@ -400,6 +402,10 @@ assert3 =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L79-L89">test/Examples/SimpleDoor.purs L79-L89</a></sup></p>
 <!-- PD_END -->
 
+The `~>` operator is an infix alias for `Tuple`. So `v @"Close" ~> v @"DoorClosed"` is equivalent to `Tuple (v @"Close") (v @"DoorClosed")`.
+
+We read it like: Starting from state `DoorOpen`, when receiving message `Close`, we expect the next state to be `DoorClosed`. From there, when receiving message `Open`, we expect the next state to be `DoorOpen`. And so on.
+
 ### Generating Diagrams and Tables
 
 **Transit** can generate both state diagrams and transition tables directly from your type-level specification. Both generation processes use the same approach: `reflectType` converts your type-level DSL specification to a term-level equivalent, which can then be used to generate the documentation.
@@ -433,6 +439,7 @@ pick:
 generateStateDiagram :: Effect Unit
 generateStateDiagram = do
   let
+    transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
   TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
@@ -444,15 +451,15 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L103-L114">test/Examples/SimpleDoor.purs L103-L114</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L103-L115">test/Examples/SimpleDoor.purs L103-L115</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
 
-1. `reflectType` converts your type-level DSL specification to a term-level equivalent
+1. `reflectType` converts your type-level DSL specification to a term-level equivalent of type `TransitCore`
 2. `TransitGraphviz.writeToFile` uses that to render a Graphviz `.dot` file
 
-The `writeToFile` function accepts an options record that lets you customize the diagram. E.g. the `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own.
+The `writeToFile` function accepts an options record that lets you customize the diagram. E.g. the `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](docs/themes.md) for more details.
 
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
@@ -482,12 +489,13 @@ pick:
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
+    transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L116-L121">test/Examples/SimpleDoor.purs L116-L121</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L117-L123">test/Examples/SimpleDoor.purs L117-L123</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State".

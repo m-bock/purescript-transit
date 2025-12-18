@@ -13,9 +13,9 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
-import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
+import Transit (type (:*), type (:@), type (>|), Transit, TransitCore(..), match, mkUpdate, return)
 import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Function (type ($))
@@ -103,6 +103,7 @@ spec = do
 generateStateDiagram :: Effect Unit
 generateStateDiagram = do
   let
+    transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
   TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
@@ -116,6 +117,7 @@ generateStateDiagram = do
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
+    transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
