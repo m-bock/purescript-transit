@@ -9,8 +9,6 @@ import Data.Array ((!!))
 import Data.Array as Array
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
-import Data.Number as Number
-import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Node.Process (lookupEnv)
@@ -20,7 +18,6 @@ import Test.BenchDef.Transit (inputs, inputsD, update, updateClassic)
 type Config =
   { backend :: String
   , iterations :: Int
-  , maxTime :: Milliseconds
   }
 
 getConfigFromEnv :: Effect Config
@@ -33,15 +30,11 @@ getConfigFromEnv = do
     Just iterations | Just i <- Int.fromString iterations -> pure i
     _ -> unsafeCrashWith "ITERATIONS environment variable must be set to an integer"
 
-  maxTime <- lookupEnv "MAX_TIME" >>= case _ of
-    Just maxTime | Just ms <- Number.fromString maxTime -> pure (Milliseconds ms)
-    _ -> unsafeCrashWith "MAX_TIME environment variable must be set to a duration in milliseconds"
-
-  pure { backend, iterations, maxTime }
+  pure { backend, iterations }
 
 main :: Effect Unit
 main = do
-  { backend, iterations, maxTime } <- getConfigFromEnv
+  { backend, iterations } <- getConfigFromEnv
 
   BenchLib.runNode _
     { reporters =
