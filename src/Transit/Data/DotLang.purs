@@ -1,3 +1,7 @@
+-- | Data types and functions for generating Graphviz DOT language output.
+-- |
+-- | This module provides a type-safe way to construct DOT language graphs
+-- | for visualization with Graphviz.
 module Transit.Data.DotLang
   ( Attr(..)
   , Edge(..)
@@ -11,7 +15,7 @@ module Transit.Data.DotLang
   , arrowSize
   , arrowTailNone
   , bgColor
-  , class ToText
+  , class ToDotStr
   , color
   , colorMulti
   , dirBoth
@@ -34,7 +38,7 @@ module Transit.Data.DotLang
   , shapeCircle
   , shapeDiamond
   , styleFilled
-  , toText
+  , toDotStr
   , width
   ) where
 
@@ -46,27 +50,36 @@ import Data.Maybe (Maybe(..))
 import Data.String as Str
 import Transit.Data.Html as Html
 
-class ToText a where
-  toText :: a -> String
+-- | Type class for converting values to DOT language string representation.
+class ToDotStr a where
+  toDotStr :: a -> String
 
+-- | Raw DOT language string (for custom attributes).
 type Raw = String
 
+-- | Section of a DOT graph (node, edge, or global attributes).
 data Section
   = SecNode Node
   | SecEdge Edge
   | SecGlobal GlobalAttrs
   | SecGlobalRaw String
 
+-- | Complete Graphviz directed graph.
 newtype GraphvizGraph = GraphvizGraph (Array Section)
 
+-- | Global graph attributes.
 newtype GlobalAttrs = GlobalAttrs (Array Attr)
 
+-- | Graph node with optional raw attributes and attribute list.
 data Node = Node String (Maybe Raw) (Array Attr)
 
+-- | Graph edge from one node to another with attributes.
 data Edge = Edge String String (Array Attr)
 
+-- | Graph attribute (name-value pair).
 data Attr = Attr String Value
 
+-- | Attribute value types.
 data Value
   = Value String
   | ValueColors (Array Color)
@@ -75,48 +88,52 @@ data Value
   | ValueBoolean Boolean
   | HtmlLabel String
 
-instance ToText GraphvizGraph where
-  toText (GraphvizGraph sections) =
+instance ToDotStr GraphvizGraph where
+  toDotStr (GraphvizGraph sections) =
     Str.joinWith "\n" $ join
       [ pure "digraph "
       , pure "{"
-      , map toText sections
+      , map toDotStr sections
       , pure "}"
       ]
 
-instance ToText Section where
-  toText (SecNode node) = toText node
-  toText (SecEdge edge) = toText edge
-  toText (SecGlobal global) = toText global
-  toText (SecGlobalRaw str) = str
+instance ToDotStr Section where
+  toDotStr (SecNode node) = toDotStr node
+  toDotStr (SecEdge edge) = toDotStr edge
+  toDotStr (SecGlobal global) = toDotStr global
+  toDotStr (SecGlobalRaw str) = str
 
-instance ToText Node where
-  toText (Node stateName raw attrs) = stateName <> " ["
-    <> case raw of
+instance ToDotStr Node where
+  toDotStr (Node stateName rawAttr attrs) = stateName <> " ["
+    <> case rawAttr of
       Just raw -> raw <> ","
       Nothing -> ""
-    <> toText attrs
+    <> toDotStr attrs
     <> "]"
 
-instance ToText Edge where
-  toText (Edge from to attrs) = from <> " -> " <> to <> " [" <> toText attrs <> "]"
+instance ToDotStr Edge where
+  toDotStr (Edge from to attrs) = from <> " -> " <> to <> " [" <> toDotStr attrs <> "]"
 
-instance ToText (Array Attr) where
-  toText attrs = Str.joinWith ", " (map toText attrs)
+instance ToDotStr (Array Attr) where
+  toDotStr attrs = Str.joinWith ", " (map toDotStr attrs)
 
-instance ToText GlobalAttrs where
-  toText (GlobalAttrs attrs) = Str.joinWith ";" (map toText attrs)
+instance ToDotStr GlobalAttrs where
+  toDotStr (GlobalAttrs attrs) = Str.joinWith ";" (map toDotStr attrs)
 
-instance ToText Attr where
-  toText (Attr name value) = name <> " = " <> toText value
+instance ToDotStr Attr where
+  toDotStr (Attr name value) = name <> " = " <> toDotStr value
 
-instance ToText Value where
-  toText (Value str) = "\"" <> str <> "\""
-  toText (ValueColors colors) = "\"" <> (Str.joinWith ":" $ map Color.toHexString colors) <> "\""
-  toText (ValueInt int) = show int
-  toText (ValueNumber number) = show number
-  toText (ValueBoolean boolean) = show boolean
-  toText (HtmlLabel label) = "<" <> label <> ">"
+instance ToDotStr Value where
+  toDotStr (Value str) = "\"" <> str <> "\""
+  toDotStr (ValueColors colors) = "\"" <> (Str.joinWith ":" $ map Color.toHexString colors) <> "\""
+  toDotStr (ValueInt int) = show int
+  toDotStr (ValueNumber number) = show number
+  toDotStr (ValueBoolean boolean) = show boolean
+  toDotStr (HtmlLabel html) = "<" <> html <> ">"
+
+--------------------------------------------------------------------------------
+-- Helper functions for common attributes
+--------------------------------------------------------------------------------
 
 rankDirTD :: Attr
 rankDirTD = Attr "rankdir" (Value "TD")
@@ -128,10 +145,10 @@ labelHtml :: Html.Node -> Attr
 labelHtml node = Attr "label" (HtmlLabel $ Html.nodeToHtml node)
 
 labelHtmlBold :: String -> Attr
-labelHtmlBold label = Attr "label" (HtmlLabel $ "<b>" <> label <> "</b>")
+labelHtmlBold text = Attr "label" (HtmlLabel $ "<b>" <> text <> "</b>")
 
 labelHtmlItalic :: String -> Attr
-labelHtmlItalic label = Attr "label" (HtmlLabel $ "<i>" <> label <> "</i>")
+labelHtmlItalic text = Attr "label" (HtmlLabel $ "<i>" <> text <> "</i>")
 
 shapeBox :: Attr
 shapeBox = Attr "shape" (Value "box")
@@ -152,7 +169,7 @@ shapeCircle :: Attr
 shapeCircle = Attr "shape" (Value "circle")
 
 label :: String -> Attr
-label label = Attr "label" (Value label)
+label text = Attr "label" (Value text)
 
 width :: Number -> Attr
 width size = Attr "width" (ValueNumber size)
@@ -164,13 +181,13 @@ fixedSize :: Boolean -> Attr
 fixedSize value = Attr "fixedsize" (ValueBoolean value)
 
 fillColor :: Color -> Attr
-fillColor color = Attr "fillcolor" (ValueColors [ color ])
+fillColor c = Attr "fillcolor" (ValueColors [ c ])
 
 penWidth :: Number -> Attr
 penWidth size = Attr "penwidth" (ValueNumber size)
 
 fontColor :: Color -> Attr
-fontColor color = Attr "fontcolor" (ValueColors [ color ])
+fontColor c = Attr "fontcolor" (ValueColors [ c ])
 
 labelLocC :: Attr
 labelLocC = Attr "labelloc" (Value "c")
@@ -179,7 +196,7 @@ labelLocT :: Attr
 labelLocT = Attr "labelloc" (Value "t")
 
 color :: Color -> Attr
-color color = Attr "color" (ValueColors [ color ])
+color c = Attr "color" (ValueColors [ c ])
 
 colorMulti :: Array Color -> Attr
 colorMulti colors = Attr "color" (ValueColors colors)
@@ -194,7 +211,7 @@ arrowTailNone :: Attr
 arrowTailNone = Attr "arrowtail" (Value "none")
 
 bgColor :: Color -> Attr
-bgColor color = Attr "bgcolor" (ValueColors [ color ])
+bgColor c = Attr "bgcolor" (ValueColors [ c ])
 
 margin :: Number -> Attr
 margin size = Attr "margin" (ValueNumber size)

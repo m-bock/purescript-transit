@@ -11,11 +11,11 @@ import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), Transit, match, mkUpdate, return)
-import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Core (TransitCore)
 import Transit.DSL (type (|<))
-import Transit.Generators.Graphviz as TransitGraphviz
-import Transit.Generators.TransitionTable as TransitTable
+import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.TransitionTable as TransitTable
 import Transit.StateGraph (StateGraph, mkStateGraph)
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))

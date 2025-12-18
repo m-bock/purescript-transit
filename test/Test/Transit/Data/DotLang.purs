@@ -13,66 +13,66 @@ import Transit.Data.DotLang as DL
 spec :: Spec Unit
 spec = do
   describe "Transit.Data.DotLang" do
-    describe "ToText Value" do
+    describe "ToDotStr Value" do
       it "converts Value String to quoted string" do
-        DL.toText (DL.Value "test") `shouldEqual` "\"test\""
+        DL.toDotStr (DL.Value "test") `shouldEqual` "\"test\""
 
       it "converts ValueInt to unquoted number" do
-        DL.toText (DL.ValueInt 42) `shouldEqual` "42"
+        DL.toDotStr (DL.ValueInt 42) `shouldEqual` "42"
 
       it "converts ValueNumber to unquoted number" do
-        DL.toText (DL.ValueNumber 3.14) `shouldEqual` "3.14"
+        DL.toDotStr (DL.ValueNumber 3.14) `shouldEqual` "3.14"
 
-      it "converts ValueBoolean true to string" do
-        DL.toText (DL.ValueBoolean true) `shouldEqual` "true"
+      it "converts ValueBoolean true" do
+        DL.toDotStr (DL.ValueBoolean true) `shouldEqual` "true"
 
-      it "converts ValueBoolean false to string" do
-        DL.toText (DL.ValueBoolean false) `shouldEqual` "false"
+      it "converts ValueBoolean false" do
+        DL.toDotStr (DL.ValueBoolean false) `shouldEqual` "false"
 
-      it "converts HtmlLabel to angle brackets" do
-        DL.toText (DL.HtmlLabel "<b>bold</b>") `shouldEqual` "<<b>bold</b>>"
+      it "converts HtmlLabel to angle bracket format" do
+        DL.toDotStr (DL.HtmlLabel "<b>bold</b>") `shouldEqual` "<<b>bold</b>>"
 
-      it "converts ValueColors to quoted hex string" do
+      it "converts ValueColors with single color to quoted hex" do
         let red = rgb 255 0 0
-        DL.toText (DL.ValueColors [ red ]) `shouldEqual` "\"#ff0000\""
+        DL.toDotStr (DL.ValueColors [ red ]) `shouldEqual` "\"#ff0000\""
 
-      it "converts ValueColors with multiple colors" do
+      it "converts ValueColors with multiple colors to colon-separated hex" do
         let
           red = rgb 255 0 0
           blue = rgb 0 0 255
-        DL.toText (DL.ValueColors [ red, blue ]) `shouldEqual` "\"#ff0000:#0000ff\""
+        DL.toDotStr (DL.ValueColors [ red, blue ]) `shouldEqual` "\"#ff0000:#0000ff\""
 
-    describe "ToText Attr" do
+    describe "ToDotStr Attr" do
       it "converts Attr to name = value format" do
-        DL.toText (DL.Attr "label" (DL.Value "test")) `shouldEqual` "label = \"test\""
+        DL.toDotStr (DL.Attr "label" (DL.Value "test")) `shouldEqual` "label = \"test\""
 
       it "converts Attr with ValueInt" do
-        DL.toText (DL.Attr "size" (DL.ValueInt 10)) `shouldEqual` "size = 10"
+        DL.toDotStr (DL.Attr "size" (DL.ValueInt 10)) `shouldEqual` "size = 10"
 
-    describe "ToText Array Attr" do
+    describe "ToDotStr Array Attr" do
       it "converts empty array to empty string" do
-        DL.toText ([] :: Array DL.Attr) `shouldEqual` ""
+        DL.toDotStr ([] :: Array DL.Attr) `shouldEqual` ""
 
-      it "converts single attr" do
-        DL.toText [ DL.Attr "label" (DL.Value "test") ] `shouldEqual` "label = \"test\""
+      it "converts single attribute" do
+        DL.toDotStr [ DL.Attr "label" (DL.Value "test") ] `shouldEqual` "label = \"test\""
 
-      it "converts multiple attrs with comma separation" do
-        DL.toText
+      it "converts multiple attributes with comma separation" do
+        DL.toDotStr
           [ DL.Attr "label" (DL.Value "test")
           , DL.Attr "shape" (DL.Value "box")
           ]
           `shouldEqual` "label = \"test\", shape = \"box\""
 
-    describe "ToText Node" do
+    describe "ToDotStr Node" do
       it "converts Node with no attributes" do
-        DL.toText (DL.Node "State1" Nothing []) `shouldEqual` "State1 []"
+        DL.toDotStr (DL.Node "State1" Nothing []) `shouldEqual` "State1 []"
 
       it "converts Node with single attribute" do
-        DL.toText (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])
+        DL.toDotStr (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])
           `shouldEqual` "State1 [label = \"State 1\"]"
 
       it "converts Node with multiple attributes" do
-        DL.toText
+        DL.toDotStr
           ( DL.Node "State1"
               Nothing
               [ DL.Attr "label" (DL.Value "State 1")
@@ -81,16 +81,16 @@ spec = do
           )
           `shouldEqual` "State1 [label = \"State 1\", shape = \"box\"]"
 
-    describe "ToText Edge" do
+    describe "ToDotStr Edge" do
       it "converts Edge with no attributes" do
-        DL.toText (DL.Edge "State1" "State2" []) `shouldEqual` "State1 -> State2 []"
+        DL.toDotStr (DL.Edge "State1" "State2" []) `shouldEqual` "State1 -> State2 []"
 
       it "converts Edge with single attribute" do
-        DL.toText (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ])
+        DL.toDotStr (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ])
           `shouldEqual` "State1 -> State2 [label = \"Msg1\"]"
 
       it "converts Edge with multiple attributes" do
-        DL.toText
+        DL.toDotStr
           ( DL.Edge "State1" "State2"
               [ DL.Attr "label" (DL.Value "Msg1")
               , DL.Attr "color" (DL.Value "red")
@@ -98,16 +98,16 @@ spec = do
           )
           `shouldEqual` "State1 -> State2 [label = \"Msg1\", color = \"red\"]"
 
-    describe "ToText GlobalAttrs" do
-      it "converts GlobalAttrs with no attributes" do
-        DL.toText (DL.GlobalAttrs []) `shouldEqual` ""
+    describe "ToDotStr GlobalAttrs" do
+      it "converts GlobalAttrs with no attributes to empty string" do
+        DL.toDotStr (DL.GlobalAttrs []) `shouldEqual` ""
 
       it "converts GlobalAttrs with single attribute" do
-        DL.toText (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ])
+        DL.toDotStr (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ])
           `shouldEqual` "rankdir = \"TD\""
 
-      it "converts GlobalAttrs with multiple attributes using semicolon" do
-        DL.toText
+      it "converts GlobalAttrs with multiple attributes using semicolon separation" do
+        DL.toDotStr
           ( DL.GlobalAttrs
               [ DL.Attr "rankdir" (DL.Value "TD")
               , DL.Attr "fontname" (DL.Value "Arial")
@@ -115,30 +115,30 @@ spec = do
           )
           `shouldEqual` "rankdir = \"TD\";fontname = \"Arial\""
 
-    describe "ToText Section" do
+    describe "ToDotStr Section" do
       it "converts SecNode" do
-        DL.toText (DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ]))
+        DL.toDotStr (DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ]))
           `shouldEqual` "State1 [label = \"State 1\"]"
 
       it "converts SecEdge" do
-        DL.toText (DL.SecEdge (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ]))
+        DL.toDotStr (DL.SecEdge (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ]))
           `shouldEqual` "State1 -> State2 [label = \"Msg1\"]"
 
       it "converts SecGlobal" do
-        DL.toText (DL.SecGlobal (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ]))
+        DL.toDotStr (DL.SecGlobal (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ]))
           `shouldEqual` "rankdir = \"TD\""
 
       it "converts SecGlobalRaw" do
-        DL.toText (DL.SecGlobalRaw "graph [layout=sfdp];")
+        DL.toDotStr (DL.SecGlobalRaw "graph [layout=sfdp];")
           `shouldEqual` "graph [layout=sfdp];"
 
-    describe "ToText GraphvizGraph" do
+    describe "ToDotStr GraphvizGraph" do
       it "converts empty graph" do
-        DL.toText (DL.GraphvizGraph [])
+        DL.toDotStr (DL.GraphvizGraph [])
           `shouldEqual` "digraph \n{\n}"
 
       it "converts graph with single node" do
-        DL.toText
+        DL.toDotStr
           ( DL.GraphvizGraph
               [ DL.SecNode (DL.Node "State1" Nothing [])
               ]
@@ -146,7 +146,7 @@ spec = do
           `shouldEqual` "digraph \n{\nState1 []\n}"
 
       it "converts graph with multiple sections" do
-        DL.toText
+        DL.toDotStr
           ( DL.GraphvizGraph
               [ DL.SecGlobal (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ])
               , DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])

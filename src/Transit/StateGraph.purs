@@ -10,19 +10,19 @@ import Prelude
 import Data.Array as Array
 import Data.Maybe (Maybe(..))
 import Data.Set as Set
-import Transit.Core (Return(..), TransitCore(..), Match(..))
+import Transit.Core (GuardName, MsgName, Return(..), StateName, TransitCore(..), Match(..))
 import Transit.Data.Graph (Graph)
 import Transit.Data.Graph as Graph
 
-type EdgeStateTransition = { msg :: String, guard :: Maybe String }
+type EdgeStateTransition = { msg :: MsgName, guard :: Maybe GuardName }
 
-type StateNode = String
+type StateNode = StateName
 
 type StateGraph = Graph EdgeStateTransition StateNode
 
 mkStateGraph :: TransitCore -> StateGraph
 mkStateGraph (TransitCore transitions) =
-  Graph.fromConnections
+  Graph.fromEdges
     $ Set.fromFoldable
     $ Array.concatMap
         ( \(Match from msg returns) -> map
@@ -30,12 +30,12 @@ mkStateGraph (TransitCore transitions) =
                 Return to ->
                   { fromNode: from
                   , toNode: to
-                  , edge: { msg, guard: Nothing }
+                  , edgeLabel: { msg, guard: Nothing }
                   }
                 ReturnVia guard to ->
                   { fromNode: from
                   , toNode: to
-                  , edge: { msg, guard: Just guard }
+                  , edgeLabel: { msg, guard: Just guard }
                   }
             )
             returns

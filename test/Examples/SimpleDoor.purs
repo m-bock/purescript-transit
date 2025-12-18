@@ -14,9 +14,9 @@ import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
-import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
-import Transit.Generators.Graphviz as TransitGraphviz
-import Transit.Generators.TransitionTable as TransitTable
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
+import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))

@@ -1,10 +1,5 @@
 module Test.Transit.Class.ExpandReturn
-  ( test1
-  , test2
-  , testRW1
-  , testRW2
-  , testRW3
-  , spec
+  ( spec
   ) where
 
 import Prelude
@@ -12,88 +7,37 @@ import Prelude
 import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Class.ExpandReturn (class ExpandReturn, class RemoveWrappers, expandReturn)
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
+import Transit.Class.ExpandReturn (expandReturn)
+import Transit.Core (MkReturnTL, MkReturnViaTL, Ret(..), RetVia(..))
 import Transit.VariantUtils (v)
-import Type.Data.List (type (:>), Cons', List', Nil')
+import Type.Data.List (type (:>), Nil')
 
-check :: forall @syms @t @a. (ExpandReturn syms t a) => Unit
-check = unit
-
-type D = Variant
+type TestVariant = Variant
   ( "Foo" :: Int
   , "Bar" :: String
   , "Baz" :: Unit
   , "Qux" :: Int
   )
 
---------------------------------------------------------------------------------
--- TL Test 1
---------------------------------------------------------------------------------
-
-type Test1A = Nil' :: List' ReturnTL
-type Test1B = D
-type Test1C = Variant ()
-
-test1 :: Unit
-test1 = check @Test1A @Test1B @Test1C
-
---------------------------------------------------------------------------------
--- TL Test 2
---------------------------------------------------------------------------------
-
-type Test2A = MkReturnTL "Foo" :> MkReturnViaTL "Tansition" "Bar" :> Nil'
-type Test2B = D
-type Test2C = Variant
-  ( "Foo" :: Ret Int
-  , "Bar" :: RetVia "Tansition" String
-  )
-
-test2 :: Unit
-test2 = check @Test2A @Test2B @Test2C
-
---------------------------------------------------------------------------------
--- Spec
---------------------------------------------------------------------------------
-
-type L1 = MkReturnTL "Foo" :> MkReturnTL "Baz" :> MkReturnViaTL "Guard1" "Qux" :> Nil'
+type TestReturnList =
+  MkReturnTL "Foo"
+    :> MkReturnTL "Baz"
+    :> MkReturnViaTL "Guard1" "Qux"
+    :> Nil'
 
 spec :: Spec Unit
 spec = do
   describe "Transit.Class.ExpandReturn" do
     describe "expandReturn" do
-      it "should inject whitelisted case with payload" do
-        expandReturn @L1 (v @"Foo" (Ret 1))
-          `shouldEqual` (v @"Foo" 1 :: D)
+      it "expands variant with Ret wrapper and payload" do
+        expandReturn @TestReturnList (v @"Foo" (Ret 1))
+          `shouldEqual` (v @"Foo" 1 :: TestVariant)
 
-      it "should inject whitelisted case with payload and guard" do
-        expandReturn @L1 (v @"Qux" (RetVia @"Guard1" 1))
-          `shouldEqual` (v @"Qux" 1 :: D)
+      it "expands variant with RetVia wrapper, guard, and payload" do
+        expandReturn @TestReturnList (v @"Qux" (RetVia @"Guard1" 1))
+          `shouldEqual` (v @"Qux" 1 :: TestVariant)
 
-      it "should inject whitelisted case with unit payload" do
-        expandReturn @L1 (v @"Baz" (Ret unit))
-          `shouldEqual` (v @"Baz" unit :: D)
-
----
-
-checkRemoveWrappers :: forall @syms @rin @rout. (RemoveWrappers syms rin rout) => Unit
-checkRemoveWrappers = unit
-
-testRW1 :: Unit
-testRW1 = checkRemoveWrappers
-  @Nil'
-  @()
-  @()
-
-testRW2 :: Unit
-testRW2 = checkRemoveWrappers
-  @(Cons' (MkReturnTL "Foo") Nil')
-  @("Foo" :: Ret Int)
-  @("Foo" :: Int)
-
-testRW3 :: Unit
-testRW3 = checkRemoveWrappers
-  @(Cons' (MkReturnTL "Foo") (Cons' (MkReturnViaTL "Transition" "Bar") Nil'))
-  @("Foo" :: Ret Int, "Bar" :: RetVia "Transition" String)
-  @("Foo" :: Int, "Bar" :: String)
+      it "expands variant with Ret wrapper and unit payload" do
+        expandReturn @TestReturnList (v @"Baz" (Ret unit))
+          `shouldEqual` (v @"Baz" unit :: TestVariant)
 

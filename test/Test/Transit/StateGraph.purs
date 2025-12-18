@@ -24,11 +24,11 @@ spec = do
             , Match "State3" "Msg3" [ Return "State1", ReturnVia "Guard1" "State2", ReturnVia "Guard2" "State3" ]
             ]
           graph = mkStateGraph transitCore
-        Graph.getConnections graph `shouldEqual` Set.fromFoldable
-          [ { fromNode: "State1", toNode: "State2", edge: { msg: "Msg1", guard: Nothing } }
-          , { fromNode: "State2", toNode: "State3", edge: { msg: "Msg2", guard: Nothing } }
-          , { fromNode: "State2", toNode: "State1", edge: { msg: "Msg2", guard: Nothing } }
-          , { fromNode: "State3", toNode: "State1", edge: { msg: "Msg3", guard: Nothing } }
-          , { fromNode: "State3", toNode: "State2", edge: { msg: "Msg3", guard: Just "Guard1" } }
-          , { fromNode: "State3", toNode: "State3", edge: { msg: "Msg3", guard: Just "Guard2" } }
+        Graph.getEdges graph `shouldEqual` Set.fromFoldable
+          [ { fromNode: "State1", toNode: "State2", edgeLabel: { msg: "Msg1", guard: Nothing } }
+          , { fromNode: "State2", toNode: "State3", edgeLabel: { msg: "Msg2", guard: Nothing } }
+          , { fromNode: "State2", toNode: "State1", edgeLabel: { msg: "Msg2", guard: Nothing } }
+          , { fromNode: "State3", toNode: "State1", edgeLabel: { msg: "Msg3", guard: Nothing } }
+          , { fromNode: "State3", toNode: "State2", edgeLabel: { msg: "Msg3", guard: Just "Guard1" } }
+          , { fromNode: "State3", toNode: "State3", edgeLabel: { msg: "Msg3", guard: Just "Guard2" } }
           ]

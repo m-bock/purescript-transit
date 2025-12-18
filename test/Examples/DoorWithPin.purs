@@ -18,9 +18,9 @@ import Effect.Aff (Aff)
 import Test.Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:?), type (:@), type (>|), Transit, match, mkUpdate, return, returnVia)
-import Transit.Colors (themeHarmonyDark, themeHarmonyLight)
-import Transit.Generators.Graphviz as TransitGraphviz
-import Transit.Generators.TransitionTable as TransitTable
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
+import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Proxy (Proxy(..))
 

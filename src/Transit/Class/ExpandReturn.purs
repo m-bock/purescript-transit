@@ -1,3 +1,5 @@
+-- | Type classes for expanding partial return types to full state types.
+
 module Transit.Class.ExpandReturn
   ( class ExpandReturn
   , expandReturn
@@ -15,64 +17,89 @@ import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 
+-- | Expands a partial variant (containing `Ret` and `RetVia` wrappers) into
+-- | a full variant by removing the wrappers and expanding to a larger row type.
+-- |
+-- | The functional dependency `returns full -> part` ensures that given the
+-- | return list and full variant type, the partial variant type is uniquely determined.
+-- |
+-- | - `returns`: List of return type-level specifications
+-- | - `full`: The full variant type (target)
+-- | - `part`: The partial variant type (source, with wrappers)
 class
   ExpandReturn (returns :: List' ReturnTL) full part
   | returns full -> part
   where
   expandReturn :: part -> full
 
-instance expandReturnInst ::
-  ( RemoveWrappers returns r r'
-  , Row.Union r' rx r''
+instance expandReturnInstance ::
+  ( RemoveWrappers returns rowIn rowOut
+  , Row.Union rowOut rowExtra rowFull
   ) =>
-  ExpandReturn returns (Variant r'') (Variant r) where
+  ExpandReturn returns (Variant rowFull) (Variant rowIn) where
   expandReturn part = full
     where
-    full :: Variant r''
+    full :: Variant rowFull
     full = V.expand cleanedPart
 
-    cleanedPart :: Variant r'
-    cleanedPart = removeWrappers @returns @r part
+    cleanedPart :: Variant rowOut
+    cleanedPart = removeWrappers @returns @rowIn part
 
 ---
 
-class RemoveWrappers (returns :: List' ReturnTL) (rin :: Row Type) (rout :: Row Type) | returns -> rin rout where
-  removeWrappers :: Variant rin -> Variant rout
+-- | Removes `Ret` and `RetVia` wrappers from variant types.
+-- |
+-- | The functional dependency `returns -> rowIn rowOut` ensures that given the
+-- | return list, both input and output row types are uniquely determined.
+-- |
+-- | - `returns`: List of return type-level specifications
+-- | - `rowIn`: Input row type (with wrappers)
+-- | - `rowOut`: Output row type (without wrappers)
+class
+  RemoveWrappers (returns :: List' ReturnTL) (rowIn :: Row Type) (rowOut :: Row Type)
+  | returns -> rowIn rowOut where
+  removeWrappers :: Variant rowIn -> Variant rowOut
 
 instance removeWrappersNil :: RemoveWrappers Nil' () ()
   where
   removeWrappers = identity
 
-instance removeWrappersConsState ::
-  ( Row.Cons symState a rout' rout
-  , Row.Cons symState (Ret a) rin' rin
-  , RemoveWrappers returns rin' rout'
+instance removeWrappersConsReturn ::
+  ( Row.Cons symState payload rowOut' rowOut
+  , Row.Cons symState (Ret payload) rowIn' rowIn
+  , RemoveWrappers rest rowIn' rowOut'
   , IsSymbol symState
-  , Row.Union rout' routx rout
+  , Row.Union rowOut' rowExtra rowOut
   ) =>
-  RemoveWrappers (MkReturnTL symState :> returns) rin rout
+  RemoveWrappers (MkReturnTL symState :> rest) rowIn rowOut
   where
-  removeWrappers = V.on (Proxy @symState) handleHead handleRest
+  removeWrappers v = out
     where
-    handleHead :: Ret a -> Variant rout
-    handleHead (Ret x) = V.inj (Proxy @symState) x
+    out :: Variant rowOut
+    out = V.on (Proxy @symState) handleHead handleRest v
 
-    handleRest :: Variant rin' -> Variant rout
-    handleRest = removeWrappers @returns @rin' >>> V.expand
+    handleHead :: Ret payload -> Variant rowOut
+    handleHead (Ret value) = V.inj (Proxy @symState) value
 
-instance removeWrappersConsStateVia ::
-  ( Row.Cons symState a rout' rout
-  , Row.Cons symState (RetVia symGuard a) rin' rin
-  , RemoveWrappers returns rin' rout'
+    handleRest :: Variant rowIn' -> Variant rowOut
+    handleRest = removeWrappers @rest @rowIn' >>> V.expand
+
+instance removeWrappersConsReturnVia ::
+  ( Row.Cons symState payload rowOut' rowOut
+  , Row.Cons symState (RetVia symGuard payload) rowIn' rowIn
+  , RemoveWrappers rest rowIn' rowOut'
   , IsSymbol symState
-  , Row.Union rout' routx rout
+  , Row.Union rowOut' rowExtra rowOut
   ) =>
-  RemoveWrappers (MkReturnViaTL symGuard symState :> returns) rin rout
+  RemoveWrappers (MkReturnViaTL symGuard symState :> rest) rowIn rowOut
   where
-  removeWrappers = V.on (Proxy @symState) handleHead handleRest
+  removeWrappers v = out
     where
-    handleHead :: RetVia symGuard a -> Variant rout
-    handleHead (RetVia x) = V.inj (Proxy @symState) x
+    out :: Variant rowOut
+    out = V.on (Proxy @symState) handleHead handleRest v
 
-    handleRest :: Variant rin' -> Variant rout
-    handleRest = removeWrappers @returns @rin' >>> V.expand
+    handleHead :: RetVia symGuard payload -> Variant rowOut
+    handleHead (RetVia value) = V.inj (Proxy @symState) value
+
+    handleRest :: Variant rowIn' -> Variant rowOut
+    handleRest = removeWrappers @rest @rowIn' >>> V.expand

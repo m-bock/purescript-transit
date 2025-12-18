@@ -146,7 +146,7 @@ updateD state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L36-L40">test/Examples/SimpleDoor.purs L36-L40</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L32-L36">test/Examples/SimpleDoor.purs L32-L36</a></sup></p>
 <!-- PD_END -->
 
 This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
@@ -177,7 +177,7 @@ type SimpleDoorTransit =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L56-L59">test/Examples/SimpleDoor.purs L56-L59</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L52-L55">test/Examples/SimpleDoor.purs L52-L55</a></sup></p>
 <!-- PD_END -->
 
 Breaking down the syntax:
@@ -214,7 +214,7 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L46-L54">test/Examples/SimpleDoor.purs L46-L54</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L42-L50">test/Examples/SimpleDoor.purs L42-L50</a></sup></p>
 <!-- PD_END -->
 
 #### The Update Function
@@ -230,13 +230,11 @@ pick:
 ```purescript
 update :: State -> Msg -> State
 update = mkUpdate @SimpleDoorTransit
-  do
-    match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed"
-  do
-    match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen"
+  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
+  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L61-L66">test/Examples/SimpleDoor.purs L61-L66</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L57-L60">test/Examples/SimpleDoor.purs L57-L60</a></sup></p>
 <!-- PD_END -->
 
 Here's how this works:
@@ -310,7 +308,7 @@ assert1 =
       (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L73-L76">test/Examples/SimpleDoor.purs L73-L76</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L67-L70">test/Examples/SimpleDoor.purs L67-L70</a></sup></p>
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -331,7 +329,7 @@ assert2 =
       [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L79-L82">test/Examples/SimpleDoor.purs L79-L82</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L73-L76">test/Examples/SimpleDoor.purs L73-L76</a></sup></p>
 <!-- PD_END -->
 
 This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -393,7 +391,7 @@ assert3 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L85-L95">test/Examples/SimpleDoor.purs L85-L95</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L79-L89">test/Examples/SimpleDoor.purs L79-L89</a></sup></p>
 <!-- PD_END -->
 
 ### Generating Diagrams and Tables
@@ -405,7 +403,7 @@ assert3 =
 To generate a state diagram, you use `TransitGraphviz.writeToFile` to render a Graphviz `.dot` file:
 
 <!-- PD_START:purs
-filePath: src/Transit/Generators/Graphviz.purs
+filePath: src/Transit/Render/Graphviz.purs
 inline: true
 pick:
   - tag: signature_or_foreign
@@ -416,7 +414,7 @@ split: true
 
 - `writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit`
 
-<p align="right"><sup>🗎 <a href="src/Transit/Generators/Graphviz.purs#L212-L212">src/Transit/Generators/Graphviz.purs L212-L212</a></sup></p>
+<p align="right"><sup>🗎 <a href="src/Transit/Render/Graphviz.purs#L239-L239">src/Transit/Render/Graphviz.purs L239-L239</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -440,7 +438,7 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L109-L120">test/Examples/SimpleDoor.purs L109-L120</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L103-L114">test/Examples/SimpleDoor.purs L103-L114</a></sup></p>
 <!-- PD_END -->
 
 The process works in two steps:
@@ -483,7 +481,7 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L122-L127">test/Examples/SimpleDoor.purs L122-L127</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L116-L121">test/Examples/SimpleDoor.purs L116-L121</a></sup></p>
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State".
@@ -695,7 +693,7 @@ unimplemented :: forall a. a
 unimplemented = unsafeCoerce "not yet implemented"
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L16-L17">test/Examples/Signatures.purs L16-L17</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L13-L14">test/Examples/Signatures.purs L13-L14</a></sup></p>
 <!-- PD_END -->
 
 The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
@@ -719,7 +717,7 @@ update = mkUpdate @DoorWithPinTransit
   (match @"DoorLocked" @"Unlock" (unimplemented :: Handler4))
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L19-L24">test/Examples/Signatures.purs L19-L24</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L16-L21">test/Examples/Signatures.purs L16-L21</a></sup></p>
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -747,7 +745,7 @@ type Handler4 =
        )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L26-L38">test/Examples/Signatures.purs L26-L38</a></sup></p>
+<p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L23-L35">test/Examples/Signatures.purs L23-L35</a></sup></p>
 <!-- PD_END -->
 
 ## Example 3: Seven Bridges of Königsberg

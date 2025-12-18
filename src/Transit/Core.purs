@@ -1,3 +1,12 @@
+-- | Core types and functions for transit specifications.
+-- |
+-- | This module provides the foundational types for representing state machine
+-- | specifications at both the type level and value level. It includes:
+-- |
+-- | - Type-level constructors for building transit specifications
+-- | - Runtime reflection of type-level specifications to values
+-- | - Core data types for matches, returns, and transit cores
+-- | - Utility functions for querying transit specifications
 module Transit.Core
   ( GuardName
   , Match(..)
@@ -32,35 +41,69 @@ import Type.Data.List (type (:>), Cons', List', Nil')
 import Type.Prelude (class IsSymbol, Proxy(..))
 
 --------------------------------------------------------------------------------
---- Types
+--- Type-level types
 --------------------------------------------------------------------------------
 
-type StateName = Symbol
-type MsgName = Symbol
-type GuardName = Symbol
+-- | Type alias for state name symbols (type-level).
+type StateNameTL = Symbol
 
+-- | Type alias for message name symbols (type-level).
+type MsgNameTL = Symbol
+
+-- | Type alias for guard name symbols (type-level).
+type GuardNameTL = Symbol
+
+-- | Type-level representation of a transit core specification.
 foreign import data TransitCoreTL :: Type
+
+-- | Constructs a type-level transit core from a list of matches.
 foreign import data MkTransitCoreTL :: List' MatchTL -> TransitCoreTL
 
+-- | Type-level representation of a match (state, message, returns).
 foreign import data MatchTL :: Type
 
-foreign import data MkMatchTL :: StateName -> MsgName -> List' ReturnTL -> MatchTL
+-- | Constructs a type-level match from a state name, message name, and list of returns.
+foreign import data MkMatchTL :: StateNameTL -> MsgNameTL -> List' ReturnTL -> MatchTL
 
+-- | Type-level representation of a return specification.
 foreign import data ReturnTL :: Type
-foreign import data MkReturnTL :: StateName -> ReturnTL
-foreign import data MkReturnViaTL :: GuardName -> StateName -> ReturnTL
+
+-- | Constructs a type-level return to a state (no guard).
+foreign import data MkReturnTL :: StateNameTL -> ReturnTL
+
+-- | Constructs a type-level return via a guard to a state.
+foreign import data MkReturnViaTL :: GuardNameTL -> StateNameTL -> ReturnTL
 
 --------------------------------------------------------------------------------
---- Reflection types
+--- Runtime types
 --------------------------------------------------------------------------------
 
+-- | Type alias for state names (runtime).
+type StateName = String
+
+-- | Type alias for message names (runtime).
+type MsgName = String
+
+-- | Type alias for guard names (runtime).
+type GuardName = String
+
+-- | A return specification indicating the next state after a transition.
+-- |
+-- | - `Return stateName`: Direct transition to a state
+-- | - `ReturnVia guardName stateName`: Conditional transition via a guard
 data Return
-  = Return String
-  | ReturnVia String String
+  = Return StateName
+  | ReturnVia GuardName StateName
 
-data TransitCore = TransitCore (Array Match)
+-- | A transit core containing all matches (transitions) in a state machine.
+newtype TransitCore = TransitCore (Array Match)
 
-data Match = Match String String (Array Return)
+-- | A match represents a transition from a state triggered by a message.
+-- |
+-- | - First `StateName`: Source state name
+-- | - Second `MsgName`: Message name
+-- | - `Array Return`: Possible return states (may include guards)
+data Match = Match StateName MsgName (Array Return)
 
 instance Show Match where
   show = genericShow
@@ -132,29 +175,41 @@ instance (IsSymbol guardName, IsSymbol stateName) => Reflectable (MkReturnViaTL 
 --- Update implementation types
 --------------------------------------------------------------------------------
 
+-- | Type for match implementations in the update function builder.
 newtype MatchImpl (symStateIn :: Symbol) (symMsgIn :: Symbol) stateIn msgIn (m :: Type -> Type) stateOut =
   MatchImpl (stateIn -> msgIn -> m stateOut)
 
 derive instance Newtype (MatchImpl symStateIn symMsgIn stateIn msgIn m stateOut) _
 
+-- | Wrapper for return values via a guard condition.
 newtype RetVia (symGuard :: Symbol) a = RetVia a
 
 derive instance Newtype (RetVia symGuard a) _
 
+-- | Wrapper for direct return values.
 newtype Ret a = Ret a
 
 derive instance Newtype (Ret a) _
 
----
+--------------------------------------------------------------------------------
+--- Type class for transit specifications
+--------------------------------------------------------------------------------
 
+-- | Type class that identifies a type as a valid transit specification.
 class IsTransitSpec :: forall spec. spec -> TransitCoreTL -> Constraint
 class IsTransitSpec spec core | spec -> core
 
 instance IsTransitSpec (MkTransitCoreTL xs) (MkTransitCoreTL xs)
 
----
+--------------------------------------------------------------------------------
+--- Utility functions
+--------------------------------------------------------------------------------
 
-getStateNames :: TransitCore -> Array String
+-- | Extracts all unique state names from a transit core.
+-- |
+-- | Returns all states that appear as either source states or target states
+-- | in any match, with duplicates removed.
+getStateNames :: TransitCore -> Array StateName
 getStateNames (TransitCore matches) = Array.nub $ Array.concatMap
   ( \(Match from _ returns) -> [ from ] <> map
       ( case _ of
@@ -165,5 +220,9 @@ getStateNames (TransitCore matches) = Array.nub $ Array.concatMap
   )
   matches
 
-getMatchesForState :: String -> TransitCore -> Array Match
+-- | Gets all matches (transitions) that originate from a given state.
+-- |
+-- | Returns an array of all matches where the source state matches the
+-- | provided state name.
+getMatchesForState :: StateName -> TransitCore -> Array Match
 getMatchesForState stateName (TransitCore matches) = Array.filter (\(Match from _ _) -> from == stateName) matches

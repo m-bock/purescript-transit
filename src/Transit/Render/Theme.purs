@@ -1,4 +1,10 @@
-module Transit.Colors
+-- | Color themes and harmonies for visualization generators.
+-- |
+-- | This module provides color themes and color harmonies for use in
+-- | visualization generators (e.g., Graphviz). Themes define overall
+-- | color schemes, while color harmonies define coordinated colors
+-- | for nodes and edges in graphs.
+module Transit.Render.Theme
   ( ColorHarmony
   , Theme
   , getColorHarmony
@@ -25,6 +31,7 @@ import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 import Partial.Unsafe (unsafeCrashWith)
 
+-- | Base colors used for generating color harmonies.
 data BaseColor
   = SpringGreen
   | LemonYellow
@@ -52,34 +59,26 @@ instance Enum BaseColor where
   succ = genericSucc
   pred = genericPred
 
+-- | All base colors in order.
 allBaseColors :: NonEmptyArray BaseColor
 allBaseColors = NEA.cons' bottom (drop 1 $ enumFromTo bottom top)
 
+-- | Converts a base color to its HSL color representation.
 baseColorToColor :: BaseColor -> Color
 baseColorToColor = case _ of
-  OceanBlue ->
-    Color.hsl 214.4 0.841 0.557
-  AquaBlue ->
-    Color.hsl 194.6 0.857 0.643
-  SpringGreen ->
-    Color.hsl 82.7 0.780 0.555
-  MintTeal ->
-    Color.hsl 147.6 0.628 0.471
-  LemonYellow ->
-    Color.hsl 46.8 1.000 0.500
-  SunsetOrange ->
-    Color.hsl 28.2 0.866 0.620
-  VividRed ->
-    Color.hsl 0.0 0.787 0.631
-  CoralPink ->
-    Color.hsl 345.5 1.000 0.661
-  SkyCyan ->
-    Color.hsl 203.2 0.709 0.514
-  MagentaGlow ->
-    Color.hsl 279.3 0.857 0.690
-  OliveGreen ->
-    Color.hsl 151.0 0.635 0.410
+  OceanBlue -> Color.hsl 214.4 0.841 0.557
+  AquaBlue -> Color.hsl 194.6 0.857 0.643
+  SpringGreen -> Color.hsl 82.7 0.780 0.555
+  MintTeal -> Color.hsl 147.6 0.628 0.471
+  LemonYellow -> Color.hsl 46.8 1.000 0.500
+  SunsetOrange -> Color.hsl 28.2 0.866 0.620
+  VividRed -> Color.hsl 0.0 0.787 0.631
+  CoralPink -> Color.hsl 345.5 1.000 0.661
+  SkyCyan -> Color.hsl 203.2 0.709 0.514
+  MagentaGlow -> Color.hsl 279.3 0.857 0.690
+  OliveGreen -> Color.hsl 151.0 0.635 0.410
 
+-- | Creates a light color harmony from a base color.
 mkLightColorHarmony :: BaseColor -> Color -> ColorHarmony
 mkLightColorHarmony = case _ of
   OceanBlue -> \color ->
@@ -160,86 +159,88 @@ mkLightColorHarmony = case _ of
     , edgeColor: color
     }
 
+-- | Creates a dark color harmony from a base color.
 mkDarkColorHarmony :: BaseColor -> Color -> ColorHarmony
-mkDarkColorHarmony bc = case bc of
+mkDarkColorHarmony baseColor = case baseColor of
   OceanBlue -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SunsetOrange -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   VividRed -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   AquaBlue -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SpringGreen -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MintTeal -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   SkyCyan -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   LemonYellow -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   MagentaGlow -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   OliveGreen -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
   CoralPink -> \color ->
     { nodeBg: color
     , nodeBorder: color
-    , nodeFont: Color.darken 0.1 (mkLightColorHarmony bc color).nodeFont
+    , nodeFont: Color.darken 0.1 (mkLightColorHarmony baseColor color).nodeFont
     , edgeFont: Color.lighten 0.2 color
     , edgeColor: color
     }
 
+-- | A set of coordinated colors for nodes and edges in a graph.
 type ColorHarmony =
   { nodeBg :: Color
   , nodeFont :: Color
@@ -248,6 +249,7 @@ type ColorHarmony =
   , edgeColor :: Color
   }
 
+-- | A complete color theme for graph visualization.
 type Theme =
   { bgColor :: Color
   , titleColor :: Color
@@ -256,14 +258,17 @@ type Theme =
   , undirectedEdgeFontColor :: Color
   }
 
+-- | Gets a color harmony from a theme by index (cycles through available harmonies).
 getColorHarmony :: Theme -> Int -> ColorHarmony
 getColorHarmony theme index = indexMod theme.colorHarmonies index
 
+-- | Gets an element from a non-empty array by index, cycling through the array.
 indexMod :: forall a. NonEmptyArray a -> Int -> a
 indexMod xs index = case NEA.index xs (index `mod` NEA.length xs) of
   Just x -> x
   Nothing -> unsafeCrashWith "impossible: index out of bounds"
 
+-- | Light theme with colorful harmonies.
 themeHarmonyLight :: Theme
 themeHarmonyLight =
   { bgColor: Color.rgb 255 255 255
@@ -273,6 +278,7 @@ themeHarmonyLight =
   , undirectedEdgeFontColor: Color.rgb 0 0 0
   }
 
+-- | Dark theme with colorful harmonies.
 themeHarmonyDark :: Theme
 themeHarmonyDark =
   { bgColor: Color.rgb 20 20 20
@@ -282,6 +288,7 @@ themeHarmonyDark =
   , undirectedEdgeFontColor: Color.rgb 255 255 255
   }
 
+-- | Light theme with high contrast (black and white).
 themeContrastLight :: Theme
 themeContrastLight =
   { bgColor: Color.white
@@ -297,6 +304,7 @@ themeContrastLight =
   , undirectedEdgeFontColor: Color.black
   }
 
+-- | Dark theme with high contrast (white and black).
 themeContrastDark :: Theme
 themeContrastDark =
   { bgColor: Color.black
@@ -312,6 +320,7 @@ themeContrastDark =
   , undirectedEdgeFontColor: Color.white
   }
 
+-- | Light theme with gradient-style colors.
 themeGradientLight :: Theme
 themeGradientLight =
   { bgColor: Color.rgb 255 255 255
@@ -327,6 +336,7 @@ themeGradientLight =
   , undirectedEdgeFontColor: Color.rgb 0 0 0
   }
 
+-- | Dark theme with gradient-style colors.
 themeGradientDark :: Theme
 themeGradientDark =
   { bgColor: Color.rgb 0 0 0
@@ -341,3 +351,4 @@ themeGradientDark =
   , undirectedEdgeColor: Color.rgb 0 0 0
   , undirectedEdgeFontColor: Color.rgb 0 0 0
   }
+

@@ -1,12 +1,18 @@
+-- | General purpose graph data structure for representing directed graphs with labeled edges.
+-- |
+-- | This module provides a simple graph representation where:
+-- | - Edges are labeled (each edge has an associated label value)
+-- | - Nodes are values themselves
+-- | - Supports directed edges, cycles, and multiple edges between nodes
 module Transit.Data.Graph
-  ( Connection
+  ( Edge
   , Graph
-  , fromConnections
+  , fromEdges
   , getIncomingEdges
   , getNodes
   , getOutgoingEdges
   , hasEdge
-  , getConnections
+  , getEdges
   , mapGraph
   , isUndirected
   ) where
@@ -17,38 +23,93 @@ import Data.Array as Array
 import Data.Set (Set)
 import Data.Set as Set
 
-type Connection e n = { fromNode :: n, edge :: e, toNode :: n }
+-- | An edge in the graph connecting two nodes with a label.
+-- |
+-- | - `edgeLabel`: The type of edge labels
+-- | - `node`: The type of node values
+type Edge edgeLabel node =
+  { fromNode :: node
+  , edgeLabel :: edgeLabel
+  , toNode :: node
+  }
 
-hasEdge :: forall e n. Ord e => Ord n => Connection e n -> Graph e n -> Boolean
-hasEdge e (Graph xs) = Set.member e xs
+-- | A directed graph that supports cycles and multiple edges.
+-- |
+-- | Supports:
+-- | - Directed edges (fromNode -> toNode)
+-- | - Cycles (paths that return to a node, possibly through intermediate nodes)
+-- | - Multiple edges (same nodes can be connected by different edges)
+newtype Graph edgeLabel node = Graph (Set (Edge edgeLabel node))
 
-newtype Graph e n = Graph (Set (Connection e n)) -- directed, cyclic, multiedge
-
-instance (Show e, Show n) => Show (Graph e n) where
+instance (Show edgeLabel, Show node) => Show (Graph edgeLabel node) where
   show (Graph xs) = show xs
 
-mapGraph :: forall e n e' n'. Ord e' => Ord n' => (e -> e') -> (n -> n') -> Graph e n -> Graph e' n'
-mapGraph f g (Graph xs) = Graph $ Set.map (\conn -> { fromNode: g conn.fromNode, edge: f conn.edge, toNode: g conn.toNode }) xs
+-- | Creates a graph from a set of edges.
+fromEdges :: forall edgeLabel node. Set (Edge edgeLabel node) -> Graph edgeLabel node
+fromEdges edges = Graph edges
 
-fromConnections :: forall e n. Set (Connection e n) -> Graph e n
-fromConnections edges = Graph edges
+-- | Extracts all edges from a graph.
+getEdges :: forall edgeLabel node. Graph edgeLabel node -> Set (Edge edgeLabel node)
+getEdges (Graph edges) = edges
 
-getConnections :: forall e n. Graph e n -> Set (Connection e n)
-getConnections (Graph xs) = xs
+-- | Checks if an edge exists in the graph.
+hasEdge :: forall edgeLabel node. Ord edgeLabel => Ord node => Edge edgeLabel node -> Graph edgeLabel node -> Boolean
+hasEdge edge (Graph edges) = Set.member edge edges
 
-getNodes :: forall e n. Ord n => Graph e n -> Set n
-getNodes (Graph xs) = Set.fromFoldable $ Array.concatMap (\{ fromNode, toNode } -> [ fromNode, toNode ]) (Set.toUnfoldable xs)
+-- | Extracts all unique nodes from the graph.
+getNodes :: forall edgeLabel node. Ord node => Graph edgeLabel node -> Set node
+getNodes (Graph edges) =
+  Set.fromFoldable $
+    Array.concatMap (\{ fromNode, toNode } -> [ fromNode, toNode ])
+      (Set.toUnfoldable edges)
 
-getOutgoingEdges :: forall e n. Ord e => Ord n => n -> Graph e n -> Set (Connection e n)
-getOutgoingEdges node (Graph xs) = Set.filter (\{ fromNode } -> fromNode == node) xs
+-- | Gets all outgoing edges from a given node.
+getOutgoingEdges :: forall edgeLabel node. Ord edgeLabel => Ord node => node -> Graph edgeLabel node -> Set (Edge edgeLabel node)
+getOutgoingEdges node (Graph edges) =
+  Set.filter (\{ fromNode } -> fromNode == node) edges
 
-getIncomingEdges :: forall e n. Ord e => Ord n => n -> Graph e n -> Set (Connection e n)
-getIncomingEdges node (Graph xs) = Set.filter (\{ toNode } -> toNode == node) xs
+-- | Gets all incoming edges to a given node.
+getIncomingEdges :: forall edgeLabel node. Ord edgeLabel => Ord node => node -> Graph edgeLabel node -> Set (Edge edgeLabel node)
+getIncomingEdges node (Graph edges) =
+  Set.filter (\{ toNode } -> toNode == node) edges
 
-isUndirected :: forall e n. Ord n => Ord e => Graph e n -> Boolean
-isUndirected g =
+-- | Maps over both edge label and node types in the graph.
+mapGraph
+  :: forall edgeLabel node edgeLabel' node'
+   . Ord edgeLabel'
+  => Ord node'
+  => (edgeLabel -> edgeLabel')
+  -> (node -> node')
+  -> Graph edgeLabel node
+  -> Graph edgeLabel' node'
+mapGraph mapEdgeLabel mapNode (Graph edges) =
+  Graph $
+    Set.map
+      ( \edge ->
+          { fromNode: mapNode edge.fromNode
+          , edgeLabel: mapEdgeLabel edge.edgeLabel
+          , toNode: mapNode edge.toNode
+          }
+      )
+      edges
+
+-- | Checks if the graph is undirected (all edges have symmetric counterparts).
+-- |
+-- | A graph is considered undirected if for every edge from A to B,
+-- | there exists an edge from B to A with the same edge label.
+isUndirected :: forall edgeLabel node. Ord node => Ord edgeLabel => Graph edgeLabel node -> Boolean
+isUndirected graph =
   let
-    connections = getConnections g
+    edges = getEdges graph
   in
-    Array.all (\conn -> hasEdge { fromNode: conn.toNode, edge: conn.edge, toNode: conn.fromNode } g) (Set.toUnfoldable connections)
+    Array.all
+      ( \edge ->
+          hasEdge
+            { fromNode: edge.toNode
+            , edgeLabel: edge.edgeLabel
+            , toNode: edge.fromNode
+            }
+            graph
+      )
+      (Set.toUnfoldable edges)
 

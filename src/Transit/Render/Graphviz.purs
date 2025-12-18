@@ -1,4 +1,9 @@
-module Transit.Generators.Graphviz
+-- | Generator for Graphviz DOT language graphs from transit specifications.
+-- |
+-- | This module converts state machine specifications into Graphviz graphs
+-- | for visualization, supporting various rendering options including
+-- | decision nodes, undirected edges, and customizable themes.
+module Transit.Render.Graphviz
   ( mkGraphvizGraph
   , Options
   , defaultOptions
@@ -17,12 +22,13 @@ import Effect.Class.Console as Console
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
-import Transit.Colors (ColorHarmony, Theme, getColorHarmony, themeHarmonyLight)
-import Transit.Core (Match(..), Return(..), TransitCore(..), getMatchesForState, getStateNames)
-import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toText)
+import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeHarmonyLight)
+import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
+import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toDotStr)
 import Transit.Data.DotLang as D
 import Transit.StateGraph (StateNode)
 
+-- | Generates a Graphviz graph from a transit specification.
 mkGraphvizGraph :: Options -> TransitCore -> GraphvizGraph
 mkGraphvizGraph options transit =
   GraphvizGraph $ join
@@ -33,7 +39,8 @@ mkGraphvizGraph options transit =
     , join $ mapWithIndex (mkStateSections transit options) $ getStateNames transit
     ]
 
-mkStateSections :: TransitCore -> Options -> Int -> String -> Array D.Section
+-- | Creates sections for a single state (node, entry point edges, and transition edges).
+mkStateSections :: TransitCore -> Options -> Int -> StateName -> Array D.Section
 mkStateSections transit options i stateName = join
   [ pure $ SecNode $ mkStateNode options colors stateName
   , if Array.elem stateName options.entryPoints then
@@ -46,6 +53,7 @@ mkStateSections transit options i stateName = join
   where
   colors = getColorHarmony options.theme i
 
+-- | Creates sections for a match (edge or decision node structure).
 mkMatchSections :: ColorHarmony -> TransitCore -> Options -> Match -> Array D.Section
 mkMatchSections colors transit options (Match from msg returns) = case returns of
   [ Return to ] ->
@@ -62,14 +70,22 @@ mkMatchSections colors transit options (Match from msg returns) = case returns o
     else
       mkDirectEdges from msg colors manyReturns
 
-isCanonicalFirst :: String -> String -> Boolean
-isCanonicalFirst from to = (from > to)
+-- | Checks if the first state name is lexicographically greater than the second.
+-- | Used to determine canonical ordering for undirected edges.
+isCanonicalFirst :: StateName -> StateName -> Boolean
+isCanonicalFirst from to = from > to
 
-hasComplementaryEdge :: String -> String -> String -> TransitCore -> Boolean
+-- | Checks if there exists a complementary edge (reverse direction with same message).
+hasComplementaryEdge :: StateName -> StateName -> MsgName -> TransitCore -> Boolean
 hasComplementaryEdge from to msg (TransitCore matches) =
-  Array.any (\(Match from' msg' returns') -> from' == to && msg' == msg && returns' == [ Return from ]) matches
+  Array.any
+    ( \(Match from' msg' returns') ->
+        from' == to && msg' == msg && returns' == [ Return from ]
+    )
+    matches
 
-mkDirectEdges :: String -> String -> ColorHarmony -> Array Return -> Array D.Section
+-- | Creates direct edges from a state to multiple target states.
+mkDirectEdges :: StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
 mkDirectEdges from msg colors returns = Array.concatMap
   ( case _ of
       Return to -> [ SecEdge $ mkEdgeMsg from to colors msg ]
@@ -77,7 +93,8 @@ mkDirectEdges from msg colors returns = Array.concatMap
   )
   returns
 
-mkDecisionNodeSections :: String -> String -> ColorHarmony -> Array Return -> Array D.Section
+-- | Creates a decision node structure for multiple returns from a single match.
+mkDecisionNodeSections :: StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
 mkDecisionNodeSections from msg colors manyReturns =
   let
     decisionNode = "decision_" <> from <> "_" <> msg
@@ -88,11 +105,13 @@ mkDecisionNodeSections from msg colors manyReturns =
       , concatMap (mkDecisionEdges decisionNode colors) manyReturns
       ]
 
-mkDecisionEdges :: String -> ColorHarmony -> Return -> Array D.Section
+-- | Creates edges from a decision node to target states.
+mkDecisionEdges :: StateName -> ColorHarmony -> Return -> Array D.Section
 mkDecisionEdges decisionNode colors = case _ of
   Return to -> [ SecEdge $ mkEdgeGuard decisionNode to colors Nothing ]
   ReturnVia guard to -> [ SecEdge $ mkEdgeGuard decisionNode to colors (Just guard) ]
 
+-- | Creates global graph attributes.
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
   catMaybes
@@ -106,6 +125,7 @@ mkGlobalAttrs options =
     , pure $ D.fontColor options.theme.titleColor
     ]
 
+-- | Creates a state node with styling.
 mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
 mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
   [ D.shapeBox
@@ -120,6 +140,7 @@ mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f ->
   , D.penWidth 1.0
   ]
 
+-- | Creates an initialization node (entry point marker).
 mkInitNode :: String -> D.Node
 mkInitNode name = D.Node name Nothing
   [ D.shapeCircle
@@ -132,7 +153,8 @@ mkInitNode name = D.Node name Nothing
   , D.penWidth 0.0
   ]
 
-mkInitEdge :: String -> String -> D.Edge
+-- | Creates an edge from the initialization node to an entry point state.
+mkInitEdge :: StateName -> StateName -> D.Edge
 mkInitEdge from to = D.Edge from to
   [ D.color (Color.rgb 140 140 140)
   , D.fontSize 12
@@ -140,19 +162,20 @@ mkInitEdge from to = D.Edge from to
   , D.penWidth 1.8
   ]
 
-mkUndirectedEdge :: String -> String -> String -> D.Edge
+-- | Creates an undirected edge (bidirectional) between two states.
+mkUndirectedEdge :: StateName -> StateName -> MsgName -> D.Edge
 mkUndirectedEdge from to label = D.Edge from to
   [ D.color (Color.rgb 140 140 140)
   , D.fontColor (Color.rgb 140 140 140)
   , D.fontSize 12
   , D.labelHtmlBold label
-  , D.arrowSize 1.5
+  , D.arrowSize 0.7
   , D.penWidth 2.0
   , D.dirBoth
-  , D.arrowSize 0.7
   ]
 
-mkEdgeMsg :: String -> String -> ColorHarmony -> String -> D.Edge
+-- | Creates a directed edge with a message label.
+mkEdgeMsg :: StateName -> StateName -> ColorHarmony -> MsgName -> D.Edge
 mkEdgeMsg from to colors label = D.Edge from to
   [ D.color colors.edgeColor
   , D.fontColor colors.edgeFont
@@ -162,7 +185,8 @@ mkEdgeMsg from to colors label = D.Edge from to
   , D.penWidth 1.8
   ]
 
-mkEdgeGuard :: String -> String -> ColorHarmony -> Maybe String -> D.Edge
+-- | Creates an edge from a decision node to a target state, optionally with a guard label.
+mkEdgeGuard :: StateName -> StateName -> ColorHarmony -> Maybe GuardName -> D.Edge
 mkEdgeGuard from to colors mayLabel = D.Edge from to
   $ catMaybes
       [ pure $ D.color colors.edgeColor
@@ -170,10 +194,10 @@ mkEdgeGuard from to colors mayLabel = D.Edge from to
       , pure $ D.fontSize 10
       , pure $ D.arrowSize 0.5
       , map D.labelHtmlItalic mayLabel
-      , pure $ D.penWidth 1.8
       , pure $ D.penWidth 1.0
       ]
 
+-- | Creates a decision node (diamond shape) for branching transitions.
 mkDecisionNode :: String -> ColorHarmony -> D.Node
 mkDecisionNode name colors = D.Node name Nothing
   [ D.shapeDiamond
@@ -188,16 +212,18 @@ mkDecisionNode name colors = D.Node name Nothing
   , D.height 0.3
   ]
 
+-- | Configuration options for graph generation.
 type Options =
   { title :: Maybe String
   , theme :: Theme
   , globalAttrsRaw :: Maybe String
-  , nodeAttrsRaw :: Maybe (String -> String)
+  , nodeAttrsRaw :: Maybe (StateName -> String)
   , useDecisionNodes :: Boolean
   , useUndirectedEdges :: Boolean
-  , entryPoints :: Array String
+  , entryPoints :: Array StateName
   }
 
+-- | Default options for graph generation.
 defaultOptions :: Options
 defaultOptions =
   { title: Nothing
@@ -209,12 +235,14 @@ defaultOptions =
   , entryPoints: []
   }
 
+-- | Writes a Graphviz graph to a file with customizable options.
 writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit
-writeToFile path sg mkOptions = do
+writeToFile path transitCore mkOptions = do
   FS.writeTextFile UTF8 path
-    (toText (mkGraphvizGraph (mkOptions defaultOptions) sg))
+    (toDotStr (mkGraphvizGraph (mkOptions defaultOptions) transitCore))
   Console.log $ "Wrote graphviz graph to " <> path
 
+-- | Writes a Graphviz graph to a file with default options.
 writeToFile_ :: FilePath -> TransitCore -> Effect Unit
-writeToFile_ path sg = writeToFile path sg identity
+writeToFile_ path transitCore = writeToFile path transitCore identity
 

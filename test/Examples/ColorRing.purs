@@ -9,8 +9,8 @@ import Data.Variant (Variant)
 import Effect (Effect)
 import Test.Spec (Spec)
 import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
-import Transit.Colors (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
-import Transit.Generators.Graphviz as TransitGraphviz
+import Transit.Render.Theme (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
+import Transit.Render.Graphviz as TransitGraphviz
 import Type.Function (type ($))
 import Type.Prelude (Proxy(..))
 
