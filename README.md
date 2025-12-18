@@ -35,7 +35,7 @@
 
 # Transit - Type-Safe State Machines
 
-**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using this specification, and the compiler ensures your implementation matches it—eliminating bugs from invalid transitions, missing cases, or documentation drift.
+**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using this specification, and the compiler ensures your implementation matches it — eliminating bugs from invalid transitions, missing cases, or documentation drift.
 
 ## Introduction
 
@@ -51,9 +51,11 @@
 
 All code examples in this documentation are extracted from actual, type-checked PureScript source files. Also, whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite. At the bottom of every code example you can find a link to the actual source file. So you can get a better picture of the context and get information about the imports used.
 
+**Terminology note**: Throughout this documentation, the terms _message_, _action_, and _transition_ are used interchangeably to refer to the events that trigger state changes[^terminology]. In **Transit**'s type system, these correspond to the message types in your `Msg` variant.
+
 ### Installation
 
-Transit is published to Pursuit[^pursuit]. You can install it with `spago`:
+**Transit** is published to Pursuit[^pursuit]. You can install it with `spago`:
 
 ```bash
 spago install transit
@@ -67,7 +69,7 @@ Let's start with a simple door state machine to demonstrate **Transit**'s core c
 
 ### The State Machine
 
-Think of a door that can be either open or closed. When it's open, you can close it. When it's closed, you can open it. That's it—no other actions make sense. You can't open a door that's already open, and you can't close a door that's already closed. This simple behavior is what we're modeling here.
+Think of a door that can be either open or closed. When it's open, you can close it. When it's closed, you can open it. That's it — no other actions make sense. You can't open a door that's already open, and you can't close a door that's already closed. This simple behavior is what we're modeling here.
 
 Before diving into the code, let's visualize our simple door state machine. This will help you understand the structure we're about to implement.
 
@@ -98,7 +100,7 @@ wrapNl: true
 <table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table>
 <!-- PD_END -->
 
-Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions—like trying to open an already open door—simply don't appear in the table.
+Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions — like trying to open an already open door — simply don't appear in the table.
 
 Now let's see how we represent this in PureScript code.
 
@@ -126,7 +128,7 @@ data MsgD = Close | Open
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L28-L30">test/Examples/SimpleDoor.purs L28-L30</a></sup></p>
 <!-- PD_END -->
 
-The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier—each state and each transition from the diagram has a corresponding value in these types.
+The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier — each state and each transition from the diagram has a corresponding value in these types.
 
 #### The update function
 
@@ -153,8 +155,12 @@ This function handles the two valid transitions we saw in the diagram: closing a
 
 While this approach works and is straightforward, it has some drawbacks:
 
+---
+
+---
+
 - **No compile-time safety**: The compiler won't catch if you forget to handle a valid transition or if you add a new state but forget to update the function
-- **Documentation drift**: If you update the state diagram, there's nothing ensuring the code stays in sync—you have to remember to update both manually
+- **Documentation drift**: If you update the state diagram, there's nothing ensuring the code stays in sync — you have to remember to update both manually
 
 ### State Machine Implementation II: The Transit Approach
 
@@ -313,7 +319,7 @@ assert1 =
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
 
-This test only checks the final result. To be more thorough, we should also verify that each step along the way works correctly. The `scanl` function is perfect for this—it shows us all the intermediate states, not just the final one.
+This test only checks the final result. To be more thorough, we should also verify that each step along the way works correctly. The `scanl` function is perfect for this — it shows us all the intermediate states, not just the final one.
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -332,7 +338,7 @@ assert2 =
 <p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L73-L76">test/Examples/SimpleDoor.purs L73-L76</a></sup></p>
 <!-- PD_END -->
 
-This test does the same thing—starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
+This test does the same thing — starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
 
 Since we'll want to write more of these tests for further examples, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
 
@@ -464,7 +470,7 @@ dot -Tpng graphs/simple-door.dot -o graphs/simple-door.png
 
 In addition to state diagrams, you can also generate transition tables from the same specification. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
 
-The process is identical—you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
+The process is identical — you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
 
 <!-- PD_START:purs
 filePath: test/Examples/SimpleDoor.purs
@@ -494,7 +500,7 @@ In this example, we've seen how **Transit** helps you build type-safe state mach
 
 1. **Define the state machine** using **Transit**'s type-level DSL specification
 2. **Implement the update function** using `mkUpdate` with `match` clauses that the compiler verifies against the specification
-3. **Generate documentation** automatically—both state diagrams and transition tables—from the same specification
+3. **Generate documentation** automatically — both state diagrams and transition tables — from the same specification
 
 The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.
 
@@ -514,7 +520,7 @@ Now let's extend our door to support PIN-based locking. In this enhanced version
 
 In this example, the `DoorLocked` state stores a PIN code, and the `Unlock` message includes the entered PIN. The unlock operation can succeed (transitioning to `DoorClosed`) or fail (staying in `DoorLocked`), depending on whether the entered PIN matches the stored one.
 
-Notice the diamond node in the state diagram—this represents a conditional transition where the outcome depends on runtime data.
+Notice the diamond node in the state diagram — this represents a conditional transition where the outcome depends on runtime data.
 
 The transition table shows both possible outcomes:
 
@@ -696,9 +702,9 @@ unimplemented = unsafeCoerce "not yet implemented"
 <p align="right"><sup>🗎 <a href="test/Examples/Signatures.purs#L13-L14">test/Examples/Signatures.purs L13-L14</a></sup></p>
 <!-- PD_END -->
 
-The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types—each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
+The `update` function demonstrates the type signatures that **Transit** enforces. The straightforward part is the `State` and `Msg` types — each match handler receives the exact state and message types for that transition. However, the return type is more complex: depending on the specification, a transition may allow multiple possible target states, so we need to return a subset of the state type.
 
-Unfortunately, PureScript's ADTs (Algebraic Data Types) don't allow expressing a subset of cases from a union type. This is where `Variant` comes in—it's perfect for representing a subset of cases from a union type. Each match handler must return a `Variant` type that precisely matches the possible target states defined in the DSL specification.
+Unfortunately, PureScript's ADTs (Algebraic Data Types) don't allow expressing a subset of cases from a union type. This is where `Variant` comes in — it's perfect for representing a subset of cases from a union type. Each match handler must return a `Variant` type that precisely matches the possible target states defined in the DSL specification.
 
 This approach requires internal conversion between ADT and `Variant` representations. If you'd like to avoid this conversion overhead, you can define your `State` and `Msg` types as `Variant` directly from the start, as shown in the next chapter.
 
@@ -752,7 +758,7 @@ type Handler4 =
 
 > Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
-So far, we've seen how **Transit** helps you build type-safe state machines and generate state diagrams and transition tables. But the power of **Transit** extends far beyond documentation generation. The reflected data structure—the term-level representation of your type-level DSL specification—can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
+So far, we've seen how **Transit** helps you build type-safe state machines and generate state diagrams and transition tables. But the power of **Transit** extends far beyond documentation generation. The reflected data structure — the term-level representation of your type-level DSL specification — can be converted into a general-purpose graph data structure, enabling sophisticated graph analysis.
 
 This example demonstrates this capability using the famous [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem. In 1736, the mathematician Leonhard Euler[^euler] was asked whether it was possible to walk through the city of Königsberg crossing each of its seven bridges exactly once. Euler's solution to this problem laid the foundation for graph theory.
 
@@ -780,7 +786,7 @@ wrapNl: true
 <table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandD</td></tr></tbody></table>
 <!-- PD_END -->
 
-While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions—one in each direction:
+While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions — one in each direction:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -884,11 +890,11 @@ assert1 =
 <p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90">test/Examples/BridgesKoenigsberg.purs L78-L90</a></sup></p>
 <!-- PD_END -->
 
-The transition table shows the undirected nature of the graph—each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
+The transition table shows the undirected nature of the graph — each bridge can be crossed in both directions. When generating the visualization, the renderer summarizes these bidirectional edges into a single undirected edge:
 
 ### Graph Analysis
 
-The real power of **Transit** becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the **Transit** specification into a `StateGraph`—a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
+The real power of **Transit** becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the **Transit** specification into a `StateGraph` — a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
 
 Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
 
@@ -942,7 +948,7 @@ To perform the analysis, we convert the reflected **Transit** specification into
 The key steps are:
 
 1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesKoenigsbergTransit)` converts the type-level DSL to a term-level representation
-2. **Convert to a graph**: `mkStateGraph transit` transforms the **Transit** specification into a `StateGraph`—a general-purpose graph data structure
+2. **Convert to a graph**: `mkStateGraph transit` transforms the **Transit** specification into a `StateGraph` — a general-purpose graph data structure
 3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
 
 <!-- PD_START:purs
@@ -1152,7 +1158,7 @@ assert2 =
 
 > Full source code: _[test/Examples/Monadic.purs](test/Examples/Monadic.purs)_
 
-So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions—such as logging, making HTTP requests, or interacting with external systems.
+So far, all our examples have used pure update functions with the type signature `State -> Msg -> State`. However, sometimes you need to perform side effects during state transitions — such as logging, making HTTP requests, or interacting with external systems.
 
 For these cases, **Transit** provides `mkUpdateGenericM`, which creates update functions that operate in a monadic context. The type signature becomes `State -> Msg -> m State`, where `m` is any `Monad`[^monads] (commonly `Effect`, `Aff`, or `ReaderT`).
 
@@ -1186,7 +1192,7 @@ update = mkUpdateM @SimpleDoorTransit
 <p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L10-L19">test/Examples/Monadic.purs L10-L19</a></sup></p>
 <!-- PD_END -->
 
-Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way—you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
+Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way — you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
 
 ### Error handling
 
@@ -1258,4 +1264,5 @@ assert2 =
 [^euler-theorem]: Euler's theorem on Eulerian paths states that a connected graph has an Eulerian circuit if and only if every vertex has even degree, and has an Eulerian trail if and only if exactly zero or two vertices have odd degree.
 [^haus-nikolaus]: "Das Haus vom Nikolaus" is a traditional German puzzle that dates back to at least the 19th century. The name comes from the fact that the phrase "Das ist das Haus vom Nikolaus" (This is the house of Santa Claus) has exactly 8 syllables, matching the 8 edges of the house graph.
 [^monads]: In PureScript, `Effect` represents synchronous side effects, `Aff` represents asynchronous effects, and `ReaderT` is a monad transformer that provides a read-only environment. These are commonly used for different kinds of side effects in PureScript applications.
-[^servant]: [Servant](https://haskell-servant.readthedocs.io/) is a Haskell library for building type-safe web APIs. It uses type-level programming to ensure that API routes, request/response types, and documentation stay in sync, similar to how Transit ensures state machine specifications and implementations stay in sync.
+[^servant]: [Servant](https://haskell-servant.readthedocs.io/) is a Haskell library for building type-safe web APIs.
+[^terminology]: Technically, a **transition** is the complete path from one state to another, which includes the message/action that triggers it and optionally a guard condition. However, in practice, we often refer to the message/action itself as "the transition" for brevity. For example, "the `Close` transition" is shorthand for "the transition triggered by the `Close` message/action".

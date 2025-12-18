@@ -1,10 +1,3 @@
-readme-split:
-    rm -rf readme
-    scripts/split-markdown.js split README.md readme 3
-
-readme-merge:
-    scripts/split-markdown.js merge readme README.md
-
 gen-docs:
     PATCHDOWN_FILE_PATH=README.md npx spago run -m Docs.Main
 
@@ -63,3 +56,6 @@ nix:
 gen-vega:
     find bench -name "*vl.json" -type f -exec sh -c 'vl2vg "$1" > "${1%.vl.json}.vg.json"' _ {} \; && \
     find bench -name "*.vg.json" -type f -exec sh -c 'vg2svg "$1" > "${1%.vg.json}.svg"' _ {} \;
+
+watch:
+    echo README.md | entr -c just gen
