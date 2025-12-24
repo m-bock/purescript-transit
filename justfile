@@ -1,8 +1,14 @@
-gen-docs:
-    PATCHDOWN_FILE_PATH=README.md npx spago run -m Docs.Main
+gen-examples:
+    npx spago run -m Docs.MainExamples
+
+gen-patchdown:
+    PATCHDOWN_FILE_PATH=README.md npx spago run -m Patchdown
 
 gen-svgs:
     find graphs assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
+
+gen-html-prettier:
+    npx prettier --write "graphs/*.html"
 
 gen-doctoc:
     npx doctoc --maxlevel 3 README.md
@@ -23,26 +29,32 @@ gen-book:
 build:
     npx spago build
 
+build-es:
+    rm -rf output-es
+    npx spago build && npx purs-backend-es build
+
 bench-quick:
     just build && \
-    export ITERATIONS=10000 && just bench-js && just bench-es
+    just build-es && \
+    export ITERATIONS=1000 && just bench-js && just bench-es
 
 bench:
     just build && \
-    export ITERATIONS=1000000 && just bench-js && just bench-es
+    just build-es && \
+    export ITERATIONS=100000 && just bench-js && just bench-es
 
 bench-js:
     BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
 
 bench-es:
-    rm -rf output-es
-    npx purs-backend-es build
     BACKEND=ES node -e 'import { main } from "./output-es/Test.Bench/index.js"; main();'
 
 gen: 
-    just gen-docs && \
+    just gen-examples && \
+    just gen-html-prettier && \
     just gen-svgs && \
     just gen-vega && \
+    just gen-patchdown && \
     just gen-doctoc && \
     just gen-preview && \
     just gen-book

@@ -76,3 +76,4 @@ instance mkUpdateCons ::
 
     handleRest :: Unit -> m (Either TransitError state)
     handleRest _ = mkUpdateCore @(MkTransitCoreTL rest1) rest state msg
+

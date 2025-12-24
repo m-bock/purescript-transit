@@ -26,11 +26,23 @@
     - [Conclusion](#conclusion-1)
   - [Example 3: Seven Bridges of Königsberg](#example-3-seven-bridges-of-k%C3%B6nigsberg)
     - [Problem Description](#problem-description)
-    - [State Machine Definition](#state-machine-definition)
+    - [State diagram](#state-diagram)
+    - [Transition table](#transition-table)
+    - [? State Machine Definition](#-state-machine-definition)
+    - [Type level specification](#type-level-specification)
+    - [State and message types](#state-and-message-types)
+    - [Update function](#update-function)
     - [A sample walk](#a-sample-walk)
     - [Graph Analysis](#graph-analysis)
   - [Example 4: The house of Santa Claus](#example-4-the-house-of-santa-claus)
+    - [Problem Description](#problem-description-1)
+    - [Type level specification](#type-level-specification-1)
+    - [A sample walk](#a-sample-walk-1)
+    - [Graph Analysis](#graph-analysis-1)
+    - [Conclusion](#conclusion-2)
   - [Benchmarks](#benchmarks)
+    - [JS Compiler Backend](#js-compiler-backend)
+    - [ES Compiler Backend](#es-compiler-backend)
   - [More](#more)
     - [Monadic update functions](#monadic-update-functions)
     - [Error handling](#error-handling)
@@ -101,7 +113,36 @@ For a more structured view, here's the corresponding transition table:
 filePath: graphs/simple-door.html
 wrapNl: true
 -->
-<table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td>⟶</td><td>DoorOpen</td></tr></tbody></table>
+<table>
+  <thead>
+    <tr>
+      <th>State</th>
+      <th></th>
+      <th>Message</th>
+      <th></th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DoorOpen</td>
+      <td>⟶</td>
+      <td>Close</td>
+      <td>⟶</td>
+      <td>DoorClosed</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>DoorClosed</td>
+      <td>⟶</td>
+      <td>Open</td>
+      <td>⟶</td>
+      <td>DoorOpen</td>
+    </tr>
+  </tbody>
+</table>
+
 <!-- PD_END -->
 
 Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions — like trying to open an already open door — simply don't appear in the table.
@@ -129,7 +170,15 @@ data StateD = DoorOpen | DoorClosed
 data MsgD = Close | Open
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L27-L29">test/Examples/SimpleDoor.purs L27-L29</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L27-L29"
+      >test/Examples/SimpleDoor.purs L27-L29</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier — each state and each transition from the diagram has a corresponding value in these types.
@@ -152,7 +201,15 @@ updateD state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L31-L35">test/Examples/SimpleDoor.purs L31-L35</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L31-L35"
+      >test/Examples/SimpleDoor.purs L31-L35</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 We pattern match on both the current state and the message at once. It could also be written as a nested pattern match.
@@ -188,7 +245,15 @@ type SimpleDoorTransit =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L51-L54">test/Examples/SimpleDoor.purs L51-L54</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L51-L54"
+      >test/Examples/SimpleDoor.purs L51-L54</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 Breaking down the syntax:
@@ -225,7 +290,15 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L41-L49">test/Examples/SimpleDoor.purs L41-L49</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L41-L49"
+      >test/Examples/SimpleDoor.purs L41-L49</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 #### The Update Function
@@ -245,14 +318,25 @@ update = mkUpdate @SimpleDoorTransit
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L56-L59">test/Examples/SimpleDoor.purs L56-L59</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L56-L59"
+      >test/Examples/SimpleDoor.purs L56-L59</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 Here's how this works:
 
 - `mkUpdate @SimpleDoorTransit` creates an update function based on the `SimpleDoorTransit` specification. The `@` symbol is type application[^type-app], passing the specification to the function.
+
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
+
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
+
 - **Important**: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in `SimpleDoorTransit`: `DoorOpen :@ Close`, then `DoorClosed :@ Open`.
 
 #### How This Solves the Classic Approach's Problems
@@ -325,7 +409,15 @@ assert1 =
       (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L66-L69">test/Examples/SimpleDoor.purs L66-L69</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L66-L69"
+      >test/Examples/SimpleDoor.purs L66-L69</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -346,7 +438,15 @@ assert2 =
       [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L72-L75">test/Examples/SimpleDoor.purs L72-L75</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L72-L75"
+      >test/Examples/SimpleDoor.purs L72-L75</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 This test does the same thing — starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
@@ -382,7 +482,15 @@ assertWalk updateFn initState walk = do
   actualStates `shouldEqual` expectedStates
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L35-L54">test/Examples/Common.purs L35-L54</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/Common.purs#L35-L54"
+      >test/Examples/Common.purs L35-L54</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 The function extracts the messages from the pairs, applies them sequentially using `scanl`, and verifies that the resulting states match the expected ones. Here's how we use it:
@@ -408,7 +516,15 @@ assert3 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L78-L88">test/Examples/SimpleDoor.purs L78-L88</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L78-L88"
+      >test/Examples/SimpleDoor.purs L78-L88</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 The `~>` operator is an infix alias for `Tuple`. So `v @"Close" ~> v @"DoorClosed"` is equivalent to `Tuple (v @"Close") (v @"DoorClosed")`.
@@ -435,7 +551,15 @@ split: true
 
 - `writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit`
 
-<p align="right"><sup>🗎 <a href="src/Transit/Render/Graphviz.purs#L239-L239">src/Transit/Render/Graphviz.purs L239-L239</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="src/Transit/Render/Graphviz.purs#L239-L239"
+      >src/Transit/Render/Graphviz.purs L239-L239</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -460,7 +584,15 @@ generateStateDiagram = do
     }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L102-L114">test/Examples/SimpleDoor.purs L102-L114</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L102-L114"
+      >test/Examples/SimpleDoor.purs L102-L114</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 The process works in two steps:
@@ -504,7 +636,15 @@ generateTransitionTable = do
   TransitTable.writeToFile "graphs/simple-door.html" transit identity
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/SimpleDoor.purs#L116-L122">test/Examples/SimpleDoor.purs L116-L122</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/SimpleDoor.purs#L116-L122"
+      >test/Examples/SimpleDoor.purs L116-L122</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 This generates an HTML file containing a table with columns for "From State", "Message", and "To State".
@@ -516,7 +656,9 @@ Since both the state diagram and transition table are generated from the same DS
 In this example, we've seen how **Transit** helps you build type-safe state machines. We started with a simple door that can be open or closed, and learned the core workflow:
 
 1. **Define the state machine** using **Transit**'s type-level DSL specification
+
 2. **Implement the update function** using `mkUpdate` with `match` clauses that the compiler verifies against the specification
+
 3. **Generate documentation** automatically — both state diagrams and transition tables — from the same specification
 
 The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.
@@ -551,7 +693,75 @@ The transition table shows both possible outcomes:
 filePath: graphs/door-with-pin.html
 wrapNl: true
 -->
-<table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>Guard</th><th></th><th>State</th></tr></thead><tbody><tr><td>DoorOpen</td><td>⟶</td><td>Close</td><td></td><td></td><td>⟶</td><td>DoorClosed</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Open</td><td></td><td></td><td>⟶</td><td>DoorOpen</td></tr></tbody><tbody><tr><td>DoorClosed</td><td>⟶</td><td>Lock</td><td></td><td></td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>?</td><td>PinIncorrect</td><td>⟶</td><td>DoorLocked</td></tr></tbody><tbody><tr><td>DoorLocked</td><td>⟶</td><td>Unlock</td><td>?</td><td>PinCorrect</td><td>⟶</td><td>DoorClosed</td></tr></tbody></table>
+<table>
+  <thead>
+    <tr>
+      <th>State</th>
+      <th></th>
+      <th>Message</th>
+      <th></th>
+      <th>Guard</th>
+      <th></th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DoorOpen</td>
+      <td>⟶</td>
+      <td>Close</td>
+      <td></td>
+      <td></td>
+      <td>⟶</td>
+      <td>DoorClosed</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>DoorClosed</td>
+      <td>⟶</td>
+      <td>Open</td>
+      <td></td>
+      <td></td>
+      <td>⟶</td>
+      <td>DoorOpen</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>DoorClosed</td>
+      <td>⟶</td>
+      <td>Lock</td>
+      <td></td>
+      <td></td>
+      <td>⟶</td>
+      <td>DoorLocked</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>DoorLocked</td>
+      <td>⟶</td>
+      <td>Unlock</td>
+      <td>?</td>
+      <td>PinIncorrect</td>
+      <td>⟶</td>
+      <td>DoorLocked</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>DoorLocked</td>
+      <td>⟶</td>
+      <td>Unlock</td>
+      <td>?</td>
+      <td>PinCorrect</td>
+      <td>⟶</td>
+      <td>DoorClosed</td>
+    </tr>
+  </tbody>
+</table>
+
 <!-- PD_END -->
 
 Notice the **Guard** column in the transition table. For most transitions, this column is empty — these are unconditional transitions that always succeed. However, the `Unlock` message from `DoorLocked` shows two rows with guards: `PinIncorrect` and `PinCorrect`. These **guards** represent the conditions that determine which transition path is taken at runtime. When the `Unlock` message is received, the implementation checks whether the entered PIN matches the stored PIN, and the guard label (`PinCorrect` or `PinIncorrect`) indicates which condition was met. This allows a single message type to have multiple possible outcomes based on runtime data.
@@ -584,7 +794,15 @@ data MsgD
   | Unlock { enteredPin :: String }
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L31-L40">test/Examples/DoorWithPin.purs L31-L40</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorWithPin.purs#L31-L40"
+      >test/Examples/DoorWithPin.purs L31-L40</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 #### The update function
@@ -611,7 +829,15 @@ updateClassic state msg = case state, msg of
   _, _ -> state
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L42-L52">test/Examples/DoorWithPin.purs L42-L52</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorWithPin.purs#L42-L52"
+      >test/Examples/DoorWithPin.purs L42-L52</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 ### State machine implementation II: The Transit Approach
@@ -640,7 +866,15 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L58-L69">test/Examples/DoorWithPin.purs L58-L69</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorWithPin.purs#L58-L69"
+      >test/Examples/DoorWithPin.purs L58-L69</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -662,7 +896,15 @@ type DoorWithPinTransit =
       )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L71-L80">test/Examples/DoorWithPin.purs L71-L80</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorWithPin.purs#L71-L80"
+      >test/Examples/DoorWithPin.purs L71-L80</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
@@ -698,7 +940,15 @@ update = mkUpdate @DoorWithPinTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/DoorWithPin.purs#L82-L101">test/Examples/DoorWithPin.purs L82-L101</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorWithPin.purs#L82-L101"
+      >test/Examples/DoorWithPin.purs L82-L101</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that only valid target states can be returned.
@@ -742,7 +992,7 @@ The following picture shows roughly how the actual map looked like back then:
 
 Even not immediately obvious, this can be represented as a graph:
 
-#### State diagram
+### State diagram
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/bridges-koenigsberg-dark.svg">
@@ -750,20 +1000,94 @@ Even not immediately obvious, this can be represented as a graph:
   <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
 </picture>
 
-#### Transition table
+### Transition table
 
 <!-- PD_START:raw
 filePath: graphs/bridges-koenigsberg.html
 wrapNl: true
 -->
-<table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_a</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_b</td><td>⟶</td><td>LandB</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_c</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_d</td><td>⟶</td><td>LandC</td></tr></tbody><tbody><tr><td>LandA</td><td>⟵</td><td>Cross_e</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandB</td><td>⟵</td><td>Cross_f</td><td>⟶</td><td>LandD</td></tr></tbody><tbody><tr><td>LandC</td><td>⟵</td><td>Cross_g</td><td>⟶</td><td>LandD</td></tr></tbody></table>
+<table>
+  <thead>
+    <tr>
+      <th>State</th>
+      <th></th>
+      <th>Message</th>
+      <th></th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LandA</td>
+      <td>⟵</td>
+      <td>Cross_a</td>
+      <td>⟶</td>
+      <td>LandB</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>LandA</td>
+      <td>⟵</td>
+      <td>Cross_b</td>
+      <td>⟶</td>
+      <td>LandB</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>LandA</td>
+      <td>⟵</td>
+      <td>Cross_c</td>
+      <td>⟶</td>
+      <td>LandC</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>LandA</td>
+      <td>⟵</td>
+      <td>Cross_d</td>
+      <td>⟶</td>
+      <td>LandC</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>LandA</td>
+      <td>⟵</td>
+      <td>Cross_e</td>
+      <td>⟶</td>
+      <td>LandD</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>LandB</td>
+      <td>⟵</td>
+      <td>Cross_f</td>
+      <td>⟶</td>
+      <td>LandD</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>LandC</td>
+      <td>⟵</td>
+      <td>Cross_g</td>
+      <td>⟶</td>
+      <td>LandD</td>
+    </tr>
+  </tbody>
+</table>
+
 <!-- PD_END -->
 
-### State Machine Definition
+### ? State Machine Definition
 
 While **Transit** is designed for directed state machines, we can model an undirected graph by defining bidirectional transitions for each bridge. The renderer can then summarize these complementary edges into a single undirected edge for visualization. Notice how each bridge has two transitions — one in each direction:
 
-#### Type level specification
+### Type level specification
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -783,10 +1107,18 @@ type BridgesKoenigsbergTransit =
     :* ("LandC" |< "Cross_g" >| "LandD")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L41-L49">test/Examples/BridgesKoenigsberg.purs L41-L49</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/BridgesKoenigsberg.purs#L41-L49"
+      >test/Examples/BridgesKoenigsberg.purs L41-L49</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
-#### State and message types
+### State and message types
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -814,10 +1146,18 @@ type Msg = Variant
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L24-L39">test/Examples/BridgesKoenigsberg.purs L24-L39</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/BridgesKoenigsberg.purs#L24-L39"
+      >test/Examples/BridgesKoenigsberg.purs L24-L39</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
-#### Update function
+### Update function
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -841,7 +1181,15 @@ update = mkUpdate @BridgesKoenigsbergTransit
 -- And so on ... (13 lines omitted)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L51-L72">test/Examples/BridgesKoenigsberg.purs L51-L72</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/BridgesKoenigsberg.purs#L51-L72"
+      >test/Examples/BridgesKoenigsberg.purs L51-L72</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 ### A sample walk
@@ -870,7 +1218,15 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90">test/Examples/BridgesKoenigsberg.purs L78-L90</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/BridgesKoenigsberg.purs#L78-L90"
+      >test/Examples/BridgesKoenigsberg.purs L78-L90</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 ### Graph Analysis
@@ -896,7 +1252,15 @@ nodeDegree :: StateGraph -> StateNode -> Int
 nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L16-L17">test/Examples/Common.purs L16-L17</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/Common.purs#L16-L17"
+      >test/Examples/Common.purs L16-L17</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 <!-- PD_START:purs
@@ -921,7 +1285,15 @@ hasEulerTrail graph =
     sumOddEdges == 2 || sumOddEdges == 0
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Common.purs#L19-L31">test/Examples/Common.purs L19-L31</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/Common.purs#L19-L31"
+      >test/Examples/Common.purs L19-L31</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 To perform the analysis, we convert the reflected **Transit** specification into a graph and then check its properties:
@@ -944,7 +1316,15 @@ assert2 = do
   hasEulerTrail graph `shouldEqual` false
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/BridgesKoenigsberg.purs#L98-L100">test/Examples/BridgesKoenigsberg.purs L98-L100</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/BridgesKoenigsberg.purs#L98-L100"
+      >test/Examples/BridgesKoenigsberg.purs L98-L100</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 These functions check whether the graph is undirected and count how many vertices have an odd number of outgoing edges. For the Seven Bridges of Königsberg:
@@ -969,6 +1349,8 @@ In the next example, we'll see a graph that **does** have an Eulerian trail, dem
 
 > Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
+### Problem Description
+
 This example uses "Das Haus vom Nikolaus" (The house of Santa Claus)[^haus-nikolaus], a well-known German drawing puzzle. The challenge is to draw a house shape in one continuous stroke without lifting the pen and without retracing any line. In German-speaking countries, this puzzle is commonly associated with Saint Nicholas (Nikolaus), hence the name. The puzzle is equivalent to finding an Eulerian trail in the graph representing the house's edges.
 
 <img src="assets/das-haus-vom-nikolaus-solution.webp" />
@@ -989,6 +1371,8 @@ This example uses "Das Haus vom Nikolaus" (The house of Santa Claus)[^haus-nikol
   <tr><td>8</td><td>laus</td> <td>Claus</td></tr>
 </table>
 
+### Type level specification
+
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
 pick:
@@ -1008,18 +1392,113 @@ type HouseOfSantaClausTransit =
     :* ("N_3" |< "E_h" >| "N_4")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L43-L52">test/Examples/HouseOfSantaClaus.purs L43-L52</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/HouseOfSantaClaus.purs#L43-L52"
+      >test/Examples/HouseOfSantaClaus.purs L43-L52</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 <!-- PD_START:raw
 filePath: graphs/house-of-santa-claus.html
---><table><thead><tr><th>State</th><th></th><th>Message</th><th></th><th>State</th></tr></thead><tbody><tr><td>N_1</td><td>⟵</td><td>E_a</td><td>⟶</td><td>N_2</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_b</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_c</td><td>⟶</td><td>N_5</td></tr></tbody><tbody><tr><td>N_5</td><td>⟵</td><td>E_d</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_4</td><td>⟵</td><td>E_e</td><td>⟶</td><td>N_1</td></tr></tbody><tbody><tr><td>N_1</td><td>⟵</td><td>E_f</td><td>⟶</td><td>N_3</td></tr></tbody><tbody><tr><td>N_2</td><td>⟵</td><td>E_g</td><td>⟶</td><td>N_4</td></tr></tbody><tbody><tr><td>N_3</td><td>⟵</td><td>E_h</td><td>⟶</td><td>N_4</td></tr></tbody></table><!-- PD_END -->
+--><table>
+  <thead>
+    <tr>
+      <th>State</th>
+      <th></th>
+      <th>Message</th>
+      <th></th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>N_1</td>
+      <td>⟵</td>
+      <td>E_a</td>
+      <td>⟶</td>
+      <td>N_2</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_2</td>
+      <td>⟵</td>
+      <td>E_b</td>
+      <td>⟶</td>
+      <td>N_3</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_3</td>
+      <td>⟵</td>
+      <td>E_c</td>
+      <td>⟶</td>
+      <td>N_5</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_5</td>
+      <td>⟵</td>
+      <td>E_d</td>
+      <td>⟶</td>
+      <td>N_4</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_4</td>
+      <td>⟵</td>
+      <td>E_e</td>
+      <td>⟶</td>
+      <td>N_1</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_1</td>
+      <td>⟵</td>
+      <td>E_f</td>
+      <td>⟶</td>
+      <td>N_3</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_2</td>
+      <td>⟵</td>
+      <td>E_g</td>
+      <td>⟶</td>
+      <td>N_4</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>N_3</td>
+      <td>⟵</td>
+      <td>E_h</td>
+      <td>⟶</td>
+      <td>N_4</td>
+    </tr>
+  </tbody>
+</table>
+<!-- PD_END -->
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="graphs/house-of-santa-claus-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="graphs/house-of-santa-claus-light.svg">
   <img alt="House of Santa Claus graph" src="graphs/house-of-santa-claus-light.svg">
 </picture>
+
+### A sample walk
+
+<img src="assets/house-of-santa-claus-walk.png" width="450" />
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
@@ -1043,8 +1522,18 @@ assert1 =
     ]
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L85-L97">test/Examples/HouseOfSantaClaus.purs L85-L97</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/HouseOfSantaClaus.purs#L85-L97"
+      >test/Examples/HouseOfSantaClaus.purs L85-L97</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
+
+### Graph Analysis
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs
@@ -1061,12 +1550,31 @@ assert2 =
     hasEulerTrail graph `shouldEqual` true
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/HouseOfSantaClaus.purs#L99-L104">test/Examples/HouseOfSantaClaus.purs L99-L104</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/HouseOfSantaClaus.purs#L99-L104"
+      >test/Examples/HouseOfSantaClaus.purs L99-L104</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
+
+### Conclusion
 
 ## Benchmarks
 
+### JS Compiler Backend
+
+- Both, the classic and the new update function have linear complexity.
+- The update from the _Transit_ library is roughly 10 times slower than the classic update function.
+- If you switch to ES backend, the performance difference is much smaller.
+
 <img src="bench/backend-JS/Update-Functions.svg" />
+
+### ES Compiler Backend
+
 <img src="bench/backend-ES/Update-Functions.svg" />
 
 ## More
@@ -1106,7 +1614,15 @@ update = mkUpdateM @SimpleDoorTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/Monadic.purs#L11-L20">test/Examples/Monadic.purs L11-L20</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/Monadic.purs#L11-L20"
+      >test/Examples/Monadic.purs L11-L20</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 Each handler can now perform side effects (like logging) before returning the new state. The `return` function still works the same way — you wrap your state value with it, and then wrap that in `pure` to lift it into the monadic context.
@@ -1136,7 +1652,15 @@ update = mkUpdateEither @SimpleDoorTransit
   )
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L14-L21">test/Examples/ErrorHandling.purs L14-L21</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/ErrorHandling.purs#L14-L21"
+      >test/Examples/ErrorHandling.purs L14-L21</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 As we see in the following assertion, a valid transition occurs when the door is `DoorOpen` and receives the `Close` message: the update function successfully transitions to `DoorClosed`, returning `Right (v @"DoorClosed")`.
@@ -1153,7 +1677,15 @@ assert1 =
   update (v @"DoorOpen") (v @"Close") `shouldEqual` Right (v @"DoorClosed")
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L24-L25">test/Examples/ErrorHandling.purs L24-L25</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/ErrorHandling.purs#L24-L25"
+      >test/Examples/ErrorHandling.purs L24-L25</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 When the door is already `DoorClosed` and receives the `Close` message, this is an invalid transition (you can't close a door that's already closed). As shown below, since this transition is not defined in the transit specification, `mkUpdateEither` returns `Left IllegalTransitionRequest` instead of crashing or silently failing.
@@ -1170,16 +1702,33 @@ assert2 =
   update (v @"DoorClosed") (v @"Close") `shouldEqual` Left IllegalTransitionRequest
 ```
 
-<p align="right"><sup>🗎 <a href="test/Examples/ErrorHandling.purs#L28-L29">test/Examples/ErrorHandling.purs L28-L29</a></sup></p>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/ErrorHandling.purs#L28-L29"
+      >test/Examples/ErrorHandling.purs L28-L29</a
+    >
+  </sup>
+</p>
+
 <!-- PD_END -->
 
 [^pursuit]: [Pursuit](https://pursuit.purescript.org/) is the package database for PureScript, similar to Hackage for Haskell or npm for JavaScript.
+
 [^variant]: The `purescript-variant` library provides row-polymorphic sum types. See the [documentation](https://pursuit.purescript.org/packages/purescript-variant) for more details.
+
 [^type-app]: In PureScript, the `@` symbol is used for explicit type application, allowing you to pass type-level arguments to functions. This is similar to `@` in Haskell or `::` in some other languages.
+
 [^graphviz]: [Graphviz](https://graphviz.org/) is a graph visualization software that uses the DOT language. The `.dot` files generated by Transit can be rendered into various formats (SVG, PNG, PDF, etc.) using Graphviz's command-line tools.
+
 [^euler]: Leonhard Euler (1707–1783) was a Swiss mathematician who made fundamental contributions to many areas of mathematics, including graph theory, number theory, and analysis.
+
 [^euler-theorem]: Euler's theorem on Eulerian paths states that a connected graph has an Eulerian circuit if and only if every vertex has even degree, and has an Eulerian trail if and only if exactly zero or two vertices have odd degree.
+
 [^haus-nikolaus]: "Das Haus vom Nikolaus" is a traditional German puzzle that dates back to at least the 19th century. The name comes from the fact that the phrase "Das ist das Haus vom Nikolaus" (This is the house of Santa Claus) has exactly 8 syllables, matching the 8 edges of the house graph.
+
 [^monads]: In PureScript, `Effect` represents synchronous side effects, `Aff` represents asynchronous effects, and `ReaderT` is a monad transformer that provides a read-only environment. These are commonly used for different kinds of side effects in PureScript applications.
+
 [^servant]: [Servant](https://haskell-servant.readthedocs.io/) is a Haskell library for building type-safe web APIs.
+
 [^terminology]: Technically, a **transition** is the complete path from one state to another, which includes the message/action that triggers it and optionally a guard condition. However, in practice, we often refer to the message/action itself as "the transition" for brevity. For example, "the `Close` transition" is shorthand for "the transition triggered by the `Close` message/action".

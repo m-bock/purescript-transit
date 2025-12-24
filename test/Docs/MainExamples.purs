@@ -1,9 +1,8 @@
-module Docs.Main where
+module Docs.MainExamples where
 
 import Prelude
 
 import Effect (Effect)
-import Patchdown as Patchdown
 import Test.Examples.SimpleDoor as Test.Examples.SimpleDoor
 import Test.Examples.BridgesKoenigsberg as Test.Examples.BridgesKoenigsberg
 import Test.Examples.ColorRing as Test.Examples.ColorRing
@@ -29,10 +28,8 @@ spec = do
   Test.Examples.Monadic.spec
   Test.Examples.Signatures.spec
 
-main :: Effect Unit
-main = do
-  runSpecAndExitProcess [ consoleReporter ] spec
-
+runExamples :: Effect Unit
+runExamples = do
   Test.Examples.SimpleDoor.main
   Test.Examples.DoorWithPin.main
   Test.Examples.BridgesKoenigsberg.main
@@ -43,4 +40,9 @@ main = do
   Test.Examples.Monadic.main
   Test.Examples.Signatures.main
 
-  Patchdown.main
+main :: Effect Unit
+main = do
+  runSpecAndExitProcess [ consoleReporter ] spec
+
+  runExamples
+

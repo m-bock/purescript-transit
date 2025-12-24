@@ -2,18 +2,18 @@ module Test.Bench (main) where
 
 import Prelude
 
-import BenchLib (bench_, group, reportConsole, suite_)
+import BenchLib (bench, group, reportConsole, suite_)
 import BenchLib as BenchLib
+import BenchLib.Reporters.Json (reportJson_)
 import BenchLib.Reporters.VegaLite (reportVegaLite)
-import Data.Array ((!!))
 import Data.Array as Array
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
-import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Node.Process (lookupEnv)
 import Partial.Unsafe (unsafeCrashWith)
-import Test.BenchDef.Transit (inputs, inputsD, update, updateClassic)
+import Test.BenchDef.Transit (StateD(..), getInputs, getInputsD, printMsg, printMsgD, printState, printStateD, update, updateClassic)
+import Transit.VariantUtils (v)
 
 type Config =
   { backend :: String
@@ -40,6 +40,7 @@ main = do
     { reporters =
         [ reportConsole
         , reportVegaLite _ { folderPath = "bench/backend-" <> backend }
+        , reportJson_
         ]
     } $
     suite_
@@ -47,22 +48,31 @@ main = do
       [ group "Update Functions"
           _
             { iterations = iterations
-            , sizes = Array.range 1 (Array.length inputs - 1)
+            , sizes = [ 50, 100, 200, 400, 800, 1600, 3200 ]
             }
-          [ bench_
+          [ bench
               "updateClassic"
-              { prepare: \size -> case inputsD !! size of
-                  Just input -> input
-                  _ -> unsafeCrashWith "Invalid size"
-              , run: \(state /\ msg) -> updateClassic state msg
+              ( _
+                  { normIn = map printMsgD
+                  , normOut = map printStateD
+                  }
+              )
+              { prepare: getInputsD
+              , run: \msgs ->
+                  Array.scanl updateClassic (State01 {}) msgs
               }
-
-          , bench_
+          , bench
               "update"
-              { prepare: \size -> case inputs !! size of
-                  Just input -> input
-                  _ -> unsafeCrashWith "Invalid size"
-              , run: \(state /\ msg) -> update state msg
+              ( _
+                  { normIn = map printMsg
+                  , normOut = map printState
+                  }
+              )
+              { prepare: \size -> getInputs size
+              , run: \msgs -> Array.scanl update (v @"State01") msgs
               }
           ]
       ]
+
+showPad :: Int -> String
+showPad n = if n < 10 then "0" <> show n else show n

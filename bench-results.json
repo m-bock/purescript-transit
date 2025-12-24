@@ -1,0 +1,94 @@
+{
+  "groupResults": [
+    {
+      "benchResults": [
+        {
+          "benchName": "updateClassic",
+          "samples": [
+            {
+              "average": 0.013,
+              "iterations": 1000,
+              "size": 50
+            },
+            {
+              "average": 0.005,
+              "iterations": 1000,
+              "size": 100
+            },
+            {
+              "average": 0.008,
+              "iterations": 1000,
+              "size": 200
+            },
+            {
+              "average": 0.017,
+              "iterations": 1000,
+              "size": 400
+            },
+            {
+              "average": 0.047,
+              "iterations": 1000,
+              "size": 800
+            },
+            {
+              "average": 0.071,
+              "iterations": 1000,
+              "size": 1600
+            },
+            {
+              "average": 0.16,
+              "iterations": 1000,
+              "size": 3200
+            }
+          ]
+        },
+        {
+          "benchName": "update",
+          "samples": [
+            {
+              "average": 0,
+              "iterations": 1000,
+              "size": 50
+            },
+            {
+              "average": 0.003,
+              "iterations": 1000,
+              "size": 100
+            },
+            {
+              "average": 0.01,
+              "iterations": 1000,
+              "size": 200
+            },
+            {
+              "average": 0.023,
+              "iterations": 1000,
+              "size": 400
+            },
+            {
+              "average": 0.046,
+              "iterations": 1000,
+              "size": 800
+            },
+            {
+              "average": 0.147,
+              "iterations": 1000,
+              "size": 1600
+            },
+            {
+              "average": 0.391,
+              "iterations": 1000,
+              "size": 3200
+            }
+          ]
+        }
+      ],
+      "checkResult": {
+        "tag": "NotChecked",
+        "values": []
+      },
+      "groupName": "Update Functions"
+    }
+  ],
+  "suiteName": "Benchmarks for ES backend"
+}
