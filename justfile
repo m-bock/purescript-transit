@@ -31,12 +31,12 @@ build:
 
 build-es:
     rm -rf output-es
-    npx spago build && npx purs-backend-es build
+    npx spago build && npx purs-backend-es build --trace-rewrites Test.BenchDef.Size05.update
 
 bench-quick:
     just build && \
     just build-es && \
-    export ITERATIONS=1000 && just bench-js && just bench-es
+    export ITERATIONS=10000 && just bench-js && just bench-es
 
 bench:
     just build && \

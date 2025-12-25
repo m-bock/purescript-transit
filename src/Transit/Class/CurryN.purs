@@ -1,3 +1,8 @@
+module Transit.Class.CurryN
+  ( class CurryN
+  , curryN
+  ) where
+
 -- | A type class for converting functions that take nested tuple arguments
 -- | into curried functions.
 -- |
@@ -9,10 +14,6 @@
 -- | curried :: Int -> String -> String
 -- | curried = curryN f
 -- | ```
-module Transit.Class.CurryN
-  ( class CurryN
-  , curryN
-  ) where
 
 import Prelude
 

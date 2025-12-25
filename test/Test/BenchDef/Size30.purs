@@ -1,4 +1,4 @@
-module Test.BenchDef.Transit where
+module Test.BenchDef.Size30 where
 
 import Prelude
 
@@ -42,26 +42,6 @@ type State = Variant
   , "State28" :: {}
   , "State29" :: {}
   , "State30" :: {}
-  , "State31" :: {}
-  , "State32" :: {}
-  , "State33" :: {}
-  , "State34" :: {}
-  , "State35" :: {}
-  , "State36" :: {}
-  , "State37" :: {}
-  , "State38" :: {}
-  , "State39" :: {}
-  , "State40" :: {}
-  , "State41" :: {}
-  , "State42" :: {}
-  , "State43" :: {}
-  , "State44" :: {}
-  , "State45" :: {}
-  , "State46" :: {}
-  , "State47" :: {}
-  , "State48" :: {}
-  , "State49" :: {}
-  , "State50" :: {}
   )
 
 printState :: State -> String
@@ -100,26 +80,6 @@ type Msg = Variant
   , "Msg28" :: {}
   , "Msg29" :: {}
   , "Msg30" :: {}
-  , "Msg31" :: {}
-  , "Msg32" :: {}
-  , "Msg33" :: {}
-  , "Msg34" :: {}
-  , "Msg35" :: {}
-  , "Msg36" :: {}
-  , "Msg37" :: {}
-  , "Msg38" :: {}
-  , "Msg39" :: {}
-  , "Msg40" :: {}
-  , "Msg41" :: {}
-  , "Msg42" :: {}
-  , "Msg43" :: {}
-  , "Msg44" :: {}
-  , "Msg45" :: {}
-  , "Msg46" :: {}
-  , "Msg47" :: {}
-  , "Msg48" :: {}
-  , "Msg49" :: {}
-  , "Msg50" :: {}
   )
 
 printMsg :: Msg -> String
@@ -127,7 +87,7 @@ printMsg v = t
   where
   VariantRep { type: t } = unsafeCoerce v
 
-type Size5Transit =
+type BenchTransit =
   Transit
     :* ("State01" :@ "Msg01" >| "State02")
     :* ("State02" :@ "Msg02" >| "State03")
@@ -158,30 +118,10 @@ type Size5Transit =
     :* ("State27" :@ "Msg27" >| "State28")
     :* ("State28" :@ "Msg28" >| "State29")
     :* ("State29" :@ "Msg29" >| "State30")
-    :* ("State30" :@ "Msg30" >| "State31")
-    :* ("State31" :@ "Msg31" >| "State32")
-    :* ("State32" :@ "Msg32" >| "State33")
-    :* ("State33" :@ "Msg33" >| "State34")
-    :* ("State34" :@ "Msg34" >| "State35")
-    :* ("State35" :@ "Msg35" >| "State36")
-    :* ("State36" :@ "Msg36" >| "State37")
-    :* ("State37" :@ "Msg37" >| "State38")
-    :* ("State38" :@ "Msg38" >| "State39")
-    :* ("State39" :@ "Msg39" >| "State40")
-    :* ("State40" :@ "Msg40" >| "State41")
-    :* ("State41" :@ "Msg41" >| "State42")
-    :* ("State42" :@ "Msg42" >| "State43")
-    :* ("State43" :@ "Msg43" >| "State44")
-    :* ("State44" :@ "Msg44" >| "State45")
-    :* ("State45" :@ "Msg45" >| "State46")
-    :* ("State46" :@ "Msg46" >| "State47")
-    :* ("State47" :@ "Msg47" >| "State48")
-    :* ("State48" :@ "Msg48" >| "State49")
-    :* ("State49" :@ "Msg49" >| "State50")
-    :* ("State50" :@ "Msg50" >| "State01")
+    :* ("State30" :@ "Msg30" >| "State01")
 
 update :: State -> Msg -> State
-update = mkUpdate @Size5Transit
+update = mkUpdate @BenchTransit
   (match @"State01" @"Msg01" \_ _ -> return @"State02")
   (match @"State02" @"Msg02" \_ _ -> return @"State03")
   (match @"State03" @"Msg03" \_ _ -> return @"State04")
@@ -211,27 +151,7 @@ update = mkUpdate @Size5Transit
   (match @"State27" @"Msg27" \_ _ -> return @"State28")
   (match @"State28" @"Msg28" \_ _ -> return @"State29")
   (match @"State29" @"Msg29" \_ _ -> return @"State30")
-  (match @"State30" @"Msg30" \_ _ -> return @"State31")
-  (match @"State31" @"Msg31" \_ _ -> return @"State32")
-  (match @"State32" @"Msg32" \_ _ -> return @"State33")
-  (match @"State33" @"Msg33" \_ _ -> return @"State34")
-  (match @"State34" @"Msg34" \_ _ -> return @"State35")
-  (match @"State35" @"Msg35" \_ _ -> return @"State36")
-  (match @"State36" @"Msg36" \_ _ -> return @"State37")
-  (match @"State37" @"Msg37" \_ _ -> return @"State38")
-  (match @"State38" @"Msg38" \_ _ -> return @"State39")
-  (match @"State39" @"Msg39" \_ _ -> return @"State40")
-  (match @"State40" @"Msg40" \_ _ -> return @"State41")
-  (match @"State41" @"Msg41" \_ _ -> return @"State42")
-  (match @"State42" @"Msg42" \_ _ -> return @"State43")
-  (match @"State43" @"Msg43" \_ _ -> return @"State44")
-  (match @"State44" @"Msg44" \_ _ -> return @"State45")
-  (match @"State45" @"Msg45" \_ _ -> return @"State46")
-  (match @"State46" @"Msg46" \_ _ -> return @"State47")
-  (match @"State47" @"Msg47" \_ _ -> return @"State48")
-  (match @"State48" @"Msg48" \_ _ -> return @"State49")
-  (match @"State49" @"Msg49" \_ _ -> return @"State50")
-  (match @"State50" @"Msg50" \_ _ -> return @"State01")
+  (match @"State30" @"Msg30" \_ _ -> return @"State01")
 
 walk :: Array (Msg /\ State)
 walk =
@@ -264,27 +184,7 @@ walk =
   , v @"Msg27" /\ v @"State28"
   , v @"Msg28" /\ v @"State29"
   , v @"Msg29" /\ v @"State30"
-  , v @"Msg30" /\ v @"State31"
-  , v @"Msg31" /\ v @"State32"
-  , v @"Msg32" /\ v @"State33"
-  , v @"Msg33" /\ v @"State34"
-  , v @"Msg34" /\ v @"State35"
-  , v @"Msg35" /\ v @"State36"
-  , v @"Msg36" /\ v @"State37"
-  , v @"Msg37" /\ v @"State38"
-  , v @"Msg38" /\ v @"State39"
-  , v @"Msg39" /\ v @"State40"
-  , v @"Msg40" /\ v @"State41"
-  , v @"Msg41" /\ v @"State42"
-  , v @"Msg42" /\ v @"State43"
-  , v @"Msg43" /\ v @"State44"
-  , v @"Msg44" /\ v @"State45"
-  , v @"Msg45" /\ v @"State46"
-  , v @"Msg46" /\ v @"State47"
-  , v @"Msg47" /\ v @"State48"
-  , v @"Msg48" /\ v @"State49"
-  , v @"Msg49" /\ v @"State50"
-  , v @"Msg50" /\ v @"State01"
+  , v @"Msg30" /\ v @"State01"
   ]
 
 data StateD
@@ -318,26 +218,6 @@ data StateD
   | State28 {}
   | State29 {}
   | State30 {}
-  | State31 {}
-  | State32 {}
-  | State33 {}
-  | State34 {}
-  | State35 {}
-  | State36 {}
-  | State37 {}
-  | State38 {}
-  | State39 {}
-  | State40 {}
-  | State41 {}
-  | State42 {}
-  | State43 {}
-  | State44 {}
-  | State45 {}
-  | State46 {}
-  | State47 {}
-  | State48 {}
-  | State49 {}
-  | State50 {}
 
 derive instance Generic StateD _
 
@@ -378,26 +258,6 @@ data MsgD
   | Msg28 {}
   | Msg29 {}
   | Msg30 {}
-  | Msg31 {}
-  | Msg32 {}
-  | Msg33 {}
-  | Msg34 {}
-  | Msg35 {}
-  | Msg36 {}
-  | Msg37 {}
-  | Msg38 {}
-  | Msg39 {}
-  | Msg40 {}
-  | Msg41 {}
-  | Msg42 {}
-  | Msg43 {}
-  | Msg44 {}
-  | Msg45 {}
-  | Msg46 {}
-  | Msg47 {}
-  | Msg48 {}
-  | Msg49 {}
-  | Msg50 {}
 
 derive instance Generic MsgD _
 instance Show MsgD where
@@ -439,27 +299,7 @@ updateClassic state msg = case state, msg of
   State27 {}, Msg27 {} -> State28 {}
   State28 {}, Msg28 {} -> State29 {}
   State29 {}, Msg29 {} -> State30 {}
-  State30 {}, Msg30 {} -> State31 {}
-  State31 {}, Msg31 {} -> State32 {}
-  State32 {}, Msg32 {} -> State33 {}
-  State33 {}, Msg33 {} -> State34 {}
-  State34 {}, Msg34 {} -> State35 {}
-  State35 {}, Msg35 {} -> State36 {}
-  State36 {}, Msg36 {} -> State37 {}
-  State37 {}, Msg37 {} -> State38 {}
-  State38 {}, Msg38 {} -> State39 {}
-  State39 {}, Msg39 {} -> State40 {}
-  State40 {}, Msg40 {} -> State41 {}
-  State41 {}, Msg41 {} -> State42 {}
-  State42 {}, Msg42 {} -> State43 {}
-  State43 {}, Msg43 {} -> State44 {}
-  State44 {}, Msg44 {} -> State45 {}
-  State45 {}, Msg45 {} -> State46 {}
-  State46 {}, Msg46 {} -> State47 {}
-  State47 {}, Msg47 {} -> State48 {}
-  State48 {}, Msg48 {} -> State49 {}
-  State49 {}, Msg49 {} -> State50 {}
-  State50 {}, Msg50 {} -> State01 {}
+  State30 {}, Msg30 {} -> State01 {}
   _, _ -> state
 
 walkD :: Array (MsgD /\ StateD)
@@ -493,26 +333,6 @@ walkD =
   , Msg27 {} /\ State28 {}
   , Msg28 {} /\ State29 {}
   , Msg29 {} /\ State30 {}
-  , Msg30 {} /\ State31 {}
-  , Msg31 {} /\ State32 {}
-  , Msg32 {} /\ State33 {}
-  , Msg33 {} /\ State34 {}
-  , Msg34 {} /\ State35 {}
-  , Msg35 {} /\ State36 {}
-  , Msg36 {} /\ State37 {}
-  , Msg37 {} /\ State38 {}
-  , Msg38 {} /\ State39 {}
-  , Msg39 {} /\ State40 {}
-  , Msg40 {} /\ State41 {}
-  , Msg41 {} /\ State42 {}
-  , Msg42 {} /\ State43 {}
-  , Msg43 {} /\ State44 {}
-  , Msg44 {} /\ State45 {}
-  , Msg45 {} /\ State46 {}
-  , Msg46 {} /\ State47 {}
-  , Msg47 {} /\ State48 {}
-  , Msg48 {} /\ State49 {}
-  , Msg49 {} /\ State50 {}
-  , Msg50 {} /\ State01 {}
+  , Msg30 {} /\ State01 {}
   ]
 

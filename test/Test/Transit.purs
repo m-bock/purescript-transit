@@ -5,12 +5,12 @@ module Test.Transit
 import Prelude
 
 import Data.Either (Either(..))
+import Data.Identity (Identity(..))
 import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (TransitError(..), match, mkUpdate, mkUpdateEither, mkUpdateEitherM, mkUpdateM, return, type (:*), type (:@), type (>|), Transit)
+import Transit (type (:*), type (:@), type (>|), Transit, TransitError(..), match, mkUpdate, mkUpdateEither, mkUpdateEitherM, mkUpdateM, return)
 import Transit.VariantUtils (v)
-import Data.Identity (Identity(..))
 
 type TestState = Variant
   ( "State1" :: {}

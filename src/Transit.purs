@@ -32,6 +32,7 @@ import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdateCore)
+import Transit.Class.MkUpdateV2 as UV2
 import Transit.Class.MkUpdate (TransitError(..)) as ExportMkUpdate
 import Transit.Class.MkUpdate as MkUpdate
 import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
@@ -123,17 +124,32 @@ mkUpdateM = curryN @args f
 -- | update :: State -> Msg -> State
 -- | update = mkUpdate @MyTransit ...
 -- | ```
+-- mkUpdate
+--   :: forall @spec tcore msg state args a
+--    . (IsTransitSpec spec tcore)
+--   => (CurryN args (state -> msg -> state) a)
+--   => (MkUpdate tcore Identity args msg state)
+--   => a
+-- mkUpdate = curryN @args f
+--   where
+--   f :: args -> state -> msg -> state
+--   f impl state msg =
+--     fromRight state $ safeUnwrap @Identity $ (mkUpdateCore @tcore impl state msg)
+
 mkUpdate
   :: forall @spec tcore msg state args a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> state) a)
-  => (MkUpdate tcore Identity args msg state)
+  => (CurryN args (Variant state -> Variant msg -> Variant state) a)
+  => (UV2.MkUpdate tcore Identity args (Variant msg) (Variant state))
   => a
 mkUpdate = curryN @args f
   where
-  f :: args -> state -> msg -> state
-  f impl state msg =
-    fromRight state $ safeUnwrap @Identity $ (mkUpdateCore @tcore impl state msg)
+  f :: args -> Variant state -> Variant msg -> Variant state
+  f impl =
+    let
+      f' = UV2.mkUpdateCore @tcore impl
+    in
+      \state msg -> fromRight state $ safeUnwrap @Identity $ f' state msg
 
 -- | Internal helper for unwrapping Identity.
 safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a
