@@ -34,14 +34,17 @@ derive instance Eq TransitError
 instance Show TransitError where
   show = genericShow
 
-class MkUpdate (spec :: TransitCoreTL) m matches msg state | spec msg state m -> matches where
+class
+  MkUpdate (spec :: TransitCoreTL) m matches msg state
+  | spec msg state m -> matches
+  where
   mkUpdateCore :: matches -> state -> msg -> m (Either TransitError state)
 
 instance mkUpdateInst ::
   ( MkLookup m spec matches rowState rowMsg
   , Applicative m
   ) =>
-  MkUpdate spec m matches (Variant rowMsg) (Variant rowState) where
+  MkUpdate (MkTransitCoreTL spec) m matches (Variant rowMsg) (Variant rowState) where
   mkUpdateCore matches =
     let
       handerLookup = mkLookup @m @spec matches
@@ -65,31 +68,31 @@ instance mkUpdateInst ::
 --   in
 --     \state msg -> run h state msg
 
-class MkLookup m (spec :: TransitCoreTL) matches (rowState :: Row Type) (rowMsg :: Row Type) | spec rowState rowMsg -> matches where
+class MkLookup (m :: Type -> Type) spec matches (rowState :: Row Type) (rowMsg :: Row Type) | spec rowState rowMsg m -> matches where
   mkLookup :: matches -> HandlerLookupBuilder m rowState rowMsg
 
-instance MkLookup m (MkTransitCoreTL Nil') Unit rowState rowMsg where
+instance MkLookup m (Nil') Unit rowState rowMsg where
   mkLookup _ = initBuilder @rowState @rowMsg
 
 instance
-  ( MkLookup m (MkTransitCoreTL rest1) rest2 rowState rowMsg
-  , IsSymbol symStateIn
+  ( IsSymbol symStateIn
   , IsSymbol symMsg
   , RemoveWrappers returns rowStateOut rowStateOut'
   , Row.Cons symStateIn stateIn _x1 rowState
   , Row.Cons symMsg msgIn _x2 rowMsg
   , Row.Union rowStateOut' _x3 rowState
   , Functor m
+  , MkLookup m (rest1) rest2 rowState rowMsg
   ) =>
   MkLookup m
-    (MkTransitCoreTL ((MkMatchTL symStateIn symMsg returns) :> rest1))
+    (((MkMatchTL symStateIn symMsg returns) :> rest1))
     (MatchImpl symStateIn symMsg stateIn msgIn m (Variant rowStateOut) /\ rest2)
     rowState
     rowMsg
   where
   mkLookup (MatchImpl fn /\ rest) = addHandler @symStateIn @symMsg fn' builder
     where
-    builder = mkLookup @m @(MkTransitCoreTL rest1) rest
+    builder = mkLookup @m @(rest1) rest
 
     fn' :: stateIn -> msgIn -> m (Variant rowStateOut')
     fn' s m = fn s m # map (removeWrappers @returns)

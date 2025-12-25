@@ -19,10 +19,10 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Node.Process (lookupEnv)
 import Partial.Unsafe (unsafeCrashWith)
-import Test.BenchDef.Size10 as Size10
-import Test.BenchDef.Size20 as Size20
+-- import Test.BenchDef.Size10 as Size10
+-- import Test.BenchDef.Size20 as Size20
 --import Test.BenchDef.Size30 as Size30
-import Test.BenchDef.Size40 as Size40
+-- import Test.BenchDef.Size40 as Size40
 -- import Test.BenchDef.Size50 as Size50
 -- import Test.BenchDef.Size60 as Size60
 -- import Test.BenchDef.Size70 as Size70
@@ -39,7 +39,8 @@ import Test.BenchDef.Size40 as Size40
 -- import Test.BenchDef.Size180 as Size180
 -- import Test.BenchDef.Size190 as Size190
 -- import Test.BenchDef.Size200 as Size200
-import Test.BenchDef.Transit (Msg, MsgD, State, StateD(..), printMsg, printMsgD, printState, printStateD, update, updateClassic, walk, walkD)
+-- import Test.BenchDef.Transit (Msg, MsgD, State, StateD(..), printMsg, printMsgD, printState, printStateD, update, updateClassic, walk, walkD)
+-- Note: printStateD and printMsgD are commented out in SizeXX modules to avoid quadratic compile time from genericShow
 import Test.Exists2 (Exists2, mkExists2, runExists2)
 import Transit.VariantUtils (v)
 
@@ -71,34 +72,39 @@ mk update init msgs print = \_ ->
 
 inputsD :: Array (Int /\ (Unit -> Unit -> Array String))
 inputsD =
-  [ 10 /\ mk Size10.updateClassic (Size10.State01 {}) (map fst Size10.walkD) Size10.printStateD
-  , 20 /\ mk Size20.updateClassic (Size20.State01 {}) (map fst Size20.walkD) Size20.printStateD
+  -- Commented out because printStateD is commented out in SizeXX modules (genericShow causes quadratic compile time)
+  -- [ 10 /\ mk Size10.updateClassic (Size10.State01 {}) (map fst Size10.walkD) Size10.printStateD
+  -- , 20 /\ mk Size20.updateClassic (Size20.State01 {}) (map fst Size20.walkD) Size20.printStateD
   --, 30 /\ mk Size30.updateClassic (Size30.State01 {}) (map fst Size30.walkD) Size30.printStateD
-  , 40 /\ mk Size40.updateClassic (Size40.State01 {}) (map fst Size40.walkD) Size40.printStateD
-  -- , 50 /\ mk Size50.updateClassic (Size50.State01 {}) (map fst Size50.walkD) Size50.printStateD
-  -- , 60 /\ mk Size60.updateClassic (Size60.State01 {}) (map fst Size60.walkD) Size60.printStateD
-  -- , 70 /\ mk Size70.updateClassic (Size70.State01 {}) (map fst Size70.walkD) Size70.printStateD
-  -- , 80 /\ mk Size80.updateClassic (Size80.State01 {}) (map fst Size80.walkD) Size80.printStateD
-  -- , 90 /\ mk Size90.updateClassic (Size90.State01 {}) (map fst Size90.walkD) Size90.printStateD
-  -- , 100 /\ mk Size100.updateClassic (Size100.State01 {}) (map fst Size100.walkD) Size100.printStateD
-  -- , 110 /\ mk Size110.updateClassic (Size110.State01 {}) (map fst Size110.walkD) Size110.printStateD
-  -- , 120 /\ mk Size120.updateClassic (Size120.State01 {}) (map fst Size120.walkD) Size120.printStateD
-  -- , 130 /\ mk Size130.updateClassic (Size130.State01 {}) (map fst Size130.walkD) Size130.printStateD
-  -- , 140 /\ mk Size140.updateClassic (Size140.State01 {}) (map fst Size140.walkD) Size140.printStateD
-  -- , 150 /\ mk Size150.updateClassic (Size150.State01 {}) (map fst Size150.walkD) Size150.printStateD
-  -- , 160 /\ mk Size160.updateClassic (Size160.State01 {}) (map fst Size160.walkD) Size160.printStateD
-  -- , 170 /\ mk Size170.updateClassic (Size170.State01 {}) (map fst Size170.walkD) Size170.printStateD
-  -- , 180 /\ mk Size180.updateClassic (Size180.State01 {}) (map fst Size180.walkD) Size180.printStateD
-  -- , 190 /\ mk Size190.updateClassic (Size190.State01 {}) (map fst Size190.walkD) Size190.printStateD
-  -- , 200 /\ mk Size200.updateClassic (Size200.State01 {}) (map fst Size200.walkD) Size200.printStateD
-  ]
+  -- , 40 /\ mk Size40.updateClassic (Size40.State01 {}) (map fst Size40.walkD) Size40.printStateD
+  []
+
+-- , 50 /\ mk Size50.updateClassic (Size50.State01 {}) (map fst Size50.walkD) Size50.printStateD
+-- , 60 /\ mk Size60.updateClassic (Size60.State01 {}) (map fst Size60.walkD) Size60.printStateD
+-- , 70 /\ mk Size70.updateClassic (Size70.State01 {}) (map fst Size70.walkD) Size70.printStateD
+-- , 80 /\ mk Size80.updateClassic (Size80.State01 {}) (map fst Size80.walkD) Size80.printStateD
+-- , 90 /\ mk Size90.updateClassic (Size90.State01 {}) (map fst Size90.walkD) Size90.printStateD
+-- , 100 /\ mk Size100.updateClassic (Size100.State01 {}) (map fst Size100.walkD) Size100.printStateD
+-- , 110 /\ mk Size110.updateClassic (Size110.State01 {}) (map fst Size110.walkD) Size110.printStateD
+-- , 120 /\ mk Size120.updateClassic (Size120.State01 {}) (map fst Size120.walkD) Size120.printStateD
+-- , 130 /\ mk Size130.updateClassic (Size130.State01 {}) (map fst Size130.walkD) Size130.printStateD
+-- , 140 /\ mk Size140.updateClassic (Size140.State01 {}) (map fst Size140.walkD) Size140.printStateD
+-- , 150 /\ mk Size150.updateClassic (Size150.State01 {}) (map fst Size150.walkD) Size150.printStateD
+-- , 160 /\ mk Size160.updateClassic (Size160.State01 {}) (map fst Size160.walkD) Size160.printStateD
+-- , 170 /\ mk Size170.updateClassic (Size170.State01 {}) (map fst Size170.walkD) Size170.printStateD
+-- , 180 /\ mk Size180.updateClassic (Size180.State01 {}) (map fst Size180.walkD) Size180.printStateD
+-- , 190 /\ mk Size190.updateClassic (Size190.State01 {}) (map fst Size190.walkD) Size190.printStateD
+-- , 200 /\ mk Size200.updateClassic (Size200.State01 {}) (map fst Size200.walkD) Size200.printStateD
+--]
 
 inputs :: Array (Int /\ (Unit -> Unit -> Array String))
 inputs =
-  [ 10 /\ mk Size10.update (v @"State01" {}) (map fst Size10.walk) Size10.printState
-  , 20 /\ mk Size20.update (v @"State01" {}) (map fst Size20.walk) Size20.printState
+  -- Commented out because SizeXX modules have been split into TransitSizeXX and ClassicSizeXX
+  -- [ 10 /\ mk Size10.update (v @"State01" {}) (map fst Size10.walk) Size10.printState
+  -- , 20 /\ mk Size20.update (v @"State01" {}) (map fst Size20.walk) Size20.printState
   --  , 30 /\ mk Size30.update (v @"State01" {}) (map fst Size30.walk) Size30.printState
-  , 40 /\ mk Size40.update (v @"State01" {}) (map fst Size40.walk) Size40.printState
+  -- , 40 /\ mk Size40.update (v @"State01" {}) (map fst Size40.walk) Size40.printState
+  []
   -- , 50 /\ mk Size50.update (v @"State01" {}) (map fst Size50.walk) Size50.printState
   -- , 60 /\ mk Size60.update (v @"State01" {}) (map fst Size60.walk) Size60.printState
   -- , 70 /\ mk Size70.update (v @"State01" {}) (map fst Size70.walk) Size70.printState
@@ -115,7 +121,7 @@ inputs =
   -- , 180 /\ mk Size180.update (v @"State01" {}) (map fst Size180.walk) Size180.printState
   -- , 190 /\ mk Size190.update (v @"State01" {}) (map fst Size190.walk) Size190.printState
   -- , 200 /\ mk Size200.update (v @"State01" {}) (map fst Size200.walk) Size200.printState
-  ]
+  -- ]
 
 -- inputs :: Map Int BenchInput
 -- inputs = Map.fromFoldable
@@ -206,14 +212,14 @@ main = do
 showPad :: Int -> String
 showPad n = if n < 10 then "0" <> show n else show n
 
-getInputs :: Int -> Array Msg
-getInputs n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map fst walk)
+-- getInputs :: Int -> Array Msg
+-- getInputs n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map fst walk)
 
-getOutputs :: Int -> Array State
-getOutputs n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map snd walk)
+-- getOutputs :: Int -> Array State
+-- getOutputs n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map snd walk)
 
-getInputsD :: Int -> Array MsgD
-getInputsD n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map fst walkD)
+-- getInputsD :: Int -> Array MsgD
+-- getInputsD n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map fst walkD)
 
-getOutputsD :: Int -> Array StateD
-getOutputsD n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map snd walkD)
+-- getOutputsD :: Int -> Array StateD
+-- getOutputsD n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map snd walkD)

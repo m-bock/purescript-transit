@@ -46,9 +46,9 @@ addHandler
   :: forall @symStaIn @symMsgIn m staIn msgIn rowStateOut rowMsg rowState trashState trashMsg trashUnion
    . IsSymbol symStaIn
   => IsSymbol symMsgIn
-  => Row.Cons symStaIn staIn trashState rowState
-  => Row.Cons symMsgIn msgIn trashMsg rowMsg
-  => Row.Union rowStateOut trashUnion rowState
+  --=> Row.Cons symStaIn staIn trashState rowState
+  --=> Row.Cons symMsgIn msgIn trashMsg rowMsg
+  --=> Row.Union rowStateOut trashUnion rowState
   => (staIn -> msgIn -> m (Variant rowStateOut))
   -> HandlerLookupBuilder m rowState rowMsg
   -> HandlerLookupBuilder m rowState rowMsg
