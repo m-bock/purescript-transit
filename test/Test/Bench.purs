@@ -19,28 +19,25 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
 import Node.Process (lookupEnv)
 import Partial.Unsafe (unsafeCrashWith)
--- import Test.BenchDef.Size10 as Size10
--- import Test.BenchDef.Size20 as Size20
---import Test.BenchDef.Size30 as Size30
--- import Test.BenchDef.Size40 as Size40
--- import Test.BenchDef.Size50 as Size50
--- import Test.BenchDef.Size60 as Size60
--- import Test.BenchDef.Size70 as Size70
--- import Test.BenchDef.Size80 as Size80
--- import Test.BenchDef.Size90 as Size90
--- import Test.BenchDef.Size100 as Size100
--- import Test.BenchDef.Size110 as Size110
--- import Test.BenchDef.Size120 as Size120
--- import Test.BenchDef.Size130 as Size130
--- import Test.BenchDef.Size140 as Size140
--- import Test.BenchDef.Size150 as Size150
--- import Test.BenchDef.Size160 as Size160
--- import Test.BenchDef.Size170 as Size170
--- import Test.BenchDef.Size180 as Size180
--- import Test.BenchDef.Size190 as Size190
--- import Test.BenchDef.Size200 as Size200
--- import Test.BenchDef.Transit (Msg, MsgD, State, StateD(..), printMsg, printMsgD, printState, printStateD, update, updateClassic, walk, walkD)
--- Note: printStateD and printMsgD are commented out in SizeXX modules to avoid quadratic compile time from genericShow
+import Test.BenchDef.TransitSize10 as TransitSize10
+import Test.BenchDef.TransitSize20 as TransitSize20
+import Test.BenchDef.TransitSize30 as TransitSize30
+import Test.BenchDef.TransitSize40 as TransitSize40
+import Test.BenchDef.TransitSize50 as TransitSize50
+import Test.BenchDef.TransitSize60 as TransitSize60
+import Test.BenchDef.TransitSize70 as TransitSize70
+import Test.BenchDef.TransitSize80 as TransitSize80
+import Test.BenchDef.TransitSize90 as TransitSize90
+import Test.BenchDef.ClassicSize10 as ClassicSize10
+import Test.BenchDef.ClassicSize20 as ClassicSize20
+import Test.BenchDef.ClassicSize30 as ClassicSize30
+import Test.BenchDef.ClassicSize40 as ClassicSize40
+import Test.BenchDef.ClassicSize50 as ClassicSize50
+import Test.BenchDef.ClassicSize60 as ClassicSize60
+import Test.BenchDef.ClassicSize70 as ClassicSize70
+import Test.BenchDef.ClassicSize80 as ClassicSize80
+import Test.BenchDef.ClassicSize90 as ClassicSize90
+
 import Test.Exists2 (Exists2, mkExists2, runExists2)
 import Transit.VariantUtils (v)
 
@@ -66,76 +63,40 @@ type T = Unit -> Unit -> Array String
 mk :: forall state msg. (state -> msg -> state) -> state -> Array msg -> (state -> String) -> (Unit -> Unit -> Array String)
 mk update init msgs print = \_ ->
   let
-    results = Array.scanl update init (msgs)
+    result = Array.scanl update init msgs
   in
-    \_ -> map print results
+    \_ -> map print result
 
-inputsD :: Array (Int /\ (Unit -> Unit -> Array String))
-inputsD =
-  -- Commented out because printStateD is commented out in SizeXX modules (genericShow causes quadratic compile time)
-  -- [ 10 /\ mk Size10.updateClassic (Size10.State01 {}) (map fst Size10.walkD) Size10.printStateD
-  -- , 20 /\ mk Size20.updateClassic (Size20.State01 {}) (map fst Size20.walkD) Size20.printStateD
-  --, 30 /\ mk Size30.updateClassic (Size30.State01 {}) (map fst Size30.walkD) Size30.printStateD
-  -- , 40 /\ mk Size40.updateClassic (Size40.State01 {}) (map fst Size40.walkD) Size40.printStateD
-  []
-
--- , 50 /\ mk Size50.updateClassic (Size50.State01 {}) (map fst Size50.walkD) Size50.printStateD
--- , 60 /\ mk Size60.updateClassic (Size60.State01 {}) (map fst Size60.walkD) Size60.printStateD
--- , 70 /\ mk Size70.updateClassic (Size70.State01 {}) (map fst Size70.walkD) Size70.printStateD
--- , 80 /\ mk Size80.updateClassic (Size80.State01 {}) (map fst Size80.walkD) Size80.printStateD
--- , 90 /\ mk Size90.updateClassic (Size90.State01 {}) (map fst Size90.walkD) Size90.printStateD
--- , 100 /\ mk Size100.updateClassic (Size100.State01 {}) (map fst Size100.walkD) Size100.printStateD
--- , 110 /\ mk Size110.updateClassic (Size110.State01 {}) (map fst Size110.walkD) Size110.printStateD
--- , 120 /\ mk Size120.updateClassic (Size120.State01 {}) (map fst Size120.walkD) Size120.printStateD
--- , 130 /\ mk Size130.updateClassic (Size130.State01 {}) (map fst Size130.walkD) Size130.printStateD
--- , 140 /\ mk Size140.updateClassic (Size140.State01 {}) (map fst Size140.walkD) Size140.printStateD
--- , 150 /\ mk Size150.updateClassic (Size150.State01 {}) (map fst Size150.walkD) Size150.printStateD
--- , 160 /\ mk Size160.updateClassic (Size160.State01 {}) (map fst Size160.walkD) Size160.printStateD
--- , 170 /\ mk Size170.updateClassic (Size170.State01 {}) (map fst Size170.walkD) Size170.printStateD
--- , 180 /\ mk Size180.updateClassic (Size180.State01 {}) (map fst Size180.walkD) Size180.printStateD
--- , 190 /\ mk Size190.updateClassic (Size190.State01 {}) (map fst Size190.walkD) Size190.printStateD
--- , 200 /\ mk Size200.updateClassic (Size200.State01 {}) (map fst Size200.walkD) Size200.printStateD
---]
+inputsClassic :: Array (Int /\ (Unit -> Unit -> Array String))
+inputsClassic =
+  [ 10 /\ mk ClassicSize10.updateClassic ClassicSize10.initClassic (map fst ClassicSize10.walkClassic) ClassicSize10.printStateClassic
+  , 20 /\ mk ClassicSize20.updateClassic ClassicSize20.initClassic (map fst ClassicSize20.walkClassic) ClassicSize20.printStateClassic
+  , 30 /\ mk ClassicSize30.updateClassic ClassicSize30.initClassic (map fst ClassicSize30.walkClassic) ClassicSize30.printStateClassic
+  , 40 /\ mk ClassicSize40.updateClassic ClassicSize40.initClassic (map fst ClassicSize40.walkClassic) ClassicSize40.printStateClassic
+  , 50 /\ mk ClassicSize50.updateClassic ClassicSize50.initClassic (map fst ClassicSize50.walkClassic) ClassicSize50.printStateClassic
+  , 60 /\ mk ClassicSize60.updateClassic ClassicSize60.initClassic (map fst ClassicSize60.walkClassic) ClassicSize60.printStateClassic
+  , 70 /\ mk ClassicSize70.updateClassic ClassicSize70.initClassic (map fst ClassicSize70.walkClassic) ClassicSize70.printStateClassic
+  , 80 /\ mk ClassicSize80.updateClassic ClassicSize80.initClassic (map fst ClassicSize80.walkClassic) ClassicSize80.printStateClassic
+  , 90 /\ mk ClassicSize90.updateClassic ClassicSize90.initClassic (map fst ClassicSize90.walkClassic) ClassicSize90.printStateClassic
+  ]
 
 inputs :: Array (Int /\ (Unit -> Unit -> Array String))
 inputs =
-  -- Commented out because SizeXX modules have been split into TransitSizeXX and ClassicSizeXX
-  -- [ 10 /\ mk Size10.update (v @"State01" {}) (map fst Size10.walk) Size10.printState
-  -- , 20 /\ mk Size20.update (v @"State01" {}) (map fst Size20.walk) Size20.printState
-  --  , 30 /\ mk Size30.update (v @"State01" {}) (map fst Size30.walk) Size30.printState
-  -- , 40 /\ mk Size40.update (v @"State01" {}) (map fst Size40.walk) Size40.printState
-  []
-  -- , 50 /\ mk Size50.update (v @"State01" {}) (map fst Size50.walk) Size50.printState
-  -- , 60 /\ mk Size60.update (v @"State01" {}) (map fst Size60.walk) Size60.printState
-  -- , 70 /\ mk Size70.update (v @"State01" {}) (map fst Size70.walk) Size70.printState
-  -- , 80 /\ mk Size80.update (v @"State01" {}) (map fst Size80.walk) Size80.printState
-  -- , 90 /\ mk Size90.update (v @"State01" {}) (map fst Size90.walk) Size90.printState
-  -- , 100 /\ mk Size100.update (v @"State01" {}) (map fst Size100.walk) Size100.printState
-  -- , 110 /\ mk Size110.update (v @"State01" {}) (map fst Size110.walk) Size110.printState
-  -- , 120 /\ mk Size120.update (v @"State01" {}) (map fst Size120.walk) Size120.printState
-  -- , 130 /\ mk Size130.update (v @"State01" {}) (map fst Size130.walk) Size130.printState
-  -- , 140 /\ mk Size140.update (v @"State01" {}) (map fst Size140.walk) Size140.printState
-  -- , 150 /\ mk Size150.update (v @"State01" {}) (map fst Size150.walk) Size150.printState
-  -- , 160 /\ mk Size160.update (v @"State01" {}) (map fst Size160.walk) Size160.printState
-  -- , 170 /\ mk Size170.update (v @"State01" {}) (map fst Size170.walk) Size170.printState
-  -- , 180 /\ mk Size180.update (v @"State01" {}) (map fst Size180.walk) Size180.printState
-  -- , 190 /\ mk Size190.update (v @"State01" {}) (map fst Size190.walk) Size190.printState
-  -- , 200 /\ mk Size200.update (v @"State01" {}) (map fst Size200.walk) Size200.printState
-  -- ]
+  [ 10 /\ mk TransitSize10.update TransitSize10.init (map fst TransitSize10.walk) TransitSize10.printState
+  , 20 /\ mk TransitSize20.update TransitSize20.init (map fst TransitSize20.walk) TransitSize20.printState
+  , 30 /\ mk TransitSize30.update TransitSize30.init (map fst TransitSize30.walk) TransitSize30.printState
+  , 40 /\ mk TransitSize40.update TransitSize40.init (map fst TransitSize40.walk) TransitSize40.printState
+  , 50 /\ mk TransitSize50.update TransitSize50.init (map fst TransitSize50.walk) TransitSize50.printState
+  , 60 /\ mk TransitSize60.update TransitSize60.init (map fst TransitSize60.walk) TransitSize60.printState
+  , 70 /\ mk TransitSize70.update TransitSize70.init (map fst TransitSize70.walk) TransitSize70.printState
+  , 80 /\ mk TransitSize80.update TransitSize80.init (map fst TransitSize80.walk) TransitSize80.printState
+  , 90 /\ mk TransitSize90.update TransitSize90.init (map fst TransitSize90.walk) TransitSize90.printState
+  ]
 
--- inputs :: Map Int BenchInput
--- inputs = Map.fromFoldable
---   [ 5 /\ (mkExists2 $ BenchInputF { msgs: map fst Size05.walk, update: Size05.update, init: v @"State01" {} })
---   , 10 /\ (mkExists2 $ BenchInputF { msgs: map fst Size10.walk, update: Size10.update, init: v @"State01" {} })
---   , 15 /\ (mkExists2 $ BenchInputF { msgs: map fst Size15.walk, update: Size15.update, init: v @"State01" {} })
---   , 20 /\ (mkExists2 $ BenchInputF { msgs: map fst Size20.walk, update: Size20.update, init: v @"State01" {} })
---   , 25 /\ (mkExists2 $ BenchInputF { msgs: map fst Size25.walk, update: Size25.update, init: v @"State01" {} })
---   , 30 /\ (mkExists2 $ BenchInputF { msgs: map fst Size30.walk, update: Size30.update, init: v @"State01" {} })
---   , 35 /\ (mkExists2 $ BenchInputF { msgs: map fst Size35.walk, update: Size35.update, init: v @"State01" {} })
---   , 40 /\ (mkExists2 $ BenchInputF { msgs: map fst Size40.walk, update: Size40.update, init: v @"State01" {} })
---   , 45 /\ (mkExists2 $ BenchInputF { msgs: map fst Size45.walk, update: Size45.update, init: v @"State01" {} })
---   , 50 /\ (mkExists2 $ BenchInputF { msgs: map fst Size50.walk, update: Size50.update, init: v @"State01" {} })
---   ]
+unsafeFind :: forall a. Int -> Array (Int /\ a) -> (Int /\ a)
+unsafeFind size items = case Array.find (\(s /\ _) -> s == size) items of
+  Just item -> item
+  Nothing -> unsafeCrashWith "Input not found"
 
 main :: Effect Unit
 main = do
@@ -153,7 +114,7 @@ main = do
       [ group "Update Functions"
           _
             { iterations = iterations
-            , sizes = map fst inputsD
+            , sizes = [ 10, 20, 30, 40, 50, 60, 70, 80, 90 ]
             }
           [ bench
               "updateClassic"
@@ -162,9 +123,7 @@ main = do
                   , normOut = \f -> f unit
                   }
               )
-              { prepare: \size -> case Array.find (\(s /\ _) -> s == size) inputsD of
-                  Just input -> input
-                  Nothing -> unsafeCrashWith "Input not found"
+              { prepare: \size -> unsafeFind size inputsClassic
               , run: \(_ /\ f) -> f unit
               }
           , bench
@@ -174,52 +133,9 @@ main = do
                   , normOut = \f -> f unit
                   }
               )
-              { prepare: \size -> case Array.find (\(s /\ _) -> s == size) inputs of
-                  Just input -> input
-                  Nothing -> unsafeCrashWith "Input not found"
+              { prepare: \size -> unsafeFind size inputs
               , run: \(_ /\ f) -> f unit
               }
           ]
-      -- , group "Update Functions"
-      --     _
-      --       { iterations = iterations
-      --       , sizes = [ 50, 100, 200, 400, 800, 1600, 3200 ]
-      --       }
-      --     [ bench
-      --         "updateClassic"
-      --         ( _
-      --             { normIn = map printMsgD
-      --             , normOut = map printStateD
-      --             }
-      --         )
-      --         { prepare: getInputsD
-      --         , run: \msgs ->
-      --             Array.scanl updateClassic (State01 {}) msgs
-      --         }
-      --     , bench
-      --         "update"
-      --         ( _
-      --             { normIn = map printMsg
-      --             , normOut = map printState
-      --             }
-      --         )
-      --         { prepare: \size -> getInputs size
-      --         , run: \msgs -> Array.scanl update (v @"State01") msgs
-      --         }
-      --     ]
       ]
 
-showPad :: Int -> String
-showPad n = if n < 10 then "0" <> show n else show n
-
--- getInputs :: Int -> Array Msg
--- getInputs n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map fst walk)
-
--- getOutputs :: Int -> Array State
--- getOutputs n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map snd walk)
-
--- getInputsD :: Int -> Array MsgD
--- getInputsD n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map fst walkD)
-
--- getOutputsD :: Int -> Array StateD
--- getOutputsD n = Array.fromFoldable $ LazyList.take n $ LazyList.cycle $ LazyList.fromFoldable (map snd walkD)

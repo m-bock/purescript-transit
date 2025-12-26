@@ -16,6 +16,7 @@ import Prim.Row as Row
 import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
 
 -- | Expands a partial variant (containing `Ret` and `RetVia` wrappers) into
 -- | a full variant by removing the wrappers and expanding to a larger row type.
@@ -73,7 +74,7 @@ instance removeWrappersConsReturn ::
   ) =>
   RemoveWrappers (MkReturnTL symState :> rest) rowIn rowOut
   where
-  removeWrappers v = out
+  removeWrappers v = unsafeCoerce v
     where
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v
@@ -93,7 +94,7 @@ instance removeWrappersConsReturnVia ::
   ) =>
   RemoveWrappers (MkReturnViaTL symGuard symState :> rest) rowIn rowOut
   where
-  removeWrappers v = out
+  removeWrappers v = unsafeCoerce v
     where
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v

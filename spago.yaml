@@ -1,13 +1,16 @@
 package:
   name: transit
   dependencies:
+    - colors
     - console
     - effect
-    - prelude
-    - variant
-    - typelevel-lists
     - maybe
-    - colors
+    - node-fs
+    - node-path
+    - prelude
+    - tidy-codegen
+    - typelevel-lists
+    - variant
   test:
     main: Test.Main
     dependencies:
@@ -16,6 +19,8 @@ package:
       - spec-node
       - benchlib
       - undefined
+      - node-fs
+      - node-path
 workspace:
   packageSet:
     registry: 68.1.1

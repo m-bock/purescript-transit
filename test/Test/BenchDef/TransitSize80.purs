@@ -97,6 +97,9 @@ printState v = t
   where
   VariantRep { type: t } = unsafeCoerce v
 
+init :: State
+init = v @"State01"
+
 type Msg = Variant
   ( "Msg01" :: {}
   , "Msg02" :: {}
@@ -434,4 +437,3 @@ walk =
   , v @"Msg79" /\ v @"State80"
   , v @"Msg80" /\ v @"State01"
   ]
-

@@ -36,12 +36,12 @@ build-es:
 bench-quick:
     just build && \
     just build-es && \
-    export ITERATIONS=10000 && just bench-js && just bench-es
+    export ITERATIONS=1000 && just bench-es && just bench-js
 
 bench:
     just build && \
     just build-es && \
-    export ITERATIONS=100000 && just bench-js && just bench-es
+    export ITERATIONS=1000 && just bench-es && just bench-js
 
 bench-js:
     BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
@@ -71,3 +71,10 @@ gen-vega:
 
 watch:
     echo README.md | entr -c just gen
+
+format:
+    npx purs-tidy format-in-place 'src/**/*.purs'
+    npx purs-tidy format-in-place 'test/**/*.purs'
+
+gen-bench-modules:
+    node scripts/generate-bench-modules.js

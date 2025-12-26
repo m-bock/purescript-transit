@@ -3,93 +3,183 @@
   "data": {
     "values": [
       {
-        "ms": 1899,
-        "series": "update",
+        "ms": 0.412,
+        "series": "updateClassic (worst case)",
         "size": 10
       },
       {
-        "ms": 2140,
-        "series": "update",
+        "ms": 0.546,
+        "series": "updateClassic (worst case)",
         "size": 20
       },
       {
-        "ms": 2216,
-        "series": "update",
+        "ms": 0.538,
+        "series": "updateClassic (worst case)",
         "size": 30
       },
       {
-        "ms": 2463,
-        "series": "update",
+        "ms": 0.588,
+        "series": "updateClassic (worst case)",
         "size": 40
       },
       {
-        "ms": 2820,
-        "series": "update",
+        "ms": 0.805,
+        "series": "updateClassic (worst case)",
         "size": 50
       },
       {
-        "ms": 3455,
-        "series": "update",
+        "ms": 0.68,
+        "series": "updateClassic (worst case)",
         "size": 60
       },
       {
-        "ms": 4038.0000000000005,
-        "series": "update",
+        "ms": 0.658,
+        "series": "updateClassic (worst case)",
         "size": 70
       },
       {
-        "ms": 4572,
-        "series": "update",
+        "ms": 0.716,
+        "series": "updateClassic (worst case)",
         "size": 80
       },
       {
-        "ms": 5371,
-        "series": "update",
+        "ms": 0.74,
+        "series": "updateClassic (worst case)",
         "size": 90
       },
       {
-        "ms": 1570,
-        "series": "updateClassic",
+        "ms": 0.405,
+        "series": "updateClassic (best case)",
         "size": 10
       },
       {
-        "ms": 1760,
-        "series": "updateClassic",
+        "ms": 0.479,
+        "series": "updateClassic (best case)",
         "size": 20
       },
       {
-        "ms": 1971,
-        "series": "updateClassic",
+        "ms": 0.566,
+        "series": "updateClassic (best case)",
         "size": 30
       },
       {
-        "ms": 2620,
-        "series": "updateClassic",
+        "ms": 0.587,
+        "series": "updateClassic (best case)",
         "size": 40
       },
       {
-        "ms": 3463,
-        "series": "updateClassic",
+        "ms": 0.521,
+        "series": "updateClassic (best case)",
         "size": 50
       },
       {
-        "ms": 5105,
-        "series": "updateClassic",
+        "ms": 0.512,
+        "series": "updateClassic (best case)",
         "size": 60
       },
       {
-        "ms": 7090,
-        "series": "updateClassic",
+        "ms": 0.478,
+        "series": "updateClassic (best case)",
         "size": 70
       },
       {
-        "ms": 10021,
-        "series": "updateClassic",
+        "ms": 0.513,
+        "series": "updateClassic (best case)",
         "size": 80
       },
       {
-        "ms": 13893,
-        "series": "updateClassic",
+        "ms": 0.525,
+        "series": "updateClassic (best case)",
+        "size": 90
+      },
+      {
+        "ms": 0.782,
+        "series": "update (worst case)",
+        "size": 10
+      },
+      {
+        "ms": 0.859,
+        "series": "update (worst case)",
+        "size": 20
+      },
+      {
+        "ms": 0.839,
+        "series": "update (worst case)",
+        "size": 30
+      },
+      {
+        "ms": 0.807,
+        "series": "update (worst case)",
+        "size": 40
+      },
+      {
+        "ms": 0.914,
+        "series": "update (worst case)",
+        "size": 50
+      },
+      {
+        "ms": 0.824,
+        "series": "update (worst case)",
+        "size": 60
+      },
+      {
+        "ms": 0.874,
+        "series": "update (worst case)",
+        "size": 70
+      },
+      {
+        "ms": 0.829,
+        "series": "update (worst case)",
+        "size": 80
+      },
+      {
+        "ms": 0.847,
+        "series": "update (worst case)",
+        "size": 90
+      },
+      {
+        "ms": 0.807,
+        "series": "update (best case)",
+        "size": 10
+      },
+      {
+        "ms": 0.805,
+        "series": "update (best case)",
+        "size": 20
+      },
+      {
+        "ms": 0.869,
+        "series": "update (best case)",
+        "size": 30
+      },
+      {
+        "ms": 0.8,
+        "series": "update (best case)",
+        "size": 40
+      },
+      {
+        "ms": 0.883,
+        "series": "update (best case)",
+        "size": 50
+      },
+      {
+        "ms": 0.832,
+        "series": "update (best case)",
+        "size": 60
+      },
+      {
+        "ms": 0.836,
+        "series": "update (best case)",
+        "size": 70
+      },
+      {
+        "ms": 0.867,
+        "series": "update (best case)",
+        "size": 80
+      },
+      {
+        "ms": 0.812,
+        "series": "update (best case)",
         "size": 90
       }
     ]

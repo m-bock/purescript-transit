@@ -88,8 +88,8 @@ data StateD
 
 derive instance Eq StateD
 
-printStateD :: StateD -> String
-printStateD = case _ of
+printStateClassic :: StateD -> String
+printStateClassic = case _ of
   State01 {} -> "State01"
   State02 {} -> "State02"
   State03 {} -> "State03"
@@ -170,6 +170,9 @@ printStateD = case _ of
   State78 {} -> "State78"
   State79 {} -> "State79"
   State80 {} -> "State80"
+
+initClassic :: StateD
+initClassic = State01 {}
 
 data MsgD
   = Msg01 {}
@@ -255,8 +258,8 @@ data MsgD
 
 derive instance Eq MsgD
 
-printMsgD :: MsgD -> String
-printMsgD = case _ of
+printMsgClassic :: MsgD -> String
+printMsgClassic = case _ of
   Msg01 {} -> "Msg01"
   Msg02 {} -> "Msg02"
   Msg03 {} -> "Msg03"
@@ -422,8 +425,8 @@ updateClassic state msg = case state, msg of
   State80 {}, Msg80 {} -> State01 {}
   _, _ -> state
 
-walkD :: Array (MsgD /\ StateD)
-walkD =
+walkClassic :: Array (MsgD /\ StateD)
+walkClassic =
   [ Msg01 {} /\ State02 {}
   , Msg02 {} /\ State03 {}
   , Msg03 {} /\ State04 {}
@@ -505,4 +508,3 @@ walkD =
   , Msg79 {} /\ State80 {}
   , Msg80 {} /\ State01 {}
   ]
-

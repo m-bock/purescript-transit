@@ -10,27 +10,26 @@ import Transit.VariantUtils (v)
 import Unsafe.Coerce (unsafeCoerce)
 
 type State = Variant
-  (
-  "State01" :: {},
-  "State02" :: {},
-  "State03" :: {},
-  "State04" :: {},
-  "State05" :: {},
-  "State06" :: {},
-  "State07" :: {},
-  "State08" :: {},
-  "State09" :: {},
-  "State10" :: {},
-  "State11" :: {},
-  "State12" :: {},
-  "State13" :: {},
-  "State14" :: {},
-  "State15" :: {},
-  "State16" :: {},
-  "State17" :: {},
-  "State18" :: {},
-  "State19" :: {},
-  "State20" :: {}
+  ( "State01" :: {}
+  , "State02" :: {}
+  , "State03" :: {}
+  , "State04" :: {}
+  , "State05" :: {}
+  , "State06" :: {}
+  , "State07" :: {}
+  , "State08" :: {}
+  , "State09" :: {}
+  , "State10" :: {}
+  , "State11" :: {}
+  , "State12" :: {}
+  , "State13" :: {}
+  , "State14" :: {}
+  , "State15" :: {}
+  , "State16" :: {}
+  , "State17" :: {}
+  , "State18" :: {}
+  , "State19" :: {}
+  , "State20" :: {}
   )
 
 printState :: State -> String
@@ -38,28 +37,30 @@ printState v = t
   where
   VariantRep { type: t } = unsafeCoerce v
 
+init :: State
+init = v @"State01"
+
 type Msg = Variant
-  (
-  "Msg01" :: {},
-  "Msg02" :: {},
-  "Msg03" :: {},
-  "Msg04" :: {},
-  "Msg05" :: {},
-  "Msg06" :: {},
-  "Msg07" :: {},
-  "Msg08" :: {},
-  "Msg09" :: {},
-  "Msg10" :: {},
-  "Msg11" :: {},
-  "Msg12" :: {},
-  "Msg13" :: {},
-  "Msg14" :: {},
-  "Msg15" :: {},
-  "Msg16" :: {},
-  "Msg17" :: {},
-  "Msg18" :: {},
-  "Msg19" :: {},
-  "Msg20" :: {}
+  ( "Msg01" :: {}
+  , "Msg02" :: {}
+  , "Msg03" :: {}
+  , "Msg04" :: {}
+  , "Msg05" :: {}
+  , "Msg06" :: {}
+  , "Msg07" :: {}
+  , "Msg08" :: {}
+  , "Msg09" :: {}
+  , "Msg10" :: {}
+  , "Msg11" :: {}
+  , "Msg12" :: {}
+  , "Msg13" :: {}
+  , "Msg14" :: {}
+  , "Msg15" :: {}
+  , "Msg16" :: {}
+  , "Msg17" :: {}
+  , "Msg18" :: {}
+  , "Msg19" :: {}
+  , "Msg20" :: {}
   )
 
 printMsg :: Msg -> String
@@ -115,26 +116,24 @@ update = mkUpdate @BenchTransit
 
 walk :: Array (Msg /\ State)
 walk =
-  [
-  v @"Msg01" /\ v @"State02",
-  v @"Msg02" /\ v @"State03",
-  v @"Msg03" /\ v @"State04",
-  v @"Msg04" /\ v @"State05",
-  v @"Msg05" /\ v @"State06",
-  v @"Msg06" /\ v @"State07",
-  v @"Msg07" /\ v @"State08",
-  v @"Msg08" /\ v @"State09",
-  v @"Msg09" /\ v @"State10",
-  v @"Msg10" /\ v @"State11",
-  v @"Msg11" /\ v @"State12",
-  v @"Msg12" /\ v @"State13",
-  v @"Msg13" /\ v @"State14",
-  v @"Msg14" /\ v @"State15",
-  v @"Msg15" /\ v @"State16",
-  v @"Msg16" /\ v @"State17",
-  v @"Msg17" /\ v @"State18",
-  v @"Msg18" /\ v @"State19",
-  v @"Msg19" /\ v @"State20",
-  v @"Msg20" /\ v @"State01"
+  [ v @"Msg01" /\ v @"State02"
+  , v @"Msg02" /\ v @"State03"
+  , v @"Msg03" /\ v @"State04"
+  , v @"Msg04" /\ v @"State05"
+  , v @"Msg05" /\ v @"State06"
+  , v @"Msg06" /\ v @"State07"
+  , v @"Msg07" /\ v @"State08"
+  , v @"Msg08" /\ v @"State09"
+  , v @"Msg09" /\ v @"State10"
+  , v @"Msg10" /\ v @"State11"
+  , v @"Msg11" /\ v @"State12"
+  , v @"Msg12" /\ v @"State13"
+  , v @"Msg13" /\ v @"State14"
+  , v @"Msg14" /\ v @"State15"
+  , v @"Msg15" /\ v @"State16"
+  , v @"Msg16" /\ v @"State17"
+  , v @"Msg17" /\ v @"State18"
+  , v @"Msg18" /\ v @"State19"
+  , v @"Msg19" /\ v @"State20"
+  , v @"Msg20" /\ v @"State01"
   ]
-

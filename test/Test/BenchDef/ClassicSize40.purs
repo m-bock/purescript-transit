@@ -48,8 +48,8 @@ data StateD
 
 derive instance Eq StateD
 
-printStateD :: StateD -> String
-printStateD = case _ of
+printStateClassic :: StateD -> String
+printStateClassic = case _ of
   State01 {} -> "State01"
   State02 {} -> "State02"
   State03 {} -> "State03"
@@ -90,6 +90,9 @@ printStateD = case _ of
   State38 {} -> "State38"
   State39 {} -> "State39"
   State40 {} -> "State40"
+
+initClassic :: StateD
+initClassic = State01 {}
 
 data MsgD
   = Msg01 {}
@@ -135,8 +138,8 @@ data MsgD
 
 derive instance Eq MsgD
 
-printMsgD :: MsgD -> String
-printMsgD = case _ of
+printMsgClassic :: MsgD -> String
+printMsgClassic = case _ of
   Msg01 {} -> "Msg01"
   Msg02 {} -> "Msg02"
   Msg03 {} -> "Msg03"
@@ -222,48 +225,46 @@ updateClassic state msg = case state, msg of
   State40 {}, Msg40 {} -> State01 {}
   _, _ -> state
 
-walkD :: Array (MsgD /\ StateD)
-walkD =
-  [
-  Msg01 {} /\ State02 {},
-  Msg02 {} /\ State03 {},
-  Msg03 {} /\ State04 {},
-  Msg04 {} /\ State05 {},
-  Msg05 {} /\ State06 {},
-  Msg06 {} /\ State07 {},
-  Msg07 {} /\ State08 {},
-  Msg08 {} /\ State09 {},
-  Msg09 {} /\ State10 {},
-  Msg10 {} /\ State11 {},
-  Msg11 {} /\ State12 {},
-  Msg12 {} /\ State13 {},
-  Msg13 {} /\ State14 {},
-  Msg14 {} /\ State15 {},
-  Msg15 {} /\ State16 {},
-  Msg16 {} /\ State17 {},
-  Msg17 {} /\ State18 {},
-  Msg18 {} /\ State19 {},
-  Msg19 {} /\ State20 {},
-  Msg20 {} /\ State21 {},
-  Msg21 {} /\ State22 {},
-  Msg22 {} /\ State23 {},
-  Msg23 {} /\ State24 {},
-  Msg24 {} /\ State25 {},
-  Msg25 {} /\ State26 {},
-  Msg26 {} /\ State27 {},
-  Msg27 {} /\ State28 {},
-  Msg28 {} /\ State29 {},
-  Msg29 {} /\ State30 {},
-  Msg30 {} /\ State31 {},
-  Msg31 {} /\ State32 {},
-  Msg32 {} /\ State33 {},
-  Msg33 {} /\ State34 {},
-  Msg34 {} /\ State35 {},
-  Msg35 {} /\ State36 {},
-  Msg36 {} /\ State37 {},
-  Msg37 {} /\ State38 {},
-  Msg38 {} /\ State39 {},
-  Msg39 {} /\ State40 {},
-  Msg40 {} /\ State01 {}
+walkClassic :: Array (MsgD /\ StateD)
+walkClassic =
+  [ Msg01 {} /\ State02 {}
+  , Msg02 {} /\ State03 {}
+  , Msg03 {} /\ State04 {}
+  , Msg04 {} /\ State05 {}
+  , Msg05 {} /\ State06 {}
+  , Msg06 {} /\ State07 {}
+  , Msg07 {} /\ State08 {}
+  , Msg08 {} /\ State09 {}
+  , Msg09 {} /\ State10 {}
+  , Msg10 {} /\ State11 {}
+  , Msg11 {} /\ State12 {}
+  , Msg12 {} /\ State13 {}
+  , Msg13 {} /\ State14 {}
+  , Msg14 {} /\ State15 {}
+  , Msg15 {} /\ State16 {}
+  , Msg16 {} /\ State17 {}
+  , Msg17 {} /\ State18 {}
+  , Msg18 {} /\ State19 {}
+  , Msg19 {} /\ State20 {}
+  , Msg20 {} /\ State21 {}
+  , Msg21 {} /\ State22 {}
+  , Msg22 {} /\ State23 {}
+  , Msg23 {} /\ State24 {}
+  , Msg24 {} /\ State25 {}
+  , Msg25 {} /\ State26 {}
+  , Msg26 {} /\ State27 {}
+  , Msg27 {} /\ State28 {}
+  , Msg28 {} /\ State29 {}
+  , Msg29 {} /\ State30 {}
+  , Msg30 {} /\ State31 {}
+  , Msg31 {} /\ State32 {}
+  , Msg32 {} /\ State33 {}
+  , Msg33 {} /\ State34 {}
+  , Msg34 {} /\ State35 {}
+  , Msg35 {} /\ State36 {}
+  , Msg36 {} /\ State37 {}
+  , Msg37 {} /\ State38 {}
+  , Msg38 {} /\ State39 {}
+  , Msg39 {} /\ State40 {}
+  , Msg40 {} /\ State01 {}
   ]
-

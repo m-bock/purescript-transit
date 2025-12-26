@@ -10,97 +10,96 @@ import Transit.VariantUtils (v)
 import Unsafe.Coerce (unsafeCoerce)
 
 type State = Variant
-  (
-  "State01" :: {},
-  "State02" :: {},
-  "State03" :: {},
-  "State04" :: {},
-  "State05" :: {},
-  "State06" :: {},
-  "State07" :: {},
-  "State08" :: {},
-  "State09" :: {},
-  "State10" :: {},
-  "State11" :: {},
-  "State12" :: {},
-  "State13" :: {},
-  "State14" :: {},
-  "State15" :: {},
-  "State16" :: {},
-  "State17" :: {},
-  "State18" :: {},
-  "State19" :: {},
-  "State20" :: {},
-  "State21" :: {},
-  "State22" :: {},
-  "State23" :: {},
-  "State24" :: {},
-  "State25" :: {},
-  "State26" :: {},
-  "State27" :: {},
-  "State28" :: {},
-  "State29" :: {},
-  "State30" :: {},
-  "State31" :: {},
-  "State32" :: {},
-  "State33" :: {},
-  "State34" :: {},
-  "State35" :: {},
-  "State36" :: {},
-  "State37" :: {},
-  "State38" :: {},
-  "State39" :: {},
-  "State40" :: {},
-  "State41" :: {},
-  "State42" :: {},
-  "State43" :: {},
-  "State44" :: {},
-  "State45" :: {},
-  "State46" :: {},
-  "State47" :: {},
-  "State48" :: {},
-  "State49" :: {},
-  "State50" :: {},
-  "State51" :: {},
-  "State52" :: {},
-  "State53" :: {},
-  "State54" :: {},
-  "State55" :: {},
-  "State56" :: {},
-  "State57" :: {},
-  "State58" :: {},
-  "State59" :: {},
-  "State60" :: {},
-  "State61" :: {},
-  "State62" :: {},
-  "State63" :: {},
-  "State64" :: {},
-  "State65" :: {},
-  "State66" :: {},
-  "State67" :: {},
-  "State68" :: {},
-  "State69" :: {},
-  "State70" :: {},
-  "State71" :: {},
-  "State72" :: {},
-  "State73" :: {},
-  "State74" :: {},
-  "State75" :: {},
-  "State76" :: {},
-  "State77" :: {},
-  "State78" :: {},
-  "State79" :: {},
-  "State80" :: {},
-  "State81" :: {},
-  "State82" :: {},
-  "State83" :: {},
-  "State84" :: {},
-  "State85" :: {},
-  "State86" :: {},
-  "State87" :: {},
-  "State88" :: {},
-  "State89" :: {},
-  "State90" :: {}
+  ( "State01" :: {}
+  , "State02" :: {}
+  , "State03" :: {}
+  , "State04" :: {}
+  , "State05" :: {}
+  , "State06" :: {}
+  , "State07" :: {}
+  , "State08" :: {}
+  , "State09" :: {}
+  , "State10" :: {}
+  , "State11" :: {}
+  , "State12" :: {}
+  , "State13" :: {}
+  , "State14" :: {}
+  , "State15" :: {}
+  , "State16" :: {}
+  , "State17" :: {}
+  , "State18" :: {}
+  , "State19" :: {}
+  , "State20" :: {}
+  , "State21" :: {}
+  , "State22" :: {}
+  , "State23" :: {}
+  , "State24" :: {}
+  , "State25" :: {}
+  , "State26" :: {}
+  , "State27" :: {}
+  , "State28" :: {}
+  , "State29" :: {}
+  , "State30" :: {}
+  , "State31" :: {}
+  , "State32" :: {}
+  , "State33" :: {}
+  , "State34" :: {}
+  , "State35" :: {}
+  , "State36" :: {}
+  , "State37" :: {}
+  , "State38" :: {}
+  , "State39" :: {}
+  , "State40" :: {}
+  , "State41" :: {}
+  , "State42" :: {}
+  , "State43" :: {}
+  , "State44" :: {}
+  , "State45" :: {}
+  , "State46" :: {}
+  , "State47" :: {}
+  , "State48" :: {}
+  , "State49" :: {}
+  , "State50" :: {}
+  , "State51" :: {}
+  , "State52" :: {}
+  , "State53" :: {}
+  , "State54" :: {}
+  , "State55" :: {}
+  , "State56" :: {}
+  , "State57" :: {}
+  , "State58" :: {}
+  , "State59" :: {}
+  , "State60" :: {}
+  , "State61" :: {}
+  , "State62" :: {}
+  , "State63" :: {}
+  , "State64" :: {}
+  , "State65" :: {}
+  , "State66" :: {}
+  , "State67" :: {}
+  , "State68" :: {}
+  , "State69" :: {}
+  , "State70" :: {}
+  , "State71" :: {}
+  , "State72" :: {}
+  , "State73" :: {}
+  , "State74" :: {}
+  , "State75" :: {}
+  , "State76" :: {}
+  , "State77" :: {}
+  , "State78" :: {}
+  , "State79" :: {}
+  , "State80" :: {}
+  , "State81" :: {}
+  , "State82" :: {}
+  , "State83" :: {}
+  , "State84" :: {}
+  , "State85" :: {}
+  , "State86" :: {}
+  , "State87" :: {}
+  , "State88" :: {}
+  , "State89" :: {}
+  , "State90" :: {}
   )
 
 printState :: State -> String
@@ -108,98 +107,100 @@ printState v = t
   where
   VariantRep { type: t } = unsafeCoerce v
 
+init :: State
+init = v @"State01"
+
 type Msg = Variant
-  (
-  "Msg01" :: {},
-  "Msg02" :: {},
-  "Msg03" :: {},
-  "Msg04" :: {},
-  "Msg05" :: {},
-  "Msg06" :: {},
-  "Msg07" :: {},
-  "Msg08" :: {},
-  "Msg09" :: {},
-  "Msg10" :: {},
-  "Msg11" :: {},
-  "Msg12" :: {},
-  "Msg13" :: {},
-  "Msg14" :: {},
-  "Msg15" :: {},
-  "Msg16" :: {},
-  "Msg17" :: {},
-  "Msg18" :: {},
-  "Msg19" :: {},
-  "Msg20" :: {},
-  "Msg21" :: {},
-  "Msg22" :: {},
-  "Msg23" :: {},
-  "Msg24" :: {},
-  "Msg25" :: {},
-  "Msg26" :: {},
-  "Msg27" :: {},
-  "Msg28" :: {},
-  "Msg29" :: {},
-  "Msg30" :: {},
-  "Msg31" :: {},
-  "Msg32" :: {},
-  "Msg33" :: {},
-  "Msg34" :: {},
-  "Msg35" :: {},
-  "Msg36" :: {},
-  "Msg37" :: {},
-  "Msg38" :: {},
-  "Msg39" :: {},
-  "Msg40" :: {},
-  "Msg41" :: {},
-  "Msg42" :: {},
-  "Msg43" :: {},
-  "Msg44" :: {},
-  "Msg45" :: {},
-  "Msg46" :: {},
-  "Msg47" :: {},
-  "Msg48" :: {},
-  "Msg49" :: {},
-  "Msg50" :: {},
-  "Msg51" :: {},
-  "Msg52" :: {},
-  "Msg53" :: {},
-  "Msg54" :: {},
-  "Msg55" :: {},
-  "Msg56" :: {},
-  "Msg57" :: {},
-  "Msg58" :: {},
-  "Msg59" :: {},
-  "Msg60" :: {},
-  "Msg61" :: {},
-  "Msg62" :: {},
-  "Msg63" :: {},
-  "Msg64" :: {},
-  "Msg65" :: {},
-  "Msg66" :: {},
-  "Msg67" :: {},
-  "Msg68" :: {},
-  "Msg69" :: {},
-  "Msg70" :: {},
-  "Msg71" :: {},
-  "Msg72" :: {},
-  "Msg73" :: {},
-  "Msg74" :: {},
-  "Msg75" :: {},
-  "Msg76" :: {},
-  "Msg77" :: {},
-  "Msg78" :: {},
-  "Msg79" :: {},
-  "Msg80" :: {},
-  "Msg81" :: {},
-  "Msg82" :: {},
-  "Msg83" :: {},
-  "Msg84" :: {},
-  "Msg85" :: {},
-  "Msg86" :: {},
-  "Msg87" :: {},
-  "Msg88" :: {},
-  "Msg89" :: {},
-  "Msg90" :: {}
+  ( "Msg01" :: {}
+  , "Msg02" :: {}
+  , "Msg03" :: {}
+  , "Msg04" :: {}
+  , "Msg05" :: {}
+  , "Msg06" :: {}
+  , "Msg07" :: {}
+  , "Msg08" :: {}
+  , "Msg09" :: {}
+  , "Msg10" :: {}
+  , "Msg11" :: {}
+  , "Msg12" :: {}
+  , "Msg13" :: {}
+  , "Msg14" :: {}
+  , "Msg15" :: {}
+  , "Msg16" :: {}
+  , "Msg17" :: {}
+  , "Msg18" :: {}
+  , "Msg19" :: {}
+  , "Msg20" :: {}
+  , "Msg21" :: {}
+  , "Msg22" :: {}
+  , "Msg23" :: {}
+  , "Msg24" :: {}
+  , "Msg25" :: {}
+  , "Msg26" :: {}
+  , "Msg27" :: {}
+  , "Msg28" :: {}
+  , "Msg29" :: {}
+  , "Msg30" :: {}
+  , "Msg31" :: {}
+  , "Msg32" :: {}
+  , "Msg33" :: {}
+  , "Msg34" :: {}
+  , "Msg35" :: {}
+  , "Msg36" :: {}
+  , "Msg37" :: {}
+  , "Msg38" :: {}
+  , "Msg39" :: {}
+  , "Msg40" :: {}
+  , "Msg41" :: {}
+  , "Msg42" :: {}
+  , "Msg43" :: {}
+  , "Msg44" :: {}
+  , "Msg45" :: {}
+  , "Msg46" :: {}
+  , "Msg47" :: {}
+  , "Msg48" :: {}
+  , "Msg49" :: {}
+  , "Msg50" :: {}
+  , "Msg51" :: {}
+  , "Msg52" :: {}
+  , "Msg53" :: {}
+  , "Msg54" :: {}
+  , "Msg55" :: {}
+  , "Msg56" :: {}
+  , "Msg57" :: {}
+  , "Msg58" :: {}
+  , "Msg59" :: {}
+  , "Msg60" :: {}
+  , "Msg61" :: {}
+  , "Msg62" :: {}
+  , "Msg63" :: {}
+  , "Msg64" :: {}
+  , "Msg65" :: {}
+  , "Msg66" :: {}
+  , "Msg67" :: {}
+  , "Msg68" :: {}
+  , "Msg69" :: {}
+  , "Msg70" :: {}
+  , "Msg71" :: {}
+  , "Msg72" :: {}
+  , "Msg73" :: {}
+  , "Msg74" :: {}
+  , "Msg75" :: {}
+  , "Msg76" :: {}
+  , "Msg77" :: {}
+  , "Msg78" :: {}
+  , "Msg79" :: {}
+  , "Msg80" :: {}
+  , "Msg81" :: {}
+  , "Msg82" :: {}
+  , "Msg83" :: {}
+  , "Msg84" :: {}
+  , "Msg85" :: {}
+  , "Msg86" :: {}
+  , "Msg87" :: {}
+  , "Msg88" :: {}
+  , "Msg89" :: {}
+  , "Msg90" :: {}
   )
 
 printMsg :: Msg -> String
@@ -395,96 +396,94 @@ update = mkUpdate @BenchTransit
 
 walk :: Array (Msg /\ State)
 walk =
-  [
-  v @"Msg01" /\ v @"State02",
-  v @"Msg02" /\ v @"State03",
-  v @"Msg03" /\ v @"State04",
-  v @"Msg04" /\ v @"State05",
-  v @"Msg05" /\ v @"State06",
-  v @"Msg06" /\ v @"State07",
-  v @"Msg07" /\ v @"State08",
-  v @"Msg08" /\ v @"State09",
-  v @"Msg09" /\ v @"State10",
-  v @"Msg10" /\ v @"State11",
-  v @"Msg11" /\ v @"State12",
-  v @"Msg12" /\ v @"State13",
-  v @"Msg13" /\ v @"State14",
-  v @"Msg14" /\ v @"State15",
-  v @"Msg15" /\ v @"State16",
-  v @"Msg16" /\ v @"State17",
-  v @"Msg17" /\ v @"State18",
-  v @"Msg18" /\ v @"State19",
-  v @"Msg19" /\ v @"State20",
-  v @"Msg20" /\ v @"State21",
-  v @"Msg21" /\ v @"State22",
-  v @"Msg22" /\ v @"State23",
-  v @"Msg23" /\ v @"State24",
-  v @"Msg24" /\ v @"State25",
-  v @"Msg25" /\ v @"State26",
-  v @"Msg26" /\ v @"State27",
-  v @"Msg27" /\ v @"State28",
-  v @"Msg28" /\ v @"State29",
-  v @"Msg29" /\ v @"State30",
-  v @"Msg30" /\ v @"State31",
-  v @"Msg31" /\ v @"State32",
-  v @"Msg32" /\ v @"State33",
-  v @"Msg33" /\ v @"State34",
-  v @"Msg34" /\ v @"State35",
-  v @"Msg35" /\ v @"State36",
-  v @"Msg36" /\ v @"State37",
-  v @"Msg37" /\ v @"State38",
-  v @"Msg38" /\ v @"State39",
-  v @"Msg39" /\ v @"State40",
-  v @"Msg40" /\ v @"State41",
-  v @"Msg41" /\ v @"State42",
-  v @"Msg42" /\ v @"State43",
-  v @"Msg43" /\ v @"State44",
-  v @"Msg44" /\ v @"State45",
-  v @"Msg45" /\ v @"State46",
-  v @"Msg46" /\ v @"State47",
-  v @"Msg47" /\ v @"State48",
-  v @"Msg48" /\ v @"State49",
-  v @"Msg49" /\ v @"State50",
-  v @"Msg50" /\ v @"State51",
-  v @"Msg51" /\ v @"State52",
-  v @"Msg52" /\ v @"State53",
-  v @"Msg53" /\ v @"State54",
-  v @"Msg54" /\ v @"State55",
-  v @"Msg55" /\ v @"State56",
-  v @"Msg56" /\ v @"State57",
-  v @"Msg57" /\ v @"State58",
-  v @"Msg58" /\ v @"State59",
-  v @"Msg59" /\ v @"State60",
-  v @"Msg60" /\ v @"State61",
-  v @"Msg61" /\ v @"State62",
-  v @"Msg62" /\ v @"State63",
-  v @"Msg63" /\ v @"State64",
-  v @"Msg64" /\ v @"State65",
-  v @"Msg65" /\ v @"State66",
-  v @"Msg66" /\ v @"State67",
-  v @"Msg67" /\ v @"State68",
-  v @"Msg68" /\ v @"State69",
-  v @"Msg69" /\ v @"State70",
-  v @"Msg70" /\ v @"State71",
-  v @"Msg71" /\ v @"State72",
-  v @"Msg72" /\ v @"State73",
-  v @"Msg73" /\ v @"State74",
-  v @"Msg74" /\ v @"State75",
-  v @"Msg75" /\ v @"State76",
-  v @"Msg76" /\ v @"State77",
-  v @"Msg77" /\ v @"State78",
-  v @"Msg78" /\ v @"State79",
-  v @"Msg79" /\ v @"State80",
-  v @"Msg80" /\ v @"State81",
-  v @"Msg81" /\ v @"State82",
-  v @"Msg82" /\ v @"State83",
-  v @"Msg83" /\ v @"State84",
-  v @"Msg84" /\ v @"State85",
-  v @"Msg85" /\ v @"State86",
-  v @"Msg86" /\ v @"State87",
-  v @"Msg87" /\ v @"State88",
-  v @"Msg88" /\ v @"State89",
-  v @"Msg89" /\ v @"State90",
-  v @"Msg90" /\ v @"State01"
+  [ v @"Msg01" /\ v @"State02"
+  , v @"Msg02" /\ v @"State03"
+  , v @"Msg03" /\ v @"State04"
+  , v @"Msg04" /\ v @"State05"
+  , v @"Msg05" /\ v @"State06"
+  , v @"Msg06" /\ v @"State07"
+  , v @"Msg07" /\ v @"State08"
+  , v @"Msg08" /\ v @"State09"
+  , v @"Msg09" /\ v @"State10"
+  , v @"Msg10" /\ v @"State11"
+  , v @"Msg11" /\ v @"State12"
+  , v @"Msg12" /\ v @"State13"
+  , v @"Msg13" /\ v @"State14"
+  , v @"Msg14" /\ v @"State15"
+  , v @"Msg15" /\ v @"State16"
+  , v @"Msg16" /\ v @"State17"
+  , v @"Msg17" /\ v @"State18"
+  , v @"Msg18" /\ v @"State19"
+  , v @"Msg19" /\ v @"State20"
+  , v @"Msg20" /\ v @"State21"
+  , v @"Msg21" /\ v @"State22"
+  , v @"Msg22" /\ v @"State23"
+  , v @"Msg23" /\ v @"State24"
+  , v @"Msg24" /\ v @"State25"
+  , v @"Msg25" /\ v @"State26"
+  , v @"Msg26" /\ v @"State27"
+  , v @"Msg27" /\ v @"State28"
+  , v @"Msg28" /\ v @"State29"
+  , v @"Msg29" /\ v @"State30"
+  , v @"Msg30" /\ v @"State31"
+  , v @"Msg31" /\ v @"State32"
+  , v @"Msg32" /\ v @"State33"
+  , v @"Msg33" /\ v @"State34"
+  , v @"Msg34" /\ v @"State35"
+  , v @"Msg35" /\ v @"State36"
+  , v @"Msg36" /\ v @"State37"
+  , v @"Msg37" /\ v @"State38"
+  , v @"Msg38" /\ v @"State39"
+  , v @"Msg39" /\ v @"State40"
+  , v @"Msg40" /\ v @"State41"
+  , v @"Msg41" /\ v @"State42"
+  , v @"Msg42" /\ v @"State43"
+  , v @"Msg43" /\ v @"State44"
+  , v @"Msg44" /\ v @"State45"
+  , v @"Msg45" /\ v @"State46"
+  , v @"Msg46" /\ v @"State47"
+  , v @"Msg47" /\ v @"State48"
+  , v @"Msg48" /\ v @"State49"
+  , v @"Msg49" /\ v @"State50"
+  , v @"Msg50" /\ v @"State51"
+  , v @"Msg51" /\ v @"State52"
+  , v @"Msg52" /\ v @"State53"
+  , v @"Msg53" /\ v @"State54"
+  , v @"Msg54" /\ v @"State55"
+  , v @"Msg55" /\ v @"State56"
+  , v @"Msg56" /\ v @"State57"
+  , v @"Msg57" /\ v @"State58"
+  , v @"Msg58" /\ v @"State59"
+  , v @"Msg59" /\ v @"State60"
+  , v @"Msg60" /\ v @"State61"
+  , v @"Msg61" /\ v @"State62"
+  , v @"Msg62" /\ v @"State63"
+  , v @"Msg63" /\ v @"State64"
+  , v @"Msg64" /\ v @"State65"
+  , v @"Msg65" /\ v @"State66"
+  , v @"Msg66" /\ v @"State67"
+  , v @"Msg67" /\ v @"State68"
+  , v @"Msg68" /\ v @"State69"
+  , v @"Msg69" /\ v @"State70"
+  , v @"Msg70" /\ v @"State71"
+  , v @"Msg71" /\ v @"State72"
+  , v @"Msg72" /\ v @"State73"
+  , v @"Msg73" /\ v @"State74"
+  , v @"Msg74" /\ v @"State75"
+  , v @"Msg75" /\ v @"State76"
+  , v @"Msg76" /\ v @"State77"
+  , v @"Msg77" /\ v @"State78"
+  , v @"Msg78" /\ v @"State79"
+  , v @"Msg79" /\ v @"State80"
+  , v @"Msg80" /\ v @"State81"
+  , v @"Msg81" /\ v @"State82"
+  , v @"Msg82" /\ v @"State83"
+  , v @"Msg83" /\ v @"State84"
+  , v @"Msg84" /\ v @"State85"
+  , v @"Msg85" /\ v @"State86"
+  , v @"Msg86" /\ v @"State87"
+  , v @"Msg87" /\ v @"State88"
+  , v @"Msg88" /\ v @"State89"
+  , v @"Msg89" /\ v @"State90"
+  , v @"Msg90" /\ v @"State01"
   ]
-
