@@ -1,4 +1,4 @@
-module Test.BenchDef.ClassicSize80 where
+module Test.BenchDef.ClassicSize130 where
 
 import Prelude
 
@@ -85,6 +85,56 @@ data StateD
   | State078 {}
   | State079 {}
   | State080 {}
+  | State081 {}
+  | State082 {}
+  | State083 {}
+  | State084 {}
+  | State085 {}
+  | State086 {}
+  | State087 {}
+  | State088 {}
+  | State089 {}
+  | State090 {}
+  | State091 {}
+  | State092 {}
+  | State093 {}
+  | State094 {}
+  | State095 {}
+  | State096 {}
+  | State097 {}
+  | State098 {}
+  | State099 {}
+  | State100 {}
+  | State101 {}
+  | State102 {}
+  | State103 {}
+  | State104 {}
+  | State105 {}
+  | State106 {}
+  | State107 {}
+  | State108 {}
+  | State109 {}
+  | State110 {}
+  | State111 {}
+  | State112 {}
+  | State113 {}
+  | State114 {}
+  | State115 {}
+  | State116 {}
+  | State117 {}
+  | State118 {}
+  | State119 {}
+  | State120 {}
+  | State121 {}
+  | State122 {}
+  | State123 {}
+  | State124 {}
+  | State125 {}
+  | State126 {}
+  | State127 {}
+  | State128 {}
+  | State129 {}
+  | State130 {}
 
 derive instance Eq StateD
 
@@ -170,6 +220,56 @@ printStateClassic = case _ of
   State078 {} -> "State078"
   State079 {} -> "State079"
   State080 {} -> "State080"
+  State081 {} -> "State081"
+  State082 {} -> "State082"
+  State083 {} -> "State083"
+  State084 {} -> "State084"
+  State085 {} -> "State085"
+  State086 {} -> "State086"
+  State087 {} -> "State087"
+  State088 {} -> "State088"
+  State089 {} -> "State089"
+  State090 {} -> "State090"
+  State091 {} -> "State091"
+  State092 {} -> "State092"
+  State093 {} -> "State093"
+  State094 {} -> "State094"
+  State095 {} -> "State095"
+  State096 {} -> "State096"
+  State097 {} -> "State097"
+  State098 {} -> "State098"
+  State099 {} -> "State099"
+  State100 {} -> "State100"
+  State101 {} -> "State101"
+  State102 {} -> "State102"
+  State103 {} -> "State103"
+  State104 {} -> "State104"
+  State105 {} -> "State105"
+  State106 {} -> "State106"
+  State107 {} -> "State107"
+  State108 {} -> "State108"
+  State109 {} -> "State109"
+  State110 {} -> "State110"
+  State111 {} -> "State111"
+  State112 {} -> "State112"
+  State113 {} -> "State113"
+  State114 {} -> "State114"
+  State115 {} -> "State115"
+  State116 {} -> "State116"
+  State117 {} -> "State117"
+  State118 {} -> "State118"
+  State119 {} -> "State119"
+  State120 {} -> "State120"
+  State121 {} -> "State121"
+  State122 {} -> "State122"
+  State123 {} -> "State123"
+  State124 {} -> "State124"
+  State125 {} -> "State125"
+  State126 {} -> "State126"
+  State127 {} -> "State127"
+  State128 {} -> "State128"
+  State129 {} -> "State129"
+  State130 {} -> "State130"
 
 initClassic :: StateD
 initClassic = State001 {}
@@ -255,6 +355,56 @@ data MsgD
   | Msg078 {}
   | Msg079 {}
   | Msg080 {}
+  | Msg081 {}
+  | Msg082 {}
+  | Msg083 {}
+  | Msg084 {}
+  | Msg085 {}
+  | Msg086 {}
+  | Msg087 {}
+  | Msg088 {}
+  | Msg089 {}
+  | Msg090 {}
+  | Msg091 {}
+  | Msg092 {}
+  | Msg093 {}
+  | Msg094 {}
+  | Msg095 {}
+  | Msg096 {}
+  | Msg097 {}
+  | Msg098 {}
+  | Msg099 {}
+  | Msg100 {}
+  | Msg101 {}
+  | Msg102 {}
+  | Msg103 {}
+  | Msg104 {}
+  | Msg105 {}
+  | Msg106 {}
+  | Msg107 {}
+  | Msg108 {}
+  | Msg109 {}
+  | Msg110 {}
+  | Msg111 {}
+  | Msg112 {}
+  | Msg113 {}
+  | Msg114 {}
+  | Msg115 {}
+  | Msg116 {}
+  | Msg117 {}
+  | Msg118 {}
+  | Msg119 {}
+  | Msg120 {}
+  | Msg121 {}
+  | Msg122 {}
+  | Msg123 {}
+  | Msg124 {}
+  | Msg125 {}
+  | Msg126 {}
+  | Msg127 {}
+  | Msg128 {}
+  | Msg129 {}
+  | Msg130 {}
 
 derive instance Eq MsgD
 
@@ -340,6 +490,56 @@ printMsgClassic = case _ of
   Msg078 {} -> "Msg078"
   Msg079 {} -> "Msg079"
   Msg080 {} -> "Msg080"
+  Msg081 {} -> "Msg081"
+  Msg082 {} -> "Msg082"
+  Msg083 {} -> "Msg083"
+  Msg084 {} -> "Msg084"
+  Msg085 {} -> "Msg085"
+  Msg086 {} -> "Msg086"
+  Msg087 {} -> "Msg087"
+  Msg088 {} -> "Msg088"
+  Msg089 {} -> "Msg089"
+  Msg090 {} -> "Msg090"
+  Msg091 {} -> "Msg091"
+  Msg092 {} -> "Msg092"
+  Msg093 {} -> "Msg093"
+  Msg094 {} -> "Msg094"
+  Msg095 {} -> "Msg095"
+  Msg096 {} -> "Msg096"
+  Msg097 {} -> "Msg097"
+  Msg098 {} -> "Msg098"
+  Msg099 {} -> "Msg099"
+  Msg100 {} -> "Msg100"
+  Msg101 {} -> "Msg101"
+  Msg102 {} -> "Msg102"
+  Msg103 {} -> "Msg103"
+  Msg104 {} -> "Msg104"
+  Msg105 {} -> "Msg105"
+  Msg106 {} -> "Msg106"
+  Msg107 {} -> "Msg107"
+  Msg108 {} -> "Msg108"
+  Msg109 {} -> "Msg109"
+  Msg110 {} -> "Msg110"
+  Msg111 {} -> "Msg111"
+  Msg112 {} -> "Msg112"
+  Msg113 {} -> "Msg113"
+  Msg114 {} -> "Msg114"
+  Msg115 {} -> "Msg115"
+  Msg116 {} -> "Msg116"
+  Msg117 {} -> "Msg117"
+  Msg118 {} -> "Msg118"
+  Msg119 {} -> "Msg119"
+  Msg120 {} -> "Msg120"
+  Msg121 {} -> "Msg121"
+  Msg122 {} -> "Msg122"
+  Msg123 {} -> "Msg123"
+  Msg124 {} -> "Msg124"
+  Msg125 {} -> "Msg125"
+  Msg126 {} -> "Msg126"
+  Msg127 {} -> "Msg127"
+  Msg128 {} -> "Msg128"
+  Msg129 {} -> "Msg129"
+  Msg130 {} -> "Msg130"
 
 updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
@@ -422,7 +622,57 @@ updateClassic state msg = case state, msg of
   State077 {}, Msg077 {} -> State078 {}
   State078 {}, Msg078 {} -> State079 {}
   State079 {}, Msg079 {} -> State080 {}
-  State080 {}, Msg080 {} -> State001 {}
+  State080 {}, Msg080 {} -> State081 {}
+  State081 {}, Msg081 {} -> State082 {}
+  State082 {}, Msg082 {} -> State083 {}
+  State083 {}, Msg083 {} -> State084 {}
+  State084 {}, Msg084 {} -> State085 {}
+  State085 {}, Msg085 {} -> State086 {}
+  State086 {}, Msg086 {} -> State087 {}
+  State087 {}, Msg087 {} -> State088 {}
+  State088 {}, Msg088 {} -> State089 {}
+  State089 {}, Msg089 {} -> State090 {}
+  State090 {}, Msg090 {} -> State091 {}
+  State091 {}, Msg091 {} -> State092 {}
+  State092 {}, Msg092 {} -> State093 {}
+  State093 {}, Msg093 {} -> State094 {}
+  State094 {}, Msg094 {} -> State095 {}
+  State095 {}, Msg095 {} -> State096 {}
+  State096 {}, Msg096 {} -> State097 {}
+  State097 {}, Msg097 {} -> State098 {}
+  State098 {}, Msg098 {} -> State099 {}
+  State099 {}, Msg099 {} -> State100 {}
+  State100 {}, Msg100 {} -> State101 {}
+  State101 {}, Msg101 {} -> State102 {}
+  State102 {}, Msg102 {} -> State103 {}
+  State103 {}, Msg103 {} -> State104 {}
+  State104 {}, Msg104 {} -> State105 {}
+  State105 {}, Msg105 {} -> State106 {}
+  State106 {}, Msg106 {} -> State107 {}
+  State107 {}, Msg107 {} -> State108 {}
+  State108 {}, Msg108 {} -> State109 {}
+  State109 {}, Msg109 {} -> State110 {}
+  State110 {}, Msg110 {} -> State111 {}
+  State111 {}, Msg111 {} -> State112 {}
+  State112 {}, Msg112 {} -> State113 {}
+  State113 {}, Msg113 {} -> State114 {}
+  State114 {}, Msg114 {} -> State115 {}
+  State115 {}, Msg115 {} -> State116 {}
+  State116 {}, Msg116 {} -> State117 {}
+  State117 {}, Msg117 {} -> State118 {}
+  State118 {}, Msg118 {} -> State119 {}
+  State119 {}, Msg119 {} -> State120 {}
+  State120 {}, Msg120 {} -> State121 {}
+  State121 {}, Msg121 {} -> State122 {}
+  State122 {}, Msg122 {} -> State123 {}
+  State123 {}, Msg123 {} -> State124 {}
+  State124 {}, Msg124 {} -> State125 {}
+  State125 {}, Msg125 {} -> State126 {}
+  State126 {}, Msg126 {} -> State127 {}
+  State127 {}, Msg127 {} -> State128 {}
+  State128 {}, Msg128 {} -> State129 {}
+  State129 {}, Msg129 {} -> State130 {}
+  State130 {}, Msg130 {} -> State001 {}
   _, _ -> state
 
 walkClassic :: Array (MsgD /\ StateD)
@@ -506,5 +756,55 @@ walkClassic =
   , Msg077 {} /\ State078 {}
   , Msg078 {} /\ State079 {}
   , Msg079 {} /\ State080 {}
-  , Msg080 {} /\ State001 {}
+  , Msg080 {} /\ State081 {}
+  , Msg081 {} /\ State082 {}
+  , Msg082 {} /\ State083 {}
+  , Msg083 {} /\ State084 {}
+  , Msg084 {} /\ State085 {}
+  , Msg085 {} /\ State086 {}
+  , Msg086 {} /\ State087 {}
+  , Msg087 {} /\ State088 {}
+  , Msg088 {} /\ State089 {}
+  , Msg089 {} /\ State090 {}
+  , Msg090 {} /\ State091 {}
+  , Msg091 {} /\ State092 {}
+  , Msg092 {} /\ State093 {}
+  , Msg093 {} /\ State094 {}
+  , Msg094 {} /\ State095 {}
+  , Msg095 {} /\ State096 {}
+  , Msg096 {} /\ State097 {}
+  , Msg097 {} /\ State098 {}
+  , Msg098 {} /\ State099 {}
+  , Msg099 {} /\ State100 {}
+  , Msg100 {} /\ State101 {}
+  , Msg101 {} /\ State102 {}
+  , Msg102 {} /\ State103 {}
+  , Msg103 {} /\ State104 {}
+  , Msg104 {} /\ State105 {}
+  , Msg105 {} /\ State106 {}
+  , Msg106 {} /\ State107 {}
+  , Msg107 {} /\ State108 {}
+  , Msg108 {} /\ State109 {}
+  , Msg109 {} /\ State110 {}
+  , Msg110 {} /\ State111 {}
+  , Msg111 {} /\ State112 {}
+  , Msg112 {} /\ State113 {}
+  , Msg113 {} /\ State114 {}
+  , Msg114 {} /\ State115 {}
+  , Msg115 {} /\ State116 {}
+  , Msg116 {} /\ State117 {}
+  , Msg117 {} /\ State118 {}
+  , Msg118 {} /\ State119 {}
+  , Msg119 {} /\ State120 {}
+  , Msg120 {} /\ State121 {}
+  , Msg121 {} /\ State122 {}
+  , Msg122 {} /\ State123 {}
+  , Msg123 {} /\ State124 {}
+  , Msg124 {} /\ State125 {}
+  , Msg125 {} /\ State126 {}
+  , Msg126 {} /\ State127 {}
+  , Msg127 {} /\ State128 {}
+  , Msg128 {} /\ State129 {}
+  , Msg129 {} /\ State130 {}
+  , Msg130 {} /\ State001 {}
   ]

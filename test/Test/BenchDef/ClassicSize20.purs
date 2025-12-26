@@ -5,146 +5,146 @@ import Prelude
 import Data.Tuple.Nested (type (/\), (/\))
 
 data StateD
-  = State01 {}
-  | State02 {}
-  | State03 {}
-  | State04 {}
-  | State05 {}
-  | State06 {}
-  | State07 {}
-  | State08 {}
-  | State09 {}
-  | State10 {}
-  | State11 {}
-  | State12 {}
-  | State13 {}
-  | State14 {}
-  | State15 {}
-  | State16 {}
-  | State17 {}
-  | State18 {}
-  | State19 {}
-  | State20 {}
+  = State001 {}
+  | State002 {}
+  | State003 {}
+  | State004 {}
+  | State005 {}
+  | State006 {}
+  | State007 {}
+  | State008 {}
+  | State009 {}
+  | State010 {}
+  | State011 {}
+  | State012 {}
+  | State013 {}
+  | State014 {}
+  | State015 {}
+  | State016 {}
+  | State017 {}
+  | State018 {}
+  | State019 {}
+  | State020 {}
 
 derive instance Eq StateD
 
 printStateClassic :: StateD -> String
 printStateClassic = case _ of
-  State01 {} -> "State01"
-  State02 {} -> "State02"
-  State03 {} -> "State03"
-  State04 {} -> "State04"
-  State05 {} -> "State05"
-  State06 {} -> "State06"
-  State07 {} -> "State07"
-  State08 {} -> "State08"
-  State09 {} -> "State09"
-  State10 {} -> "State10"
-  State11 {} -> "State11"
-  State12 {} -> "State12"
-  State13 {} -> "State13"
-  State14 {} -> "State14"
-  State15 {} -> "State15"
-  State16 {} -> "State16"
-  State17 {} -> "State17"
-  State18 {} -> "State18"
-  State19 {} -> "State19"
-  State20 {} -> "State20"
+  State001 {} -> "State001"
+  State002 {} -> "State002"
+  State003 {} -> "State003"
+  State004 {} -> "State004"
+  State005 {} -> "State005"
+  State006 {} -> "State006"
+  State007 {} -> "State007"
+  State008 {} -> "State008"
+  State009 {} -> "State009"
+  State010 {} -> "State010"
+  State011 {} -> "State011"
+  State012 {} -> "State012"
+  State013 {} -> "State013"
+  State014 {} -> "State014"
+  State015 {} -> "State015"
+  State016 {} -> "State016"
+  State017 {} -> "State017"
+  State018 {} -> "State018"
+  State019 {} -> "State019"
+  State020 {} -> "State020"
 
 initClassic :: StateD
-initClassic = State01 {}
+initClassic = State001 {}
 
 data MsgD
-  = Msg01 {}
-  | Msg02 {}
-  | Msg03 {}
-  | Msg04 {}
-  | Msg05 {}
-  | Msg06 {}
-  | Msg07 {}
-  | Msg08 {}
-  | Msg09 {}
-  | Msg10 {}
-  | Msg11 {}
-  | Msg12 {}
-  | Msg13 {}
-  | Msg14 {}
-  | Msg15 {}
-  | Msg16 {}
-  | Msg17 {}
-  | Msg18 {}
-  | Msg19 {}
-  | Msg20 {}
+  = Msg001 {}
+  | Msg002 {}
+  | Msg003 {}
+  | Msg004 {}
+  | Msg005 {}
+  | Msg006 {}
+  | Msg007 {}
+  | Msg008 {}
+  | Msg009 {}
+  | Msg010 {}
+  | Msg011 {}
+  | Msg012 {}
+  | Msg013 {}
+  | Msg014 {}
+  | Msg015 {}
+  | Msg016 {}
+  | Msg017 {}
+  | Msg018 {}
+  | Msg019 {}
+  | Msg020 {}
 
 derive instance Eq MsgD
 
 printMsgClassic :: MsgD -> String
 printMsgClassic = case _ of
-  Msg01 {} -> "Msg01"
-  Msg02 {} -> "Msg02"
-  Msg03 {} -> "Msg03"
-  Msg04 {} -> "Msg04"
-  Msg05 {} -> "Msg05"
-  Msg06 {} -> "Msg06"
-  Msg07 {} -> "Msg07"
-  Msg08 {} -> "Msg08"
-  Msg09 {} -> "Msg09"
-  Msg10 {} -> "Msg10"
-  Msg11 {} -> "Msg11"
-  Msg12 {} -> "Msg12"
-  Msg13 {} -> "Msg13"
-  Msg14 {} -> "Msg14"
-  Msg15 {} -> "Msg15"
-  Msg16 {} -> "Msg16"
-  Msg17 {} -> "Msg17"
-  Msg18 {} -> "Msg18"
-  Msg19 {} -> "Msg19"
-  Msg20 {} -> "Msg20"
+  Msg001 {} -> "Msg001"
+  Msg002 {} -> "Msg002"
+  Msg003 {} -> "Msg003"
+  Msg004 {} -> "Msg004"
+  Msg005 {} -> "Msg005"
+  Msg006 {} -> "Msg006"
+  Msg007 {} -> "Msg007"
+  Msg008 {} -> "Msg008"
+  Msg009 {} -> "Msg009"
+  Msg010 {} -> "Msg010"
+  Msg011 {} -> "Msg011"
+  Msg012 {} -> "Msg012"
+  Msg013 {} -> "Msg013"
+  Msg014 {} -> "Msg014"
+  Msg015 {} -> "Msg015"
+  Msg016 {} -> "Msg016"
+  Msg017 {} -> "Msg017"
+  Msg018 {} -> "Msg018"
+  Msg019 {} -> "Msg019"
+  Msg020 {} -> "Msg020"
 
 updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
-  State01 {}, Msg01 {} -> State02 {}
-  State02 {}, Msg02 {} -> State03 {}
-  State03 {}, Msg03 {} -> State04 {}
-  State04 {}, Msg04 {} -> State05 {}
-  State05 {}, Msg05 {} -> State06 {}
-  State06 {}, Msg06 {} -> State07 {}
-  State07 {}, Msg07 {} -> State08 {}
-  State08 {}, Msg08 {} -> State09 {}
-  State09 {}, Msg09 {} -> State10 {}
-  State10 {}, Msg10 {} -> State11 {}
-  State11 {}, Msg11 {} -> State12 {}
-  State12 {}, Msg12 {} -> State13 {}
-  State13 {}, Msg13 {} -> State14 {}
-  State14 {}, Msg14 {} -> State15 {}
-  State15 {}, Msg15 {} -> State16 {}
-  State16 {}, Msg16 {} -> State17 {}
-  State17 {}, Msg17 {} -> State18 {}
-  State18 {}, Msg18 {} -> State19 {}
-  State19 {}, Msg19 {} -> State20 {}
-  State20 {}, Msg20 {} -> State01 {}
+  State001 {}, Msg001 {} -> State002 {}
+  State002 {}, Msg002 {} -> State003 {}
+  State003 {}, Msg003 {} -> State004 {}
+  State004 {}, Msg004 {} -> State005 {}
+  State005 {}, Msg005 {} -> State006 {}
+  State006 {}, Msg006 {} -> State007 {}
+  State007 {}, Msg007 {} -> State008 {}
+  State008 {}, Msg008 {} -> State009 {}
+  State009 {}, Msg009 {} -> State010 {}
+  State010 {}, Msg010 {} -> State011 {}
+  State011 {}, Msg011 {} -> State012 {}
+  State012 {}, Msg012 {} -> State013 {}
+  State013 {}, Msg013 {} -> State014 {}
+  State014 {}, Msg014 {} -> State015 {}
+  State015 {}, Msg015 {} -> State016 {}
+  State016 {}, Msg016 {} -> State017 {}
+  State017 {}, Msg017 {} -> State018 {}
+  State018 {}, Msg018 {} -> State019 {}
+  State019 {}, Msg019 {} -> State020 {}
+  State020 {}, Msg020 {} -> State001 {}
   _, _ -> state
 
 walkClassic :: Array (MsgD /\ StateD)
 walkClassic =
-  [ Msg01 {} /\ State02 {}
-  , Msg02 {} /\ State03 {}
-  , Msg03 {} /\ State04 {}
-  , Msg04 {} /\ State05 {}
-  , Msg05 {} /\ State06 {}
-  , Msg06 {} /\ State07 {}
-  , Msg07 {} /\ State08 {}
-  , Msg08 {} /\ State09 {}
-  , Msg09 {} /\ State10 {}
-  , Msg10 {} /\ State11 {}
-  , Msg11 {} /\ State12 {}
-  , Msg12 {} /\ State13 {}
-  , Msg13 {} /\ State14 {}
-  , Msg14 {} /\ State15 {}
-  , Msg15 {} /\ State16 {}
-  , Msg16 {} /\ State17 {}
-  , Msg17 {} /\ State18 {}
-  , Msg18 {} /\ State19 {}
-  , Msg19 {} /\ State20 {}
-  , Msg20 {} /\ State01 {}
+  [ Msg001 {} /\ State002 {}
+  , Msg002 {} /\ State003 {}
+  , Msg003 {} /\ State004 {}
+  , Msg004 {} /\ State005 {}
+  , Msg005 {} /\ State006 {}
+  , Msg006 {} /\ State007 {}
+  , Msg007 {} /\ State008 {}
+  , Msg008 {} /\ State009 {}
+  , Msg009 {} /\ State010 {}
+  , Msg010 {} /\ State011 {}
+  , Msg011 {} /\ State012 {}
+  , Msg012 {} /\ State013 {}
+  , Msg013 {} /\ State014 {}
+  , Msg014 {} /\ State015 {}
+  , Msg015 {} /\ State016 {}
+  , Msg016 {} /\ State017 {}
+  , Msg017 {} /\ State018 {}
+  , Msg018 {} /\ State019 {}
+  , Msg019 {} /\ State020 {}
+  , Msg020 {} /\ State001 {}
   ]

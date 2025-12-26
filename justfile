@@ -31,7 +31,7 @@ build:
 
 build-es:
     rm -rf output-es
-    npx spago build && npx purs-backend-es build --trace-rewrites Test.BenchDef.Size05.update
+    npx spago build && npx purs-backend-es build
 
 bench-quick:
     just build && \

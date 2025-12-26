@@ -2,58 +2,181 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
   "data": {
     "values": [
-      { "ms": 0.835, "impl": "updateClassic", "case": "worst", "size": 10 },
-      { "ms": 1.242, "impl": "updateClassic", "case": "worst", "size": 20 },
-      { "ms": 1.687, "impl": "updateClassic", "case": "worst", "size": 30 },
-      { "ms": 2.066, "impl": "updateClassic", "case": "worst", "size": 40 },
-      { "ms": 2.509, "impl": "updateClassic", "case": "worst", "size": 50 },
-      { "ms": 2.936, "impl": "updateClassic", "case": "worst", "size": 60 },
-      { "ms": 3.584, "impl": "updateClassic", "case": "worst", "size": 70 },
-      { "ms": 4.142, "impl": "updateClassic", "case": "worst", "size": 80 },
-      { "ms": 4.735, "impl": "updateClassic", "case": "worst", "size": 90 },
-
-      { "ms": 0.467, "impl": "updateClassic", "case": "best", "size": 10 },
-      { "ms": 0.432, "impl": "updateClassic", "case": "best", "size": 20 },
-      { "ms": 0.432, "impl": "updateClassic", "case": "best", "size": 30 },
-      { "ms": 0.465, "impl": "updateClassic", "case": "best", "size": 40 },
-      { "ms": 0.475, "impl": "updateClassic", "case": "best", "size": 50 },
-      { "ms": 0.456, "impl": "updateClassic", "case": "best", "size": 60 },
-      { "ms": 0.445, "impl": "updateClassic", "case": "best", "size": 70 },
-      { "ms": 0.464, "impl": "updateClassic", "case": "best", "size": 80 },
-      { "ms": 0.498, "impl": "updateClassic", "case": "best", "size": 90 },
-
-      { "ms": 2.459, "impl": "update", "case": "worst", "size": 10 },
-      { "ms": 2.635, "impl": "update", "case": "worst", "size": 20 },
-      { "ms": 2.665, "impl": "update", "case": "worst", "size": 30 },
-      { "ms": 2.794, "impl": "update", "case": "worst", "size": 40 },
-      { "ms": 2.831, "impl": "update", "case": "worst", "size": 50 },
-      { "ms": 2.657, "impl": "update", "case": "worst", "size": 60 },
-      { "ms": 2.62, "impl": "update", "case": "worst", "size": 70 },
-      { "ms": 2.646, "impl": "update", "case": "worst", "size": 80 },
-      { "ms": 2.86, "impl": "update", "case": "worst", "size": 90 },
-
-      { "ms": 2.624, "impl": "update", "case": "best", "size": 10 },
-      { "ms": 2.659, "impl": "update", "case": "best", "size": 20 },
-      { "ms": 2.915, "impl": "update", "case": "best", "size": 30 },
-      { "ms": 2.739, "impl": "update", "case": "best", "size": 40 },
-      { "ms": 2.803, "impl": "update", "case": "best", "size": 50 },
-      { "ms": 2.611, "impl": "update", "case": "best", "size": 60 },
-      { "ms": 2.662, "impl": "update", "case": "best", "size": 70 },
-      { "ms": 2.671, "impl": "update", "case": "best", "size": 80 },
-      { "ms": 2.928, "impl": "update", "case": "best", "size": 90 }
+      {
+        "ms": 0.005,
+        "series": "updateClassic",
+        "size": 10
+      },
+      {
+        "ms": 0.012,
+        "series": "updateClassic",
+        "size": 20
+      },
+      {
+        "ms": 0.017,
+        "series": "updateClassic",
+        "size": 30
+      },
+      {
+        "ms": 0.032,
+        "series": "updateClassic",
+        "size": 40
+      },
+      {
+        "ms": 0.06,
+        "series": "updateClassic",
+        "size": 50
+      },
+      {
+        "ms": 0.048,
+        "series": "updateClassic",
+        "size": 60
+      },
+      {
+        "ms": 0.052,
+        "series": "updateClassic",
+        "size": 70
+      },
+      {
+        "ms": 0.067,
+        "series": "updateClassic",
+        "size": 80
+      },
+      {
+        "ms": 0.071,
+        "series": "updateClassic",
+        "size": 90
+      },
+      {
+        "ms": 0.09,
+        "series": "updateClassic",
+        "size": 100
+      },
+      {
+        "ms": 0.103,
+        "series": "updateClassic",
+        "size": 110
+      },
+      {
+        "ms": 0.113,
+        "series": "updateClassic",
+        "size": 120
+      },
+      {
+        "ms": 0.13,
+        "series": "updateClassic",
+        "size": 130
+      },
+      {
+        "ms": 0.142,
+        "series": "updateClassic",
+        "size": 140
+      },
+      {
+        "ms": 0.166,
+        "series": "updateClassic",
+        "size": 150
+      },
+      {
+        "ms": 0.012,
+        "series": "update",
+        "size": 10
+      },
+      {
+        "ms": 0.012,
+        "series": "update",
+        "size": 20
+      },
+      {
+        "ms": 0.014,
+        "series": "update",
+        "size": 30
+      },
+      {
+        "ms": 0.019,
+        "series": "update",
+        "size": 40
+      },
+      {
+        "ms": 0.024,
+        "series": "update",
+        "size": 50
+      },
+      {
+        "ms": 0.036,
+        "series": "update",
+        "size": 60
+      },
+      {
+        "ms": 0.046,
+        "series": "update",
+        "size": 70
+      },
+      {
+        "ms": 0.052,
+        "series": "update",
+        "size": 80
+      },
+      {
+        "ms": 0.059,
+        "series": "update",
+        "size": 90
+      },
+      {
+        "ms": 0.07,
+        "series": "update",
+        "size": 100
+      },
+      {
+        "ms": 0.075,
+        "series": "update",
+        "size": 110
+      },
+      {
+        "ms": 0.08,
+        "series": "update",
+        "size": 120
+      },
+      {
+        "ms": 0.087,
+        "series": "update",
+        "size": 130
+      },
+      {
+        "ms": 0.094,
+        "series": "update",
+        "size": 140
+      },
+      {
+        "ms": 0.099,
+        "series": "update",
+        "size": 150
+      }
     ]
   },
-
-  "transform": [
-    { "pivot": "case", "value": "ms", "groupby": ["impl", "size"] }
-  ],
-
-  "mark": { "type": "area", "opacity": 0.25 },
-
   "encoding": {
-    "x": { "field": "size", "type": "quantitative", "title": "Size" },
-    "y": { "field": "best", "type": "quantitative", "title": "Time (ms)" },
-    "y2": { "field": "worst" },
-    "color": { "field": "impl", "type": "nominal", "title": "Implementation" }
+    "color": {
+      "field": "series",
+      "legend": {
+        "orient": "right",
+        "symbolLimit": 30,
+        "title": "Implementation"
+      },
+      "type": "nominal"
+    },
+    "x": {
+      "field": "size",
+      "title": "Size",
+      "type": "quantitative"
+    },
+    "y": {
+      "field": "ms",
+      "title": "Time (ms)",
+      "type": "quantitative"
+    }
+  },
+  "mark": {
+    "point": false,
+    "type": "line"
   }
 }

@@ -3,9 +3,11 @@
 const fs = require("fs");
 const path = require("path");
 
-// Format a number as a two-digit string (e.g., 1 -> "01", 10 -> "10")
+// Format a number as a three-digit string (e.g., 1 -> "001", 10 -> "010", 100 -> "100")
 function formatNum(n) {
-  return n < 10 ? `0${n}` : `${n}`;
+  if (n < 10) return `00${n}`;
+  if (n < 100) return `0${n}`;
+  return `${n}`;
 }
 
 // Generate state name (e.g., 1 -> "State01")
@@ -86,7 +88,7 @@ printState v = t
   VariantRep { type: t } = unsafeCoerce v
 
 init :: State
-init = v @"State01"
+init = v @"State001"
 
 type Msg = Variant
 ${msgRows}
@@ -171,8 +173,8 @@ import Prelude
 import Data.Tuple.Nested (type (/\\), (/\\))
 
 data StateD
-  = State01 {}
-${stateConstructors.replace(/^  \| State01/, "")}
+  = State001 {}
+${stateConstructors.replace(/^  \| State001/, "")}
 
 derive instance Eq StateD
 
@@ -181,11 +183,11 @@ printStateClassic = case _ of
 ${printStateCases}
 
 initClassic :: StateD
-initClassic = State01 {}
+initClassic = State001 {}
 
 data MsgD
-  = Msg01 {}
-${msgConstructors.replace(/^  \| Msg01/, "")}
+  = Msg001 {}
+${msgConstructors.replace(/^  \| Msg001/, "")}
 
 derive instance Eq MsgD
 
@@ -205,7 +207,7 @@ ${walkDArray}
 
 // Main function
 function main() {
-  const sizes = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+  const sizes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
   const outputDir = path.join(__dirname, "..", "test", "Test", "BenchDef");
 
   // Ensure output directory exists

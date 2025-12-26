@@ -5,566 +5,566 @@ import Prelude
 import Data.Tuple.Nested (type (/\), (/\))
 
 data StateD
-  = State01 {}
-  | State02 {}
-  | State03 {}
-  | State04 {}
-  | State05 {}
-  | State06 {}
-  | State07 {}
-  | State08 {}
-  | State09 {}
-  | State10 {}
-  | State11 {}
-  | State12 {}
-  | State13 {}
-  | State14 {}
-  | State15 {}
-  | State16 {}
-  | State17 {}
-  | State18 {}
-  | State19 {}
-  | State20 {}
-  | State21 {}
-  | State22 {}
-  | State23 {}
-  | State24 {}
-  | State25 {}
-  | State26 {}
-  | State27 {}
-  | State28 {}
-  | State29 {}
-  | State30 {}
-  | State31 {}
-  | State32 {}
-  | State33 {}
-  | State34 {}
-  | State35 {}
-  | State36 {}
-  | State37 {}
-  | State38 {}
-  | State39 {}
-  | State40 {}
-  | State41 {}
-  | State42 {}
-  | State43 {}
-  | State44 {}
-  | State45 {}
-  | State46 {}
-  | State47 {}
-  | State48 {}
-  | State49 {}
-  | State50 {}
-  | State51 {}
-  | State52 {}
-  | State53 {}
-  | State54 {}
-  | State55 {}
-  | State56 {}
-  | State57 {}
-  | State58 {}
-  | State59 {}
-  | State60 {}
-  | State61 {}
-  | State62 {}
-  | State63 {}
-  | State64 {}
-  | State65 {}
-  | State66 {}
-  | State67 {}
-  | State68 {}
-  | State69 {}
-  | State70 {}
-  | State71 {}
-  | State72 {}
-  | State73 {}
-  | State74 {}
-  | State75 {}
-  | State76 {}
-  | State77 {}
-  | State78 {}
-  | State79 {}
-  | State80 {}
-  | State81 {}
-  | State82 {}
-  | State83 {}
-  | State84 {}
-  | State85 {}
-  | State86 {}
-  | State87 {}
-  | State88 {}
-  | State89 {}
-  | State90 {}
+  = State001 {}
+  | State002 {}
+  | State003 {}
+  | State004 {}
+  | State005 {}
+  | State006 {}
+  | State007 {}
+  | State008 {}
+  | State009 {}
+  | State010 {}
+  | State011 {}
+  | State012 {}
+  | State013 {}
+  | State014 {}
+  | State015 {}
+  | State016 {}
+  | State017 {}
+  | State018 {}
+  | State019 {}
+  | State020 {}
+  | State021 {}
+  | State022 {}
+  | State023 {}
+  | State024 {}
+  | State025 {}
+  | State026 {}
+  | State027 {}
+  | State028 {}
+  | State029 {}
+  | State030 {}
+  | State031 {}
+  | State032 {}
+  | State033 {}
+  | State034 {}
+  | State035 {}
+  | State036 {}
+  | State037 {}
+  | State038 {}
+  | State039 {}
+  | State040 {}
+  | State041 {}
+  | State042 {}
+  | State043 {}
+  | State044 {}
+  | State045 {}
+  | State046 {}
+  | State047 {}
+  | State048 {}
+  | State049 {}
+  | State050 {}
+  | State051 {}
+  | State052 {}
+  | State053 {}
+  | State054 {}
+  | State055 {}
+  | State056 {}
+  | State057 {}
+  | State058 {}
+  | State059 {}
+  | State060 {}
+  | State061 {}
+  | State062 {}
+  | State063 {}
+  | State064 {}
+  | State065 {}
+  | State066 {}
+  | State067 {}
+  | State068 {}
+  | State069 {}
+  | State070 {}
+  | State071 {}
+  | State072 {}
+  | State073 {}
+  | State074 {}
+  | State075 {}
+  | State076 {}
+  | State077 {}
+  | State078 {}
+  | State079 {}
+  | State080 {}
+  | State081 {}
+  | State082 {}
+  | State083 {}
+  | State084 {}
+  | State085 {}
+  | State086 {}
+  | State087 {}
+  | State088 {}
+  | State089 {}
+  | State090 {}
 
 derive instance Eq StateD
 
 printStateClassic :: StateD -> String
 printStateClassic = case _ of
-  State01 {} -> "State01"
-  State02 {} -> "State02"
-  State03 {} -> "State03"
-  State04 {} -> "State04"
-  State05 {} -> "State05"
-  State06 {} -> "State06"
-  State07 {} -> "State07"
-  State08 {} -> "State08"
-  State09 {} -> "State09"
-  State10 {} -> "State10"
-  State11 {} -> "State11"
-  State12 {} -> "State12"
-  State13 {} -> "State13"
-  State14 {} -> "State14"
-  State15 {} -> "State15"
-  State16 {} -> "State16"
-  State17 {} -> "State17"
-  State18 {} -> "State18"
-  State19 {} -> "State19"
-  State20 {} -> "State20"
-  State21 {} -> "State21"
-  State22 {} -> "State22"
-  State23 {} -> "State23"
-  State24 {} -> "State24"
-  State25 {} -> "State25"
-  State26 {} -> "State26"
-  State27 {} -> "State27"
-  State28 {} -> "State28"
-  State29 {} -> "State29"
-  State30 {} -> "State30"
-  State31 {} -> "State31"
-  State32 {} -> "State32"
-  State33 {} -> "State33"
-  State34 {} -> "State34"
-  State35 {} -> "State35"
-  State36 {} -> "State36"
-  State37 {} -> "State37"
-  State38 {} -> "State38"
-  State39 {} -> "State39"
-  State40 {} -> "State40"
-  State41 {} -> "State41"
-  State42 {} -> "State42"
-  State43 {} -> "State43"
-  State44 {} -> "State44"
-  State45 {} -> "State45"
-  State46 {} -> "State46"
-  State47 {} -> "State47"
-  State48 {} -> "State48"
-  State49 {} -> "State49"
-  State50 {} -> "State50"
-  State51 {} -> "State51"
-  State52 {} -> "State52"
-  State53 {} -> "State53"
-  State54 {} -> "State54"
-  State55 {} -> "State55"
-  State56 {} -> "State56"
-  State57 {} -> "State57"
-  State58 {} -> "State58"
-  State59 {} -> "State59"
-  State60 {} -> "State60"
-  State61 {} -> "State61"
-  State62 {} -> "State62"
-  State63 {} -> "State63"
-  State64 {} -> "State64"
-  State65 {} -> "State65"
-  State66 {} -> "State66"
-  State67 {} -> "State67"
-  State68 {} -> "State68"
-  State69 {} -> "State69"
-  State70 {} -> "State70"
-  State71 {} -> "State71"
-  State72 {} -> "State72"
-  State73 {} -> "State73"
-  State74 {} -> "State74"
-  State75 {} -> "State75"
-  State76 {} -> "State76"
-  State77 {} -> "State77"
-  State78 {} -> "State78"
-  State79 {} -> "State79"
-  State80 {} -> "State80"
-  State81 {} -> "State81"
-  State82 {} -> "State82"
-  State83 {} -> "State83"
-  State84 {} -> "State84"
-  State85 {} -> "State85"
-  State86 {} -> "State86"
-  State87 {} -> "State87"
-  State88 {} -> "State88"
-  State89 {} -> "State89"
-  State90 {} -> "State90"
+  State001 {} -> "State001"
+  State002 {} -> "State002"
+  State003 {} -> "State003"
+  State004 {} -> "State004"
+  State005 {} -> "State005"
+  State006 {} -> "State006"
+  State007 {} -> "State007"
+  State008 {} -> "State008"
+  State009 {} -> "State009"
+  State010 {} -> "State010"
+  State011 {} -> "State011"
+  State012 {} -> "State012"
+  State013 {} -> "State013"
+  State014 {} -> "State014"
+  State015 {} -> "State015"
+  State016 {} -> "State016"
+  State017 {} -> "State017"
+  State018 {} -> "State018"
+  State019 {} -> "State019"
+  State020 {} -> "State020"
+  State021 {} -> "State021"
+  State022 {} -> "State022"
+  State023 {} -> "State023"
+  State024 {} -> "State024"
+  State025 {} -> "State025"
+  State026 {} -> "State026"
+  State027 {} -> "State027"
+  State028 {} -> "State028"
+  State029 {} -> "State029"
+  State030 {} -> "State030"
+  State031 {} -> "State031"
+  State032 {} -> "State032"
+  State033 {} -> "State033"
+  State034 {} -> "State034"
+  State035 {} -> "State035"
+  State036 {} -> "State036"
+  State037 {} -> "State037"
+  State038 {} -> "State038"
+  State039 {} -> "State039"
+  State040 {} -> "State040"
+  State041 {} -> "State041"
+  State042 {} -> "State042"
+  State043 {} -> "State043"
+  State044 {} -> "State044"
+  State045 {} -> "State045"
+  State046 {} -> "State046"
+  State047 {} -> "State047"
+  State048 {} -> "State048"
+  State049 {} -> "State049"
+  State050 {} -> "State050"
+  State051 {} -> "State051"
+  State052 {} -> "State052"
+  State053 {} -> "State053"
+  State054 {} -> "State054"
+  State055 {} -> "State055"
+  State056 {} -> "State056"
+  State057 {} -> "State057"
+  State058 {} -> "State058"
+  State059 {} -> "State059"
+  State060 {} -> "State060"
+  State061 {} -> "State061"
+  State062 {} -> "State062"
+  State063 {} -> "State063"
+  State064 {} -> "State064"
+  State065 {} -> "State065"
+  State066 {} -> "State066"
+  State067 {} -> "State067"
+  State068 {} -> "State068"
+  State069 {} -> "State069"
+  State070 {} -> "State070"
+  State071 {} -> "State071"
+  State072 {} -> "State072"
+  State073 {} -> "State073"
+  State074 {} -> "State074"
+  State075 {} -> "State075"
+  State076 {} -> "State076"
+  State077 {} -> "State077"
+  State078 {} -> "State078"
+  State079 {} -> "State079"
+  State080 {} -> "State080"
+  State081 {} -> "State081"
+  State082 {} -> "State082"
+  State083 {} -> "State083"
+  State084 {} -> "State084"
+  State085 {} -> "State085"
+  State086 {} -> "State086"
+  State087 {} -> "State087"
+  State088 {} -> "State088"
+  State089 {} -> "State089"
+  State090 {} -> "State090"
 
 initClassic :: StateD
-initClassic = State01 {}
+initClassic = State001 {}
 
 data MsgD
-  = Msg01 {}
-  | Msg02 {}
-  | Msg03 {}
-  | Msg04 {}
-  | Msg05 {}
-  | Msg06 {}
-  | Msg07 {}
-  | Msg08 {}
-  | Msg09 {}
-  | Msg10 {}
-  | Msg11 {}
-  | Msg12 {}
-  | Msg13 {}
-  | Msg14 {}
-  | Msg15 {}
-  | Msg16 {}
-  | Msg17 {}
-  | Msg18 {}
-  | Msg19 {}
-  | Msg20 {}
-  | Msg21 {}
-  | Msg22 {}
-  | Msg23 {}
-  | Msg24 {}
-  | Msg25 {}
-  | Msg26 {}
-  | Msg27 {}
-  | Msg28 {}
-  | Msg29 {}
-  | Msg30 {}
-  | Msg31 {}
-  | Msg32 {}
-  | Msg33 {}
-  | Msg34 {}
-  | Msg35 {}
-  | Msg36 {}
-  | Msg37 {}
-  | Msg38 {}
-  | Msg39 {}
-  | Msg40 {}
-  | Msg41 {}
-  | Msg42 {}
-  | Msg43 {}
-  | Msg44 {}
-  | Msg45 {}
-  | Msg46 {}
-  | Msg47 {}
-  | Msg48 {}
-  | Msg49 {}
-  | Msg50 {}
-  | Msg51 {}
-  | Msg52 {}
-  | Msg53 {}
-  | Msg54 {}
-  | Msg55 {}
-  | Msg56 {}
-  | Msg57 {}
-  | Msg58 {}
-  | Msg59 {}
-  | Msg60 {}
-  | Msg61 {}
-  | Msg62 {}
-  | Msg63 {}
-  | Msg64 {}
-  | Msg65 {}
-  | Msg66 {}
-  | Msg67 {}
-  | Msg68 {}
-  | Msg69 {}
-  | Msg70 {}
-  | Msg71 {}
-  | Msg72 {}
-  | Msg73 {}
-  | Msg74 {}
-  | Msg75 {}
-  | Msg76 {}
-  | Msg77 {}
-  | Msg78 {}
-  | Msg79 {}
-  | Msg80 {}
-  | Msg81 {}
-  | Msg82 {}
-  | Msg83 {}
-  | Msg84 {}
-  | Msg85 {}
-  | Msg86 {}
-  | Msg87 {}
-  | Msg88 {}
-  | Msg89 {}
-  | Msg90 {}
+  = Msg001 {}
+  | Msg002 {}
+  | Msg003 {}
+  | Msg004 {}
+  | Msg005 {}
+  | Msg006 {}
+  | Msg007 {}
+  | Msg008 {}
+  | Msg009 {}
+  | Msg010 {}
+  | Msg011 {}
+  | Msg012 {}
+  | Msg013 {}
+  | Msg014 {}
+  | Msg015 {}
+  | Msg016 {}
+  | Msg017 {}
+  | Msg018 {}
+  | Msg019 {}
+  | Msg020 {}
+  | Msg021 {}
+  | Msg022 {}
+  | Msg023 {}
+  | Msg024 {}
+  | Msg025 {}
+  | Msg026 {}
+  | Msg027 {}
+  | Msg028 {}
+  | Msg029 {}
+  | Msg030 {}
+  | Msg031 {}
+  | Msg032 {}
+  | Msg033 {}
+  | Msg034 {}
+  | Msg035 {}
+  | Msg036 {}
+  | Msg037 {}
+  | Msg038 {}
+  | Msg039 {}
+  | Msg040 {}
+  | Msg041 {}
+  | Msg042 {}
+  | Msg043 {}
+  | Msg044 {}
+  | Msg045 {}
+  | Msg046 {}
+  | Msg047 {}
+  | Msg048 {}
+  | Msg049 {}
+  | Msg050 {}
+  | Msg051 {}
+  | Msg052 {}
+  | Msg053 {}
+  | Msg054 {}
+  | Msg055 {}
+  | Msg056 {}
+  | Msg057 {}
+  | Msg058 {}
+  | Msg059 {}
+  | Msg060 {}
+  | Msg061 {}
+  | Msg062 {}
+  | Msg063 {}
+  | Msg064 {}
+  | Msg065 {}
+  | Msg066 {}
+  | Msg067 {}
+  | Msg068 {}
+  | Msg069 {}
+  | Msg070 {}
+  | Msg071 {}
+  | Msg072 {}
+  | Msg073 {}
+  | Msg074 {}
+  | Msg075 {}
+  | Msg076 {}
+  | Msg077 {}
+  | Msg078 {}
+  | Msg079 {}
+  | Msg080 {}
+  | Msg081 {}
+  | Msg082 {}
+  | Msg083 {}
+  | Msg084 {}
+  | Msg085 {}
+  | Msg086 {}
+  | Msg087 {}
+  | Msg088 {}
+  | Msg089 {}
+  | Msg090 {}
 
 derive instance Eq MsgD
 
 printMsgClassic :: MsgD -> String
 printMsgClassic = case _ of
-  Msg01 {} -> "Msg01"
-  Msg02 {} -> "Msg02"
-  Msg03 {} -> "Msg03"
-  Msg04 {} -> "Msg04"
-  Msg05 {} -> "Msg05"
-  Msg06 {} -> "Msg06"
-  Msg07 {} -> "Msg07"
-  Msg08 {} -> "Msg08"
-  Msg09 {} -> "Msg09"
-  Msg10 {} -> "Msg10"
-  Msg11 {} -> "Msg11"
-  Msg12 {} -> "Msg12"
-  Msg13 {} -> "Msg13"
-  Msg14 {} -> "Msg14"
-  Msg15 {} -> "Msg15"
-  Msg16 {} -> "Msg16"
-  Msg17 {} -> "Msg17"
-  Msg18 {} -> "Msg18"
-  Msg19 {} -> "Msg19"
-  Msg20 {} -> "Msg20"
-  Msg21 {} -> "Msg21"
-  Msg22 {} -> "Msg22"
-  Msg23 {} -> "Msg23"
-  Msg24 {} -> "Msg24"
-  Msg25 {} -> "Msg25"
-  Msg26 {} -> "Msg26"
-  Msg27 {} -> "Msg27"
-  Msg28 {} -> "Msg28"
-  Msg29 {} -> "Msg29"
-  Msg30 {} -> "Msg30"
-  Msg31 {} -> "Msg31"
-  Msg32 {} -> "Msg32"
-  Msg33 {} -> "Msg33"
-  Msg34 {} -> "Msg34"
-  Msg35 {} -> "Msg35"
-  Msg36 {} -> "Msg36"
-  Msg37 {} -> "Msg37"
-  Msg38 {} -> "Msg38"
-  Msg39 {} -> "Msg39"
-  Msg40 {} -> "Msg40"
-  Msg41 {} -> "Msg41"
-  Msg42 {} -> "Msg42"
-  Msg43 {} -> "Msg43"
-  Msg44 {} -> "Msg44"
-  Msg45 {} -> "Msg45"
-  Msg46 {} -> "Msg46"
-  Msg47 {} -> "Msg47"
-  Msg48 {} -> "Msg48"
-  Msg49 {} -> "Msg49"
-  Msg50 {} -> "Msg50"
-  Msg51 {} -> "Msg51"
-  Msg52 {} -> "Msg52"
-  Msg53 {} -> "Msg53"
-  Msg54 {} -> "Msg54"
-  Msg55 {} -> "Msg55"
-  Msg56 {} -> "Msg56"
-  Msg57 {} -> "Msg57"
-  Msg58 {} -> "Msg58"
-  Msg59 {} -> "Msg59"
-  Msg60 {} -> "Msg60"
-  Msg61 {} -> "Msg61"
-  Msg62 {} -> "Msg62"
-  Msg63 {} -> "Msg63"
-  Msg64 {} -> "Msg64"
-  Msg65 {} -> "Msg65"
-  Msg66 {} -> "Msg66"
-  Msg67 {} -> "Msg67"
-  Msg68 {} -> "Msg68"
-  Msg69 {} -> "Msg69"
-  Msg70 {} -> "Msg70"
-  Msg71 {} -> "Msg71"
-  Msg72 {} -> "Msg72"
-  Msg73 {} -> "Msg73"
-  Msg74 {} -> "Msg74"
-  Msg75 {} -> "Msg75"
-  Msg76 {} -> "Msg76"
-  Msg77 {} -> "Msg77"
-  Msg78 {} -> "Msg78"
-  Msg79 {} -> "Msg79"
-  Msg80 {} -> "Msg80"
-  Msg81 {} -> "Msg81"
-  Msg82 {} -> "Msg82"
-  Msg83 {} -> "Msg83"
-  Msg84 {} -> "Msg84"
-  Msg85 {} -> "Msg85"
-  Msg86 {} -> "Msg86"
-  Msg87 {} -> "Msg87"
-  Msg88 {} -> "Msg88"
-  Msg89 {} -> "Msg89"
-  Msg90 {} -> "Msg90"
+  Msg001 {} -> "Msg001"
+  Msg002 {} -> "Msg002"
+  Msg003 {} -> "Msg003"
+  Msg004 {} -> "Msg004"
+  Msg005 {} -> "Msg005"
+  Msg006 {} -> "Msg006"
+  Msg007 {} -> "Msg007"
+  Msg008 {} -> "Msg008"
+  Msg009 {} -> "Msg009"
+  Msg010 {} -> "Msg010"
+  Msg011 {} -> "Msg011"
+  Msg012 {} -> "Msg012"
+  Msg013 {} -> "Msg013"
+  Msg014 {} -> "Msg014"
+  Msg015 {} -> "Msg015"
+  Msg016 {} -> "Msg016"
+  Msg017 {} -> "Msg017"
+  Msg018 {} -> "Msg018"
+  Msg019 {} -> "Msg019"
+  Msg020 {} -> "Msg020"
+  Msg021 {} -> "Msg021"
+  Msg022 {} -> "Msg022"
+  Msg023 {} -> "Msg023"
+  Msg024 {} -> "Msg024"
+  Msg025 {} -> "Msg025"
+  Msg026 {} -> "Msg026"
+  Msg027 {} -> "Msg027"
+  Msg028 {} -> "Msg028"
+  Msg029 {} -> "Msg029"
+  Msg030 {} -> "Msg030"
+  Msg031 {} -> "Msg031"
+  Msg032 {} -> "Msg032"
+  Msg033 {} -> "Msg033"
+  Msg034 {} -> "Msg034"
+  Msg035 {} -> "Msg035"
+  Msg036 {} -> "Msg036"
+  Msg037 {} -> "Msg037"
+  Msg038 {} -> "Msg038"
+  Msg039 {} -> "Msg039"
+  Msg040 {} -> "Msg040"
+  Msg041 {} -> "Msg041"
+  Msg042 {} -> "Msg042"
+  Msg043 {} -> "Msg043"
+  Msg044 {} -> "Msg044"
+  Msg045 {} -> "Msg045"
+  Msg046 {} -> "Msg046"
+  Msg047 {} -> "Msg047"
+  Msg048 {} -> "Msg048"
+  Msg049 {} -> "Msg049"
+  Msg050 {} -> "Msg050"
+  Msg051 {} -> "Msg051"
+  Msg052 {} -> "Msg052"
+  Msg053 {} -> "Msg053"
+  Msg054 {} -> "Msg054"
+  Msg055 {} -> "Msg055"
+  Msg056 {} -> "Msg056"
+  Msg057 {} -> "Msg057"
+  Msg058 {} -> "Msg058"
+  Msg059 {} -> "Msg059"
+  Msg060 {} -> "Msg060"
+  Msg061 {} -> "Msg061"
+  Msg062 {} -> "Msg062"
+  Msg063 {} -> "Msg063"
+  Msg064 {} -> "Msg064"
+  Msg065 {} -> "Msg065"
+  Msg066 {} -> "Msg066"
+  Msg067 {} -> "Msg067"
+  Msg068 {} -> "Msg068"
+  Msg069 {} -> "Msg069"
+  Msg070 {} -> "Msg070"
+  Msg071 {} -> "Msg071"
+  Msg072 {} -> "Msg072"
+  Msg073 {} -> "Msg073"
+  Msg074 {} -> "Msg074"
+  Msg075 {} -> "Msg075"
+  Msg076 {} -> "Msg076"
+  Msg077 {} -> "Msg077"
+  Msg078 {} -> "Msg078"
+  Msg079 {} -> "Msg079"
+  Msg080 {} -> "Msg080"
+  Msg081 {} -> "Msg081"
+  Msg082 {} -> "Msg082"
+  Msg083 {} -> "Msg083"
+  Msg084 {} -> "Msg084"
+  Msg085 {} -> "Msg085"
+  Msg086 {} -> "Msg086"
+  Msg087 {} -> "Msg087"
+  Msg088 {} -> "Msg088"
+  Msg089 {} -> "Msg089"
+  Msg090 {} -> "Msg090"
 
 updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
-  State01 {}, Msg01 {} -> State02 {}
-  State02 {}, Msg02 {} -> State03 {}
-  State03 {}, Msg03 {} -> State04 {}
-  State04 {}, Msg04 {} -> State05 {}
-  State05 {}, Msg05 {} -> State06 {}
-  State06 {}, Msg06 {} -> State07 {}
-  State07 {}, Msg07 {} -> State08 {}
-  State08 {}, Msg08 {} -> State09 {}
-  State09 {}, Msg09 {} -> State10 {}
-  State10 {}, Msg10 {} -> State11 {}
-  State11 {}, Msg11 {} -> State12 {}
-  State12 {}, Msg12 {} -> State13 {}
-  State13 {}, Msg13 {} -> State14 {}
-  State14 {}, Msg14 {} -> State15 {}
-  State15 {}, Msg15 {} -> State16 {}
-  State16 {}, Msg16 {} -> State17 {}
-  State17 {}, Msg17 {} -> State18 {}
-  State18 {}, Msg18 {} -> State19 {}
-  State19 {}, Msg19 {} -> State20 {}
-  State20 {}, Msg20 {} -> State21 {}
-  State21 {}, Msg21 {} -> State22 {}
-  State22 {}, Msg22 {} -> State23 {}
-  State23 {}, Msg23 {} -> State24 {}
-  State24 {}, Msg24 {} -> State25 {}
-  State25 {}, Msg25 {} -> State26 {}
-  State26 {}, Msg26 {} -> State27 {}
-  State27 {}, Msg27 {} -> State28 {}
-  State28 {}, Msg28 {} -> State29 {}
-  State29 {}, Msg29 {} -> State30 {}
-  State30 {}, Msg30 {} -> State31 {}
-  State31 {}, Msg31 {} -> State32 {}
-  State32 {}, Msg32 {} -> State33 {}
-  State33 {}, Msg33 {} -> State34 {}
-  State34 {}, Msg34 {} -> State35 {}
-  State35 {}, Msg35 {} -> State36 {}
-  State36 {}, Msg36 {} -> State37 {}
-  State37 {}, Msg37 {} -> State38 {}
-  State38 {}, Msg38 {} -> State39 {}
-  State39 {}, Msg39 {} -> State40 {}
-  State40 {}, Msg40 {} -> State41 {}
-  State41 {}, Msg41 {} -> State42 {}
-  State42 {}, Msg42 {} -> State43 {}
-  State43 {}, Msg43 {} -> State44 {}
-  State44 {}, Msg44 {} -> State45 {}
-  State45 {}, Msg45 {} -> State46 {}
-  State46 {}, Msg46 {} -> State47 {}
-  State47 {}, Msg47 {} -> State48 {}
-  State48 {}, Msg48 {} -> State49 {}
-  State49 {}, Msg49 {} -> State50 {}
-  State50 {}, Msg50 {} -> State51 {}
-  State51 {}, Msg51 {} -> State52 {}
-  State52 {}, Msg52 {} -> State53 {}
-  State53 {}, Msg53 {} -> State54 {}
-  State54 {}, Msg54 {} -> State55 {}
-  State55 {}, Msg55 {} -> State56 {}
-  State56 {}, Msg56 {} -> State57 {}
-  State57 {}, Msg57 {} -> State58 {}
-  State58 {}, Msg58 {} -> State59 {}
-  State59 {}, Msg59 {} -> State60 {}
-  State60 {}, Msg60 {} -> State61 {}
-  State61 {}, Msg61 {} -> State62 {}
-  State62 {}, Msg62 {} -> State63 {}
-  State63 {}, Msg63 {} -> State64 {}
-  State64 {}, Msg64 {} -> State65 {}
-  State65 {}, Msg65 {} -> State66 {}
-  State66 {}, Msg66 {} -> State67 {}
-  State67 {}, Msg67 {} -> State68 {}
-  State68 {}, Msg68 {} -> State69 {}
-  State69 {}, Msg69 {} -> State70 {}
-  State70 {}, Msg70 {} -> State71 {}
-  State71 {}, Msg71 {} -> State72 {}
-  State72 {}, Msg72 {} -> State73 {}
-  State73 {}, Msg73 {} -> State74 {}
-  State74 {}, Msg74 {} -> State75 {}
-  State75 {}, Msg75 {} -> State76 {}
-  State76 {}, Msg76 {} -> State77 {}
-  State77 {}, Msg77 {} -> State78 {}
-  State78 {}, Msg78 {} -> State79 {}
-  State79 {}, Msg79 {} -> State80 {}
-  State80 {}, Msg80 {} -> State81 {}
-  State81 {}, Msg81 {} -> State82 {}
-  State82 {}, Msg82 {} -> State83 {}
-  State83 {}, Msg83 {} -> State84 {}
-  State84 {}, Msg84 {} -> State85 {}
-  State85 {}, Msg85 {} -> State86 {}
-  State86 {}, Msg86 {} -> State87 {}
-  State87 {}, Msg87 {} -> State88 {}
-  State88 {}, Msg88 {} -> State89 {}
-  State89 {}, Msg89 {} -> State90 {}
-  State90 {}, Msg90 {} -> State01 {}
+  State001 {}, Msg001 {} -> State002 {}
+  State002 {}, Msg002 {} -> State003 {}
+  State003 {}, Msg003 {} -> State004 {}
+  State004 {}, Msg004 {} -> State005 {}
+  State005 {}, Msg005 {} -> State006 {}
+  State006 {}, Msg006 {} -> State007 {}
+  State007 {}, Msg007 {} -> State008 {}
+  State008 {}, Msg008 {} -> State009 {}
+  State009 {}, Msg009 {} -> State010 {}
+  State010 {}, Msg010 {} -> State011 {}
+  State011 {}, Msg011 {} -> State012 {}
+  State012 {}, Msg012 {} -> State013 {}
+  State013 {}, Msg013 {} -> State014 {}
+  State014 {}, Msg014 {} -> State015 {}
+  State015 {}, Msg015 {} -> State016 {}
+  State016 {}, Msg016 {} -> State017 {}
+  State017 {}, Msg017 {} -> State018 {}
+  State018 {}, Msg018 {} -> State019 {}
+  State019 {}, Msg019 {} -> State020 {}
+  State020 {}, Msg020 {} -> State021 {}
+  State021 {}, Msg021 {} -> State022 {}
+  State022 {}, Msg022 {} -> State023 {}
+  State023 {}, Msg023 {} -> State024 {}
+  State024 {}, Msg024 {} -> State025 {}
+  State025 {}, Msg025 {} -> State026 {}
+  State026 {}, Msg026 {} -> State027 {}
+  State027 {}, Msg027 {} -> State028 {}
+  State028 {}, Msg028 {} -> State029 {}
+  State029 {}, Msg029 {} -> State030 {}
+  State030 {}, Msg030 {} -> State031 {}
+  State031 {}, Msg031 {} -> State032 {}
+  State032 {}, Msg032 {} -> State033 {}
+  State033 {}, Msg033 {} -> State034 {}
+  State034 {}, Msg034 {} -> State035 {}
+  State035 {}, Msg035 {} -> State036 {}
+  State036 {}, Msg036 {} -> State037 {}
+  State037 {}, Msg037 {} -> State038 {}
+  State038 {}, Msg038 {} -> State039 {}
+  State039 {}, Msg039 {} -> State040 {}
+  State040 {}, Msg040 {} -> State041 {}
+  State041 {}, Msg041 {} -> State042 {}
+  State042 {}, Msg042 {} -> State043 {}
+  State043 {}, Msg043 {} -> State044 {}
+  State044 {}, Msg044 {} -> State045 {}
+  State045 {}, Msg045 {} -> State046 {}
+  State046 {}, Msg046 {} -> State047 {}
+  State047 {}, Msg047 {} -> State048 {}
+  State048 {}, Msg048 {} -> State049 {}
+  State049 {}, Msg049 {} -> State050 {}
+  State050 {}, Msg050 {} -> State051 {}
+  State051 {}, Msg051 {} -> State052 {}
+  State052 {}, Msg052 {} -> State053 {}
+  State053 {}, Msg053 {} -> State054 {}
+  State054 {}, Msg054 {} -> State055 {}
+  State055 {}, Msg055 {} -> State056 {}
+  State056 {}, Msg056 {} -> State057 {}
+  State057 {}, Msg057 {} -> State058 {}
+  State058 {}, Msg058 {} -> State059 {}
+  State059 {}, Msg059 {} -> State060 {}
+  State060 {}, Msg060 {} -> State061 {}
+  State061 {}, Msg061 {} -> State062 {}
+  State062 {}, Msg062 {} -> State063 {}
+  State063 {}, Msg063 {} -> State064 {}
+  State064 {}, Msg064 {} -> State065 {}
+  State065 {}, Msg065 {} -> State066 {}
+  State066 {}, Msg066 {} -> State067 {}
+  State067 {}, Msg067 {} -> State068 {}
+  State068 {}, Msg068 {} -> State069 {}
+  State069 {}, Msg069 {} -> State070 {}
+  State070 {}, Msg070 {} -> State071 {}
+  State071 {}, Msg071 {} -> State072 {}
+  State072 {}, Msg072 {} -> State073 {}
+  State073 {}, Msg073 {} -> State074 {}
+  State074 {}, Msg074 {} -> State075 {}
+  State075 {}, Msg075 {} -> State076 {}
+  State076 {}, Msg076 {} -> State077 {}
+  State077 {}, Msg077 {} -> State078 {}
+  State078 {}, Msg078 {} -> State079 {}
+  State079 {}, Msg079 {} -> State080 {}
+  State080 {}, Msg080 {} -> State081 {}
+  State081 {}, Msg081 {} -> State082 {}
+  State082 {}, Msg082 {} -> State083 {}
+  State083 {}, Msg083 {} -> State084 {}
+  State084 {}, Msg084 {} -> State085 {}
+  State085 {}, Msg085 {} -> State086 {}
+  State086 {}, Msg086 {} -> State087 {}
+  State087 {}, Msg087 {} -> State088 {}
+  State088 {}, Msg088 {} -> State089 {}
+  State089 {}, Msg089 {} -> State090 {}
+  State090 {}, Msg090 {} -> State001 {}
   _, _ -> state
 
 walkClassic :: Array (MsgD /\ StateD)
 walkClassic =
-  [ Msg01 {} /\ State02 {}
-  , Msg02 {} /\ State03 {}
-  , Msg03 {} /\ State04 {}
-  , Msg04 {} /\ State05 {}
-  , Msg05 {} /\ State06 {}
-  , Msg06 {} /\ State07 {}
-  , Msg07 {} /\ State08 {}
-  , Msg08 {} /\ State09 {}
-  , Msg09 {} /\ State10 {}
-  , Msg10 {} /\ State11 {}
-  , Msg11 {} /\ State12 {}
-  , Msg12 {} /\ State13 {}
-  , Msg13 {} /\ State14 {}
-  , Msg14 {} /\ State15 {}
-  , Msg15 {} /\ State16 {}
-  , Msg16 {} /\ State17 {}
-  , Msg17 {} /\ State18 {}
-  , Msg18 {} /\ State19 {}
-  , Msg19 {} /\ State20 {}
-  , Msg20 {} /\ State21 {}
-  , Msg21 {} /\ State22 {}
-  , Msg22 {} /\ State23 {}
-  , Msg23 {} /\ State24 {}
-  , Msg24 {} /\ State25 {}
-  , Msg25 {} /\ State26 {}
-  , Msg26 {} /\ State27 {}
-  , Msg27 {} /\ State28 {}
-  , Msg28 {} /\ State29 {}
-  , Msg29 {} /\ State30 {}
-  , Msg30 {} /\ State31 {}
-  , Msg31 {} /\ State32 {}
-  , Msg32 {} /\ State33 {}
-  , Msg33 {} /\ State34 {}
-  , Msg34 {} /\ State35 {}
-  , Msg35 {} /\ State36 {}
-  , Msg36 {} /\ State37 {}
-  , Msg37 {} /\ State38 {}
-  , Msg38 {} /\ State39 {}
-  , Msg39 {} /\ State40 {}
-  , Msg40 {} /\ State41 {}
-  , Msg41 {} /\ State42 {}
-  , Msg42 {} /\ State43 {}
-  , Msg43 {} /\ State44 {}
-  , Msg44 {} /\ State45 {}
-  , Msg45 {} /\ State46 {}
-  , Msg46 {} /\ State47 {}
-  , Msg47 {} /\ State48 {}
-  , Msg48 {} /\ State49 {}
-  , Msg49 {} /\ State50 {}
-  , Msg50 {} /\ State51 {}
-  , Msg51 {} /\ State52 {}
-  , Msg52 {} /\ State53 {}
-  , Msg53 {} /\ State54 {}
-  , Msg54 {} /\ State55 {}
-  , Msg55 {} /\ State56 {}
-  , Msg56 {} /\ State57 {}
-  , Msg57 {} /\ State58 {}
-  , Msg58 {} /\ State59 {}
-  , Msg59 {} /\ State60 {}
-  , Msg60 {} /\ State61 {}
-  , Msg61 {} /\ State62 {}
-  , Msg62 {} /\ State63 {}
-  , Msg63 {} /\ State64 {}
-  , Msg64 {} /\ State65 {}
-  , Msg65 {} /\ State66 {}
-  , Msg66 {} /\ State67 {}
-  , Msg67 {} /\ State68 {}
-  , Msg68 {} /\ State69 {}
-  , Msg69 {} /\ State70 {}
-  , Msg70 {} /\ State71 {}
-  , Msg71 {} /\ State72 {}
-  , Msg72 {} /\ State73 {}
-  , Msg73 {} /\ State74 {}
-  , Msg74 {} /\ State75 {}
-  , Msg75 {} /\ State76 {}
-  , Msg76 {} /\ State77 {}
-  , Msg77 {} /\ State78 {}
-  , Msg78 {} /\ State79 {}
-  , Msg79 {} /\ State80 {}
-  , Msg80 {} /\ State81 {}
-  , Msg81 {} /\ State82 {}
-  , Msg82 {} /\ State83 {}
-  , Msg83 {} /\ State84 {}
-  , Msg84 {} /\ State85 {}
-  , Msg85 {} /\ State86 {}
-  , Msg86 {} /\ State87 {}
-  , Msg87 {} /\ State88 {}
-  , Msg88 {} /\ State89 {}
-  , Msg89 {} /\ State90 {}
-  , Msg90 {} /\ State01 {}
+  [ Msg001 {} /\ State002 {}
+  , Msg002 {} /\ State003 {}
+  , Msg003 {} /\ State004 {}
+  , Msg004 {} /\ State005 {}
+  , Msg005 {} /\ State006 {}
+  , Msg006 {} /\ State007 {}
+  , Msg007 {} /\ State008 {}
+  , Msg008 {} /\ State009 {}
+  , Msg009 {} /\ State010 {}
+  , Msg010 {} /\ State011 {}
+  , Msg011 {} /\ State012 {}
+  , Msg012 {} /\ State013 {}
+  , Msg013 {} /\ State014 {}
+  , Msg014 {} /\ State015 {}
+  , Msg015 {} /\ State016 {}
+  , Msg016 {} /\ State017 {}
+  , Msg017 {} /\ State018 {}
+  , Msg018 {} /\ State019 {}
+  , Msg019 {} /\ State020 {}
+  , Msg020 {} /\ State021 {}
+  , Msg021 {} /\ State022 {}
+  , Msg022 {} /\ State023 {}
+  , Msg023 {} /\ State024 {}
+  , Msg024 {} /\ State025 {}
+  , Msg025 {} /\ State026 {}
+  , Msg026 {} /\ State027 {}
+  , Msg027 {} /\ State028 {}
+  , Msg028 {} /\ State029 {}
+  , Msg029 {} /\ State030 {}
+  , Msg030 {} /\ State031 {}
+  , Msg031 {} /\ State032 {}
+  , Msg032 {} /\ State033 {}
+  , Msg033 {} /\ State034 {}
+  , Msg034 {} /\ State035 {}
+  , Msg035 {} /\ State036 {}
+  , Msg036 {} /\ State037 {}
+  , Msg037 {} /\ State038 {}
+  , Msg038 {} /\ State039 {}
+  , Msg039 {} /\ State040 {}
+  , Msg040 {} /\ State041 {}
+  , Msg041 {} /\ State042 {}
+  , Msg042 {} /\ State043 {}
+  , Msg043 {} /\ State044 {}
+  , Msg044 {} /\ State045 {}
+  , Msg045 {} /\ State046 {}
+  , Msg046 {} /\ State047 {}
+  , Msg047 {} /\ State048 {}
+  , Msg048 {} /\ State049 {}
+  , Msg049 {} /\ State050 {}
+  , Msg050 {} /\ State051 {}
+  , Msg051 {} /\ State052 {}
+  , Msg052 {} /\ State053 {}
+  , Msg053 {} /\ State054 {}
+  , Msg054 {} /\ State055 {}
+  , Msg055 {} /\ State056 {}
+  , Msg056 {} /\ State057 {}
+  , Msg057 {} /\ State058 {}
+  , Msg058 {} /\ State059 {}
+  , Msg059 {} /\ State060 {}
+  , Msg060 {} /\ State061 {}
+  , Msg061 {} /\ State062 {}
+  , Msg062 {} /\ State063 {}
+  , Msg063 {} /\ State064 {}
+  , Msg064 {} /\ State065 {}
+  , Msg065 {} /\ State066 {}
+  , Msg066 {} /\ State067 {}
+  , Msg067 {} /\ State068 {}
+  , Msg068 {} /\ State069 {}
+  , Msg069 {} /\ State070 {}
+  , Msg070 {} /\ State071 {}
+  , Msg071 {} /\ State072 {}
+  , Msg072 {} /\ State073 {}
+  , Msg073 {} /\ State074 {}
+  , Msg074 {} /\ State075 {}
+  , Msg075 {} /\ State076 {}
+  , Msg076 {} /\ State077 {}
+  , Msg077 {} /\ State078 {}
+  , Msg078 {} /\ State079 {}
+  , Msg079 {} /\ State080 {}
+  , Msg080 {} /\ State081 {}
+  , Msg081 {} /\ State082 {}
+  , Msg082 {} /\ State083 {}
+  , Msg083 {} /\ State084 {}
+  , Msg084 {} /\ State085 {}
+  , Msg085 {} /\ State086 {}
+  , Msg086 {} /\ State087 {}
+  , Msg087 {} /\ State088 {}
+  , Msg088 {} /\ State089 {}
+  , Msg089 {} /\ State090 {}
+  , Msg090 {} /\ State001 {}
   ]
