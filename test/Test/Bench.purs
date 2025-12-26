@@ -11,25 +11,22 @@ import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Tuple (fst)
 import Data.Tuple.Nested (type (/\), (/\))
+import Debug (spy, spyWith)
 import Effect (Effect)
 import Node.Process (lookupEnv)
 import Partial.Unsafe (unsafeCrashWith)
-import Test.BenchDef.TransitSize10 as TransitSize10
-import Test.BenchDef.TransitSize20 as TransitSize20
-import Test.BenchDef.TransitSize30 as TransitSize30
-import Test.BenchDef.TransitSize40 as TransitSize40
-import Test.BenchDef.TransitSize50 as TransitSize50
-import Test.BenchDef.TransitSize60 as TransitSize60
-import Test.BenchDef.TransitSize70 as TransitSize70
-import Test.BenchDef.TransitSize80 as TransitSize80
-import Test.BenchDef.TransitSize90 as TransitSize90
-import Test.BenchDef.TransitSize100 as TransitSize100
-import Test.BenchDef.TransitSize110 as TransitSize110
-import Test.BenchDef.TransitSize120 as TransitSize120
-import Test.BenchDef.TransitSize130 as TransitSize130
-import Test.BenchDef.TransitSize140 as TransitSize140
-import Test.BenchDef.TransitSize150 as TransitSize150
 import Test.BenchDef.ClassicSize10 as ClassicSize10
+import Test.BenchDef.ClassicSize100 as ClassicSize100
+import Test.BenchDef.ClassicSize110 as ClassicSize110
+import Test.BenchDef.ClassicSize120 as ClassicSize120
+import Test.BenchDef.ClassicSize130 as ClassicSize130
+import Test.BenchDef.ClassicSize140 as ClassicSize140
+import Test.BenchDef.ClassicSize150 as ClassicSize150
+import Test.BenchDef.ClassicSize160 as ClassicSize160
+import Test.BenchDef.ClassicSize170 as ClassicSize170
+import Test.BenchDef.ClassicSize180 as ClassicSize180
+import Test.BenchDef.ClassicSize190 as ClassicSize190
+import Test.BenchDef.ClassicSize200 as ClassicSize200
 import Test.BenchDef.ClassicSize20 as ClassicSize20
 import Test.BenchDef.ClassicSize30 as ClassicSize30
 import Test.BenchDef.ClassicSize40 as ClassicSize40
@@ -38,12 +35,26 @@ import Test.BenchDef.ClassicSize60 as ClassicSize60
 import Test.BenchDef.ClassicSize70 as ClassicSize70
 import Test.BenchDef.ClassicSize80 as ClassicSize80
 import Test.BenchDef.ClassicSize90 as ClassicSize90
-import Test.BenchDef.ClassicSize100 as ClassicSize100
-import Test.BenchDef.ClassicSize110 as ClassicSize110
-import Test.BenchDef.ClassicSize120 as ClassicSize120
-import Test.BenchDef.ClassicSize130 as ClassicSize130
-import Test.BenchDef.ClassicSize140 as ClassicSize140
-import Test.BenchDef.ClassicSize150 as ClassicSize150
+import Test.BenchDef.TransitSize10 as TransitSize10
+import Test.BenchDef.TransitSize100 as TransitSize100
+import Test.BenchDef.TransitSize110 as TransitSize110
+import Test.BenchDef.TransitSize120 as TransitSize120
+import Test.BenchDef.TransitSize130 as TransitSize130
+import Test.BenchDef.TransitSize140 as TransitSize140
+import Test.BenchDef.TransitSize150 as TransitSize150
+import Test.BenchDef.TransitSize160 as TransitSize160
+import Test.BenchDef.TransitSize170 as TransitSize170
+import Test.BenchDef.TransitSize180 as TransitSize180
+import Test.BenchDef.TransitSize190 as TransitSize190
+import Test.BenchDef.TransitSize200 as TransitSize200
+import Test.BenchDef.TransitSize20 as TransitSize20
+import Test.BenchDef.TransitSize30 as TransitSize30
+import Test.BenchDef.TransitSize40 as TransitSize40
+import Test.BenchDef.TransitSize50 as TransitSize50
+import Test.BenchDef.TransitSize60 as TransitSize60
+import Test.BenchDef.TransitSize70 as TransitSize70
+import Test.BenchDef.TransitSize80 as TransitSize80
+import Test.BenchDef.TransitSize90 as TransitSize90
 
 type Config =
   { backend :: String
@@ -65,11 +76,16 @@ getConfigFromEnv = do
 type T = Unit -> Unit -> Array String
 
 mk :: forall state msg. (state -> msg -> state) -> state -> Array msg -> (state -> String) -> (Unit -> Unit -> Array String)
-mk update init msgs print = \_ ->
+mk update init msgs print =
   let
-    result = Array.scanl update init msgs
+    msgs' = join $ Array.replicate 10 msgs
+    update' s m = spyWith "update" (\_ -> "") $ update s m
   in
-    \_ -> map print result
+    \_ ->
+      let
+        result = Array.scanl update init msgs'
+      in
+        \_ -> map print result
 
 inputsClassic :: Array (Int /\ (Unit -> Unit -> Array String))
 inputsClassic =
@@ -88,6 +104,11 @@ inputsClassic =
   , 130 /\ mk ClassicSize130.updateClassic ClassicSize130.initClassic (map fst ClassicSize130.walkClassic) ClassicSize130.printStateClassic
   , 140 /\ mk ClassicSize140.updateClassic ClassicSize140.initClassic (map fst ClassicSize140.walkClassic) ClassicSize140.printStateClassic
   , 150 /\ mk ClassicSize150.updateClassic ClassicSize150.initClassic (map fst ClassicSize150.walkClassic) ClassicSize150.printStateClassic
+  , 160 /\ mk ClassicSize160.updateClassic ClassicSize160.initClassic (map fst ClassicSize160.walkClassic) ClassicSize160.printStateClassic
+  , 170 /\ mk ClassicSize170.updateClassic ClassicSize170.initClassic (map fst ClassicSize170.walkClassic) ClassicSize170.printStateClassic
+  , 180 /\ mk ClassicSize180.updateClassic ClassicSize180.initClassic (map fst ClassicSize180.walkClassic) ClassicSize180.printStateClassic
+  , 190 /\ mk ClassicSize190.updateClassic ClassicSize190.initClassic (map fst ClassicSize190.walkClassic) ClassicSize190.printStateClassic
+  , 200 /\ mk ClassicSize200.updateClassic ClassicSize200.initClassic (map fst ClassicSize200.walkClassic) ClassicSize200.printStateClassic
   ]
 
 inputs :: Array (Int /\ (Unit -> Unit -> Array String))
@@ -107,6 +128,11 @@ inputs =
   , 130 /\ mk TransitSize130.update TransitSize130.init (map fst TransitSize130.walk) TransitSize130.printState
   , 140 /\ mk TransitSize140.update TransitSize140.init (map fst TransitSize140.walk) TransitSize140.printState
   , 150 /\ mk TransitSize150.update TransitSize150.init (map fst TransitSize150.walk) TransitSize150.printState
+  , 160 /\ mk TransitSize160.update TransitSize160.init (map fst TransitSize160.walk) TransitSize160.printState
+  , 170 /\ mk TransitSize170.update TransitSize170.init (map fst TransitSize170.walk) TransitSize170.printState
+  , 180 /\ mk TransitSize180.update TransitSize180.init (map fst TransitSize180.walk) TransitSize180.printState
+  , 190 /\ mk TransitSize190.update TransitSize190.init (map fst TransitSize190.walk) TransitSize190.printState
+  , 200 /\ mk TransitSize200.update TransitSize200.init (map fst TransitSize200.walk) TransitSize200.printState
   ]
 
 unsafeFind :: forall a. Int -> Array (Int /\ a) -> (Int /\ a)
@@ -130,7 +156,7 @@ main = do
       [ group "Update Functions"
           _
             { iterations = iterations
-            , sizes = [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150 ]
+            , sizes = [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200 ]
             }
           [ bench
               "updateClassic"

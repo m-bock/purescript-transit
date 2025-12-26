@@ -6,32 +6,16 @@
 module Transit.Class.MkUpdate
   ( class MkUpdate
   , mkUpdateCore
-  , TransitError(..)
   ) where
 
 import Prelude
 
-import Data.Either (Either(..))
-import Data.Generic.Rep (class Generic)
-import Data.Show.Generic (genericShow)
+import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
 import Transit.Class.ExpandReturn (class ExpandReturn, expandReturn)
 import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
 import Type.Data.List (type (:>), Nil')
-
--- | Error type for illegal state transitions.
--- |
--- | `IllegalTransitionRequest` is returned when a transition is attempted that
--- | is not defined in the state machine specification.
-data TransitError = IllegalTransitionRequest
-
-derive instance Generic TransitError _
-
-derive instance Eq TransitError
-
-instance Show TransitError where
-  show = genericShow
 
 -- | Builds a state update function from a transit specification.
 -- |
@@ -45,11 +29,11 @@ instance Show TransitError where
 -- | - `msg`: The message variant type
 -- | - `state`: The state variant type
 class MkUpdate (spec :: TransitCoreTL) m matches msg state | spec msg state m -> matches where
-  mkUpdateCore :: matches -> state -> msg -> m (Either TransitError state)
+  mkUpdateCore :: matches -> state -> msg -> m (Maybe state)
 
--- | Base case: empty specification always returns an error.
+-- | Base case: empty specification always returns Nothing.
 instance mkUpdateNil :: (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
-  mkUpdateCore _ _ _ = pure (Left IllegalTransitionRequest)
+  mkUpdateCore _ _ _ = pure Nothing
 
 -- | Recursive case: matches state and message, executes transition if found.
 instance mkUpdateCons ::
@@ -68,12 +52,12 @@ instance mkUpdateCons ::
   where
   mkUpdateCore (MatchImpl fn /\ rest) state msg = result
     where
-    result :: m (Either TransitError state)
+    result :: m (Maybe state)
     result = matchBySym2 @symStateIn @symMsg handleMatch handleRest state msg
 
-    handleMatch :: stateIn -> msgIn -> m (Either TransitError state)
-    handleMatch stateIn msgIn = map (Right <<< expandReturn @returns) (fn stateIn msgIn)
+    handleMatch :: stateIn -> msgIn -> m (Maybe state)
+    handleMatch stateIn msgIn = map (Just <<< expandReturn @returns) (fn stateIn msgIn)
 
-    handleRest :: Unit -> m (Either TransitError state)
+    handleRest :: Unit -> m (Maybe state)
     handleRest _ = mkUpdateCore @(MkTransitCoreTL rest1) rest state msg
 

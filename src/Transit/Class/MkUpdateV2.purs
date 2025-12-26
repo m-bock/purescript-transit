@@ -9,9 +9,7 @@ module Transit.Class.MkUpdateV2 where
 
 import Prelude
 
-import Data.Either (Either, note)
-import Data.Generic.Rep (class Generic)
-import Data.Show.Generic (genericShow)
+import Data.Maybe (Maybe)
 import Data.Symbol (class IsSymbol)
 import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
@@ -21,24 +19,11 @@ import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
 import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, run)
 import Type.Data.List (type (:>), Nil')
 
--- | Error type for illegal state transitions.
--- |
--- | `IllegalTransitionRequest` is returned when a transition is attempted that
--- | is not defined in the state machine specification.
-data TransitError = IllegalTransitionRequest
-
-derive instance Generic TransitError _
-
-derive instance Eq TransitError
-
-instance Show TransitError where
-  show = genericShow
-
 class
   MkUpdate (spec :: TransitCoreTL) m matches msg state
   | spec msg state m -> matches
   where
-  mkUpdateCore :: matches -> state -> msg -> m (Either TransitError state)
+  mkUpdateCore :: matches -> state -> msg -> m (Maybe state)
 
 instance mkUpdateInst ::
   ( MkLookup m spec matches rowState rowMsg
@@ -51,22 +36,7 @@ instance mkUpdateInst ::
       h = build handerLookup
       run' = run h
     in
-      \state msg -> map (note IllegalTransitionRequest) $ run' state msg
-
--- mkUpdateCore
---   :: forall m spec matches rowState rowMsg
---    . (MkLookup m spec matches rowState rowMsg)
---   => Applicative m
---   => matches
---   -> Variant rowState
---   -> Variant rowMsg
---   -> m (Maybe (Variant rowState))
--- mkUpdateCore matches =
---   let
---     handerLookup = mkLookup @m @spec matches
---     h = build handerLookup
---   in
---     \state msg -> run h state msg
+      \state msg -> run' state msg
 
 class MkLookup (m :: Type -> Type) spec matches (rowState :: Row Type) (rowMsg :: Row Type) | spec rowState rowMsg m -> matches where
   mkLookup :: matches -> HandlerLookupBuilder m rowState rowMsg

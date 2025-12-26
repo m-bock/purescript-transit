@@ -1642,7 +1642,7 @@ pick:
 -->
 
 ```purescript
-update :: State -> Msg -> Either TransitError State
+update :: State -> Msg -> Maybe State
 update = mkUpdateEither @SimpleDoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
@@ -1674,7 +1674,7 @@ pick:
 
 ```purescript
 assert1 =
-  update (v @"DoorOpen") (v @"Close") `shouldEqual` Right (v @"DoorClosed")
+  update (v @"DoorOpen") (v @"Close") `shouldEqual` Just (v @"DoorClosed")
 ```
 
 <p align="right">
@@ -1699,7 +1699,7 @@ pick:
 
 ```purescript
 assert2 =
-  update (v @"DoorClosed") (v @"Close") `shouldEqual` Left IllegalTransitionRequest
+  update (v @"DoorClosed") (v @"Close") `shouldEqual` Nothing
 ```
 
 <p align="right">

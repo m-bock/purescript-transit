@@ -4,12 +4,12 @@ module Test.Transit
 
 import Prelude
 
-import Data.Either (Either(..))
 import Data.Identity (Identity(..))
+import Data.Maybe (Maybe(..))
 import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Transit, TransitError(..), match, mkUpdate, mkUpdateEither, mkUpdateEitherM, mkUpdateM, return)
+import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, mkUpdateEither, mkUpdateEitherM, mkUpdateM, return)
 import Transit.VariantUtils (v)
 
 type TestState = Variant
@@ -46,16 +46,16 @@ spec = do
 
     describe "mkUpdateEither" do
       let
-        update :: TestState -> TestMsg -> Either TransitError TestState
+        update :: TestState -> TestMsg -> Maybe TestState
         update = mkUpdateEither @TestTransit
           (match @"State1" @"Msg1" \_ _ -> return @"State2")
           (match @"State2" @"Msg2" \_ _ -> return @"State3")
 
-      it "returns Right for valid transitions" do
-        update (v @"State1") (v @"Msg1") `shouldEqual` Right (v @"State2")
+      it "returns Just for valid transitions" do
+        update (v @"State1") (v @"Msg1") `shouldEqual` Just (v @"State2")
 
-      it "returns Left IllegalTransitionRequest for invalid transitions" do
-        update (v @"State1") (v @"Msg2") `shouldEqual` Left IllegalTransitionRequest
+      it "returns Nothing for invalid transitions" do
+        update (v @"State1") (v @"Msg2") `shouldEqual` Nothing
 
     describe "mkUpdateM" do
       let
@@ -72,14 +72,14 @@ spec = do
 
     describe "mkUpdateEitherM" do
       let
-        update :: TestState -> TestMsg -> Identity (Either TransitError TestState)
+        update :: TestState -> TestMsg -> Identity (Maybe TestState)
         update = mkUpdateEitherM @TestTransit
           (match @"State1" @"Msg1" \_ _ -> return @"State2")
           (match @"State2" @"Msg2" \_ _ -> return @"State3")
 
-      it "returns Right for valid transitions in Identity monad" do
-        update (v @"State1") (v @"Msg1") `shouldEqual` Identity (Right (v @"State2"))
+      it "returns Just for valid transitions in Identity monad" do
+        update (v @"State1") (v @"Msg1") `shouldEqual` Identity (Just (v @"State2"))
 
-      it "returns Left IllegalTransitionRequest for invalid transitions in Identity monad" do
-        update (v @"State1") (v @"Msg2") `shouldEqual` Identity (Left IllegalTransitionRequest)
+      it "returns Nothing for invalid transitions in Identity monad" do
+        update (v @"State1") (v @"Msg2") `shouldEqual` Identity Nothing
 

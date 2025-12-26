@@ -14,7 +14,6 @@ module Transit
   , mkUpdateM
   , module ExportCore
   , module ExportDSL
-  , module ExportMkUpdate
   , module ExportStateGraph
   , return
   , returnVia
@@ -24,6 +23,7 @@ import Prelude
 
 import Data.Either (Either, fromRight)
 import Data.Identity (Identity(..))
+import Data.Maybe (Maybe, fromMaybe)
 import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
@@ -31,9 +31,9 @@ import Prim.Coerce (class Coercible)
 import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
-import Transit.Class.MkUpdate (class MkUpdate, TransitError, mkUpdateCore)
+import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
 import Transit.Class.MkUpdateV2 as UV2
-import Transit.Class.MkUpdate (TransitError(..)) as ExportMkUpdate
+import Transit.Class.MkUpdate as MkUpdate
 import Transit.Class.MkUpdate as MkUpdate
 import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
 import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames) as ExportCore
@@ -47,45 +47,43 @@ import Type.Prelude (Proxy(..))
 
 -- | Creates a monadic update function with error handling.
 -- |
--- | Returns `m (Either TransitError state)`, allowing you to distinguish
--- | between successful transitions and illegal transition requests.
+-- | Returns `m (Maybe state)`, returning `Nothing` for illegal transition requests.
 -- |
 -- | Example:
 -- | ```purescript
--- | update :: State -> Msg -> Effect (Either TransitError State)
+-- | update :: State -> Msg -> Effect (Maybe State)
 -- | update = mkUpdateEitherM @MyTransit ...
 -- | ```
 mkUpdateEitherM
   :: forall @spec tcore msg state args m a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> m (Either TransitError state)) a)
+  => (CurryN args (state -> msg -> m (Maybe state)) a)
   => (MkUpdate.MkUpdate tcore m args msg state)
   => a
 mkUpdateEitherM = curryN @args f
   where
-  f :: args -> state -> msg -> m (Either TransitError state)
+  f :: args -> state -> msg -> m (Maybe state)
   f impl state msg =
     mkUpdateCore @tcore impl state msg
 
 -- | Creates a pure update function with error handling.
 -- |
--- | Returns `Either TransitError state`, allowing you to distinguish
--- | between successful transitions and illegal transition requests.
+-- | Returns `Maybe state`, returning `Nothing` for illegal transition requests.
 -- |
 -- | Example:
 -- | ```purescript
--- | update :: State -> Msg -> Either TransitError State
+-- | update :: State -> Msg -> Maybe State
 -- | update = mkUpdateEither @MyTransit ...
 -- | ```
 mkUpdateEither
   :: forall @spec tcore msg state args a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> Either TransitError state) a)
+  => (CurryN args (state -> msg -> Maybe state) a)
   => (MkUpdate tcore Identity args msg state)
   => a
 mkUpdateEither = curryN @args f
   where
-  f :: args -> state -> msg -> Either TransitError state
+  f :: args -> state -> msg -> Maybe state
   f impl state msg =
     safeUnwrap @Identity $
       (mkUpdateCore @tcore impl state msg)
@@ -111,7 +109,7 @@ mkUpdateM = curryN @args f
   where
   f :: args -> state -> msg -> m state
   f impl state msg =
-    map (fromRight state)
+    map (fromMaybe state)
       (mkUpdateCore @tcore impl state msg)
 
 -- | Creates a pure update function.
@@ -149,7 +147,7 @@ mkUpdate = curryN @args f
     let
       f' = UV2.mkUpdateCore @tcore impl
     in
-      \state msg -> fromRight state $ safeUnwrap @Identity $ f' state msg
+      \state msg -> fromMaybe state $ safeUnwrap @Identity $ f' state msg
 
 -- | Internal helper for unwrapping Identity.
 safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a

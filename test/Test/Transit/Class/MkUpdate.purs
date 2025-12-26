@@ -4,14 +4,14 @@ module Test.Transit.Class.MkUpdate
 
 import Prelude
 
-import Data.Either (Either(..))
 import Data.Identity (Identity(..))
+import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.Class.MkUpdate (TransitError(..), mkUpdateCore)
+import Transit.Class.MkUpdate (mkUpdateCore)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, Ret(..), TransitCoreTL)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Nil')
@@ -41,7 +41,7 @@ spec = do
   describe "Transit.Class.MkUpdate" do
     describe "mkUpdateCore" do
       let
-        update :: State -> Msg -> Identity (Either TransitError State)
+        update :: State -> Msg -> Identity (Maybe State)
         update = mkUpdateCore @TestStateGraph @Identity
           ( (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (Ret "42"))
               /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (Ret 99))
@@ -50,23 +50,23 @@ spec = do
 
       it "performs state updates on legal transitions" do
         update (v @"State1" 1) (v @"Msg1" 2)
-          `shouldEqual` Identity (Right (v @"State2" "42"))
+          `shouldEqual` Identity (Just (v @"State2" "42"))
 
         update (v @"State2" "foo") (v @"Msg2" "bar")
-          `shouldEqual` Identity (Right (v @"State1" 99))
+          `shouldEqual` Identity (Just (v @"State1" 99))
 
-      it "returns Left on illegal transitions" do
+      it "returns Nothing on illegal transitions" do
         update (v @"State3" {}) (v @"Msg3" {})
-          `shouldEqual` Identity (Left IllegalTransitionRequest)
+          `shouldEqual` Identity Nothing
 
         update (v @"State1" 1) (v @"Msg3" {})
-          `shouldEqual` Identity (Left IllegalTransitionRequest)
+          `shouldEqual` Identity Nothing
 
         update (v @"State2" "foo") (v @"Msg1" 2)
-          `shouldEqual` Identity (Left IllegalTransitionRequest)
+          `shouldEqual` Identity Nothing
 
         update (v @"State3" {}) (v @"Msg1" 2)
-          `shouldEqual` Identity (Left IllegalTransitionRequest)
+          `shouldEqual` Identity Nothing
 
         update (v @"State3" {}) (v @"Msg2" "bar")
-          `shouldEqual` Identity (Left IllegalTransitionRequest)
+          `shouldEqual` Identity Nothing

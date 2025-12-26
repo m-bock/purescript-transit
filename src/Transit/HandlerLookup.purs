@@ -80,8 +80,16 @@ type T m a =
   , succeed :: m a -> m (Maybe a)
   }
 
-api :: forall m a. Applicative m => T m a
-api = { fail: pure Nothing, succeed: map Just }
+type T2 m a z =
+  { fail :: m z
+  , succeed :: m a -> m z
+  }
+
+api2 :: forall m a. Applicative m => T2 m a (Maybe a)
+api2 = { fail: pure Nothing, succeed: map Just }
+
+-- api3 :: forall m a. Applicative m => T2 m a a
+-- api3 = { fail: pure, succeed: identity }
 
 run
   :: forall m rowState rowMsg
@@ -90,13 +98,22 @@ run
   -> Variant rowState
   -> Variant rowMsg
   -> m (Maybe (Variant rowState))
-run = runImpl api
+run = runImpl { fail: pure Nothing, succeed: map Just }
+
+run2
+  :: forall m rowState rowMsg
+   . Applicative m
+  => HandlerLookup m rowState rowMsg
+  -> Variant rowState
+  -> Variant rowMsg
+  -> m (Variant rowState)
+run2 h st msg = runImpl { fail: pure st, succeed: identity } h st msg
 
 foreign import runImpl
-  :: forall m rowState rowMsg
-   . T m (Variant rowState)
+  :: forall m z rowState rowMsg
+   . T2 m (Variant rowState) z
   -> HandlerLookup m rowState rowMsg
   -> Variant rowState
   -> Variant rowMsg
-  -> m (Maybe (Variant rowState))
+  -> m z
 

@@ -41,13 +41,13 @@ bench-quick:
 bench:
     just build && \
     just build-es && \
-    export ITERATIONS=1000 && just bench-es && just bench-js
+    export ITERATIONS=10000 && just bench-es && just bench-js
 
 bench-js:
     BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
 
 bench-es:
-    BACKEND=ES node -e 'import { main } from "./output-es/Test.Bench/index.js"; main();'
+    BACKEND=ES node --no-lazy --predictable -e 'import { main } from "./output-es/Test.Bench/index.js"; main();'
 
 gen: 
     just gen-examples && \
