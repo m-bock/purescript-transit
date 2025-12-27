@@ -19,20 +19,12 @@ gen-preview:
         --template=assets/gh-template.html \
         -o gh-preview.html
 
-gen-book:
-    rm -rf site
-    pandoc README.md -t chunkedhtml --split-level=3 --toc --toc-depth=3 -o site --highlight-style=zenburn  --template=assets/gh-template.html
-    cp -r assets site/assets
-    cp -r renders site/renders
-    cp -r bench site/bench
-
 build:
     npx spago build
 
 build-es:
     rm -rf output-es
     npx spago build && npx purs-backend-es build
-
 
 bench-run-small:
     ITERATIONS=1000 \
@@ -48,8 +40,6 @@ bench-run-large:
     BACKEND=ES \
     node --no-lazy --predictable -e "import { main } from './output/BenchLarge.Main/index.js'; main();"
 
-
-
 gen: 
     just gen-examples && \
     just gen-html-prettier && \
@@ -57,8 +47,7 @@ gen:
     just gen-vega && \
     just gen-patchdown && \
     just gen-doctoc && \
-    just gen-preview && \
-    just gen-book
+    just gen-preview
 
 test:
     npx spago test
