@@ -40,15 +40,6 @@ bench-run-large:
     BACKEND=ES \
     node --no-lazy --predictable -e "import { main } from './output/BenchLarge.Main/index.js'; main();"
 
-gen: 
-    just gen-examples && \
-    just gen-html-prettier && \
-    just gen-svgs && \
-    just gen-vega && \
-    just gen-patchdown && \
-    just gen-doctoc && \
-    just gen-preview
-
 test:
     npx spago test
 
@@ -71,10 +62,48 @@ gen-bench-modules-small:
 
 gen-bench-modules-large:
     node scripts/generate-bench-modules.js \
-      --min 20 --max 400 --step 20 \
+      --min 20 --max 300 --step 20 \
       --target-folder test/BenchLarge --base-namespace BenchLarge \
       --generate-runner BenchLarge.Main test/BenchLarge/Main.purs \
 
 clean-bench-modules-large:
     rm -rf test/BenchLarge
     rm -rf output/BenchLarge.*
+
+clean:
+    rm -rf output
+
+compile-time-bench-small:
+    node scripts/compile-time-bench.js small
+
+compile-time-bench-large:
+    node scripts/compile-time-bench.js large
+
+gen-vega-lite:
+    node scripts/generate-vega-lite.js
+
+gen-full:
+    just clean && \
+    just clean-bench-modules-large && \
+    \
+    just test && \
+    \
+    just gen-bench-modules-small && \
+    just gen-bench-modules-large && \
+    \
+    just compile-time-bench-small && \
+    just gen-vega-lite && \
+    \
+    just bench-run-large && \
+    \
+    just gen
+
+gen:
+    just gen-examples && \
+    just gen-html-prettier && \
+    just gen-svgs && \
+    just gen-vega && \
+    just gen-patchdown && \
+    just gen-doctoc && \
+    
+    just gen-preview
