@@ -48,10 +48,10 @@ class
   | spec rowState rowMsg m -> matches where
   mkLookup :: matches -> HandlerLookupBuilder m rowState rowMsg
 
-instance MkLookup m (Nil') Unit rowState rowMsg where
+instance mkLookupNil :: MkLookup m (Nil') Unit rowState rowMsg where
   mkLookup _ = initBuilder @rowState @rowMsg
 
-instance
+instance mkLookupCons ::
   ( IsSymbol symStateIn
   , IsSymbol symMsg
   , RemoveWrappers returns rowStateOut rowStateOut'

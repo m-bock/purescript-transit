@@ -15,7 +15,7 @@ module Transit.HandlerLookup
 
 import Prelude
 
-import Data.Function.Uncurried (Fn4)
+import Data.Function.Uncurried (Fn2, Fn4, mkFn2)
 import Data.List (List)
 import Data.List as List
 import Data.Maybe (Maybe(..))
@@ -38,9 +38,10 @@ newtype HandlerLookupBuilder m (rowState :: Row Type) (rowMsg :: Row Type) =
         }
     )
 
-type Handler m rowState = Foreign -> Foreign -> m (Variant rowState)
+type Handler m rowState = Fn2 Foreign Foreign (m (Variant rowState))
 
-newtype HandlerLookup m (rowState :: Row Type) (rowMsg :: Row Type) = HandlerLookup (Object (Object (Handler m rowState)))
+newtype HandlerLookup m (rowState :: Row Type) (rowMsg :: Row Type) =
+  HandlerLookup (Object (Object (Handler m rowState)))
 
 initBuilder :: forall @rowState @rowMsg m. HandlerLookupBuilder m rowState rowMsg
 initBuilder = HandlerLookupBuilder $ List.fromFoldable []
@@ -61,7 +62,7 @@ addHandler handlerHigh (HandlerLookupBuilder builders) =
   head =
     { state: reflectSymbol (Proxy @symStaIn)
     , msg: reflectSymbol (Proxy @symMsgIn)
-    , handler: handlerLow
+    , handler: mkFn2 handlerLow
     }
 
   handlerLow :: Foreign -> Foreign -> m (Variant rowState)

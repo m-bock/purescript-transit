@@ -1,7 +1,8 @@
 export const runImpl = ({ no, yes }, handlerLookup, state, msg) => {
-  const stateLookupResult = handlerLookup[state.type];
-  if (!stateLookupResult) return no;
-  const handler = stateLookupResult[msg.type];
-  if (!handler) return no;
-  return yes(handler(state.value)(msg.value));
+  const stateType = state.type;
+  const stateLookup = handlerLookup[stateType];
+  if (stateLookup === undefined) return no;
+  const handler = stateLookup[msg.type];
+  if (handler === undefined) return no;
+  return yes(handler(state.value, msg.value));
 };
