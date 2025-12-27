@@ -26,6 +26,7 @@ import Foreign (Foreign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
 import Prim.Row as Row
+import Transit.Data.MaybeChurch (MaybeChurch, justChurch, nothingChurch)
 import Type.Prelude (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -75,14 +76,14 @@ build (HandlerLookupBuilder builders) = HandlerLookup
     map (\{ state, msg, handler } -> (state /\ Object.singleton msg handler)) builders
 
 type RunI m =
-  { no :: forall a. m (Maybe a)
-  , yes :: forall a. m a -> m (Maybe a)
+  { no :: forall a. m (MaybeChurch a)
+  , yes :: forall a. m a -> m (MaybeChurch a)
   }
 
 runIMaybe :: forall m a. Applicative m => RunI m
 runIMaybe =
-  { no: pure Nothing
-  , yes: map Just
+  { no: pure nothingChurch
+  , yes: map justChurch
   }
 
 foreign import runImpl
@@ -92,5 +93,5 @@ foreign import runImpl
        (HandlerLookup m rowState rowMsg)
        (Variant rowState)
        (Variant rowMsg)
-       (m (Maybe (Variant rowState)))
+       (m (MaybeChurch (Variant rowState)))
 

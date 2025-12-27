@@ -6,38 +6,38 @@
           "benchName": "updateClassic",
           "samples": [
             {
-              "average": 0.0044,
-              "duration": 44,
+              "average": 0.0055,
+              "duration": 55,
               "iterations": 10000,
               "size": 10
             },
             {
-              "average": 0.0203,
-              "duration": 203,
+              "average": 0.0188,
+              "duration": 188,
               "iterations": 10000,
               "size": 20
             },
             {
-              "average": 0.0388,
-              "duration": 388,
+              "average": 0.0355,
+              "duration": 355,
               "iterations": 10000,
               "size": 30
             },
             {
-              "average": 0.0597,
-              "duration": 597,
+              "average": 0.0619,
+              "duration": 619,
               "iterations": 10000,
               "size": 40
             },
             {
-              "average": 0.0849,
-              "duration": 849,
+              "average": 0.1074,
+              "duration": 1074,
               "iterations": 10000,
               "size": 50
             },
             {
-              "average": 0.117,
-              "duration": 1170,
+              "average": 0.1273,
+              "duration": 1273,
               "iterations": 10000,
               "size": 60
             },
@@ -48,80 +48,80 @@
               "size": 70
             },
             {
-              "average": 0.2151,
-              "duration": 2151,
+              "average": 0.2005,
+              "duration": 2005,
               "iterations": 10000,
               "size": 80
             },
             {
-              "average": 0.257,
-              "duration": 2570,
+              "average": 0.2557,
+              "duration": 2557,
               "iterations": 10000,
               "size": 90
             },
             {
-              "average": 0.3117,
-              "duration": 3117,
+              "average": 0.2853,
+              "duration": 2853,
               "iterations": 10000,
               "size": 100
             },
             {
-              "average": 0.3734,
-              "duration": 3734,
+              "average": 0.3464,
+              "duration": 3464,
               "iterations": 10000,
               "size": 110
             },
             {
-              "average": 0.4425,
-              "duration": 4425,
+              "average": 0.4496,
+              "duration": 4496,
               "iterations": 10000,
               "size": 120
             },
             {
-              "average": 0.5155,
-              "duration": 5155,
+              "average": 0.5136,
+              "duration": 5136,
               "iterations": 10000,
               "size": 130
             },
             {
-              "average": 0.5947,
-              "duration": 5947,
+              "average": 0.5951,
+              "duration": 5951,
               "iterations": 10000,
               "size": 140
             },
             {
-              "average": 0.6764,
-              "duration": 6764,
+              "average": 0.6721,
+              "duration": 6721,
               "iterations": 10000,
               "size": 150
             },
             {
-              "average": 0.7598,
-              "duration": 7598,
+              "average": 0.7141,
+              "duration": 7141,
               "iterations": 10000,
               "size": 160
             },
             {
-              "average": 0.851,
-              "duration": 8510,
+              "average": 0.7824,
+              "duration": 7824,
               "iterations": 10000,
               "size": 170
             },
             {
-              "average": 0.8963,
-              "duration": 8963,
+              "average": 0.8742,
+              "duration": 8742,
               "iterations": 10000,
               "size": 180
             },
             {
-              "average": 1.0355,
-              "duration": 10355,
+              "average": 0.9691,
+              "duration": 9691,
               "iterations": 10000,
               "size": 190
             },
             {
-              "average": 1.1431,
-              "duration": 11431,
+              "average": 1.0732,
+              "duration": 10732,
               "iterations": 10000,
               "size": 200
             }
@@ -131,122 +131,122 @@
           "benchName": "update",
           "samples": [
             {
-              "average": 0.025,
-              "duration": 250,
+              "average": 0.0221,
+              "duration": 221,
               "iterations": 10000,
               "size": 10
             },
             {
-              "average": 0.0581,
-              "duration": 581,
+              "average": 0.048,
+              "duration": 480,
               "iterations": 10000,
               "size": 20
             },
             {
-              "average": 0.0797,
-              "duration": 797,
+              "average": 0.0734,
+              "duration": 734,
               "iterations": 10000,
               "size": 30
             },
             {
-              "average": 0.1128,
-              "duration": 1128,
+              "average": 0.1147,
+              "duration": 1147,
               "iterations": 10000,
               "size": 40
             },
             {
-              "average": 0.1546,
-              "duration": 1546,
+              "average": 0.1457,
+              "duration": 1457,
               "iterations": 10000,
               "size": 50
             },
             {
-              "average": 0.1967,
-              "duration": 1967,
+              "average": 0.1847,
+              "duration": 1847,
               "iterations": 10000,
               "size": 60
             },
             {
-              "average": 0.2485,
-              "duration": 2485,
+              "average": 0.2256,
+              "duration": 2256,
               "iterations": 10000,
               "size": 70
             },
             {
-              "average": 0.2799,
-              "duration": 2799,
+              "average": 0.2693,
+              "duration": 2693,
               "iterations": 10000,
               "size": 80
             },
             {
-              "average": 0.3253,
-              "duration": 3253,
+              "average": 0.298,
+              "duration": 2980,
               "iterations": 10000,
               "size": 90
             },
             {
-              "average": 0.3734,
-              "duration": 3734,
+              "average": 0.3413,
+              "duration": 3413,
               "iterations": 10000,
               "size": 100
             },
             {
-              "average": 0.4195,
-              "duration": 4195,
+              "average": 0.3693,
+              "duration": 3693,
               "iterations": 10000,
               "size": 110
             },
             {
-              "average": 0.4661,
-              "duration": 4661,
+              "average": 0.4371,
+              "duration": 4371,
               "iterations": 10000,
               "size": 120
             },
             {
-              "average": 0.5304,
-              "duration": 5304,
+              "average": 0.4568,
+              "duration": 4568,
               "iterations": 10000,
               "size": 130
             },
             {
-              "average": 0.5636,
-              "duration": 5636,
+              "average": 0.5252,
+              "duration": 5252,
               "iterations": 10000,
               "size": 140
             },
             {
-              "average": 0.6138,
-              "duration": 6138,
+              "average": 0.5433,
+              "duration": 5433,
               "iterations": 10000,
               "size": 150
             },
             {
-              "average": 0.6638,
-              "duration": 6638,
+              "average": 0.6261,
+              "duration": 6261,
               "iterations": 10000,
               "size": 160
             },
             {
-              "average": 0.7278,
-              "duration": 7278,
+              "average": 0.6546,
+              "duration": 6546,
               "iterations": 10000,
               "size": 170
             },
             {
-              "average": 0.7445,
-              "duration": 7445,
+              "average": 0.7265,
+              "duration": 7265,
               "iterations": 10000,
               "size": 180
             },
             {
-              "average": 0.7997,
-              "duration": 7997,
+              "average": 0.8047,
+              "duration": 8047,
               "iterations": 10000,
               "size": 190
             },
             {
-              "average": 0.8299,
-              "duration": 8299,
+              "average": 0.8254,
+              "duration": 8254,
               "iterations": 10000,
               "size": 200
             }

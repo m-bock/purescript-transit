@@ -17,6 +17,7 @@ import Data.Variant (Variant)
 import Prim.Row as Row
 import Transit.Class.ExpandReturn (class RemoveWrappers, removeWrappers)
 import Transit.Core (MatchImpl(..), MatchTL, MkMatchTL, MkTransitCoreTL, TransitCoreTL)
+import Transit.Data.MaybeChurch (MaybeChurch)
 import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, runIMaybe, runImpl)
 import Type.Data.List (type (:>), List', Nil')
 
@@ -24,7 +25,7 @@ class
   MkUpdate (spec :: TransitCoreTL) m matches msg state
   | spec msg state m -> matches
   where
-  mkUpdateCore :: matches -> state -> msg -> m (Maybe state)
+  mkUpdateCore :: matches -> state -> msg -> m (MaybeChurch state)
 
 instance mkUpdateInst ::
   ( MkLookup m spec matches rowState rowMsg

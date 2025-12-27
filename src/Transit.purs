@@ -32,12 +32,13 @@ import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
+import Transit.Class.MkUpdate as MkUpdate
+import Transit.Class.MkUpdate as MkUpdate
 import Transit.Class.MkUpdateV2 as UV2
-import Transit.Class.MkUpdate as MkUpdate
-import Transit.Class.MkUpdate as MkUpdate
-import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
 import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames) as ExportCore
+import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
 import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), Transit) as ExportDSL
+import Transit.Data.MaybeChurch (runMaybeChurch)
 import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
 import Type.Prelude (Proxy(..))
 
@@ -147,7 +148,7 @@ mkUpdate = curryN @args f
     let
       f' = UV2.mkUpdateCore @tcore impl
     in
-      \state msg -> fromMaybe state $ safeUnwrap @Identity $ f' state msg
+      \state msg -> runMaybeChurch state identity $ safeUnwrap @Identity $ f' state msg
 
 -- | Internal helper for unwrapping Identity.
 safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a

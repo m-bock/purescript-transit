@@ -3,202 +3,202 @@
   "data": {
     "values": [
       {
-        "ms": 0.0208,
+        "ms": 0.0159,
         "series": "updateClassic",
         "size": 10
       },
       {
-        "ms": 0.046,
+        "ms": 0.0437,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 0.0623,
+        "ms": 0.0559,
         "series": "updateClassic",
         "size": 30
       },
       {
-        "ms": 0.0788,
+        "ms": 0.0817,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 0.1017,
+        "ms": 0.0906,
         "series": "updateClassic",
         "size": 50
       },
       {
-        "ms": 0.1156,
+        "ms": 0.1203,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 0.1264,
+        "ms": 0.1267,
         "series": "updateClassic",
         "size": 70
       },
       {
-        "ms": 0.1524,
+        "ms": 0.1434,
         "series": "updateClassic",
         "size": 80
       },
       {
-        "ms": 0.1798,
+        "ms": 0.1738,
         "series": "updateClassic",
         "size": 90
       },
       {
-        "ms": 0.1907,
+        "ms": 0.1864,
         "series": "updateClassic",
         "size": 100
       },
       {
-        "ms": 0.2189,
+        "ms": 0.2068,
         "series": "updateClassic",
         "size": 110
       },
       {
-        "ms": 0.2455,
+        "ms": 0.2246,
         "series": "updateClassic",
         "size": 120
       },
       {
-        "ms": 0.258,
+        "ms": 0.2464,
         "series": "updateClassic",
         "size": 130
       },
       {
-        "ms": 0.2854,
+        "ms": 0.2677,
         "series": "updateClassic",
         "size": 140
       },
       {
-        "ms": 0.3102,
+        "ms": 0.2896,
         "series": "updateClassic",
         "size": 150
       },
       {
-        "ms": 0.3336,
+        "ms": 0.3107,
         "series": "updateClassic",
         "size": 160
       },
       {
-        "ms": 0.3585,
+        "ms": 0.333,
         "series": "updateClassic",
         "size": 170
       },
       {
-        "ms": 0.3783,
+        "ms": 0.3575,
         "series": "updateClassic",
         "size": 180
       },
       {
-        "ms": 0.4055,
+        "ms": 0.4258,
         "series": "updateClassic",
         "size": 190
       },
       {
-        "ms": 0.4288,
+        "ms": 0.4627,
         "series": "updateClassic",
         "size": 200
       },
       {
-        "ms": 0.007,
+        "ms": 0.0074,
         "series": "update",
         "size": 10
       },
       {
-        "ms": 0.0193,
+        "ms": 0.0225,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 0.028,
+        "ms": 0.0364,
         "series": "update",
         "size": 30
       },
       {
-        "ms": 0.0365,
+        "ms": 0.0524,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 0.0435,
+        "ms": 0.0669,
         "series": "update",
         "size": 50
       },
       {
-        "ms": 0.0527,
+        "ms": 0.0756,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 0.0662,
+        "ms": 0.104,
         "series": "update",
         "size": 70
       },
       {
-        "ms": 0.0711,
+        "ms": 0.1176,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 0.0881,
+        "ms": 0.1191,
         "series": "update",
         "size": 90
       },
       {
-        "ms": 0.0869,
+        "ms": 0.1674,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 0.1097,
+        "ms": 0.1585,
         "series": "update",
         "size": 110
       },
       {
-        "ms": 0.113,
+        "ms": 0.1755,
         "series": "update",
         "size": 120
       },
       {
-        "ms": 0.1257,
+        "ms": 0.1825,
         "series": "update",
         "size": 130
       },
       {
-        "ms": 0.1449,
+        "ms": 0.2193,
         "series": "update",
         "size": 140
       },
       {
-        "ms": 0.1511,
+        "ms": 0.2337,
         "series": "update",
         "size": 150
       },
       {
-        "ms": 0.1655,
+        "ms": 0.2329,
         "series": "update",
         "size": 160
       },
       {
-        "ms": 0.1685,
+        "ms": 0.2805,
         "series": "update",
         "size": 170
       },
       {
-        "ms": 0.1922,
+        "ms": 0.2786,
         "series": "update",
         "size": 180
       },
       {
-        "ms": 0.2104,
+        "ms": 0.2998,
         "series": "update",
         "size": 190
       },
       {
-        "ms": 0.2173,
+        "ms": 0.3012,
         "series": "update",
         "size": 200
       }
