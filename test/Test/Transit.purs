@@ -9,7 +9,7 @@ import Data.Maybe (Maybe(..))
 import Data.Variant (Variant)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, mkUpdateEither, mkUpdateEitherM, mkUpdateM, return)
+import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, mkUpdateMaybe, mkUpdateMaybeM, mkUpdateM, return)
 import Transit.VariantUtils (v)
 
 type TestState = Variant
@@ -44,10 +44,10 @@ spec = do
       it "returns unchanged state on invalid transition" do
         update (v @"State1") (v @"Msg2") `shouldEqual` (v @"State1")
 
-    describe "mkUpdateEither" do
+    describe "mkUpdateMaybe" do
       let
         update :: TestState -> TestMsg -> Maybe TestState
-        update = mkUpdateEither @TestTransit
+        update = mkUpdateMaybe @TestTransit
           (match @"State1" @"Msg1" \_ _ -> return @"State2")
           (match @"State2" @"Msg2" \_ _ -> return @"State3")
 
@@ -73,7 +73,7 @@ spec = do
     describe "mkUpdateEitherM" do
       let
         update :: TestState -> TestMsg -> Identity (Maybe TestState)
-        update = mkUpdateEitherM @TestTransit
+        update = mkUpdateMaybeM @TestTransit
           (match @"State1" @"Msg1" \_ _ -> return @"State2")
           (match @"State2" @"Msg2" \_ _ -> return @"State3")
 

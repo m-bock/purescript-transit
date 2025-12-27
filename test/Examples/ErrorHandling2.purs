@@ -7,13 +7,13 @@ import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
 import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (matchM, mkUpdateEitherM, return)
+import Transit (matchM, mkUpdateMaybeM, return)
 import Transit.VariantUtils (v)
 import Test.Spec (Spec, describe, it)
 import Effect (Effect)
 
 update :: forall m. Monad m => State -> Msg -> m (Maybe State)
-update = mkUpdateEitherM @SimpleDoorTransit
+update = mkUpdateMaybeM @SimpleDoorTransit
   ( matchM @"DoorOpen" @"Close" \_ _ ->
       pure $ return @"DoorClosed"
   )

@@ -1,10 +1,9 @@
 -- | Type classes for expanding partial return types to full state types.
 
 module Transit.Class.ExpandReturn
-  ( class ExpandReturn
-  , expandReturn
-  , class RemoveWrappers
+  ( class RemoveWrappers
   , removeWrappers
+  , fastHandlerWrapperRemoval
   ) where
 
 import Prelude
@@ -13,40 +12,20 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
+import Safe.Coerce as Safe
 import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
--- | Expands a partial variant (containing `Ret` and `RetVia` wrappers) into
--- | a full variant by removing the wrappers and expanding to a larger row type.
--- |
--- | The functional dependency `returns full -> part` ensures that given the
--- | return list and full variant type, the partial variant type is uniquely determined.
--- |
--- | - `returns`: List of return type-level specifications
--- | - `full`: The full variant type (target)
--- | - `part`: The partial variant type (source, with wrappers)
-class
-  ExpandReturn (returns :: List' ReturnTL) full part
-  | returns full -> part
-  where
-  expandReturn :: part -> full
-
-instance expandReturnInstance ::
-  ( RemoveWrappers returns rowIn rowOut
-  , Row.Union rowOut rowExtra rowFull
-  ) =>
-  ExpandReturn returns (Variant rowFull) (Variant rowIn) where
-  expandReturn part = full
-    where
-    full :: Variant rowFull
-    full = V.expand cleanedPart
-
-    cleanedPart :: Variant rowOut
-    cleanedPart = removeWrappers @returns @rowIn part
-
 ---
+
+fastHandlerWrapperRemoval
+  :: forall @returns @rowIn rowOut state msg m
+   . RemoveWrappers returns rowIn rowOut
+  => (state -> msg -> m (Variant rowIn))
+  -> (state -> msg -> m (Variant rowOut))
+fastHandlerWrapperRemoval = unsafeCoerce
 
 -- | Removes `Ret` and `RetVia` wrappers from variant types.
 -- |
@@ -74,7 +53,7 @@ instance removeWrappersConsReturn ::
   ) =>
   RemoveWrappers (MkReturnTL symState :> rest) rowIn rowOut
   where
-  removeWrappers v = unsafeCoerce v
+  removeWrappers v = out
     where
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v
@@ -94,7 +73,7 @@ instance removeWrappersConsReturnVia ::
   ) =>
   RemoveWrappers (MkReturnViaTL symGuard symState :> rest) rowIn rowOut
   where
-  removeWrappers v = unsafeCoerce v
+  removeWrappers v = out
     where
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v

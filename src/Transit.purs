@@ -9,8 +9,8 @@ module Transit
   , match
   , matchM
   , mkUpdate
-  , mkUpdateEither
-  , mkUpdateEitherM
+  , mkUpdateMaybe
+  , mkUpdateMaybeM
   , mkUpdateM
   , module ExportCore
   , module ExportDSL
@@ -21,24 +21,21 @@ module Transit
 
 import Prelude
 
-import Data.Either (Either, fromRight)
 import Data.Identity (Identity(..))
-import Data.Maybe (Maybe, fromMaybe)
+import Data.Maybe (Maybe)
 import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
-import Prim.Coerce (class Coercible)
 import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
 import Transit.Class.MkUpdate as MkUpdate
-import Transit.Class.MkUpdate as MkUpdate
-import Transit.Class.MkUpdateV2 as UV2
+import Transit.Class.MkUpdate as U
 import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames) as ExportCore
 import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
 import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), Transit) as ExportDSL
-import Transit.Data.MaybeChurch (runMaybeChurch)
+import Transit.Data.MaybeChurch (MaybeChurch, fromMaybeChurch)
 import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
 import Type.Prelude (Proxy(..))
 
@@ -55,15 +52,15 @@ import Type.Prelude (Proxy(..))
 -- | update :: State -> Msg -> Effect (Maybe State)
 -- | update = mkUpdateEitherM @MyTransit ...
 -- | ```
-mkUpdateEitherM
+mkUpdateMaybeM
   :: forall @spec tcore msg state args m a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> m (Maybe state)) a)
-  => (MkUpdate.MkUpdate tcore m args msg state)
+  => (CurryN args (Variant state -> Variant msg -> m (Maybe (Variant state))) a)
+  => (MkUpdate.MkUpdate tcore m Maybe args (Variant msg) (Variant state))
   => a
-mkUpdateEitherM = curryN @args f
+mkUpdateMaybeM = curryN @args f
   where
-  f :: args -> state -> msg -> m (Maybe state)
+  f :: args -> Variant state -> Variant msg -> m (Maybe (Variant state))
   f impl state msg =
     mkUpdateCore @tcore impl state msg
 
@@ -76,18 +73,17 @@ mkUpdateEitherM = curryN @args f
 -- | update :: State -> Msg -> Maybe State
 -- | update = mkUpdateEither @MyTransit ...
 -- | ```
-mkUpdateEither
+mkUpdateMaybe
   :: forall @spec tcore msg state args a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> Maybe state) a)
-  => (MkUpdate tcore Identity args msg state)
+  => (CurryN args (Variant state -> Variant msg -> Maybe (Variant state)) a)
+  => (MkUpdate tcore Identity Maybe args (Variant msg) (Variant state))
   => a
-mkUpdateEither = curryN @args f
+mkUpdateMaybe = curryN @args f
   where
-  f :: args -> state -> msg -> Maybe state
+  f :: args -> Variant state -> Variant msg -> Maybe (Variant state)
   f impl state msg =
-    safeUnwrap @Identity $
-      (mkUpdateCore @tcore impl state msg)
+    Safe.coerce (mkUpdateCore @tcore impl state msg :: Identity (Maybe (Variant state)))
 
 -- | Creates a monadic update function.
 -- |
@@ -102,15 +98,15 @@ mkUpdateEither = curryN @args f
 mkUpdateM
   :: forall @spec tcore msg state args m a
    . (IsTransitSpec spec tcore)
-  => (CurryN args (state -> msg -> m state) a)
-  => (MkUpdate.MkUpdate tcore m args msg state)
+  => (CurryN args (Variant state -> Variant msg -> m (Variant state)) a)
+  => (MkUpdate.MkUpdate tcore m MaybeChurch args (Variant msg) (Variant state))
   => Functor m
   => a
 mkUpdateM = curryN @args f
   where
-  f :: args -> state -> msg -> m state
+  f :: args -> Variant state -> Variant msg -> m (Variant state)
   f impl state msg =
-    map (fromMaybe state)
+    map (fromMaybeChurch state)
       (mkUpdateCore @tcore impl state msg)
 
 -- | Creates a pure update function.
@@ -123,36 +119,20 @@ mkUpdateM = curryN @args f
 -- | update :: State -> Msg -> State
 -- | update = mkUpdate @MyTransit ...
 -- | ```
--- mkUpdate
---   :: forall @spec tcore msg state args a
---    . (IsTransitSpec spec tcore)
---   => (CurryN args (state -> msg -> state) a)
---   => (MkUpdate tcore Identity args msg state)
---   => a
--- mkUpdate = curryN @args f
---   where
---   f :: args -> state -> msg -> state
---   f impl state msg =
---     fromRight state $ safeUnwrap @Identity $ (mkUpdateCore @tcore impl state msg)
-
 mkUpdate
   :: forall @spec tcore msg state args a
    . (IsTransitSpec spec tcore)
   => (CurryN args (Variant state -> Variant msg -> Variant state) a)
-  => (UV2.MkUpdate tcore Identity args (Variant msg) (Variant state))
+  => (U.MkUpdate tcore Identity MaybeChurch args (Variant msg) (Variant state))
   => a
 mkUpdate = curryN @args f
   where
   f :: args -> Variant state -> Variant msg -> Variant state
   f impl =
     let
-      f' = UV2.mkUpdateCore @tcore impl
+      f' = U.mkUpdateCore @tcore impl
     in
-      \state msg -> runMaybeChurch state identity $ safeUnwrap @Identity $ f' state msg
-
--- | Internal helper for unwrapping Identity.
-safeUnwrap :: forall @f a. Coercible (f a) a => f a -> a
-safeUnwrap = Safe.coerce
+      \state msg -> fromMaybeChurch state $ Safe.coerce (f' state msg :: Identity (MaybeChurch _))
 
 --------------------------------------------------------------------------------
 --- Match Handlers

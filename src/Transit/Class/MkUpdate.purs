@@ -1,63 +1,77 @@
+-- @inline export mkUpdateInst arity=2
+
+module Transit.Class.MkUpdate where
+
 -- | Type class for building state update functions from transit specifications.
 -- |
 -- | This module provides the core functionality for executing state transitions
 -- | based on a type-level specification of the state machine.
 
-module Transit.Class.MkUpdate
-  ( class MkUpdate
-  , mkUpdateCore
-  ) where
-
 import Prelude
 
-import Data.Maybe (Maybe(..))
+import Control.Alternative (class Alternative)
+import Data.Function.Uncurried (runFn4)
+import Data.Symbol (class IsSymbol)
 import Data.Tuple.Nested (type (/\), (/\))
-import Transit.Class.ExpandReturn (class ExpandReturn, expandReturn)
-import Transit.Class.MatchBySym (class MatchBySym, matchBySym2)
-import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
-import Type.Data.List (type (:>), Nil')
+import Data.Variant (Variant)
+import Prim.Row as Row
+import Transit.Class.ExpandReturn (class RemoveWrappers, fastHandlerWrapperRemoval)
+import Transit.Core (MatchImpl(..), MatchTL, MkMatchTL, MkTransitCoreTL, TransitCoreTL)
+import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, runI, runImpl)
+import Type.Data.List (type (:>), List', Nil')
 
--- | Builds a state update function from a transit specification.
--- |
--- | The functional dependency `spec msg state m -> matches` ensures that given
--- | the specification, message type, state type, and monad, the matches type
--- | is uniquely determined.
--- |
--- | - `spec`: The transit core type-level specification
--- | - `m`: The monad for effectful updates
--- | - `matches`: The matches type (nested tuple of match implementations)
--- | - `msg`: The message variant type
--- | - `state`: The state variant type
-class MkUpdate (spec :: TransitCoreTL) m matches msg state | spec msg state m -> matches where
-  mkUpdateCore :: matches -> state -> msg -> m (Maybe state)
-
--- | Base case: empty specification always returns Nothing.
-instance mkUpdateNil :: (Applicative m) => MkUpdate (MkTransitCoreTL Nil') m Unit msg state where
-  mkUpdateCore _ _ _ = pure Nothing
-
--- | Recursive case: matches state and message, executes transition if found.
-instance mkUpdateCons ::
-  ( MatchBySym symStateIn state stateIn
-  , ExpandReturn returns state stateOut
-  , MatchBySym symMsg msg msgIn
-  , MkUpdate (MkTransitCoreTL rest1) m rest2 msg state
-  , Applicative m
-  ) =>
-  MkUpdate
-    (MkTransitCoreTL ((MkMatchTL symStateIn symMsg returns) :> rest1))
-    m
-    (MatchImpl symStateIn symMsg stateIn msgIn m stateOut /\ rest2)
-    msg
-    state
+class
+  MkUpdate (spec :: TransitCoreTL) (m :: Type -> Type) (may :: Type -> Type) matches msg state
+  | spec msg state m -> matches
   where
-  mkUpdateCore (MatchImpl fn /\ rest) state msg = result
+  mkUpdateCore :: matches -> state -> msg -> m (may state)
+
+instance mkUpdateInst ::
+  ( MkLookup m spec matches rowState rowMsg
+  , Applicative m
+  , Alternative may
+  ) =>
+  MkUpdate (MkTransitCoreTL spec) m may matches (Variant rowMsg) (Variant rowState) where
+  mkUpdateCore matches =
+    let
+      handerLookupBuilder = mkLookup @m @spec matches
+      handlerLookup = build handerLookupBuilder
+    in
+      \state msg -> runFn4 runImpl runI handlerLookup state msg
+
+class
+  MkLookup
+    (m :: Type -> Type)
+    (spec :: List' MatchTL)
+    matches
+    (rowState :: Row Type)
+    (rowMsg :: Row Type)
+  | spec rowState rowMsg m -> matches where
+  mkLookup :: matches -> HandlerLookupBuilder m rowState rowMsg
+
+instance mkLookupNil :: MkLookup m (Nil') Unit rowState rowMsg where
+  mkLookup _ = initBuilder @rowState @rowMsg
+
+instance mkLookupCons ::
+  ( IsSymbol symStateIn
+  , IsSymbol symMsg
+  , RemoveWrappers returns rowStateOut rowStateOut'
+  , Row.Cons symStateIn stateIn _x1 rowState
+  , Row.Cons symMsg msgIn _x2 rowMsg
+  , Row.Union rowStateOut' _x3 rowState
+  , Functor m
+  , MkLookup m (rest1) rest2 rowState rowMsg
+  ) =>
+  MkLookup m
+    (((MkMatchTL symStateIn symMsg returns) :> rest1))
+    (MatchImpl symStateIn symMsg stateIn msgIn m (Variant rowStateOut) /\ rest2)
+    rowState
+    rowMsg
+  where
+  mkLookup (MatchImpl fn /\ rest) = out
     where
-    result :: m (Maybe state)
-    result = matchBySym2 @symStateIn @symMsg handleMatch handleRest state msg
+    out = addHandler @symStateIn @symMsg fn' builder
+    builder = mkLookup @m @(rest1) rest
 
-    handleMatch :: stateIn -> msgIn -> m (Maybe state)
-    handleMatch stateIn msgIn = map (Just <<< expandReturn @returns) (fn stateIn msgIn)
-
-    handleRest :: Unit -> m (Maybe state)
-    handleRest _ = mkUpdateCore @(MkTransitCoreTL rest1) rest state msg
-
+    fn' :: stateIn -> msgIn -> m (Variant rowStateOut')
+    fn' = fastHandlerWrapperRemoval @returns @rowStateOut fn

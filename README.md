@@ -1643,7 +1643,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> Maybe State
-update = mkUpdateEither @SimpleDoorTransit
+update = mkUpdateMaybe @SimpleDoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
