@@ -5,7 +5,7 @@ gen-patchdown:
     PATCHDOWN_FILE_PATH=README.md npx spago run -m Patchdown
 
 gen-svgs:
-    find graphs assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
+    find renders assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
 
 gen-html-prettier:
     npx prettier --write "renders/*.html"
@@ -23,7 +23,7 @@ gen-book:
     rm -rf site
     pandoc README.md -t chunkedhtml --split-level=3 --toc --toc-depth=3 -o site --highlight-style=zenburn  --template=assets/gh-template.html
     cp -r assets site/assets
-    cp -r graphs site/graphs
+    cp -r renders site/renders
     cp -r bench site/bench
 
 build:

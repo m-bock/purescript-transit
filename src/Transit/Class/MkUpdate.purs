@@ -74,4 +74,4 @@ instance mkLookupCons ::
     builder = mkLookup @m @(rest1) rest
 
     fn' :: stateIn -> msgIn -> m (Variant rowStateOut')
-    fn' state msg = map (removeWrappersFast @returns) (fn state msg)
+    fn' = removeWrappersFast @returns fn

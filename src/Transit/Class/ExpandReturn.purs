@@ -19,7 +19,11 @@ import Unsafe.Coerce (unsafeCoerce)
 
 ---
 
-removeWrappersFast :: forall @returns rowIn rowOut. (RemoveWrappers returns rowIn rowOut) => Variant rowIn -> Variant rowOut
+removeWrappersFast
+  :: forall @returns state msg m rowIn rowOut
+   . (RemoveWrappers returns rowIn rowOut)
+  => (state -> msg -> m (Variant rowIn))
+  -> (state -> msg -> m (Variant rowOut))
 removeWrappersFast = unsafeCoerce
 
 -- | Removes `Ret` and `RetVia` wrappers from variant types.

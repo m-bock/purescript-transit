@@ -131,7 +131,7 @@ wrapNl: true
       <td>DoorOpen</td>
       <td>⟶</td>
       <td>Close</td>
-      <td><b>⟶</b></td>
+      <td>⟶</td>
       <td>DoorClosed</td>
     </tr>
   </tbody>
