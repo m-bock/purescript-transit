@@ -1,4 +1,4 @@
-module Test.Transit.Class.ExpandReturn
+module Test.Transit.Class.CheckReturn
   ( spec
   ) where
 

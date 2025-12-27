@@ -1,9 +1,9 @@
--- | Type classes for expanding partial return types to full state types.
+-- | Type classes for checking and expanding partial return types to full state types.
 
-module Transit.Class.ExpandReturn
-  ( class RemoveWrappers
-  , removeWrappers
-  , removeWrappersFast
+module Transit.Class.CheckReturn
+  ( class CheckReturn
+  , checkReturn
+  , checkReturnFast
   ) where
 
 import Prelude
@@ -19,14 +19,14 @@ import Unsafe.Coerce (unsafeCoerce)
 
 ---
 
-removeWrappersFast
+checkReturnFast
   :: forall @returns state msg m rowIn rowOut
-   . (RemoveWrappers returns rowIn rowOut)
+   . (CheckReturn returns rowIn rowOut)
   => (state -> msg -> m (Variant rowIn))
   -> (state -> msg -> m (Variant rowOut))
-removeWrappersFast = unsafeCoerce
+checkReturnFast = unsafeCoerce
 
--- | Removes `Ret` and `RetVia` wrappers from variant types.
+-- | Checks and expands return types by removing `Ret` and `RetVia` wrappers from variant types.
 -- |
 -- | The functional dependency `returns -> rowIn rowOut` ensures that given the
 -- | return list, both input and output row types are uniquely determined.
@@ -35,24 +35,24 @@ removeWrappersFast = unsafeCoerce
 -- | - `rowIn`: Input row type (with wrappers)
 -- | - `rowOut`: Output row type (without wrappers)
 class
-  RemoveWrappers (returns :: List' ReturnTL) (rowIn :: Row Type) (rowOut :: Row Type)
+  CheckReturn (returns :: List' ReturnTL) (rowIn :: Row Type) (rowOut :: Row Type)
   | returns -> rowIn rowOut where
-  removeWrappers :: Variant rowIn -> Variant rowOut
+  checkReturn :: Variant rowIn -> Variant rowOut
 
-instance removeWrappersNil :: RemoveWrappers Nil' () ()
+instance checkReturnNil :: CheckReturn Nil' () ()
   where
-  removeWrappers = identity
+  checkReturn = identity
 
-instance removeWrappersConsReturn ::
+instance checkReturnConsReturn ::
   ( Row.Cons symState payload rowOut' rowOut
   , Row.Cons symState (Ret payload) rowIn' rowIn
-  , RemoveWrappers rest rowIn' rowOut'
+  , CheckReturn rest rowIn' rowOut'
   , IsSymbol symState
   , Row.Union rowOut' rowExtra rowOut
   ) =>
-  RemoveWrappers (MkReturnTL symState :> rest) rowIn rowOut
+  CheckReturn (MkReturnTL symState :> rest) rowIn rowOut
   where
-  removeWrappers v = out
+  checkReturn v = out
     where
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v
@@ -61,18 +61,18 @@ instance removeWrappersConsReturn ::
     handleHead (Ret value) = V.inj (Proxy @symState) value
 
     handleRest :: Variant rowIn' -> Variant rowOut
-    handleRest = removeWrappers @rest @rowIn' >>> V.expand
+    handleRest = checkReturn @rest @rowIn' >>> V.expand
 
-instance removeWrappersConsReturnVia ::
+instance checkReturnConsReturnVia ::
   ( Row.Cons symState payload rowOut' rowOut
   , Row.Cons symState (RetVia symGuard payload) rowIn' rowIn
-  , RemoveWrappers rest rowIn' rowOut'
+  , CheckReturn rest rowIn' rowOut'
   , IsSymbol symState
   , Row.Union rowOut' rowExtra rowOut
   ) =>
-  RemoveWrappers (MkReturnViaTL symGuard symState :> rest) rowIn rowOut
+  CheckReturn (MkReturnViaTL symGuard symState :> rest) rowIn rowOut
   where
-  removeWrappers v = out
+  checkReturn v = out
     where
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v
@@ -81,4 +81,4 @@ instance removeWrappersConsReturnVia ::
     handleHead (RetVia value) = V.inj (Proxy @symState) value
 
     handleRest :: Variant rowIn' -> Variant rowOut
-    handleRest = removeWrappers @rest @rowIn' >>> V.expand
+    handleRest = checkReturn @rest @rowIn' >>> V.expand
