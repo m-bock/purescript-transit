@@ -1,4 +1,4 @@
-module Test.Bench.Classic.Size010 where
+module Test.BenchSmall.Classic.Size020 where
 
 import Prelude
 
@@ -15,6 +15,16 @@ data StateD
   | State008 {}
   | State009 {}
   | State010 {}
+  | State011 {}
+  | State012 {}
+  | State013 {}
+  | State014 {}
+  | State015 {}
+  | State016 {}
+  | State017 {}
+  | State018 {}
+  | State019 {}
+  | State020 {}
 
 derive instance Eq StateD
 
@@ -30,6 +40,16 @@ printStateClassic = case _ of
   State008 {} -> "State008"
   State009 {} -> "State009"
   State010 {} -> "State010"
+  State011 {} -> "State011"
+  State012 {} -> "State012"
+  State013 {} -> "State013"
+  State014 {} -> "State014"
+  State015 {} -> "State015"
+  State016 {} -> "State016"
+  State017 {} -> "State017"
+  State018 {} -> "State018"
+  State019 {} -> "State019"
+  State020 {} -> "State020"
 
 initClassic :: StateD
 initClassic = State001 {}
@@ -45,6 +65,16 @@ data MsgD
   | Msg008 {}
   | Msg009 {}
   | Msg010 {}
+  | Msg011 {}
+  | Msg012 {}
+  | Msg013 {}
+  | Msg014 {}
+  | Msg015 {}
+  | Msg016 {}
+  | Msg017 {}
+  | Msg018 {}
+  | Msg019 {}
+  | Msg020 {}
 
 derive instance Eq MsgD
 
@@ -60,6 +90,16 @@ printMsgClassic = case _ of
   Msg008 {} -> "Msg008"
   Msg009 {} -> "Msg009"
   Msg010 {} -> "Msg010"
+  Msg011 {} -> "Msg011"
+  Msg012 {} -> "Msg012"
+  Msg013 {} -> "Msg013"
+  Msg014 {} -> "Msg014"
+  Msg015 {} -> "Msg015"
+  Msg016 {} -> "Msg016"
+  Msg017 {} -> "Msg017"
+  Msg018 {} -> "Msg018"
+  Msg019 {} -> "Msg019"
+  Msg020 {} -> "Msg020"
 
 updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
@@ -72,7 +112,17 @@ updateClassic state msg = case state, msg of
   State007 {}, Msg007 {} -> State008 {}
   State008 {}, Msg008 {} -> State009 {}
   State009 {}, Msg009 {} -> State010 {}
-  State010 {}, Msg010 {} -> State001 {}
+  State010 {}, Msg010 {} -> State011 {}
+  State011 {}, Msg011 {} -> State012 {}
+  State012 {}, Msg012 {} -> State013 {}
+  State013 {}, Msg013 {} -> State014 {}
+  State014 {}, Msg014 {} -> State015 {}
+  State015 {}, Msg015 {} -> State016 {}
+  State016 {}, Msg016 {} -> State017 {}
+  State017 {}, Msg017 {} -> State018 {}
+  State018 {}, Msg018 {} -> State019 {}
+  State019 {}, Msg019 {} -> State020 {}
+  State020 {}, Msg020 {} -> State001 {}
   _, _ -> state
 
 walkClassic :: Array (MsgD /\ StateD)
@@ -86,5 +136,15 @@ walkClassic =
   , Msg007 {} /\ State008 {}
   , Msg008 {} /\ State009 {}
   , Msg009 {} /\ State010 {}
-  , Msg010 {} /\ State001 {}
+  , Msg010 {} /\ State011 {}
+  , Msg011 {} /\ State012 {}
+  , Msg012 {} /\ State013 {}
+  , Msg013 {} /\ State014 {}
+  , Msg014 {} /\ State015 {}
+  , Msg015 {} /\ State016 {}
+  , Msg016 {} /\ State017 {}
+  , Msg017 {} /\ State018 {}
+  , Msg018 {} /\ State019 {}
+  , Msg019 {} /\ State020 {}
+  , Msg020 {} /\ State001 {}
   ]

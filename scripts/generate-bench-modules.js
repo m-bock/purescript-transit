@@ -19,7 +19,7 @@ function msgName(n) {
 }
 
 // Generate TransitSize module
-function generateTransitSizeModule(size) {
+function generateTransitSizeModule(size, baseNamespace) {
   const states = Array.from({ length: size }, (_, i) => i + 1);
   const msgs = Array.from({ length: size }, (_, i) => i + 1);
 
@@ -65,7 +65,7 @@ function generateTransitSizeModule(size) {
       .join("\n") +
     "\n  ]";
 
-  return `module Test.Bench.Transit.Size${formatNum(size)} where
+  return `module ${baseNamespace}.Transit.Size${formatNum(size)} where
 
 import Prelude
 
@@ -112,7 +112,7 @@ ${walk}
 }
 
 // Generate ClassicSize module
-function generateClassicSizeModule(size) {
+function generateClassicSizeModule(size, baseNamespace) {
   const states = Array.from({ length: size }, (_, i) => i + 1);
   const msgs = Array.from({ length: size }, (_, i) => i + 1);
 
@@ -164,7 +164,7 @@ function generateClassicSizeModule(size) {
       .join("\n") +
     "\n  ]";
 
-  return `module Test.Bench.Classic.Size${formatNum(size)} where
+  return `module ${baseNamespace}.Classic.Size${formatNum(size)} where
 
 import Prelude
 
@@ -203,28 +203,140 @@ ${walkDArray}
 `;
 }
 
+// Parse command-line arguments or use defaults
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const config = {
+    min: 20,
+    max: 300,
+    step: 20,
+    targetFolder: path.join(__dirname, "..", "test", "Test", "Bench"),
+    baseNamespace: "Test.Bench",
+    generateRunner: false,
+    runnerModuleName: null,
+    runnerFilePath: null,
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === "--min" && i + 1 < args.length) {
+      config.min = parseInt(args[++i], 10);
+    } else if (arg === "--max" && i + 1 < args.length) {
+      config.max = parseInt(args[++i], 10);
+    } else if (arg === "--step" && i + 1 < args.length) {
+      config.step = parseInt(args[++i], 10);
+    } else if (arg === "--target-folder" && i + 1 < args.length) {
+      config.targetFolder = args[++i];
+    } else if (arg === "--base-namespace" && i + 1 < args.length) {
+      config.baseNamespace = args[++i];
+    } else if (arg === "--generate-runner" && i + 2 < args.length) {
+      config.generateRunner = true;
+      config.runnerModuleName = args[++i];
+      config.runnerFilePath = args[++i];
+    } else if (arg === "--help" || arg === "-h") {
+      console.log(`
+Usage: node generate-bench-modules.js [options]
+
+Options:
+  --min <number>           Minimum size (default: 20)
+  --max <number>           Maximum size (default: 300)
+  --step <number>          Step size (default: 20)
+  --target-folder <path>   Target folder for output (default: test/Test/Bench)
+  --base-namespace <ns>     Base namespace for modules (default: Test.Bench)
+  --generate-runner <module> <file>  Generate benchmark runner file
+                                      module: full module name (e.g., Test.BenchSmall)
+                                      file: output file path (e.g., test/Test/BenchSmall.purs)
+  --help, -h                Show this help message
+
+Example:
+  node generate-bench-modules.js --min 10 --max 200 --step 10 --target-folder test/bench --base-namespace Test.Bench
+      `);
+      process.exit(0);
+    }
+  }
+
+  return config;
+}
+
+// Generate sizes array from min, max, step
+function generateSizes(min, max, step) {
+  const sizes = [];
+  for (let size = min; size <= max; size += step) {
+    sizes.push(size);
+  }
+  return sizes;
+}
+
+// Generate benchmark runner file
+function generateBenchRunner(sizes, baseNamespace, runnerModuleName, runnerFilePath) {
+  const classicImports = sizes
+    .map((size) => {
+      const alias = `ClassicSize${size}`;
+      return `import ${baseNamespace}.Classic.Size${formatNum(size)} as ${alias}`;
+    })
+    .join("\n");
+
+  const transitImports = sizes
+    .map((size) => {
+      const alias = `TransitSize${size}`;
+      return `import ${baseNamespace}.Transit.Size${formatNum(size)} as ${alias}`;
+    })
+    .join("\n");
+
+  const classicInputs = sizes
+    .map((size) => {
+      const alias = `ClassicSize${size}`;
+      return `  , ${size} /\\ mkInput ${alias}.updateClassic ${alias}.initClassic (map fst ${alias}.walkClassic) ${alias}.printStateClassic`;
+    })
+    .join("\n")
+    .replace(/^  ,/, "  [");
+
+  const transitInputs = sizes
+    .map((size) => {
+      const alias = `TransitSize${size}`;
+      return `  , ${size} /\\ mkInput ${alias}.update ${alias}.init (map fst ${alias}.walk) ${alias}.printState`;
+    })
+    .join("\n")
+    .replace(/^  ,/, "  [");
+
+  const sizesArray = sizes.join(", ");
+
+  return `module ${runnerModuleName} (main) where
+
+import Prelude
+
+import Data.Tuple (fst)
+import Data.Tuple.Nested (type (/\\), (/\\))
+import Effect (Effect)
+import Test.Bench (Input, getConfigFromEnv, mkInput, runBench)
+${classicImports}
+${transitImports}
+
+inputsClassic :: Array (Int /\\ Input)
+inputsClassic =
+${classicInputs}
+  ]
+
+inputs :: Array (Int /\\ Input)
+inputs =
+${transitInputs}
+  ]
+
+main :: Effect Unit
+main = do
+  config <- getConfigFromEnv
+
+  runBench config { inputs, inputsClassic }
+`;
+}
+
 // Main function
 function main() {
-  const sizes = [
-    10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170,
-    180, 190, 200,
-  ];
-  const transitOutputDir = path.join(
-    __dirname,
-    "..",
-    "test",
-    "Test",
-    "Bench",
-    "Transit",
-  );
-  const classicOutputDir = path.join(
-    __dirname,
-    "..",
-    "test",
-    "Test",
-    "Bench",
-    "Classic",
-  );
+  const config = parseArgs();
+  const sizes = generateSizes(config.min, config.max, config.step);
+  
+  const transitOutputDir = path.join(config.targetFolder, "Transit");
+  const classicOutputDir = path.join(config.targetFolder, "Classic");
 
   // Ensure output directories exist and clean them
   for (const outputDir of [transitOutputDir, classicOutputDir]) {
@@ -245,9 +357,14 @@ function main() {
     }
   }
 
+  console.log(`Generating modules with sizes: ${sizes.join(", ")}`);
+  console.log(`Target folder: ${config.targetFolder}`);
+  console.log(`Base namespace: ${config.baseNamespace}`);
+  console.log("");
+
   console.log("Generating TransitSize modules...");
   for (const size of sizes) {
-    const content = generateTransitSizeModule(size);
+    const content = generateTransitSizeModule(size, config.baseNamespace);
     const filename = path.join(transitOutputDir, `Size${formatNum(size)}.purs`);
     fs.writeFileSync(filename, content, "utf8");
     console.log(`Generated ${filename}`);
@@ -255,10 +372,22 @@ function main() {
 
   console.log("Generating ClassicSize modules...");
   for (const size of sizes) {
-    const content = generateClassicSizeModule(size);
+    const content = generateClassicSizeModule(size, config.baseNamespace);
     const filename = path.join(classicOutputDir, `Size${formatNum(size)}.purs`);
     fs.writeFileSync(filename, content, "utf8");
     console.log(`Generated ${filename}`);
+  }
+
+  if (config.generateRunner) {
+    console.log("Generating benchmark runner...");
+    const runnerContent = generateBenchRunner(
+      sizes,
+      config.baseNamespace,
+      config.runnerModuleName,
+      config.runnerFilePath
+    );
+    fs.writeFileSync(config.runnerFilePath, runnerContent, "utf8");
+    console.log(`Generated ${config.runnerFilePath}`);
   }
 
   console.log("Done!");

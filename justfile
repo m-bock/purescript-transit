@@ -33,21 +33,22 @@ build-es:
     rm -rf output-es
     npx spago build && npx purs-backend-es build
 
-bench-quick:
-    just build && \
-    just build-es && \
-    export ITERATIONS=1000 && just bench-es && just bench-js
 
-bench:
-    just build && \
-    just build-es && \
-    export ITERATIONS=10000 && just bench-es && just bench-js
+bench-run-small:
+    ITERATIONS=1000 \
+    BACKEND=JS \
+    node --no-lazy --predictable -e "import { main } from './output-es/Test.BenchSmall/index.js'; main();" \
+    BACKEND=ES \
+    node --no-lazy --predictable -e "import { main } from './output/Test.BenchSmall/index.js'; main();"
 
-bench-js:
-    BACKEND=JS node -e 'import { main } from "./output/Test.Bench/index.js"; main();'
+bench-run-large:
+    ITERATIONS=10000 \
+    BACKEND=JS \
+    node --no-lazy --predictable -e "import { main } from './output-es/Test.BenchLarge/index.js'; main();" \
+    BACKEND=ES \
+    node --no-lazy --predictable -e "import { main } from './output/Test.BenchLarge/index.js'; main();"
 
-bench-es:
-    BACKEND=ES node --no-lazy --predictable -e 'import { main } from "./output-es/Test.Bench/index.js"; main();'
+
 
 gen: 
     just gen-examples && \
@@ -73,5 +74,19 @@ format:
     npx purs-tidy format-in-place 'src/**/*.purs'
     npx purs-tidy format-in-place 'test/**/*.purs'
 
-gen-bench-modules:
-    node scripts/generate-bench-modules.js
+gen-bench-modules-small:
+    node scripts/generate-bench-modules.js \
+      --min 20 --max 100 --step 20 \
+      --target-folder test/bench-small --base-namespace Test.BenchSmall \
+      --generate-runner Test.BenchSmall test/bench-small/BenchSmall.purs \
+
+gen-bench-modules-large:
+    node scripts/generate-bench-modules.js \
+      --min 20 --max 400 --step 20 \
+      --target-folder test/bench-large --base-namespace Test.BenchLarge \
+      --generate-runner Test.BenchLarge test/bench-large/BenchLarge.purs \
+
+clean-bench-modules-large:
+    rm -rf test/bench-large
+    rm -rf output-es/Test.BenchLarge.*
+    rm -rf output/Test.BenchLarge.*
