@@ -135,8 +135,8 @@ main = do
     transit = reflectType (Proxy @DoorWithPinTransit)
 
   for_
-    [ { theme: themeHarmonyLight, file: "graphs/door-with-pin-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/door-with-pin-dark.dot" }
+    [ { theme: themeHarmonyLight, file: "renders/door-pin-light.dot" }
+    , { theme: themeHarmonyDark, file: "renders/door-pin-dark.dot" }
     ]
     \opts ->
       TransitGraphviz.writeToFile opts.file transit _
@@ -145,4 +145,4 @@ main = do
         , entryPoints = [ "DoorOpen" ]
         }
 
-  TransitTable.writeToFile_ "graphs/door-with-pin.html" transit
+  TransitTable.writeToFile_ "renders/door-pin.html" transit

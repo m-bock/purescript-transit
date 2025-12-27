@@ -15,7 +15,7 @@ import Data.Symbol (class IsSymbol)
 import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
 import Prim.Row as Row
-import Transit.Class.ExpandReturn (class RemoveWrappers, fastHandlerWrapperRemoval)
+import Transit.Class.ExpandReturn (class RemoveWrappers, removeWrappersFast)
 import Transit.Core (MatchImpl(..), MatchTL, MkMatchTL, MkTransitCoreTL, TransitCoreTL)
 import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, runI, runImpl)
 import Type.Data.List (type (:>), List', Nil')
@@ -63,7 +63,7 @@ instance mkLookupCons ::
   , MkLookup m (rest1) rest2 rowState rowMsg
   ) =>
   MkLookup m
-    (((MkMatchTL symStateIn symMsg returns) :> rest1))
+    ((MkMatchTL symStateIn symMsg returns) :> rest1)
     (MatchImpl symStateIn symMsg stateIn msgIn m (Variant rowStateOut) /\ rest2)
     rowState
     rowMsg
@@ -74,4 +74,4 @@ instance mkLookupCons ::
     builder = mkLookup @m @(rest1) rest
 
     fn' :: stateIn -> msgIn -> m (Variant rowStateOut')
-    fn' = fastHandlerWrapperRemoval @returns @rowStateOut fn
+    fn' state msg = map (removeWrappersFast @returns) (fn state msg)

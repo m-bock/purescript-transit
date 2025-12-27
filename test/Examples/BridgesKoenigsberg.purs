@@ -116,8 +116,8 @@ main = do
     transit = reflectType (Proxy @BridgesKoenigsbergTransit)
 
   for_
-    [ { theme: themeHarmonyLight, file: "graphs/bridges-koenigsberg-light.dot" }
-    , { theme: themeHarmonyDark, file: "graphs/bridges-koenigsberg-dark.dot" }
+    [ { theme: themeHarmonyLight, file: "renders/bridges-koenigsberg-light.dot" }
+    , { theme: themeHarmonyDark, file: "renders/bridges-koenigsberg-dark.dot" }
     ]
     \opts ->
       TransitGraphviz.writeToFile opts.file transit _
@@ -125,6 +125,6 @@ main = do
         , theme = opts.theme
         }
 
-  TransitTable.writeToFile "graphs/bridges-koenigsberg.html" transit _
+  TransitTable.writeToFile "renders/bridges-koenigsberg.html" transit _
     { useUndirectedEdges = true }
 

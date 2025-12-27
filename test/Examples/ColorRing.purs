@@ -74,37 +74,37 @@ main = do
 
     globalAttrs = "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
 
-  TransitGraphviz.writeToFile "graphs/themes/harmony-light.dot" transit _
+  TransitGraphviz.writeToFile "renders/themes/harmony-light.dot" transit _
     { title = Just "Harmony Light"
     , globalAttrsRaw = Just globalAttrs
     , theme = themeHarmonyLight
     }
 
-  TransitGraphviz.writeToFile "graphs/themes/harmony-dark.dot" transit _
+  TransitGraphviz.writeToFile "renders/themes/harmony-dark.dot" transit _
     { title = Just "Harmony Dark"
     , globalAttrsRaw = Just globalAttrs
     , theme = themeHarmonyDark
     }
 
-  TransitGraphviz.writeToFile "graphs/themes/contrast-light.dot" transit _
+  TransitGraphviz.writeToFile "renders/themes/contrast-light.dot" transit _
     { title = Just "Contrast Light"
     , globalAttrsRaw = Just globalAttrs
     , theme = themeContrastLight
     }
 
-  TransitGraphviz.writeToFile "graphs/themes/contrast-dark.dot" transit _
+  TransitGraphviz.writeToFile "renders/themes/contrast-dark.dot" transit _
     { title = Just "Contrast Dark"
     , globalAttrsRaw = Just globalAttrs
     , theme = themeContrastDark
     }
 
-  TransitGraphviz.writeToFile "graphs/themes/gradient-light.dot" transit _
+  TransitGraphviz.writeToFile "renders/themes/gradient-light.dot" transit _
     { title = Just "Gradient Light"
     , globalAttrsRaw = Just globalAttrs
     , theme = themeGradientLight
     }
 
-  TransitGraphviz.writeToFile "graphs/themes/gradient-dark.dot" transit _
+  TransitGraphviz.writeToFile "renders/themes/gradient-dark.dot" transit _
     { title = Just "Gradient Dark"
     , globalAttrsRaw = Just globalAttrs
     , theme = themeGradientDark

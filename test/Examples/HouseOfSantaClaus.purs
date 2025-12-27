@@ -127,20 +127,20 @@ main = do
       _ -> ""
     globalAttrs = Just "layout=neato"
 
-  TransitGraphviz.writeToFile "graphs/house-of-santa-claus-light.dot" transit _
+  TransitGraphviz.writeToFile "renders/house-santa-claus-light.dot" transit _
     { useUndirectedEdges = true
     , nodeAttrsRaw = nodeAttrs
     , globalAttrsRaw = globalAttrs
     , theme = themeHarmonyLight
     }
 
-  TransitGraphviz.writeToFile "graphs/house-of-santa-claus-dark.dot" transit _
+  TransitGraphviz.writeToFile "renders/house-santa-claus-dark.dot" transit _
     { useUndirectedEdges = true
     , nodeAttrsRaw = nodeAttrs
     , globalAttrsRaw = globalAttrs
     , theme = themeHarmonyDark
     }
 
-  TransitTable.writeToFile "graphs/house-of-santa-claus.html" transit _
+  TransitTable.writeToFile "renders/house-santa-claus.html" transit _
     { useUndirectedEdges = true }
 

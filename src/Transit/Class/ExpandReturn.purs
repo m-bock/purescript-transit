@@ -3,7 +3,7 @@
 module Transit.Class.ExpandReturn
   ( class RemoveWrappers
   , removeWrappers
-  , fastHandlerWrapperRemoval
+  , removeWrappersFast
   ) where
 
 import Prelude
@@ -12,7 +12,6 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Safe.Coerce as Safe
 import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
@@ -20,12 +19,8 @@ import Unsafe.Coerce (unsafeCoerce)
 
 ---
 
-fastHandlerWrapperRemoval
-  :: forall @returns @rowIn rowOut state msg m
-   . RemoveWrappers returns rowIn rowOut
-  => (state -> msg -> m (Variant rowIn))
-  -> (state -> msg -> m (Variant rowOut))
-fastHandlerWrapperRemoval = unsafeCoerce
+removeWrappersFast :: forall @returns rowIn rowOut. (RemoveWrappers returns rowIn rowOut) => Variant rowIn -> Variant rowOut
+removeWrappersFast = unsafeCoerce
 
 -- | Removes `Ret` and `RetVia` wrappers from variant types.
 -- |

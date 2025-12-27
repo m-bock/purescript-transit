@@ -4,10 +4,12 @@
   <img alt="Transit logo" src="assets/logo-light.svg">
 </picture>
 
+Type-Safe State Machines
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Transit - Type-Safe State Machines](#transit---type-safe-state-machines)
+- [Transit](#transit)
   - [Introduction](#introduction)
     - [Key Features](#key-features)
     - [About This Documentation](#about-this-documentation)
@@ -49,17 +51,18 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Transit - Type-Safe State Machines
-
-**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using this specification, and the compiler ensures your implementation matches it — eliminating bugs from invalid transitions, missing cases, or documentation drift.
+# Transit
 
 ## Introduction
+
+**Transit** is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using this specification, and the compiler ensures your implementation matches it — eliminating bugs from invalid transitions, missing cases, or documentation drift.
 
 ### Key Features
 
 - **Type-safe state transitions** - The compiler ensures all transitions are valid and complete
 - **Automatic diagram generation** - Generate state diagrams and transition tables directly from your specification
 - **Graph analysis** - Convert your state machine into a graph data structure for advanced analysis
+- **Performance** - Faster runtime and compile time performance compared to classic state machine implementations
 
 > If you're familiar with Servant[^servant] from Haskell, **Transit** follows a similar philosophy: just as Servant uses a REST API type-level specification to ensure type-safe routing functions and generate OpenAPI documentation, **Transit** uses a state machine graph type-level specification to ensure type-safe update functions and generate state diagrams.
 
@@ -94,9 +97,9 @@ Before diving into the code, let's visualize our simple door state machine. This
 The state diagram below shows all possible states and the valid transitions between them:
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/simple-door-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/simple-door-light.svg">
-  <img alt="Simple Door state diagram" src="graphs/simple-door-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
+  <img alt="Simple Door state diagram" src="renders/door-simple-light.svg">
 </picture>
 
 In this diagram, you can see:
@@ -110,7 +113,7 @@ In this diagram, you can see:
 For a more structured view, here's the corresponding transition table:
 
 <!-- PD_START:raw
-filePath: graphs/simple-door.html
+filePath: renders/door-simple.html
 wrapNl: true
 -->
 <table>
@@ -128,7 +131,7 @@ wrapNl: true
       <td>DoorOpen</td>
       <td>⟶</td>
       <td>Close</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorClosed</td>
     </tr>
   </tbody>
@@ -575,11 +578,11 @@ generateStateDiagram = do
     transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
+  TransitGraphviz.writeToFile "renders/door-simple-light.dot" transit _
     { theme = themeHarmonyLight
     }
 
-  TransitGraphviz.writeToFile "graphs/simple-door-dark.dot" transit _
+  TransitGraphviz.writeToFile "renders/door-simple-dark.dot" transit _
     { theme = themeHarmonyDark
     }
 ```
@@ -605,13 +608,13 @@ The `writeToFile` function accepts an options record that lets you customize the
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
 ```bash
-dot -Tsvg graphs/simple-door.dot -o graphs/simple-door.svg
+dot -Tsvg renders/door-simple.dot -o renders/door-simple.svg
 ```
 
 Or for PNG:
 
 ```bash
-dot -Tpng graphs/simple-door.dot -o graphs/simple-door.png
+dot -Tpng renders/door-simple.dot -o renders/door-simple.png
 ```
 
 #### Transition Tables
@@ -633,7 +636,7 @@ generateTransitionTable = do
     transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitTable.writeToFile "graphs/simple-door.html" transit identity
+  TransitTable.writeToFile "renders/door-simple.html" transit identity
 ```
 
 <p align="right">
@@ -678,9 +681,9 @@ While this example was simple, it demonstrates **Transit**'s fundamental approac
 Now let's extend our door to support PIN-based locking. In this enhanced version, you can lock the door with a PIN code, and then unlock it by entering the correct PIN. This introduces two important concepts: **states with data** and **conditional transitions**.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/door-with-pin-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/door-with-pin-light.svg">
-  <img alt="Door with Pin state diagram" src="graphs/door-with-pin-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-pin-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-pin-light.svg">
+  <img alt="Door with Pin state diagram" src="renders/door-pin-light.svg">
 </picture>
 
 In this example, the `DoorLocked` state stores a PIN code, and the `Unlock` message includes the entered PIN. The unlock operation can succeed (transitioning to `DoorClosed`) or fail (staying in `DoorLocked`), depending on whether the entered PIN matches the stored one.
@@ -690,7 +693,7 @@ Notice the diamond node in the state diagram — this represents a conditional t
 The transition table shows both possible outcomes:
 
 <!-- PD_START:raw
-filePath: graphs/door-with-pin.html
+filePath: renders/door-pin.html
 wrapNl: true
 -->
 <table>
@@ -995,15 +998,15 @@ Even not immediately obvious, this can be represented as a graph:
 ### State diagram
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/bridges-koenigsberg-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/bridges-koenigsberg-light.svg">
-  <img alt="Seven Bridges of Königsberg graph" src="graphs/bridges-koenigsberg-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/bridges-koenigsberg-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/bridges-koenigsberg-light.svg">
+  <img alt="Seven Bridges of Königsberg graph" src="renders/bridges-koenigsberg-light.svg">
 </picture>
 
 ### Transition table
 
 <!-- PD_START:raw
-filePath: graphs/bridges-koenigsberg.html
+filePath: renders/bridges-koenigsberg.html
 wrapNl: true
 -->
 <table>
@@ -1194,7 +1197,7 @@ update = mkUpdate @BridgesKoenigsbergTransit
 
 ### A sample walk
 
-<img src="assets/bridges-walk.png" width="450" />
+<img src="assets/bridges-walk.svg" width="450" />
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -1404,7 +1407,7 @@ type HouseOfSantaClausTransit =
 <!-- PD_END -->
 
 <!-- PD_START:raw
-filePath: graphs/house-of-santa-claus.html
+filePath: renders/house-santa-claus.html
 --><table>
   <thead>
     <tr>
@@ -1491,14 +1494,14 @@ filePath: graphs/house-of-santa-claus.html
 <!-- PD_END -->
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="graphs/house-of-santa-claus-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="graphs/house-of-santa-claus-light.svg">
-  <img alt="House of Santa Claus graph" src="graphs/house-of-santa-claus-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/house-santa-claus-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/house-santa-claus-light.svg">
+  <img alt="House of Santa Claus graph" src="renders/house-santa-claus-light.svg">
 </picture>
 
 ### A sample walk
 
-<img src="assets/house-of-santa-claus-walk.png" width="450" />
+<img src="assets/house-santa-claus-walk.png" width="450" />
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseOfSantaClaus.purs

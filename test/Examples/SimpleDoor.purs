@@ -105,11 +105,11 @@ generateStateDiagram = do
     transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitGraphviz.writeToFile "graphs/simple-door-light.dot" transit _
+  TransitGraphviz.writeToFile "renders/door-simple-light.dot" transit _
     { theme = themeHarmonyLight
     }
 
-  TransitGraphviz.writeToFile "graphs/simple-door-dark.dot" transit _
+  TransitGraphviz.writeToFile "renders/door-simple-dark.dot" transit _
     { theme = themeHarmonyDark
     }
 
@@ -119,7 +119,7 @@ generateTransitionTable = do
     transit :: TransitCore
     transit = reflectType (Proxy @SimpleDoorTransit)
 
-  TransitTable.writeToFile "graphs/simple-door.html" transit identity
+  TransitTable.writeToFile "renders/door-simple.html" transit identity
 
 main :: Effect Unit
 main = do

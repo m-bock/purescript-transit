@@ -1,11 +1,25 @@
-<img src="../graphs/themes/harmony-light.svg" />
+# Color Themes
 
-<img src="../graphs/themes/harmony-dark.svg" />
+## Harmony Light
 
-<img src="../graphs/themes/contrast-light.svg" />
+<img src="../renders/themes/harmony-light.svg" />
 
-<img src="../graphs/themes/contrast-dark.svg" />
+## Harmony Dark
 
-<img src="../graphs/themes/gradient-light.svg" />
+<img src="../renders/themes/harmony-dark.svg" />
 
-<img src="../graphs/themes/gradient-dark.svg" />
+## Contrast Light
+
+<img src="../renders/themes/contrast-light.svg" />
+
+## Contrast Dark
+
+<img src="../renders/themes/contrast-dark.svg" />
+
+## Gradient Light
+
+<img src="../renders/themes/gradient-light.svg" />
+
+## Gradient Dark
+
+<img src="../renders/themes/gradient-dark.svg" />

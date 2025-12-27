@@ -1,21 +1,19 @@
-#!/usr/bin/env node
-
 const fs = require("fs");
 const path = require("path");
 
-// Format a number as a three-digit string (e.g., 1 -> "001", 10 -> "010", 100 -> "100")
+// Format a number as a three-digit string (e.g., 1 -> "001", 23 -> "023", 912 -> "912")
 function formatNum(n) {
   if (n < 10) return `00${n}`;
   if (n < 100) return `0${n}`;
   return `${n}`;
 }
 
-// Generate state name (e.g., 1 -> "State01")
+// Generate state name (e.g., 1 -> "State001", 23 -> "State023", 912 -> "State912")
 function stateName(n) {
   return `State${formatNum(n)}`;
 }
 
-// Generate message name (e.g., 1 -> "Msg01")
+// Generate message name (e.g., 1 -> "Msg001", 23 -> "Msg023", 912 -> "Msg912")
 function msgName(n) {
   return `Msg${formatNum(n)}`;
 }
@@ -67,7 +65,7 @@ function generateTransitSizeModule(size) {
       .join("\n") +
     "\n  ]";
 
-  return `module Test.BenchDef.TransitSize${size} where
+  return `module Test.Bench.Transit.Size${formatNum(size)} where
 
 import Prelude
 
@@ -166,7 +164,7 @@ function generateClassicSizeModule(size) {
       .join("\n") +
     "\n  ]";
 
-  return `module Test.BenchDef.ClassicSize${size} where
+  return `module Test.Bench.Classic.Size${formatNum(size)} where
 
 import Prelude
 
@@ -207,18 +205,50 @@ ${walkDArray}
 
 // Main function
 function main() {
-  const sizes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
-  const outputDir = path.join(__dirname, "..", "test", "Test", "BenchDef");
+  const sizes = [
+    10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170,
+    180, 190, 200,
+  ];
+  const transitOutputDir = path.join(
+    __dirname,
+    "..",
+    "test",
+    "Test",
+    "Bench",
+    "Transit",
+  );
+  const classicOutputDir = path.join(
+    __dirname,
+    "..",
+    "test",
+    "Test",
+    "Bench",
+    "Classic",
+  );
 
-  // Ensure output directory exists
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
+  // Ensure output directories exist and clean them
+  for (const outputDir of [transitOutputDir, classicOutputDir]) {
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    } else {
+      // Delete all existing files in the directory to avoid stale generations
+      console.log(`Cleaning existing files from ${outputDir}...`);
+      const existingFiles = fs.readdirSync(outputDir);
+      for (const file of existingFiles) {
+        const filePath = path.join(outputDir, file);
+        const stat = fs.statSync(filePath);
+        if (stat.isFile()) {
+          fs.unlinkSync(filePath);
+          console.log(`Deleted ${file}`);
+        }
+      }
+    }
   }
 
   console.log("Generating TransitSize modules...");
   for (const size of sizes) {
     const content = generateTransitSizeModule(size);
-    const filename = path.join(outputDir, `TransitSize${size}.purs`);
+    const filename = path.join(transitOutputDir, `Size${formatNum(size)}.purs`);
     fs.writeFileSync(filename, content, "utf8");
     console.log(`Generated ${filename}`);
   }
@@ -226,7 +256,7 @@ function main() {
   console.log("Generating ClassicSize modules...");
   for (const size of sizes) {
     const content = generateClassicSizeModule(size);
-    const filename = path.join(outputDir, `ClassicSize${size}.purs`);
+    const filename = path.join(classicOutputDir, `Size${formatNum(size)}.purs`);
     fs.writeFileSync(filename, content, "utf8");
     console.log(`Generated ${filename}`);
   }

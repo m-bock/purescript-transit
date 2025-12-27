@@ -8,7 +8,7 @@ gen-svgs:
     find graphs assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
 
 gen-html-prettier:
-    npx prettier --write "graphs/*.html"
+    npx prettier --write "renders/*.html"
 
 gen-doctoc:
     npx doctoc --maxlevel 3 README.md
@@ -68,9 +68,6 @@ nix:
 gen-vega:
     find bench -name "*vl.json" -type f -exec sh -c 'vl2vg "$1" > "${1%.vl.json}.vg.json"' _ {} \; && \
     find bench -name "*.vg.json" -type f -exec sh -c 'vg2svg "$1" > "${1%.vg.json}.svg"' _ {} \;
-
-watch:
-    echo README.md | entr -c just gen
 
 format:
     npx purs-tidy format-in-place 'src/**/*.purs'
