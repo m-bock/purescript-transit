@@ -9,15 +9,16 @@ module Transit.Class.MkUpdateV2 where
 
 import Prelude
 
+import Data.Function.Uncurried (runFn4)
 import Data.Maybe (Maybe)
 import Data.Symbol (class IsSymbol)
 import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
 import Prim.Row as Row
 import Transit.Class.ExpandReturn (class RemoveWrappers, removeWrappers)
-import Transit.Core (MatchImpl(..), MkMatchTL, MkTransitCoreTL, TransitCoreTL)
-import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, run)
-import Type.Data.List (type (:>), Nil')
+import Transit.Core (MatchImpl(..), MatchTL, MkMatchTL, MkTransitCoreTL, TransitCoreTL)
+import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, runIMaybe, runImpl)
+import Type.Data.List (type (:>), List', Nil')
 
 class
   MkUpdate (spec :: TransitCoreTL) m matches msg state
@@ -32,13 +33,19 @@ instance mkUpdateInst ::
   MkUpdate (MkTransitCoreTL spec) m matches (Variant rowMsg) (Variant rowState) where
   mkUpdateCore matches =
     let
-      handerLookup = mkLookup @m @spec matches
-      h = build handerLookup
-      run' = run h
+      handerLookupBuilder = mkLookup @m @spec matches
+      handlerLookup = build handerLookupBuilder
     in
-      \state msg -> run' state msg
+      \state msg -> runFn4 runImpl runIMaybe handlerLookup state msg
 
-class MkLookup (m :: Type -> Type) spec matches (rowState :: Row Type) (rowMsg :: Row Type) | spec rowState rowMsg m -> matches where
+class
+  MkLookup
+    (m :: Type -> Type)
+    (spec :: List' MatchTL)
+    matches
+    (rowState :: Row Type)
+    (rowMsg :: Row Type)
+  | spec rowState rowMsg m -> matches where
   mkLookup :: matches -> HandlerLookupBuilder m rowState rowMsg
 
 instance MkLookup m (Nil') Unit rowState rowMsg where

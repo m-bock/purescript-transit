@@ -4,15 +4,18 @@
 
 module Transit.HandlerLookup
   ( HandlerLookup
-  , initBuilder
+  , HandlerLookupBuilder
+  , RunI
   , addHandler
   , build
-  , HandlerLookupBuilder
-  , run
+  , initBuilder
+  , runIMaybe
+  , runImpl
   ) where
 
 import Prelude
 
+import Data.Function.Uncurried (Fn4)
 import Data.List (List)
 import Data.List as List
 import Data.Maybe (Maybe(..))
@@ -46,9 +49,9 @@ addHandler
   :: forall @symStaIn @symMsgIn m staIn msgIn rowStateOut rowMsg rowState trashState trashMsg trashUnion
    . IsSymbol symStaIn
   => IsSymbol symMsgIn
-  --=> Row.Cons symStaIn staIn trashState rowState
-  --=> Row.Cons symMsgIn msgIn trashMsg rowMsg
-  --=> Row.Union rowStateOut trashUnion rowState
+  => Row.Cons symStaIn staIn trashState rowState
+  => Row.Cons symMsgIn msgIn trashMsg rowMsg
+  => Row.Union rowStateOut trashUnion rowState
   => (staIn -> msgIn -> m (Variant rowStateOut))
   -> HandlerLookupBuilder m rowState rowMsg
   -> HandlerLookupBuilder m rowState rowMsg
@@ -70,50 +73,23 @@ build (HandlerLookupBuilder builders) = HandlerLookup
   $
     map (\{ state, msg, handler } -> (state /\ Object.singleton msg handler)) builders
 
-type MaybeSpec a =
-  { onNothing :: Maybe a
-  , onJust :: a -> Maybe a
+type RunI m =
+  { no :: forall a. m (Maybe a)
+  , yes :: forall a. m a -> m (Maybe a)
   }
 
-type T m a =
-  { fail :: m (Maybe a)
-  , succeed :: m a -> m (Maybe a)
+runIMaybe :: forall m a. Applicative m => RunI m
+runIMaybe =
+  { no: pure Nothing
+  , yes: map Just
   }
-
-type T2 m a z =
-  { fail :: m z
-  , succeed :: m a -> m z
-  }
-
-api2 :: forall m a. Applicative m => T2 m a (Maybe a)
-api2 = { fail: pure Nothing, succeed: map Just }
-
--- api3 :: forall m a. Applicative m => T2 m a a
--- api3 = { fail: pure, succeed: identity }
-
-run
-  :: forall m rowState rowMsg
-   . Applicative m
-  => HandlerLookup m rowState rowMsg
-  -> Variant rowState
-  -> Variant rowMsg
-  -> m (Maybe (Variant rowState))
-run = runImpl { fail: pure Nothing, succeed: map Just }
-
-run2
-  :: forall m rowState rowMsg
-   . Applicative m
-  => HandlerLookup m rowState rowMsg
-  -> Variant rowState
-  -> Variant rowMsg
-  -> m (Variant rowState)
-run2 h st msg = runImpl { fail: pure st, succeed: identity } h st msg
 
 foreign import runImpl
-  :: forall m z rowState rowMsg
-   . T2 m (Variant rowState) z
-  -> HandlerLookup m rowState rowMsg
-  -> Variant rowState
-  -> Variant rowMsg
-  -> m z
+  :: forall m rowState rowMsg
+   . Fn4
+       (RunI m)
+       (HandlerLookup m rowState rowMsg)
+       (Variant rowState)
+       (Variant rowMsg)
+       (m (Maybe (Variant rowState)))
 
