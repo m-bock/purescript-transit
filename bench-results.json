@@ -6,34 +6,94 @@
           "benchName": "updateClassic",
           "samples": [
             {
-              "average": 0.0058,
-              "duration": 58,
+              "average": 0.0392,
+              "duration": 392,
               "iterations": 10000,
               "size": 20
             },
             {
-              "average": 0.0121,
-              "duration": 121,
+              "average": 0.0818,
+              "duration": 818,
               "iterations": 10000,
               "size": 40
             },
             {
-              "average": 0.0226,
-              "duration": 226,
+              "average": 0.1204,
+              "duration": 1204,
               "iterations": 10000,
               "size": 60
             },
             {
-              "average": 0.0191,
-              "duration": 191,
+              "average": 0.1735,
+              "duration": 1735,
               "iterations": 10000,
               "size": 80
             },
             {
-              "average": 0.03,
-              "duration": 300,
+              "average": 0.2003,
+              "duration": 2003,
               "iterations": 10000,
               "size": 100
+            },
+            {
+              "average": 0.2372,
+              "duration": 2372,
+              "iterations": 10000,
+              "size": 120
+            },
+            {
+              "average": 0.2831,
+              "duration": 2831,
+              "iterations": 10000,
+              "size": 140
+            },
+            {
+              "average": 0.3383,
+              "duration": 3383,
+              "iterations": 10000,
+              "size": 160
+            },
+            {
+              "average": 0.3769,
+              "duration": 3769,
+              "iterations": 10000,
+              "size": 180
+            },
+            {
+              "average": 0.4346,
+              "duration": 4346,
+              "iterations": 10000,
+              "size": 200
+            },
+            {
+              "average": 0.4897,
+              "duration": 4897,
+              "iterations": 10000,
+              "size": 220
+            },
+            {
+              "average": 0.5331,
+              "duration": 5331,
+              "iterations": 10000,
+              "size": 240
+            },
+            {
+              "average": 0.5874,
+              "duration": 5874,
+              "iterations": 10000,
+              "size": 260
+            },
+            {
+              "average": 0.6435,
+              "duration": 6435,
+              "iterations": 10000,
+              "size": 280
+            },
+            {
+              "average": 0.7009,
+              "duration": 7009,
+              "iterations": 10000,
+              "size": 300
             }
           ]
         },
@@ -41,34 +101,94 @@
           "benchName": "update",
           "samples": [
             {
-              "average": 0.0045,
-              "duration": 45,
+              "average": 0.0201,
+              "duration": 201,
               "iterations": 10000,
               "size": 20
             },
             {
-              "average": 0.0108,
-              "duration": 108,
+              "average": 0.0618,
+              "duration": 618,
               "iterations": 10000,
               "size": 40
             },
             {
-              "average": 0.0139,
-              "duration": 139,
+              "average": 0.1001,
+              "duration": 1001,
               "iterations": 10000,
               "size": 60
             },
             {
-              "average": 0.0248,
-              "duration": 248,
+              "average": 0.1281,
+              "duration": 1281,
               "iterations": 10000,
               "size": 80
             },
             {
-              "average": 0.0322,
-              "duration": 322,
+              "average": 0.1787,
+              "duration": 1787,
               "iterations": 10000,
               "size": 100
+            },
+            {
+              "average": 0.2192,
+              "duration": 2192,
+              "iterations": 10000,
+              "size": 120
+            },
+            {
+              "average": 0.2516,
+              "duration": 2516,
+              "iterations": 10000,
+              "size": 140
+            },
+            {
+              "average": 0.2979,
+              "duration": 2979,
+              "iterations": 10000,
+              "size": 160
+            },
+            {
+              "average": 0.3357,
+              "duration": 3357,
+              "iterations": 10000,
+              "size": 180
+            },
+            {
+              "average": 0.3856,
+              "duration": 3856,
+              "iterations": 10000,
+              "size": 200
+            },
+            {
+              "average": 0.4255,
+              "duration": 4255,
+              "iterations": 10000,
+              "size": 220
+            },
+            {
+              "average": 0.464,
+              "duration": 4640,
+              "iterations": 10000,
+              "size": 240
+            },
+            {
+              "average": 0.5141,
+              "duration": 5141,
+              "iterations": 10000,
+              "size": 260
+            },
+            {
+              "average": 0.5544,
+              "duration": 5544,
+              "iterations": 10000,
+              "size": 280
+            },
+            {
+              "average": 0.5733,
+              "duration": 5733,
+              "iterations": 10000,
+              "size": 300
             }
           ]
         }

@@ -40,7 +40,7 @@ type Msg = Variant
   , "E_h" :: {}
   )
 
-type HouseOfSantaClausTransit =
+type HouseSantaClausTransit =
   Transit
     :* ("N_1" |< "E_a" >| "N_2")
     :* ("N_2" |< "E_b" >| "N_3")
@@ -53,7 +53,7 @@ type HouseOfSantaClausTransit =
 
 update :: State -> Msg -> State
 update =
-  mkUpdate @HouseOfSantaClausTransit
+  mkUpdate @HouseSantaClausTransit
     (match @"N_1" @"E_a" \_ _ -> return @"N_2")
     (match @"N_2" @"E_a" \_ _ -> return @"N_1")
 
@@ -99,7 +99,7 @@ assert1 =
 assert2 :: Aff Unit
 assert2 =
   let
-    graph = mkStateGraph (reflectType (Proxy @HouseOfSantaClausTransit))
+    graph = mkStateGraph (reflectType (Proxy @HouseSantaClausTransit))
   in
     hasEulerTrail graph `shouldEqual` true
 
@@ -117,7 +117,7 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @HouseOfSantaClausTransit)
+    transit = reflectType (Proxy @HouseSantaClausTransit)
     nodeAttrs = Just \node -> case node of
       "N_1" -> "pos=\"0,0!\""
       "N_2" -> "pos=\"2,0!\""

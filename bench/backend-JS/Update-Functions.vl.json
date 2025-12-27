@@ -3,54 +3,154 @@
   "data": {
     "values": [
       {
-        "ms": 0.0058,
+        "ms": 0.0392,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 0.0121,
+        "ms": 0.0818,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 0.0226,
+        "ms": 0.1204,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 0.0191,
+        "ms": 0.1735,
         "series": "updateClassic",
         "size": 80
       },
       {
-        "ms": 0.03,
+        "ms": 0.2003,
         "series": "updateClassic",
         "size": 100
       },
       {
-        "ms": 0.0045,
+        "ms": 0.2372,
+        "series": "updateClassic",
+        "size": 120
+      },
+      {
+        "ms": 0.2831,
+        "series": "updateClassic",
+        "size": 140
+      },
+      {
+        "ms": 0.3383,
+        "series": "updateClassic",
+        "size": 160
+      },
+      {
+        "ms": 0.3769,
+        "series": "updateClassic",
+        "size": 180
+      },
+      {
+        "ms": 0.4346,
+        "series": "updateClassic",
+        "size": 200
+      },
+      {
+        "ms": 0.4897,
+        "series": "updateClassic",
+        "size": 220
+      },
+      {
+        "ms": 0.5331,
+        "series": "updateClassic",
+        "size": 240
+      },
+      {
+        "ms": 0.5874,
+        "series": "updateClassic",
+        "size": 260
+      },
+      {
+        "ms": 0.6435,
+        "series": "updateClassic",
+        "size": 280
+      },
+      {
+        "ms": 0.7009,
+        "series": "updateClassic",
+        "size": 300
+      },
+      {
+        "ms": 0.0201,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 0.0108,
+        "ms": 0.0618,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 0.0139,
+        "ms": 0.1001,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 0.0248,
+        "ms": 0.1281,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 0.0322,
+        "ms": 0.1787,
         "series": "update",
         "size": 100
+      },
+      {
+        "ms": 0.2192,
+        "series": "update",
+        "size": 120
+      },
+      {
+        "ms": 0.2516,
+        "series": "update",
+        "size": 140
+      },
+      {
+        "ms": 0.2979,
+        "series": "update",
+        "size": 160
+      },
+      {
+        "ms": 0.3357,
+        "series": "update",
+        "size": 180
+      },
+      {
+        "ms": 0.3856,
+        "series": "update",
+        "size": 200
+      },
+      {
+        "ms": 0.4255,
+        "series": "update",
+        "size": 220
+      },
+      {
+        "ms": 0.464,
+        "series": "update",
+        "size": 240
+      },
+      {
+        "ms": 0.5141,
+        "series": "update",
+        "size": 260
+      },
+      {
+        "ms": 0.5544,
+        "series": "update",
+        "size": 280
+      },
+      {
+        "ms": 0.5733,
+        "series": "update",
+        "size": 300
       }
     ]
   },

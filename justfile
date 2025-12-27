@@ -1,5 +1,5 @@
 gen-examples:
-    npx spago run -m Docs.MainExamples
+    npx spago run -m Docs.Main
 
 gen-patchdown:
     PATCHDOWN_FILE_PATH=README.md npx spago run -m Patchdown
@@ -82,18 +82,20 @@ compile-time-bench-large:
 gen-vega-lite:
     node scripts/generate-vega-lite.js
 
+    # just clean && \
+    # just clean-bench-modules-large && \
+    # \
+    # just test && \
+    # \
+    # just gen-bench-modules-small && \
+    # just gen-bench-modules-large && \
+    # \
+    # just compile-time-bench-small && \
+    # just gen-vega-lite && \
+    # \
+
 gen-full:
-    just clean && \
-    just clean-bench-modules-large && \
-    \
-    just test && \
-    \
-    just gen-bench-modules-small && \
-    just gen-bench-modules-large && \
-    \
-    just compile-time-bench-small && \
-    just gen-vega-lite && \
-    \
+    just build-es && \
     just bench-run-large && \
     \
     just gen
@@ -105,5 +107,5 @@ gen:
     just gen-vega && \
     just gen-patchdown && \
     just gen-doctoc && \
-    
+    \
     just gen-preview

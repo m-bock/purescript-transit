@@ -3,52 +3,52 @@
   "data": {
     "values": [
       {
-        "ms": 1934,
+        "ms": 2045.9999999999998,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 2436,
+        "ms": 2343,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 3486,
+        "ms": 2075,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 4449,
+        "ms": 2013,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 6034,
+        "ms": 2161,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 1871,
+        "ms": 1988,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 2665,
+        "ms": 2111,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 5073,
+        "ms": 2322,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 9948,
+        "ms": 2025.9999999999998,
         "series": "updateClassic",
         "size": 80
       },
       {
-        "ms": 16082,
+        "ms": 2027.0000000000002,
         "series": "updateClassic",
         "size": 100
       }
