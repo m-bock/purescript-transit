@@ -1,4 +1,4 @@
-module Test.Examples.BridgesKoenigsberg (main, spec) where
+module Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
@@ -7,7 +7,7 @@ import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (assertWalk, hasEulerTrail, (~>))
+import Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), StateGraph, Transit, TransitCore, match, mkStateGraph, mkUpdate, return)

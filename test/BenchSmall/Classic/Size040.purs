@@ -1,4 +1,4 @@
-module Test.BenchSmall.Classic.Size020 where
+module BenchSmall.Classic.Size040 where
 
 import Prelude
 
@@ -25,6 +25,26 @@ data StateD
   | State018 {}
   | State019 {}
   | State020 {}
+  | State021 {}
+  | State022 {}
+  | State023 {}
+  | State024 {}
+  | State025 {}
+  | State026 {}
+  | State027 {}
+  | State028 {}
+  | State029 {}
+  | State030 {}
+  | State031 {}
+  | State032 {}
+  | State033 {}
+  | State034 {}
+  | State035 {}
+  | State036 {}
+  | State037 {}
+  | State038 {}
+  | State039 {}
+  | State040 {}
 
 derive instance Eq StateD
 
@@ -50,6 +70,26 @@ printStateClassic = case _ of
   State018 {} -> "State018"
   State019 {} -> "State019"
   State020 {} -> "State020"
+  State021 {} -> "State021"
+  State022 {} -> "State022"
+  State023 {} -> "State023"
+  State024 {} -> "State024"
+  State025 {} -> "State025"
+  State026 {} -> "State026"
+  State027 {} -> "State027"
+  State028 {} -> "State028"
+  State029 {} -> "State029"
+  State030 {} -> "State030"
+  State031 {} -> "State031"
+  State032 {} -> "State032"
+  State033 {} -> "State033"
+  State034 {} -> "State034"
+  State035 {} -> "State035"
+  State036 {} -> "State036"
+  State037 {} -> "State037"
+  State038 {} -> "State038"
+  State039 {} -> "State039"
+  State040 {} -> "State040"
 
 initClassic :: StateD
 initClassic = State001 {}
@@ -75,6 +115,26 @@ data MsgD
   | Msg018 {}
   | Msg019 {}
   | Msg020 {}
+  | Msg021 {}
+  | Msg022 {}
+  | Msg023 {}
+  | Msg024 {}
+  | Msg025 {}
+  | Msg026 {}
+  | Msg027 {}
+  | Msg028 {}
+  | Msg029 {}
+  | Msg030 {}
+  | Msg031 {}
+  | Msg032 {}
+  | Msg033 {}
+  | Msg034 {}
+  | Msg035 {}
+  | Msg036 {}
+  | Msg037 {}
+  | Msg038 {}
+  | Msg039 {}
+  | Msg040 {}
 
 derive instance Eq MsgD
 
@@ -100,6 +160,26 @@ printMsgClassic = case _ of
   Msg018 {} -> "Msg018"
   Msg019 {} -> "Msg019"
   Msg020 {} -> "Msg020"
+  Msg021 {} -> "Msg021"
+  Msg022 {} -> "Msg022"
+  Msg023 {} -> "Msg023"
+  Msg024 {} -> "Msg024"
+  Msg025 {} -> "Msg025"
+  Msg026 {} -> "Msg026"
+  Msg027 {} -> "Msg027"
+  Msg028 {} -> "Msg028"
+  Msg029 {} -> "Msg029"
+  Msg030 {} -> "Msg030"
+  Msg031 {} -> "Msg031"
+  Msg032 {} -> "Msg032"
+  Msg033 {} -> "Msg033"
+  Msg034 {} -> "Msg034"
+  Msg035 {} -> "Msg035"
+  Msg036 {} -> "Msg036"
+  Msg037 {} -> "Msg037"
+  Msg038 {} -> "Msg038"
+  Msg039 {} -> "Msg039"
+  Msg040 {} -> "Msg040"
 
 updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
@@ -122,7 +202,27 @@ updateClassic state msg = case state, msg of
   State017 {}, Msg017 {} -> State018 {}
   State018 {}, Msg018 {} -> State019 {}
   State019 {}, Msg019 {} -> State020 {}
-  State020 {}, Msg020 {} -> State001 {}
+  State020 {}, Msg020 {} -> State021 {}
+  State021 {}, Msg021 {} -> State022 {}
+  State022 {}, Msg022 {} -> State023 {}
+  State023 {}, Msg023 {} -> State024 {}
+  State024 {}, Msg024 {} -> State025 {}
+  State025 {}, Msg025 {} -> State026 {}
+  State026 {}, Msg026 {} -> State027 {}
+  State027 {}, Msg027 {} -> State028 {}
+  State028 {}, Msg028 {} -> State029 {}
+  State029 {}, Msg029 {} -> State030 {}
+  State030 {}, Msg030 {} -> State031 {}
+  State031 {}, Msg031 {} -> State032 {}
+  State032 {}, Msg032 {} -> State033 {}
+  State033 {}, Msg033 {} -> State034 {}
+  State034 {}, Msg034 {} -> State035 {}
+  State035 {}, Msg035 {} -> State036 {}
+  State036 {}, Msg036 {} -> State037 {}
+  State037 {}, Msg037 {} -> State038 {}
+  State038 {}, Msg038 {} -> State039 {}
+  State039 {}, Msg039 {} -> State040 {}
+  State040 {}, Msg040 {} -> State001 {}
   _, _ -> state
 
 walkClassic :: Array (MsgD /\ StateD)
@@ -146,5 +246,25 @@ walkClassic =
   , Msg017 {} /\ State018 {}
   , Msg018 {} /\ State019 {}
   , Msg019 {} /\ State020 {}
-  , Msg020 {} /\ State001 {}
+  , Msg020 {} /\ State021 {}
+  , Msg021 {} /\ State022 {}
+  , Msg022 {} /\ State023 {}
+  , Msg023 {} /\ State024 {}
+  , Msg024 {} /\ State025 {}
+  , Msg025 {} /\ State026 {}
+  , Msg026 {} /\ State027 {}
+  , Msg027 {} /\ State028 {}
+  , Msg028 {} /\ State029 {}
+  , Msg029 {} /\ State030 {}
+  , Msg030 {} /\ State031 {}
+  , Msg031 {} /\ State032 {}
+  , Msg032 {} /\ State033 {}
+  , Msg033 {} /\ State034 {}
+  , Msg034 {} /\ State035 {}
+  , Msg035 {} /\ State036 {}
+  , Msg036 {} /\ State037 {}
+  , Msg037 {} /\ State038 {}
+  , Msg038 {} /\ State039 {}
+  , Msg039 {} /\ State040 {}
+  , Msg040 {} /\ State001 {}
   ]

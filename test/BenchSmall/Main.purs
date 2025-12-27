@@ -1,21 +1,21 @@
-module Test.BenchSmall (main) where
+module BenchSmall.Main (main) where
 
 import Prelude
 
 import Data.Tuple (fst)
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect)
-import Test.Bench (Input, getConfigFromEnv, mkInput, runBench)
-import Test.BenchSmall.Classic.Size020 as ClassicSize20
-import Test.BenchSmall.Classic.Size040 as ClassicSize40
-import Test.BenchSmall.Classic.Size060 as ClassicSize60
-import Test.BenchSmall.Classic.Size080 as ClassicSize80
-import Test.BenchSmall.Classic.Size100 as ClassicSize100
-import Test.BenchSmall.Transit.Size020 as TransitSize20
-import Test.BenchSmall.Transit.Size040 as TransitSize40
-import Test.BenchSmall.Transit.Size060 as TransitSize60
-import Test.BenchSmall.Transit.Size080 as TransitSize80
-import Test.BenchSmall.Transit.Size100 as TransitSize100
+import Bench.Common (Input, getConfigFromEnv, mkInput, runBench)
+import BenchSmall.Classic.Size020 as ClassicSize20
+import BenchSmall.Classic.Size040 as ClassicSize40
+import BenchSmall.Classic.Size060 as ClassicSize60
+import BenchSmall.Classic.Size080 as ClassicSize80
+import BenchSmall.Classic.Size100 as ClassicSize100
+import BenchSmall.Transit.Size020 as TransitSize20
+import BenchSmall.Transit.Size040 as TransitSize40
+import BenchSmall.Transit.Size060 as TransitSize60
+import BenchSmall.Transit.Size080 as TransitSize80
+import BenchSmall.Transit.Size100 as TransitSize100
 
 inputsClassic :: Array (Int /\ Input)
 inputsClassic =

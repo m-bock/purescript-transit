@@ -1242,7 +1242,7 @@ Euler's theorem[^euler-theorem] states that:
 
 - An undirected graph has an Eulerian trail if and only if it is connected and has exactly zero or two vertices of odd degree
 
-We can check these conditions using helper functions from the `Test.Examples.Common` module:
+We can check these conditions using helper functions from the `Examples.Common` module:
 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs

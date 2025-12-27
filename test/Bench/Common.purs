@@ -1,4 +1,4 @@
-module Test.Bench (runBench, mkInput, Input, getConfigFromEnv) where
+module Bench.Common (runBench, mkInput, Input, getConfigFromEnv) where
 
 import Prelude
 

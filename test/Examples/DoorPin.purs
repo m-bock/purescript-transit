@@ -1,8 +1,8 @@
-module Test.Examples.DoorWithPin
+module Examples.DoorPin
   ( main
   , spec
   , update
-  , DoorWithPinTransit
+  , DoorPinTransit
   , State(..)
   , Msg(..)
   ) where
@@ -15,7 +15,7 @@ import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (assertWalk, (~>))
+import Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:?), type (:@), type (>|), Transit, match, mkUpdate, return, returnVia)
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
@@ -68,7 +68,7 @@ type Msg = Variant
   , "Unlock" :: { enteredPin :: String }
   )
 
-type DoorWithPinTransit =
+type DoorPinTransit =
   Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -80,7 +80,7 @@ type DoorWithPinTransit =
       )
 
 update :: State -> Msg -> State
-update = mkUpdate @DoorWithPinTransit
+update = mkUpdate @DoorPinTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )
@@ -132,7 +132,7 @@ spec = describe "DoorWithPin" do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @DoorWithPinTransit)
+    transit = reflectType (Proxy @DoorPinTransit)
 
   for_
     [ { theme: themeHarmonyLight, file: "renders/door-pin-light.dot" }

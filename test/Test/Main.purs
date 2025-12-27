@@ -16,7 +16,9 @@ import Test.Transit.Render.Graphviz as Test.Transit.Render.Graphviz
 import Test.Transit.Render.TransitionTable as Test.Transit.Render.TransitionTable
 import Test.Transit.StateGraph as Test.Transit.StateGraph
 import Test.Transit.Class.CheckReturn as Test.Transit.Class.CheckReturn
+import Test.Transit.Class.MkHandlerLookup as Test.Transit.Class.MkHandlerLookup
 import Test.Transit.Class.MkUpdate as Test.Transit.Class.MkUpdate
+import Test.Transit.HandlerLookup as Test.Transit.HandlerLookup
 import Test.Transit.DSL as Test.Transit.DSL
 import Test.Transit.VariantUtils as Test.Transit.VariantUtils
 
@@ -34,6 +36,8 @@ main = do
     Test.Transit.Render.TransitionTable.spec
     Test.Transit.StateGraph.spec
     Test.Transit.Class.CheckReturn.spec
+    Test.Transit.Class.MkHandlerLookup.spec
     Test.Transit.Class.MkUpdate.spec
+    Test.Transit.HandlerLookup.spec
     Test.Transit.DSL.spec
     Test.Transit.VariantUtils.spec

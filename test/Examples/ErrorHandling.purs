@@ -1,10 +1,10 @@
-module Test.Examples.ErrorHandling where
+module Examples.ErrorHandling where
 
 import Prelude
 
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
-import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
+import Examples.DoorSimple (Msg, State, DoorSimpleTransit)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (match, mkUpdateMaybe, return)
 import Transit.VariantUtils (v)
@@ -12,7 +12,7 @@ import Test.Spec (Spec, describe, it)
 import Effect (Effect)
 
 update :: State -> Msg -> Maybe State
-update = mkUpdateMaybe @SimpleDoorTransit
+update = mkUpdateMaybe @DoorSimpleTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )

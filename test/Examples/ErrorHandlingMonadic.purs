@@ -1,11 +1,11 @@
-module Test.Examples.ErrorHandling2 where
+module Examples.ErrorHandlingMonadic where
 
 import Prelude
 
 import Data.Identity (Identity(..))
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
-import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
+import Examples.DoorSimple (Msg, State, DoorSimpleTransit)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (matchM, mkUpdateMaybeM, return)
 import Transit.VariantUtils (v)
@@ -13,7 +13,7 @@ import Test.Spec (Spec, describe, it)
 import Effect (Effect)
 
 update :: forall m. Monad m => State -> Msg -> m (Maybe State)
-update = mkUpdateMaybeM @SimpleDoorTransit
+update = mkUpdateMaybeM @DoorSimpleTransit
   ( matchM @"DoorOpen" @"Close" \_ _ ->
       pure $ return @"DoorClosed"
   )
@@ -31,7 +31,7 @@ assert2 =
 
 spec :: Spec Unit
 spec = do
-  describe "ErrorHandling2" do
+  describe "ErrorHandlingMonadic" do
     describe "update" do
       it "should return the correct state" do
         update (v @"DoorOpen") (v @"Close") `shouldEqual` Identity (Just (v @"DoorClosed"))

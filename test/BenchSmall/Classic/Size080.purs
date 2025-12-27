@@ -1,4 +1,4 @@
-module Test.BenchSmall.Classic.Size080 where
+module BenchSmall.Classic.Size080 where
 
 import Prelude
 

@@ -1,4 +1,4 @@
-module Test.BenchSmall.Transit.Size040 where
+module BenchSmall.Transit.Size060 where
 
 import Prelude
 
@@ -50,6 +50,26 @@ type State = Variant
   , "State038" :: {}
   , "State039" :: {}
   , "State040" :: {}
+  , "State041" :: {}
+  , "State042" :: {}
+  , "State043" :: {}
+  , "State044" :: {}
+  , "State045" :: {}
+  , "State046" :: {}
+  , "State047" :: {}
+  , "State048" :: {}
+  , "State049" :: {}
+  , "State050" :: {}
+  , "State051" :: {}
+  , "State052" :: {}
+  , "State053" :: {}
+  , "State054" :: {}
+  , "State055" :: {}
+  , "State056" :: {}
+  , "State057" :: {}
+  , "State058" :: {}
+  , "State059" :: {}
+  , "State060" :: {}
   )
 
 printState :: State -> String
@@ -101,6 +121,26 @@ type Msg = Variant
   , "Msg038" :: {}
   , "Msg039" :: {}
   , "Msg040" :: {}
+  , "Msg041" :: {}
+  , "Msg042" :: {}
+  , "Msg043" :: {}
+  , "Msg044" :: {}
+  , "Msg045" :: {}
+  , "Msg046" :: {}
+  , "Msg047" :: {}
+  , "Msg048" :: {}
+  , "Msg049" :: {}
+  , "Msg050" :: {}
+  , "Msg051" :: {}
+  , "Msg052" :: {}
+  , "Msg053" :: {}
+  , "Msg054" :: {}
+  , "Msg055" :: {}
+  , "Msg056" :: {}
+  , "Msg057" :: {}
+  , "Msg058" :: {}
+  , "Msg059" :: {}
+  , "Msg060" :: {}
   )
 
 printMsg :: Msg -> String
@@ -149,7 +189,27 @@ type BenchTransit =
     :* ("State037" :@ "Msg037" >| "State038")
     :* ("State038" :@ "Msg038" >| "State039")
     :* ("State039" :@ "Msg039" >| "State040")
-    :* ("State040" :@ "Msg040" >| "State001")
+    :* ("State040" :@ "Msg040" >| "State041")
+    :* ("State041" :@ "Msg041" >| "State042")
+    :* ("State042" :@ "Msg042" >| "State043")
+    :* ("State043" :@ "Msg043" >| "State044")
+    :* ("State044" :@ "Msg044" >| "State045")
+    :* ("State045" :@ "Msg045" >| "State046")
+    :* ("State046" :@ "Msg046" >| "State047")
+    :* ("State047" :@ "Msg047" >| "State048")
+    :* ("State048" :@ "Msg048" >| "State049")
+    :* ("State049" :@ "Msg049" >| "State050")
+    :* ("State050" :@ "Msg050" >| "State051")
+    :* ("State051" :@ "Msg051" >| "State052")
+    :* ("State052" :@ "Msg052" >| "State053")
+    :* ("State053" :@ "Msg053" >| "State054")
+    :* ("State054" :@ "Msg054" >| "State055")
+    :* ("State055" :@ "Msg055" >| "State056")
+    :* ("State056" :@ "Msg056" >| "State057")
+    :* ("State057" :@ "Msg057" >| "State058")
+    :* ("State058" :@ "Msg058" >| "State059")
+    :* ("State059" :@ "Msg059" >| "State060")
+    :* ("State060" :@ "Msg060" >| "State001")
 
 update :: State -> Msg -> State
 update = mkUpdate @BenchTransit
@@ -192,7 +252,27 @@ update = mkUpdate @BenchTransit
   (match @"State037" @"Msg037" \_ _ -> return @"State038")
   (match @"State038" @"Msg038" \_ _ -> return @"State039")
   (match @"State039" @"Msg039" \_ _ -> return @"State040")
-  (match @"State040" @"Msg040" \_ _ -> return @"State001")
+  (match @"State040" @"Msg040" \_ _ -> return @"State041")
+  (match @"State041" @"Msg041" \_ _ -> return @"State042")
+  (match @"State042" @"Msg042" \_ _ -> return @"State043")
+  (match @"State043" @"Msg043" \_ _ -> return @"State044")
+  (match @"State044" @"Msg044" \_ _ -> return @"State045")
+  (match @"State045" @"Msg045" \_ _ -> return @"State046")
+  (match @"State046" @"Msg046" \_ _ -> return @"State047")
+  (match @"State047" @"Msg047" \_ _ -> return @"State048")
+  (match @"State048" @"Msg048" \_ _ -> return @"State049")
+  (match @"State049" @"Msg049" \_ _ -> return @"State050")
+  (match @"State050" @"Msg050" \_ _ -> return @"State051")
+  (match @"State051" @"Msg051" \_ _ -> return @"State052")
+  (match @"State052" @"Msg052" \_ _ -> return @"State053")
+  (match @"State053" @"Msg053" \_ _ -> return @"State054")
+  (match @"State054" @"Msg054" \_ _ -> return @"State055")
+  (match @"State055" @"Msg055" \_ _ -> return @"State056")
+  (match @"State056" @"Msg056" \_ _ -> return @"State057")
+  (match @"State057" @"Msg057" \_ _ -> return @"State058")
+  (match @"State058" @"Msg058" \_ _ -> return @"State059")
+  (match @"State059" @"Msg059" \_ _ -> return @"State060")
+  (match @"State060" @"Msg060" \_ _ -> return @"State001")
 
 walk :: Array (Msg /\ State)
 walk =
@@ -235,5 +315,25 @@ walk =
   , v @"Msg037" /\ v @"State038"
   , v @"Msg038" /\ v @"State039"
   , v @"Msg039" /\ v @"State040"
-  , v @"Msg040" /\ v @"State001"
+  , v @"Msg040" /\ v @"State041"
+  , v @"Msg041" /\ v @"State042"
+  , v @"Msg042" /\ v @"State043"
+  , v @"Msg043" /\ v @"State044"
+  , v @"Msg044" /\ v @"State045"
+  , v @"Msg045" /\ v @"State046"
+  , v @"Msg046" /\ v @"State047"
+  , v @"Msg047" /\ v @"State048"
+  , v @"Msg048" /\ v @"State049"
+  , v @"Msg049" /\ v @"State050"
+  , v @"Msg050" /\ v @"State051"
+  , v @"Msg051" /\ v @"State052"
+  , v @"Msg052" /\ v @"State053"
+  , v @"Msg053" /\ v @"State054"
+  , v @"Msg054" /\ v @"State055"
+  , v @"Msg055" /\ v @"State056"
+  , v @"Msg056" /\ v @"State057"
+  , v @"Msg057" /\ v @"State058"
+  , v @"Msg058" /\ v @"State059"
+  , v @"Msg059" /\ v @"State060"
+  , v @"Msg060" /\ v @"State001"
   ]

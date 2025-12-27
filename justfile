@@ -37,16 +37,16 @@ build-es:
 bench-run-small:
     ITERATIONS=1000 \
     BACKEND=JS \
-    node --no-lazy --predictable -e "import { main } from './output-es/Test.BenchSmall/index.js'; main();" \
+    node --no-lazy --predictable -e "import { main } from './output-es/BenchSmall.Main/index.js'; main();" \
     BACKEND=ES \
-    node --no-lazy --predictable -e "import { main } from './output/Test.BenchSmall/index.js'; main();"
+    node --no-lazy --predictable -e "import { main } from './output/BenchSmall.Main/index.js'; main();"
 
 bench-run-large:
     ITERATIONS=10000 \
     BACKEND=JS \
-    node --no-lazy --predictable -e "import { main } from './output-es/Test.BenchLarge/index.js'; main();" \
+    node --no-lazy --predictable -e "import { main } from './output-es/BenchLarge.Main/index.js'; main();" \
     BACKEND=ES \
-    node --no-lazy --predictable -e "import { main } from './output/Test.BenchLarge/index.js'; main();"
+    node --no-lazy --predictable -e "import { main } from './output/BenchLarge.Main/index.js'; main();"
 
 
 
@@ -77,16 +77,15 @@ format:
 gen-bench-modules-small:
     node scripts/generate-bench-modules.js \
       --min 20 --max 100 --step 20 \
-      --target-folder test/bench-small --base-namespace Test.BenchSmall \
-      --generate-runner Test.BenchSmall test/bench-small/BenchSmall.purs \
+      --target-folder test/BenchSmall --base-namespace BenchSmall \
+      --generate-runner BenchSmall.Main test/BenchSmall/Main.purs \
 
 gen-bench-modules-large:
     node scripts/generate-bench-modules.js \
       --min 20 --max 400 --step 20 \
-      --target-folder test/bench-large --base-namespace Test.BenchLarge \
-      --generate-runner Test.BenchLarge test/bench-large/BenchLarge.purs \
+      --target-folder test/BenchLarge --base-namespace BenchLarge \
+      --generate-runner BenchLarge.Main test/BenchLarge/Main.purs \
 
 clean-bench-modules-large:
-    rm -rf test/bench-large
-    rm -rf output-es/Test.BenchLarge.*
-    rm -rf output/Test.BenchLarge.*
+    rm -rf test/BenchLarge
+    rm -rf output/BenchLarge.*

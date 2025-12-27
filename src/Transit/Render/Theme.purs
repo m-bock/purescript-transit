@@ -264,9 +264,14 @@ getColorHarmony theme index = indexMod theme.colorHarmonies index
 
 -- | Gets an element from a non-empty array by index, cycling through the array.
 indexMod :: forall a. NonEmptyArray a -> Int -> a
-indexMod xs index = case NEA.index xs (index `mod` NEA.length xs) of
-  Just x -> x
-  Nothing -> unsafeCrashWith "impossible: index out of bounds"
+indexMod xs index =
+  let
+    len = NEA.length xs
+    normalized = (index `mod` len + len) `mod` len
+  in
+    case NEA.index xs normalized of
+      Just x -> x
+      Nothing -> unsafeCrashWith "impossible: index out of bounds"
 
 -- | Light theme with colorful harmonies.
 themeHarmonyLight :: Theme

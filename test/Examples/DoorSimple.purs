@@ -1,4 +1,4 @@
-module Test.Examples.SimpleDoor (main, spec, SimpleDoorTransit, State(..), Msg(..)) where
+module Examples.DoorSimple (main, spec, DoorSimpleTransit, State(..), Msg(..)) where
 
 import Prelude
 
@@ -10,7 +10,7 @@ import Data.Traversable (scanl)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Test.Examples.Common (assertWalk, (~>))
+import Examples.Common (assertWalk, (~>))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
@@ -48,13 +48,13 @@ type Msg = Variant
   , "Open" :: {}
   )
 
-type SimpleDoorTransit =
+type DoorSimpleTransit =
   Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 
 update :: State -> Msg -> State
-update = mkUpdate @SimpleDoorTransit
+update = mkUpdate @DoorSimpleTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
@@ -103,7 +103,7 @@ generateStateDiagram :: Effect Unit
 generateStateDiagram = do
   let
     transit :: TransitCore
-    transit = reflectType (Proxy @SimpleDoorTransit)
+    transit = reflectType (Proxy @DoorSimpleTransit)
 
   TransitGraphviz.writeToFile "renders/door-simple-light.dot" transit _
     { theme = themeHarmonyLight
@@ -117,7 +117,7 @@ generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     transit :: TransitCore
-    transit = reflectType (Proxy @SimpleDoorTransit)
+    transit = reflectType (Proxy @DoorSimpleTransit)
 
   TransitTable.writeToFile "renders/door-simple.html" transit identity
 

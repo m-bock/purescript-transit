@@ -268,7 +268,12 @@ function generateSizes(min, max, step) {
 }
 
 // Generate benchmark runner file
-function generateBenchRunner(sizes, baseNamespace, runnerModuleName, runnerFilePath) {
+function generateBenchRunner(
+  sizes,
+  baseNamespace,
+  runnerModuleName,
+  runnerFilePath,
+) {
   const classicImports = sizes
     .map((size) => {
       const alias = `ClassicSize${size}`;
@@ -308,7 +313,7 @@ import Prelude
 import Data.Tuple (fst)
 import Data.Tuple.Nested (type (/\\), (/\\))
 import Effect (Effect)
-import Test.Bench (Input, getConfigFromEnv, mkInput, runBench)
+import Bench.Common (Input, getConfigFromEnv, mkInput, runBench)
 ${classicImports}
 ${transitImports}
 
@@ -334,7 +339,7 @@ main = do
 function main() {
   const config = parseArgs();
   const sizes = generateSizes(config.min, config.max, config.step);
-  
+
   const transitOutputDir = path.join(config.targetFolder, "Transit");
   const classicOutputDir = path.join(config.targetFolder, "Classic");
 
@@ -384,7 +389,7 @@ function main() {
       sizes,
       config.baseNamespace,
       config.runnerModuleName,
-      config.runnerFilePath
+      config.runnerFilePath,
     );
     fs.writeFileSync(config.runnerFilePath, runnerContent, "utf8");
     console.log(`Generated ${config.runnerFilePath}`);

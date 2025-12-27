@@ -1,15 +1,15 @@
-module Test.Examples.Monadic where
+module Examples.Monadic where
 
 import Prelude
 
 import Effect (Effect)
 import Effect.Class.Console as Console
-import Test.Examples.SimpleDoor (Msg, State, SimpleDoorTransit)
+import Examples.DoorSimple (Msg, State, DoorSimpleTransit)
 import Transit (matchM, mkUpdateM, return)
 import Test.Spec (Spec)
 
 update :: State -> Msg -> Effect State
-update = mkUpdateM @SimpleDoorTransit
+update = mkUpdateM @DoorSimpleTransit
   ( matchM @"DoorOpen" @"Close" \_ _ -> do
       Console.log "You just closed the door"
       pure $ return @"DoorClosed"

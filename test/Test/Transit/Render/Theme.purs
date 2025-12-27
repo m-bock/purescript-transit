@@ -27,10 +27,11 @@ spec = do
 
       it "handles negative indices by cycling" do
         let
-          harmony1 = getColorHarmony themeHarmonyLight 0
-          harmony2 = getColorHarmony themeHarmonyLight (-1)
+          lastIndex = 10
+          harmonyLast = getColorHarmony themeHarmonyLight lastIndex
+          harmonyNeg1 = getColorHarmony themeHarmonyLight (-1)
         -- Should cycle to last harmony
-        harmony1.nodeBg `shouldEqual` harmony2.nodeBg
+        harmonyLast.nodeBg `shouldEqual` harmonyNeg1.nodeBg
 
     describe "themeHarmonyLight" do
       it "has white background" do

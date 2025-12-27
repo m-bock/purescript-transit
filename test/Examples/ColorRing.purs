@@ -1,4 +1,4 @@
-module Test.Examples.ColorRing (main, spec) where
+module Examples.ColorRing (main, spec) where
 
 import Prelude
 
