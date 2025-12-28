@@ -26,8 +26,8 @@ build-es:
     rm -rf output-es
     npx spago build && npx purs-backend-es build
 
-bench-run:
-    ITERATIONS=1000 \
+bench-run ITERATIONS='1000':
+    export ITERATIONS={{ITERATIONS}} && \
     BACKEND=ES \
     just node-bench output-es Bench.Generated.Main && \
     BACKEND=JS \

@@ -221,6 +221,13 @@ function main() {
     return a.size - b.size;
   });
 
+  // Calculate x-axis domain and ticks from data
+  const sizes = [...new Set(resultsData.map((d) => d.size))].sort(
+    (a, b) => a - b,
+  );
+  const xMin = Math.min(...sizes);
+  const xMax = Math.max(...sizes);
+
   // Generate Vega-Lite JSON
   const vegaLite = {
     $schema: "https://vega.github.io/schema/vega-lite/v6.json",
@@ -239,6 +246,13 @@ function main() {
       },
       x: {
         field: "size",
+        scale: {
+          domain: [xMin, xMax],
+        },
+        axis: {
+          tickCount: sizes.length,
+          values: sizes,
+        },
         title: "Size",
         type: "quantitative",
       },

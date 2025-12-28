@@ -3,17 +3,17 @@
   "data": {
     "values": [
       {
-        "ms": 1.13,
+        "ms": 1.53,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 2.48,
+        "ms": 2.53,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 4.56,
+        "ms": 4.67,
         "series": "updateClassic",
         "size": 60
       },
@@ -23,82 +23,82 @@
         "size": 80
       },
       {
-        "ms": 9.15,
+        "ms": 8.87,
         "series": "updateClassic",
         "size": 100
       },
       {
-        "ms": 12.1,
+        "ms": 12.3,
         "series": "updateClassic",
         "size": 120
       },
       {
-        "ms": 16.13,
+        "ms": 16.39,
         "series": "updateClassic",
         "size": 140
       },
       {
-        "ms": 20.64,
+        "ms": 21.07,
         "series": "updateClassic",
         "size": 160
       },
       {
-        "ms": 26.76,
+        "ms": 27.5,
         "series": "updateClassic",
         "size": 180
       },
       {
-        "ms": 32.81,
+        "ms": 33.36,
         "series": "updateClassic",
         "size": 200
       },
       {
-        "ms": 1.2,
+        "ms": 1.19,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 2.27,
+        "ms": 2.24,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 3.34,
+        "ms": 3.46,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 4.53,
+        "ms": 4.71,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 5.66,
+        "ms": 6.02,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 6.87,
+        "ms": 7.12,
         "series": "update",
         "size": 120
       },
       {
-        "ms": 8.17,
+        "ms": 8.34,
         "series": "update",
         "size": 140
       },
       {
-        "ms": 9.27,
+        "ms": 9.84,
         "series": "update",
         "size": 160
       },
       {
-        "ms": 10.93,
+        "ms": 11.14,
         "series": "update",
         "size": 180
       },
       {
-        "ms": 11.92,
+        "ms": 12.2,
         "series": "update",
         "size": 200
       }
@@ -115,21 +115,42 @@
       "type": "nominal"
     },
     "x": {
-      "field": "size",
-      "scale": {
-        "domain": [20, 200]
-      },
       "axis": {
         "tickCount": 10,
-        "values": [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
+        "values": [
+          20,
+          40,
+          60,
+          80,
+          100,
+          120,
+          140,
+          160,
+          180,
+          200
+        ]
+      },
+      "field": "size",
+      "scale": {
+        "domain": [
+          20,
+          200
+        ]
       },
       "title": "Size",
       "type": "quantitative"
     },
     "y": {
+      "axis": {
+        "tickCount": 10,
+        "values": null
+      },
       "field": "ms",
       "scale": {
-        "domain": [1.13, 32.81]
+        "domain": [
+          1.19,
+          33.36
+        ]
       },
       "title": "Time (ms)",
       "type": "quantitative"

@@ -42,4 +42,4 @@ workspace:
     benchlib:
       # path: ../purescript-benchlib
       git: https://github.com/m-bock/purescript-benchlib.git
-      ref: 639fa975725d3805940e828e7a52d82e6b443a4a
+      ref: 129bf9c6c1ee426fe86c2014bc025a422e0a10e2
