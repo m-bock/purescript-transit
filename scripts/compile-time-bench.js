@@ -6,29 +6,17 @@
  * Benchmarks compilation time for Transit and Classic modules
  * by removing cached output and timing recompilation.
  *
- * Usage: node scripts/compile-time-bench.js [small|large]
- *   small: Benchmarks from test/BenchSmall/ (default)
- *   large: Benchmarks from test/BenchLarge/
+ * Usage: node scripts/compile-time-bench.js
+ *   Benchmarks from test/Bench/Generated/
  */
 
 const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-// Parse arguments
-const SIZE = process.argv[2] || "small";
-
-if (SIZE !== "small" && SIZE !== "large") {
-  console.error("Error: Size must be 'small' or 'large'");
-  console.error("Usage: node scripts/compile-time-bench.js [small|large]");
-  console.error("  small: Benchmarks from test/BenchSmall/ (default)");
-  console.error("  large: Benchmarks from test/BenchLarge/");
-  process.exit(1);
-}
-
-// Set paths based on size
-const BASE_NAMESPACE = SIZE === "small" ? "BenchSmall" : "BenchLarge";
-const BENCH_FOLDER = SIZE === "small" ? "test/BenchSmall" : "test/BenchLarge";
+// Set paths
+const BASE_NAMESPACE = "Bench.Generated";
+const BENCH_FOLDER = "test/Bench/Generated";
 
 // Results file
 const PROJECT_ROOT = path.join(__dirname, "..");
@@ -97,7 +85,7 @@ function timeCommand(command) {
 }
 
 // Convert file path to module name
-// e.g., test/BenchSmall/Classic/Size020.purs -> BenchSmall.Classic.Size020
+// e.g., test/Bench/Generated/Classic/Size020.purs -> Bench.Generated.Classic.Size020
 function fileToModule(file) {
   // Make path relative to PROJECT_ROOT if it's absolute
   let relativePath = path.relative(PROJECT_ROOT, file);
@@ -196,7 +184,7 @@ function main() {
 
   console.log("");
   console.log("==========================================");
-  console.log(`Benchmarking ${SIZE} modules from ${BENCH_FOLDER}`);
+  console.log(`Benchmarking modules from ${BENCH_FOLDER}`);
   console.log("==========================================");
   console.log("");
 

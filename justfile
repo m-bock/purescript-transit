@@ -26,21 +26,12 @@ build-es:
     rm -rf output-es
     npx spago build && npx purs-backend-es build
 
-bench-run-small:
+bench-run:
     ITERATIONS=1000 \
-    BACKEND=JS \
-    just node-bench BenchSmall.Main \
-    node --no-lazy --predictable --expose-gc --max-old-space-size=4096 --jitless --single-threaded-gc --no-opt -e "import { main } from './output-es/BenchSmall.Main/index.js'; main();" \
     BACKEND=ES \
-    just node-bench BenchSmall.Main
-
-
-bench-run-large:
-    export ITERATIONS=100 && \
-    BACKEND=ES \
-    just node-bench output-es BenchLarge.Main && \
+    just node-bench output-es Bench.Generated.Main && \
     BACKEND=JS \
-    just node-bench output BenchLarge.Main
+    just node-bench output Bench.Generated.Main
 
 node-bench OUTPUT_DIR MODULE:
     node --no-lazy --predictable --expose-gc --max-old-space-size=4096 --jitless --single-threaded-gc --no-opt -e "import { main } from './{{OUTPUT_DIR}}/{{MODULE}}/index.js'; main();"
@@ -59,41 +50,31 @@ format:
     npx purs-tidy format-in-place 'src/**/*.purs'
     npx purs-tidy format-in-place 'test/**/*.purs'
 
-gen-bench-modules-small:
-    node scripts/generate-bench-modules.js \
-      --min 20 --max 100 --step 20 \
-      --target-folder test/BenchSmall --base-namespace BenchSmall \
-      --generate-runner BenchSmall.Main test/BenchSmall/Main.purs \
-
-gen-bench-modules-large:
-    rm -rf test/BenchLarge
-    rm -rf output/BenchLarge.*
+gen-bench-modules:
+    rm -rf test/Bench/Generated
+    rm -rf output/Bench.Generated.*
     node scripts/generate-bench-modules.js \
       --min 20 --max 200 --step 20 \
-      --target-folder test/BenchLarge --base-namespace BenchLarge \
-      --generate-runner BenchLarge.Main test/BenchLarge/Main.purs \
+      --target-folder test/Bench/Generated --base-namespace Bench.Generated \
+      --generate-runner Bench.Generated.Main test/Bench/Generated/Main.purs
 
 clean:
     rm -rf output
 
-compile-time-bench-small:
-    node scripts/compile-time-bench.js small
-
-compile-time-bench-large:
-    node scripts/compile-time-bench.js large
+compile-time-bench:
+    node scripts/compile-time-bench.js
 
 gen-full:
     just clean && \
     \
     just test && \
     \
-    just gen-bench-modules-small && \
-    just gen-bench-modules-large && \
+    just gen-bench-modules && \
     \
-    just compile-time-bench-small && \
+    just compile-time-bench && \
     \
     just build-es && \
-    just bench-run-large && \
+    just bench-run && \
     \
     just gen
 

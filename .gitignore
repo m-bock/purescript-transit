@@ -15,4 +15,4 @@ generated-docs/
 gh-preview.html
 /site
 /readme
-test/BenchLarge
+test/Bench/Generated
