@@ -4,18 +4,19 @@
 -- | and convert them to HTML strings. It's primarily used for generating
 -- | transition tables and other HTML output.
 module Transit.Data.Html
-  ( Node(..)
-  , Attribute(..)
-  , text
-  , table
-  , thead
-  , tbody
-  , th
-  , tr
-  , td
-  , caption
+  ( Attribute(..)
+  , Node(..)
   , attrStyle
+  , b
+  , caption
   , nodeToHtml
+  , table
+  , tbody
+  , td
+  , text
+  , th
+  , thead
+  , tr
   ) where
 
 import Prelude
@@ -58,6 +59,10 @@ tr = Node "tr"
 -- | Creates a td (table cell) element.
 td :: Array Attribute -> Array Node -> Node
 td = Node "td"
+
+-- | Creates a b (bold) element.
+b :: Array Attribute -> Array Node -> Node
+b = Node "b"
 
 -- | Creates a caption element.
 caption :: Array Attribute -> Array Node -> Node

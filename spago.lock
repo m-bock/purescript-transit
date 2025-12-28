@@ -744,8 +744,7 @@
     },
     "extra_packages": {
       "benchlib": {
-        "git": "https://github.com/m-bock/purescript-benchlib.git",
-        "ref": "129bf9c6c1ee426fe86c2014bc025a422e0a10e2"
+        "path": "../purescript-benchlib"
       },
       "codec-argonaut": {
         "git": "https://github.com/garyb/purescript-codec-argonaut.git",
@@ -896,9 +895,8 @@
       ]
     },
     "benchlib": {
-      "type": "git",
-      "url": "https://github.com/m-bock/purescript-benchlib.git",
-      "rev": "129bf9c6c1ee426fe86c2014bc025a422e0a10e2",
+      "type": "local",
+      "path": "../purescript-benchlib",
       "dependencies": [
         "aff",
         "argonaut",

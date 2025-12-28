@@ -130,18 +130,18 @@ wrapNl: true
   <tbody>
     <tr>
       <td>DoorOpen</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Close</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorClosed</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>DoorClosed</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Open</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorOpen</td>
     </tr>
   </tbody>
@@ -712,55 +712,55 @@ wrapNl: true
   <tbody>
     <tr>
       <td>DoorOpen</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Close</td>
       <td></td>
       <td></td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorClosed</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>DoorClosed</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Open</td>
       <td></td>
       <td></td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorOpen</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>DoorClosed</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Lock</td>
       <td></td>
       <td></td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorLocked</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>DoorLocked</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Unlock</td>
-      <td>?</td>
+      <td><b>?</b></td>
       <td>PinIncorrect</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorLocked</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>DoorLocked</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>Unlock</td>
-      <td>?</td>
+      <td><b>?</b></td>
       <td>PinCorrect</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>DoorClosed</td>
     </tr>
   </tbody>
@@ -1023,63 +1023,63 @@ wrapNl: true
   <tbody>
     <tr>
       <td>LandA</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_a</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandB</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>LandA</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_b</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandB</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>LandA</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_c</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandC</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>LandA</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_d</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandC</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>LandA</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_e</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandD</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>LandB</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_f</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandD</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>LandC</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>Cross_g</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>LandD</td>
     </tr>
   </tbody>
@@ -1422,72 +1422,72 @@ filePath: renders/house-santa-claus.html
   <tbody>
     <tr>
       <td>N_1</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_a</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_2</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_2</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_b</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_3</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_3</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_c</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_5</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_5</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_d</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_4</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_4</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_e</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_1</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_1</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_f</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_3</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_2</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_g</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_4</td>
     </tr>
   </tbody>
   <tbody>
     <tr>
       <td>N_3</td>
-      <td>⟵</td>
+      <td><b>⟵</b></td>
       <td>E_h</td>
-      <td>⟶</td>
+      <td><b>⟶</b></td>
       <td>N_4</td>
     </tr>
   </tbody>

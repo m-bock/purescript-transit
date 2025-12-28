@@ -70,9 +70,9 @@ mkUndirectedRow fromState msg toState =
   Html.tbody []
     [ Html.tr []
         [ Html.td [] [ Html.text fromState ]
-        , Html.td [] [ Html.text "⟵" ]
+        , Html.td [] [ Html.b [] [ Html.text "⟵" ] ]
         , Html.td [] [ Html.text msg ]
-        , Html.td [] [ Html.text "⟶" ]
+        , Html.td [] [ Html.b [] [ Html.text "⟶" ] ]
         , Html.td [] [ Html.text toState ]
         ]
     ]
@@ -83,12 +83,12 @@ mkDirectedRow hasGuards fromState msg ret =
   Html.tbody []
     [ Html.tr [] $ join
         [ pure $ Html.td [] [ Html.text fromState ]
-        , pure $ Html.td [] [ Html.text "⟶" ]
+        , pure $ Html.td [] [ Html.b [] [ Html.text "⟶" ] ]
         , pure $ Html.td [] [ Html.text msg ]
         , if hasGuards then
             case guard of
               Just guardValue ->
-                [ Html.td [] [ Html.text "?" ]
+                [ Html.td [] [ Html.b [] [ Html.text "?" ] ]
                 , Html.td [] [ Html.text guardValue ]
                 ]
               Nothing ->
@@ -97,7 +97,7 @@ mkDirectedRow hasGuards fromState msg ret =
                 ]
           else
             []
-        , pure $ Html.td [] [ Html.text "⟶" ]
+        , pure $ Html.td [] [ Html.b [] [ Html.text "⟶" ] ]
         , pure $ Html.td [] [ Html.text toState ]
         ]
     ]

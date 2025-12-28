@@ -3,102 +3,102 @@
   "data": {
     "values": [
       {
-        "ms": 1.53,
+        "ms": 1.18,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 2.53,
+        "ms": 2.65,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 4.67,
+        "ms": 4.77,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 7.19,
+        "ms": 7.54,
         "series": "updateClassic",
         "size": 80
       },
       {
-        "ms": 8.87,
+        "ms": 9.33,
         "series": "updateClassic",
         "size": 100
       },
       {
-        "ms": 12.3,
+        "ms": 12.65,
         "series": "updateClassic",
         "size": 120
       },
       {
-        "ms": 16.39,
+        "ms": 17.05,
         "series": "updateClassic",
         "size": 140
       },
       {
-        "ms": 21.07,
+        "ms": 21.63,
         "series": "updateClassic",
         "size": 160
       },
       {
-        "ms": 27.5,
+        "ms": 28.12,
         "series": "updateClassic",
         "size": 180
       },
       {
-        "ms": 33.36,
+        "ms": 34.13,
         "series": "updateClassic",
         "size": 200
       },
       {
-        "ms": 1.19,
+        "ms": 1.25,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 2.24,
+        "ms": 2.35,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 3.46,
+        "ms": 3.55,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 4.71,
+        "ms": 4.84,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 6.02,
+        "ms": 6,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 7.12,
+        "ms": 7.31,
         "series": "update",
         "size": 120
       },
       {
-        "ms": 8.34,
+        "ms": 8.63,
         "series": "update",
         "size": 140
       },
       {
-        "ms": 9.84,
+        "ms": 9.78,
         "series": "update",
         "size": 160
       },
       {
-        "ms": 11.14,
+        "ms": 11.46,
         "series": "update",
         "size": 180
       },
       {
-        "ms": 12.2,
+        "ms": 12.56,
         "series": "update",
         "size": 200
       }
@@ -135,7 +135,8 @@
         "domain": [
           20,
           200
-        ]
+        ],
+        "nice": true
       },
       "title": "Size",
       "type": "quantitative"
@@ -148,9 +149,10 @@
       "field": "ms",
       "scale": {
         "domain": [
-          1.19,
-          33.36
-        ]
+          1.18,
+          34.13
+        ],
+        "nice": true
       },
       "title": "Time (ms)",
       "type": "quantitative"
