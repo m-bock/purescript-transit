@@ -46,6 +46,7 @@ spec = do
         let
           builder :: HandlerLookupBuilder Identity StateRow MsgRow
           builder = initBuilder
+
           handler :: Int -> Int -> Identity State
           handler = \_ _ -> pure $ v @"State2" "result"
           builder' = addHandler @"State1" @"Msg1" handler builder
@@ -57,8 +58,10 @@ spec = do
         let
           builder :: HandlerLookupBuilder Identity StateRow MsgRow
           builder = initBuilder
+
           handler1 :: Int -> Int -> Identity State
           handler1 = \_ _ -> pure $ v @"State2" "from-state1"
+
           handler2 :: String -> String -> Identity State
           handler2 = \_ _ -> pure $ v @"State1" 99
           builder' = addHandler @"State1" @"Msg1" handler1
@@ -74,6 +77,7 @@ spec = do
       let
         handler :: Int -> Int -> Identity State
         handler = \_ _ -> pure $ v @"State2" "success"
+
         builder :: HandlerLookupBuilder Identity StateRow MsgRow
         builder = addHandler @"State1" @"Msg1" handler initBuilder
         lookup = build builder

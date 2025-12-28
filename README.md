@@ -43,6 +43,7 @@ Type-Safe State Machines
     - [Graph Analysis](#graph-analysis-1)
     - [Conclusion](#conclusion-2)
   - [Benchmarks](#benchmarks)
+    - [Compile-time benchmarks](#compile-time-benchmarks)
     - [JS Compiler Backend](#js-compiler-backend)
     - [ES Compiler Backend](#es-compiler-backend)
   - [More](#more)
@@ -1567,6 +1568,10 @@ assert2 =
 ### Conclusion
 
 ## Benchmarks
+
+### Compile-time benchmarks
+
+<img src="bench/compile-time/results.svg" />
 
 ### JS Compiler Backend
 

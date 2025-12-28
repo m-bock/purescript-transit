@@ -46,6 +46,7 @@ spec = do
       it "builds lookup from single match" do
         let
           handler = MatchImpl @"State1" @"Msg1" \_ _ -> Identity $ V.inj (Proxy @"State2") (Ret "result")
+
           builder :: HandlerLookupBuilder Identity StateRow MsgRow
           builder = mkHandlerLookup @Identity @SingleMatchSpec (handler /\ unit)
           lookup = build builder
@@ -56,6 +57,7 @@ spec = do
         let
           handler1 = MatchImpl @"State1" @"Msg1" \_ _ -> Identity $ V.inj (Proxy @"State2") (Ret "from-state1")
           handler2 = MatchImpl @"State2" @"Msg2" \_ _ -> Identity $ V.inj (Proxy @"State1") (Ret 99)
+
           builder :: HandlerLookupBuilder Identity StateRow MsgRow
           builder = mkHandlerLookup @Identity @MultipleMatchSpec (handler1 /\ handler2 /\ unit)
           lookup = build builder

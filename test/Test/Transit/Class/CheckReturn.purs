@@ -67,7 +67,7 @@ spec = do
       let
         checkRetVia :: StateInRetVia -> StateOutRetVia
         checkRetVia = checkReturn @ReturnsRetVia
-        input = V.inj (Proxy @"State1") (RetVia @ "Guard1" 42)
+        input = V.inj (Proxy @"State1") (RetVia @"Guard1" 42)
       checkRetVia input `shouldEqual` (v @"State1" 42)
 
     it "unwraps mixed Ret and RetVia wrappers" do
@@ -75,6 +75,6 @@ spec = do
         checkMixed :: StateInMixed -> StateOutMixed
         checkMixed = checkReturn @ReturnsMixed
         input1 = V.inj (Proxy @"State1") (Ret 42)
-        input2 = V.inj (Proxy @"State2") (RetVia @ "Guard1" "hello")
+        input2 = V.inj (Proxy @"State2") (RetVia @"Guard1" "hello")
       checkMixed input1 `shouldEqual` (v @"State1" 42)
       checkMixed input2 `shouldEqual` (v @"State2" "hello")

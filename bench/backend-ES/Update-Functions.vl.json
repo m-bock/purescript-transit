@@ -3,154 +3,104 @@
   "data": {
     "values": [
       {
-        "ms": 0.0551,
+        "ms": 1.13,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 0.0857,
+        "ms": 2.48,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 0.14,
+        "ms": 4.56,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 0.1751,
+        "ms": 7.19,
         "series": "updateClassic",
         "size": 80
       },
       {
-        "ms": 0.2183,
+        "ms": 9.15,
         "series": "updateClassic",
         "size": 100
       },
       {
-        "ms": 0.2679,
+        "ms": 12.1,
         "series": "updateClassic",
         "size": 120
       },
       {
-        "ms": 0.3073,
+        "ms": 16.13,
         "series": "updateClassic",
         "size": 140
       },
       {
-        "ms": 0.3295,
+        "ms": 20.64,
         "series": "updateClassic",
         "size": 160
       },
       {
-        "ms": 0.4355,
+        "ms": 26.76,
         "series": "updateClassic",
         "size": 180
       },
       {
-        "ms": 0.4712,
+        "ms": 32.81,
         "series": "updateClassic",
         "size": 200
       },
       {
-        "ms": 0.4819,
-        "series": "updateClassic",
-        "size": 220
-      },
-      {
-        "ms": 0.5818,
-        "series": "updateClassic",
-        "size": 240
-      },
-      {
-        "ms": 0.6353,
-        "series": "updateClassic",
-        "size": 260
-      },
-      {
-        "ms": 0.6544,
-        "series": "updateClassic",
-        "size": 280
-      },
-      {
-        "ms": 0.6978,
-        "series": "updateClassic",
-        "size": 300
-      },
-      {
-        "ms": 0.0221,
+        "ms": 1.2,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 0.0619,
+        "ms": 2.27,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 0.1009,
+        "ms": 3.34,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 0.1404,
+        "ms": 4.53,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 0.1651,
+        "ms": 5.66,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 0.211,
+        "ms": 6.87,
         "series": "update",
         "size": 120
       },
       {
-        "ms": 0.2563,
+        "ms": 8.17,
         "series": "update",
         "size": 140
       },
       {
-        "ms": 0.3009,
+        "ms": 9.27,
         "series": "update",
         "size": 160
       },
       {
-        "ms": 0.3224,
+        "ms": 10.93,
         "series": "update",
         "size": 180
       },
       {
-        "ms": 0.3571,
+        "ms": 11.92,
         "series": "update",
         "size": 200
-      },
-      {
-        "ms": 0.3923,
-        "series": "update",
-        "size": 220
-      },
-      {
-        "ms": 0.4398,
-        "series": "update",
-        "size": 240
-      },
-      {
-        "ms": 0.4769,
-        "series": "update",
-        "size": 260
-      },
-      {
-        "ms": 0.5167,
-        "series": "update",
-        "size": 280
-      },
-      {
-        "ms": 0.5641,
-        "series": "update",
-        "size": 300
       }
     ]
   },
@@ -166,17 +116,27 @@
     },
     "x": {
       "field": "size",
+      "scale": {
+        "domain": [20, 200]
+      },
+      "axis": {
+        "tickCount": 10,
+        "values": [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
+      },
       "title": "Size",
       "type": "quantitative"
     },
     "y": {
       "field": "ms",
+      "scale": {
+        "domain": [1.13, 32.81]
+      },
       "title": "Time (ms)",
       "type": "quantitative"
     }
   },
   "mark": {
-    "point": false,
+    "point": true,
     "type": "line"
   }
 }

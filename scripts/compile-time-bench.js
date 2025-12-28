@@ -36,11 +36,11 @@ const RESULTS_FILE = path.join(
   PROJECT_ROOT,
   "bench",
   "compile-time",
-  "results.txt",
+  "results.vl.json",
 );
 
-// Clear results file
-fs.writeFileSync(RESULTS_FILE, "");
+// Initialize results data array
+const resultsData = [];
 
 // Helper to run command and capture output
 function runCommand(command, options = {}) {
@@ -59,18 +59,31 @@ function runCommand(command, options = {}) {
   }
 }
 
-// Helper to run command with timing
+// Helper to run command with timing and progress indication
 function timeCommand(command) {
   // Use bash time command - time writes to stderr, so we capture both
   const timeCommand = `{ time ${command}; } 2>&1 | grep -E "^real"`;
+
+  // Start progress indicator
+  const startTime = Date.now();
+  const progressInterval = setInterval(() => {
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    process.stderr.write(`\r⏳ Compiling... (${elapsed}s)`);
+  }, 5000); // Update every 5 seconds
+
   try {
     const output = execSync(timeCommand, {
       encoding: "utf-8",
       shell: "/bin/bash",
       stdio: "pipe",
     });
+    clearInterval(progressInterval);
+    process.stderr.write("\r"); // Clear progress line
     return output.trim();
   } catch (error) {
+    clearInterval(progressInterval);
+    process.stderr.write("\r"); // Clear progress line
+
     // grep might exit with non-zero if no match, but stderr might have the output
     const stderr = error.stderr ? error.stderr.toString() : "";
     const stdout = error.stdout ? error.stdout.toString() : "";
@@ -95,38 +108,41 @@ function fileToModule(file) {
     .replace(/\//g, ".");
 }
 
-// Find all Size*.purs files in Classic and Transit folders
-function findClassicModules() {
-  const classicDir = path.join(PROJECT_ROOT, BENCH_FOLDER, "Classic");
-  if (!fs.existsSync(classicDir)) {
+// Find all Size*.purs files in a subdirectory
+function findModules(subdir) {
+  const dir = path.join(PROJECT_ROOT, BENCH_FOLDER, subdir);
+  if (!fs.existsSync(dir)) {
     return [];
   }
   return fs
-    .readdirSync(classicDir)
+    .readdirSync(dir)
     .filter((file) => file.startsWith("Size") && file.endsWith(".purs"))
-    .map((file) => path.join(classicDir, file))
+    .map((file) => path.join(dir, file))
     .sort();
 }
 
+// Find all Size*.purs files in Classic and Transit folders
+function findClassicModules() {
+  return findModules("Classic");
+}
+
 function findTransitModules() {
-  const transitDir = path.join(PROJECT_ROOT, BENCH_FOLDER, "Transit");
-  if (!fs.existsSync(transitDir)) {
-    return [];
-  }
-  return fs
-    .readdirSync(transitDir)
-    .filter((file) => file.startsWith("Size") && file.endsWith(".purs"))
-    .map((file) => path.join(transitDir, file))
-    .sort();
+  return findModules("Transit");
+}
+
+// Add benchmark result to the results data
+function addBenchResult(series, size, timeMs) {
+  resultsData.push({
+    ms: timeMs,
+    series,
+    size,
+  });
 }
 
 // Benchmark a single module
 function benchModule(moduleName) {
-  const outputPath = path.join(
-    PROJECT_ROOT,
-    "output",
-    ...moduleName.split("."),
-  );
+  // Output path uses dots: output/Foo.Bar.Baz
+  const outputPath = path.join(PROJECT_ROOT, "output", moduleName);
   const relativeOutputPath = path.relative(PROJECT_ROOT, outputPath);
 
   console.log("");
@@ -139,26 +155,38 @@ function benchModule(moduleName) {
     fs.rmSync(outputPath, { recursive: true, force: true });
   }
 
-  console.log("Compiling...");
-
   // Time the compilation
   const timeOutput = timeCommand("npx spago build");
-  console.log(`Time: ${timeOutput}`);
 
-  // Extract time in seconds (format: real    0m2.235s -> 2.235)
-  const timeMatch = timeOutput.match(/real\s+0m([0-9]+\.[0-9]+)s/);
-  const timeStr = timeMatch ? timeMatch[1] : "0";
+  // Extract time in seconds (format: real    0m2.235s or real    1m2.235s)
+  const timeMatch = timeOutput.match(/real\s+(?:(\d+)m)?([0-9]+\.[0-9]+)s/);
+  let timeSeconds = 0;
+  if (timeMatch) {
+    const minutes = timeMatch[1] ? parseInt(timeMatch[1], 10) : 0;
+    const seconds = parseFloat(timeMatch[2]);
+    timeSeconds = minutes * 60 + seconds;
+
+    // Display time
+    if (minutes > 0) {
+      console.log(`Time: ${minutes}m${seconds.toFixed(2)}s`);
+    } else {
+      console.log(`Time: ${seconds.toFixed(2)}s`);
+    }
+  } else {
+    console.log(`Time: ${timeOutput}`);
+  }
+
+  const timeMs = timeSeconds * 1000;
 
   // Extract size from module name (e.g., BenchSmall.Transit.Size100 -> 100)
   const sizeMatch = moduleName.match(/Size(\d+)/);
-  const size = sizeMatch ? sizeMatch[1] : "0";
+  const size = sizeMatch ? parseInt(sizeMatch[1], 10) : 0;
 
   // Determine series name
   const series = moduleName.includes("Classic") ? "updateClassic" : "update";
 
-  // Write to results file: moduleName|size|series|time_seconds
-  const resultLine = `${moduleName}|${size}|${series}|${timeStr}\n`;
-  fs.appendFileSync(RESULTS_FILE, resultLine);
+  // Add to results
+  addBenchResult(series, size, timeMs);
 }
 
 // Main execution
@@ -182,28 +210,69 @@ function main() {
   );
   console.log("");
 
-  // Benchmark Transit modules
-  console.log("Transit modules:");
-  transitModules.forEach((file, index) => {
-    const moduleName = fileToModule(file);
-    console.log(`[${index + 1}/${transitModules.length}]`);
-    benchModule(moduleName);
+  // Benchmark modules
+  function benchmarkModules(modules, label) {
+    console.log(`${label} modules:`);
+    modules.forEach((file, index) => {
+      const moduleName = fileToModule(file);
+      console.log(`[${index + 1}/${modules.length}]`);
+      benchModule(moduleName);
+    });
+  }
+
+  benchmarkModules(transitModules, "Transit");
+  console.log("");
+
+  benchmarkModules(classicModules, "Classic");
+
+  // Sort data by series, then by size
+  resultsData.sort((a, b) => {
+    if (a.series !== b.series) {
+      return a.series.localeCompare(b.series);
+    }
+    return a.size - b.size;
   });
 
-  // Benchmark Classic modules
-  console.log("");
-  console.log("Classic modules:");
-  classicModules.forEach((file, index) => {
-    const moduleName = fileToModule(file);
-    console.log(`[${index + 1}/${classicModules.length}]`);
-    benchModule(moduleName);
-  });
+  // Generate Vega-Lite JSON
+  const vegaLite = {
+    $schema: "https://vega.github.io/schema/vega-lite/v6.json",
+    data: {
+      values: resultsData,
+    },
+    encoding: {
+      color: {
+        field: "series",
+        legend: {
+          orient: "right",
+          symbolLimit: 30,
+          title: "Implementation",
+        },
+        type: "nominal",
+      },
+      x: {
+        field: "size",
+        title: "Size",
+        type: "quantitative",
+      },
+      y: {
+        field: "ms",
+        title: "Time (ms)",
+        type: "quantitative",
+      },
+    },
+    mark: {
+      point: true,
+      type: "line",
+    },
+  };
+
+  // Write results to JSON file
+  fs.writeFileSync(RESULTS_FILE, JSON.stringify(vegaLite, null, 2), "utf-8");
 
   console.log("");
   console.log(
     `Results written to ${path.relative(PROJECT_ROOT, RESULTS_FILE)}`,
   );
-  console.log("Run: node scripts/generate-vega-lite.js");
 }
 
 main();

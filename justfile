@@ -29,16 +29,21 @@ build-es:
 bench-run-small:
     ITERATIONS=1000 \
     BACKEND=JS \
-    node --no-lazy --predictable -e "import { main } from './output-es/BenchSmall.Main/index.js'; main();" \
+    just node-bench BenchSmall.Main \
+    node --no-lazy --predictable --expose-gc --max-old-space-size=4096 --jitless --single-threaded-gc --no-opt -e "import { main } from './output-es/BenchSmall.Main/index.js'; main();" \
     BACKEND=ES \
-    node --no-lazy --predictable -e "import { main } from './output/BenchSmall.Main/index.js'; main();"
+    just node-bench BenchSmall.Main
+
 
 bench-run-large:
-    ITERATIONS=10000 \
-    BACKEND=JS \
-    node --no-lazy --predictable -e "import { main } from './output-es/BenchLarge.Main/index.js'; main();" \
+    export ITERATIONS=100 && \
     BACKEND=ES \
-    node --no-lazy --predictable -e "import { main } from './output/BenchLarge.Main/index.js'; main();"
+    just node-bench output-es BenchLarge.Main && \
+    BACKEND=JS \
+    just node-bench output BenchLarge.Main
+
+node-bench OUTPUT_DIR MODULE:
+    node --no-lazy --predictable --expose-gc --max-old-space-size=4096 --jitless --single-threaded-gc --no-opt -e "import { main } from './{{OUTPUT_DIR}}/{{MODULE}}/index.js'; main();"
 
 test:
     npx spago test
@@ -61,14 +66,12 @@ gen-bench-modules-small:
       --generate-runner BenchSmall.Main test/BenchSmall/Main.purs \
 
 gen-bench-modules-large:
-    node scripts/generate-bench-modules.js \
-      --min 20 --max 300 --step 20 \
-      --target-folder test/BenchLarge --base-namespace BenchLarge \
-      --generate-runner BenchLarge.Main test/BenchLarge/Main.purs \
-
-clean-bench-modules-large:
     rm -rf test/BenchLarge
     rm -rf output/BenchLarge.*
+    node scripts/generate-bench-modules.js \
+      --min 20 --max 200 --step 20 \
+      --target-folder test/BenchLarge --base-namespace BenchLarge \
+      --generate-runner BenchLarge.Main test/BenchLarge/Main.purs \
 
 clean:
     rm -rf output
@@ -79,22 +82,16 @@ compile-time-bench-small:
 compile-time-bench-large:
     node scripts/compile-time-bench.js large
 
-gen-vega-lite:
-    node scripts/generate-vega-lite.js
-
-    # just clean && \
-    # just clean-bench-modules-large && \
-    # \
-    # just test && \
-    # \
-    # just gen-bench-modules-small && \
-    # just gen-bench-modules-large && \
-    # \
-    # just compile-time-bench-small && \
-    # just gen-vega-lite && \
-    # \
-
 gen-full:
+    just clean && \
+    \
+    just test && \
+    \
+    just gen-bench-modules-small && \
+    just gen-bench-modules-large && \
+    \
+    just compile-time-bench-small && \
+    \
     just build-es && \
     just bench-run-large && \
     \
@@ -103,8 +100,8 @@ gen-full:
 gen:
     just gen-examples && \
     just gen-html-prettier && \
-    just gen-svgs && \
     just gen-vega && \
+    just gen-svgs && \
     just gen-patchdown && \
     just gen-doctoc && \
     \

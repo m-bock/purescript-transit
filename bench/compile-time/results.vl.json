@@ -3,54 +3,104 @@
   "data": {
     "values": [
       {
-        "ms": 2045.9999999999998,
+        "ms": 2747,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 2343,
-        "series": "update",
-        "size": 40
-      },
-      {
-        "ms": 2075,
+        "ms": 3796,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 2013,
-        "series": "update",
-        "size": 80
-      },
-      {
-        "ms": 2161,
+        "ms": 6247,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 1988,
+        "ms": 10344,
+        "series": "update",
+        "size": 140
+      },
+      {
+        "ms": 16595,
+        "series": "update",
+        "size": 180
+      },
+      {
+        "ms": 25033,
+        "series": "update",
+        "size": 220
+      },
+      {
+        "ms": 35965,
+        "series": "update",
+        "size": 260
+      },
+      {
+        "ms": 50788,
+        "series": "update",
+        "size": 300
+      },
+      {
+        "ms": 68349,
+        "series": "update",
+        "size": 340
+      },
+      {
+        "ms": 90695,
+        "series": "update",
+        "size": 380
+      },
+      {
+        "ms": 2275,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 2111,
-        "series": "updateClassic",
-        "size": 40
-      },
-      {
-        "ms": 2322,
+        "ms": 5341,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 2025.9999999999998,
-        "series": "updateClassic",
-        "size": 80
-      },
-      {
-        "ms": 2027.0000000000002,
+        "ms": 15953,
         "series": "updateClassic",
         "size": 100
+      },
+      {
+        "ms": 21543,
+        "series": "updateClassic",
+        "size": 140
+      },
+      {
+        "ms": 26907,
+        "series": "updateClassic",
+        "size": 180
+      },
+      {
+        "ms": 33109,
+        "series": "updateClassic",
+        "size": 220
+      },
+      {
+        "ms": 39452,
+        "series": "updateClassic",
+        "size": 260
+      },
+      {
+        "ms": 46166,
+        "series": "updateClassic",
+        "size": 300
+      },
+      {
+        "ms": 54937,
+        "series": "updateClassic",
+        "size": 340
+      },
+      {
+        "ms": 67301.99999999999,
+        "series": "updateClassic",
+        "size": 380
       }
     ]
   },
@@ -76,7 +126,7 @@
     }
   },
   "mark": {
-    "point": false,
+    "point": true,
     "type": "line"
   }
 }
