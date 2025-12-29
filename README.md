@@ -114,38 +114,13 @@ In this diagram, you can see:
 For a more structured view, here's the corresponding transition table:
 
 <!-- PD_START:raw
-filePath: renders/door-simple.html
+filePath: renders/door-simple.md
 wrapNl: true
 -->
-<table>
-  <thead>
-    <tr>
-      <th>State</th>
-      <th></th>
-      <th>Message</th>
-      <th></th>
-      <th>State</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>DoorOpen</td>
-      <td><b>⟶</b></td>
-      <td>Close</td>
-      <td><b>⟶</b></td>
-      <td>DoorClosed</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>DoorClosed</td>
-      <td><b>⟶</b></td>
-      <td>Open</td>
-      <td><b>⟶</b></td>
-      <td>DoorOpen</td>
-    </tr>
-  </tbody>
-</table>
+| State      |       | Message |       | State      |
+| ---------- | ----- | ------- | ----- | ---------- |
+| DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |
+| DoorClosed | **⟶** | Open    | **⟶** | DoorOpen   |
 
 <!-- PD_END -->
 
@@ -637,21 +612,23 @@ generateTransitionTable = do
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  TransitTable.writeToFile "renders/door-simple.html" transit identity
+  TransitTable.writeToFile "renders/door-simple.md" transit _
+    { outputFormat = TransitTable.Markdown
+    }
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L116-L122"
-      >test/Examples/DoorSimple.purs L116-L122</a
+    <a href="test/Examples/DoorSimple.purs#L116-L124"
+      >test/Examples/DoorSimple.purs L116-L124</a
     >
   </sup>
 </p>
 
 <!-- PD_END -->
 
-This generates an HTML file containing a table with columns for "From State", "Message", and "To State".
+This generates a Markdown file containing a table with columns for "From State", "Message", and "To State".
 
 Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
 
@@ -694,77 +671,16 @@ Notice the diamond node in the state diagram — this represents a conditional t
 The transition table shows both possible outcomes:
 
 <!-- PD_START:raw
-filePath: renders/door-pin.html
+filePath: renders/door-pin.md
 wrapNl: true
 -->
-<table>
-  <thead>
-    <tr>
-      <th>State</th>
-      <th></th>
-      <th>Message</th>
-      <th></th>
-      <th>Guard</th>
-      <th></th>
-      <th>State</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>DoorOpen</td>
-      <td><b>⟶</b></td>
-      <td>Close</td>
-      <td></td>
-      <td></td>
-      <td><b>⟶</b></td>
-      <td>DoorClosed</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>DoorClosed</td>
-      <td><b>⟶</b></td>
-      <td>Open</td>
-      <td></td>
-      <td></td>
-      <td><b>⟶</b></td>
-      <td>DoorOpen</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>DoorClosed</td>
-      <td><b>⟶</b></td>
-      <td>Lock</td>
-      <td></td>
-      <td></td>
-      <td><b>⟶</b></td>
-      <td>DoorLocked</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>DoorLocked</td>
-      <td><b>⟶</b></td>
-      <td>Unlock</td>
-      <td><b>?</b></td>
-      <td>PinIncorrect</td>
-      <td><b>⟶</b></td>
-      <td>DoorLocked</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>DoorLocked</td>
-      <td><b>⟶</b></td>
-      <td>Unlock</td>
-      <td><b>?</b></td>
-      <td>PinCorrect</td>
-      <td><b>⟶</b></td>
-      <td>DoorClosed</td>
-    </tr>
-  </tbody>
-</table>
+| State      |       | Message |       | Guard        |       | State      |
+| ---------- | ----- | ------- | ----- | ------------ | ----- | ---------- |
+| DoorOpen   | **⟶** | Close   |       |              | **⟶** | DoorClosed |
+| DoorClosed | **⟶** | Open    |       |              | **⟶** | DoorOpen   |
+| DoorClosed | **⟶** | Lock    |       |              | **⟶** | DoorLocked |
+| DoorLocked | **⟶** | Unlock  | **?** | PinIncorrect | **⟶** | DoorLocked |
+| DoorLocked | **⟶** | Unlock  | **?** | PinCorrect   | **⟶** | DoorClosed |
 
 <!-- PD_END -->
 
@@ -1007,83 +923,18 @@ Even not immediately obvious, this can be represented as a graph:
 ### Transition table
 
 <!-- PD_START:raw
-filePath: renders/bridges-koenigsberg.html
+filePath: renders/bridges-koenigsberg.md
 wrapNl: true
 -->
-<table>
-  <thead>
-    <tr>
-      <th>State</th>
-      <th></th>
-      <th>Message</th>
-      <th></th>
-      <th>State</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>LandA</td>
-      <td><b>⟵</b></td>
-      <td>Cross_a</td>
-      <td><b>⟶</b></td>
-      <td>LandB</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>LandA</td>
-      <td><b>⟵</b></td>
-      <td>Cross_b</td>
-      <td><b>⟶</b></td>
-      <td>LandB</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>LandA</td>
-      <td><b>⟵</b></td>
-      <td>Cross_c</td>
-      <td><b>⟶</b></td>
-      <td>LandC</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>LandA</td>
-      <td><b>⟵</b></td>
-      <td>Cross_d</td>
-      <td><b>⟶</b></td>
-      <td>LandC</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>LandA</td>
-      <td><b>⟵</b></td>
-      <td>Cross_e</td>
-      <td><b>⟶</b></td>
-      <td>LandD</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>LandB</td>
-      <td><b>⟵</b></td>
-      <td>Cross_f</td>
-      <td><b>⟶</b></td>
-      <td>LandD</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>LandC</td>
-      <td><b>⟵</b></td>
-      <td>Cross_g</td>
-      <td><b>⟶</b></td>
-      <td>LandD</td>
-    </tr>
-  </tbody>
-</table>
+| State |       | Message |       | State |
+| ----- | ----- | ------- | ----- | ----- |
+| LandA | **⟵** | Cross_a | **⟶** | LandB |
+| LandA | **⟵** | Cross_b | **⟶** | LandB |
+| LandA | **⟵** | Cross_c | **⟶** | LandC |
+| LandA | **⟵** | Cross_d | **⟶** | LandC |
+| LandA | **⟵** | Cross_e | **⟶** | LandD |
+| LandB | **⟵** | Cross_f | **⟶** | LandD |
+| LandC | **⟵** | Cross_g | **⟶** | LandD |
 
 <!-- PD_END -->
 
@@ -1408,90 +1259,17 @@ type HouseSantaClausTransit =
 <!-- PD_END -->
 
 <!-- PD_START:raw
-filePath: renders/house-santa-claus.html
---><table>
-  <thead>
-    <tr>
-      <th>State</th>
-      <th></th>
-      <th>Message</th>
-      <th></th>
-      <th>State</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>N_1</td>
-      <td><b>⟵</b></td>
-      <td>E_a</td>
-      <td><b>⟶</b></td>
-      <td>N_2</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_2</td>
-      <td><b>⟵</b></td>
-      <td>E_b</td>
-      <td><b>⟶</b></td>
-      <td>N_3</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_3</td>
-      <td><b>⟵</b></td>
-      <td>E_c</td>
-      <td><b>⟶</b></td>
-      <td>N_5</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_5</td>
-      <td><b>⟵</b></td>
-      <td>E_d</td>
-      <td><b>⟶</b></td>
-      <td>N_4</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_4</td>
-      <td><b>⟵</b></td>
-      <td>E_e</td>
-      <td><b>⟶</b></td>
-      <td>N_1</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_1</td>
-      <td><b>⟵</b></td>
-      <td>E_f</td>
-      <td><b>⟶</b></td>
-      <td>N_3</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_2</td>
-      <td><b>⟵</b></td>
-      <td>E_g</td>
-      <td><b>⟶</b></td>
-      <td>N_4</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>N_3</td>
-      <td><b>⟵</b></td>
-      <td>E_h</td>
-      <td><b>⟶</b></td>
-      <td>N_4</td>
-    </tr>
-  </tbody>
-</table>
+filePath: renders/house-santa-claus.md
+-->| State |       | Message |       | State |
+| ----- | ----- | ------- | ----- | ----- |
+| N_1   | **⟵** | E_a     | **⟶** | N_2   |
+| N_2   | **⟵** | E_b     | **⟶** | N_3   |
+| N_3   | **⟵** | E_c     | **⟶** | N_5   |
+| N_5   | **⟵** | E_d     | **⟶** | N_4   |
+| N_4   | **⟵** | E_e     | **⟶** | N_1   |
+| N_1   | **⟵** | E_f     | **⟶** | N_3   |
+| N_2   | **⟵** | E_g     | **⟶** | N_4   |
+| N_3   | **⟵** | E_h     | **⟶** | N_4   |
 <!-- PD_END -->
 
 <picture>

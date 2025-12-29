@@ -119,7 +119,9 @@ generateTransitionTable = do
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  TransitTable.writeToFile "renders/door-simple.html" transit identity
+  TransitTable.writeToFile "renders/door-simple.md" transit _
+    { outputFormat = TransitTable.Markdown
+    }
 
 main :: Effect Unit
 main = do

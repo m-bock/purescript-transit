@@ -31,7 +31,7 @@ import Type.Proxy (Proxy(..))
 data StateD
   = DoorOpen
   | DoorClosed
-  | DoorLocked { activePin :: String }
+  | DoorLocked { storedPin :: String }
 
 data MsgD
   = Close
@@ -43,12 +43,12 @@ updateClassic :: StateD -> MsgD -> StateD
 updateClassic state msg = case state, msg of
   DoorOpen, Close -> DoorClosed
   DoorClosed, Open -> DoorOpen
-  DoorClosed, Lock { newPin } -> DoorLocked { activePin: newPin }
-  DoorLocked { activePin }, Unlock { enteredPin } ->
-    if activePin == enteredPin then
+  DoorClosed, Lock { newPin } -> DoorLocked { storedPin: newPin }
+  DoorLocked { storedPin }, Unlock { enteredPin } ->
+    if storedPin == enteredPin then
       DoorClosed
     else
-      DoorLocked { activePin }
+      DoorLocked { storedPin }
   _, _ -> state
 
 --------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ updateClassic state msg = case state, msg of
 type State = Variant
   ( "DoorOpen" :: {}
   , "DoorClosed" :: {}
-  , "DoorLocked" :: { activePin :: String }
+  , "DoorLocked" :: { storedPin :: String }
   )
 
 type Msg = Variant
@@ -88,16 +88,16 @@ update = mkUpdate @DoorPinTransit
       return @"DoorOpen"
   )
   ( match @"DoorClosed" @"Lock" \_ msg ->
-      return @"DoorLocked" { activePin: msg.newPin }
+      return @"DoorLocked" { storedPin: msg.newPin }
   )
   ( match @"DoorLocked" @"Unlock" \state msg ->
       let
-        isCorrect = state.activePin == msg.enteredPin
+        isCorrect = state.storedPin == msg.enteredPin
       in
         if isCorrect then
           returnVia @"PinCorrect" @"DoorClosed"
         else
-          returnVia @"PinIncorrect" @"DoorLocked" { activePin: state.activePin }
+          returnVia @"PinIncorrect" @"DoorLocked" { storedPin: state.storedPin }
   )
 
 --------------------------------------------------------------------------------
@@ -112,9 +112,9 @@ assert4 =
     , v @"Open" ~> v @"DoorOpen"
     , v @"Close" ~> v @"DoorClosed"
     , v @"Lock" { newPin: "1234" }
-        ~> v @"DoorLocked" { activePin: "1234" }
+        ~> v @"DoorLocked" { storedPin: "1234" }
     , v @"Unlock" { enteredPin: "abcd" }
-        ~> v @"DoorLocked" { activePin: "1234" }
+        ~> v @"DoorLocked" { storedPin: "1234" }
     , v @"Unlock" { enteredPin: "1234" }
         ~> v @"DoorClosed"
     , v @"Open" ~> v @"DoorOpen"
@@ -145,4 +145,6 @@ main = do
         , entryPoints = [ "DoorOpen" ]
         }
 
-  TransitTable.writeToFile_ "renders/door-pin.html" transit
+  TransitTable.writeToFile "renders/door-pin.md" transit _
+    { outputFormat = TransitTable.Markdown
+    }

@@ -125,6 +125,8 @@ main = do
         , theme = opts.theme
         }
 
-  TransitTable.writeToFile "renders/bridges-koenigsberg.html" transit _
-    { useUndirectedEdges = true }
+  TransitTable.writeToFile "renders/bridges-koenigsberg.md" transit _
+    { useUndirectedEdges = true
+    , outputFormat = TransitTable.Markdown
+    }
 

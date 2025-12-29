@@ -141,6 +141,8 @@ main = do
     , theme = themeHarmonyDark
     }
 
-  TransitTable.writeToFile "renders/house-santa-claus.html" transit _
-    { useUndirectedEdges = true }
+  TransitTable.writeToFile "renders/house-santa-claus.md" transit _
+    { useUndirectedEdges = true
+    , outputFormat = TransitTable.Markdown
+    }
 

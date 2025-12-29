@@ -7,8 +7,8 @@ gen-patchdown:
 gen-svgs:
     find renders assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
 
-gen-html-prettier:
-    npx prettier --write "renders/*.html"
+gen-md-prettier:
+    npx prettier --write "renders/*.md"
 
 gen-doctoc:
     npx doctoc --maxlevel 3 README.md
@@ -80,7 +80,7 @@ gen-full:
 
 gen:
     just gen-examples && \
-    just gen-html-prettier && \
+    just gen-md-prettier && \
     just gen-vega && \
     just gen-svgs && \
     just gen-patchdown && \
