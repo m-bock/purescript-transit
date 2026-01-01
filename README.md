@@ -112,6 +112,30 @@ update = mkUpdate @DoorSimpleTransit
 
 <!-- PD_END -->
 
+Retrieve runtime representation of the state machine:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimpleReadme.purs
+pick:
+  - doorSimpleTransit
+-->
+
+```purescript
+doorSimpleTransit :: TransitCore
+doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimpleReadme.purs#L34-L35"
+      >test/Examples/DoorSimpleReadme.purs L34-L35</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
 Generate state diagram or perform other analysis on the state machine's runtime representation:
 
 <!-- PD_START:purs
@@ -122,20 +146,16 @@ pick:
 
 ```purescript
 main :: Effect Unit
-main = do
-  let
-    transit :: TransitCore
-    transit = reflectType (Proxy @DoorSimpleTransit)
-
+main =
   FS.writeTextFile UTF8 "renders/door-simple-readme.dot"
-    (TransitGraphviz.generate_ transit)
+    (TransitGraphviz.generate_ doorSimpleTransit)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimpleReadme.purs#L34-L41"
-      >test/Examples/DoorSimpleReadme.purs L34-L41</a
+    <a href="test/Examples/DoorSimpleReadme.purs#L37-L40"
+      >test/Examples/DoorSimpleReadme.purs L37-L40</a
     >
   </sup>
 </p>

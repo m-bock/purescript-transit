@@ -31,12 +31,11 @@ update = mkUpdate @DoorSimpleTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
-main :: Effect Unit
-main = do
-  let
-    transit :: TransitCore
-    transit = reflectType (Proxy @DoorSimpleTransit)
+doorSimpleTransit :: TransitCore
+doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
 
+main :: Effect Unit
+main =
   FS.writeTextFile UTF8 "renders/door-simple-readme.dot"
-    (TransitGraphviz.generate_ transit)
+    (TransitGraphviz.generate_ doorSimpleTransit)
 
