@@ -6,7 +6,6 @@ import BenchLib (bench, group, reportConsole, suite_)
 import BenchLib as BenchLib
 import BenchLib.Reporters.VegaLite (reportVegaLite)
 import Data.Array as Array
-import Data.Foldable (maximum, minimum)
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Tuple (fst)
@@ -60,8 +59,6 @@ runBench { backend, iterations } { inputs, inputsClassic } =
           [ reportConsole
           , reportVegaLite _
               { folderPath = "bench/backend-" <> backend
-              , minSize = minimum allSizes
-              , maxSize = maximum allSizes
               }
           ]
       } $
