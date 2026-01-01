@@ -2,12 +2,10 @@ module Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
-import Data.Array (foldM, mapMaybe)
+import Data.Array (foldM)
 import Data.Array as Array
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
-import Data.Set (Set)
-import Data.Set as Set
 import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)

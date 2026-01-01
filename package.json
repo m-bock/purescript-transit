@@ -14,6 +14,7 @@
     "js-yaml": "^4.1.1",
     "prettier": "^3.0.0",
     "purescript": "^0.15.15",
+    "purescript-psa": "^0.9.0",
     "purs-backend-es": "^1.4.3",
     "purs-tidy": "^0.11.1",
     "remark": "^15.0.1",
