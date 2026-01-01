@@ -5,11 +5,21 @@
         "path": "./",
         "core": {
           "dependencies": [
-            "colors",
-            "maybe",
-            "prelude",
-            "typelevel-lists",
-            "variant"
+            {
+              "colors": ">=7.0.1 <8.0.0"
+            },
+            {
+              "maybe": ">=6.0.0 <7.0.0"
+            },
+            {
+              "prelude": ">=6.0.2 <7.0.0"
+            },
+            {
+              "typelevel-lists": ">=2.1.0 <3.0.0"
+            },
+            {
+              "variant": ">=8.0.0 <9.0.0"
+            }
           ],
           "build_plan": [
             "arrays",
