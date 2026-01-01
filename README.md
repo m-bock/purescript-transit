@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [purescript-transit](#purescript-transit)
+  - [Features](#features)
+  - [Documentation](#documentation)
+  - [Installation](#installation)
+  - [Minimal Example](#minimal-example)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
@@ -7,16 +18,6 @@
 A library for building type-safe state machines.
 
 # purescript-transit
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Features](#features)
-- [Documentation](#documentation)
-- [Installation](#installation)
-- [Minimal Example](#minimal-example)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Features
 
@@ -44,25 +45,7 @@ spago install transit
 
 ## Minimal Example
 
-> Full source code: _[test/Examples/DoorReadme.purs](test/Examples/DoorReadme.purs)_
-
-Define a state machine with a type-level DSL:
-
-<!-- PD_START:purs
-pick:
-  - tag: any
-    name: DoorTransit
-    filePath: test/Examples/DoorReadme.purs
--->
-
-```purescript
-type DoorTransit =
-  Transit
-    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
-    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
-```
-
-<!-- PD_END -->
+> Full source code: _[test/Examples/CountDown.purs](test/Examples/CountDown.purs)_
 
 Define the state and message as Variant types:
 
@@ -70,56 +53,94 @@ Define the state and message as Variant types:
 pick:
   - tag: any
     name: State
-    filePath: test/Examples/DoorReadme.purs
+    filePath: test/Examples/CountDown.purs
   - tag: any
     name: Msg
-    filePath: test/Examples/DoorReadme.purs
+    filePath: test/Examples/CountDown.purs
 -->
 
 ```purescript
 type State = Variant
-  ( "DoorOpen" :: {}
-  , "DoorClosed" :: {}
+  ( "Idle" :: {}
+  , "Counting" :: { count :: Int }
+  , "Done" :: {}
   )
 
 type Msg = Variant
-  ( "Close" :: {}
-  , "Open" :: {}
+  ( "Start" :: { initialCount :: Int }
+  , "Tick" :: {}
+  , "Reset" :: {}
   )
 ```
 
 <!-- PD_END -->
 
-Write update function that must match the state machine specification:
+Define a state transitions with a type-level DSL:
+
+<!-- PD_START:purs
+pick:
+  - tag: any
+    name: CountDownTransit
+    filePath: test/Examples/CountDown.purs
+-->
+
+```purescript
+type CountDownTransit =
+  Transit
+    :* ("Idle" :@ "Start" >| "Counting")
+    :* ("Done" :@ "Reset" >| "Idle")
+    :*
+      ( "Counting" :@ "Tick"
+          >| "Counting"
+          >| "Done"
+      )
+```
+
+<!-- PD_END -->
+
+Write update function that is checked at compile against the state machine specification:
 
 <!-- PD_START:purs
 pick:
   - tag: any
     name: update
-    filePath: test/Examples/DoorReadme.purs
+    filePath: test/Examples/CountDown.purs
 -->
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdate @DoorTransit
-  (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
-  (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
+update = mkUpdate @CountDownTransit
+  ( match @"Idle" @"Start" \_ msg ->
+      return @"Counting" { count: msg.initialCount }
+  )
+  ( match @"Done" @"Reset" \_ _ ->
+      return @"Idle"
+  )
+  ( match @"Counting" @"Tick" \state _ ->
+      let
+        nextCount = state.count - 1
+      in
+        if nextCount == 0 then
+          return @"Done"
+        else
+          return @"Counting" { count: nextCount }
+  )
 ```
 
 <!-- PD_END -->
 
-Retrieve runtime representation of the state machine:
+Reflect type level state machine specification to a term level representation:
 
 <!-- PD_START:purs
 pick:
   - tag: any
-    name: doorTransit
-    filePath: test/Examples/DoorReadme.purs
+    name: countDownTransit
+    filePath: test/Examples/CountDown.purs
 -->
 
 ```purescript
-doorTransit :: TransitCore
-doorTransit = reflectType (Proxy @DoorTransit)
+countDownTransit :: TransitCore
+countDownTransit = reflectType (Proxy @CountDownTransit)
 ```
 
 <!-- PD_END -->
@@ -130,18 +151,21 @@ Generate state diagram or perform other analysis on the state machine's runtime 
 pick:
   - tag: any
     name: main
-    filePath: test/Examples/DoorReadme.purs
+    filePath: test/Examples/CountDown.purs
 -->
 
 ```purescript
 main :: Effect Unit
-main =
-  FS.writeTextFile UTF8 "renders/door-readme.dot"
-    (TransitGraphviz.generate_ doorTransit)
+main = do
+  let
+    graph :: String
+    graph = TransitGraphviz.generate_ countDownTransit
+
+  FS.writeTextFile UTF8 "renders/count-down.dot" graph
 ```
 
 <!-- PD_END -->
 
 The result will look like:
 
-<img alt="Simple Door state diagram" src="renders/door-readme.svg">
+<img alt="Count Down state diagram" src="renders/count-down.svg">
