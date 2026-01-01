@@ -1,14 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [purescript-transit](#purescript-transit)
-  - [Features](#features)
-  - [Documentation](#documentation)
-  - [Installation](#installation)
-  - [Minimal Example](#minimal-example)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
@@ -18,6 +7,16 @@
 A library for building type-safe state machines.
 
 # purescript-transit
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Features](#features)
+- [Documentation](#documentation)
+- [Installation](#installation)
+- [Minimal Example: A Count Down State Machine](#minimal-example-a-count-down-state-machine)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Features
 
@@ -43,11 +42,15 @@ A library for building type-safe state machines.
 spago install transit
 ```
 
-## Minimal Example
+## Minimal Example: A Count Down State Machine
 
 > Full source code: _[test/Examples/CountDown.purs](test/Examples/CountDown.purs)_
 
-Define the state and message as Variant types:
+Let's consider a simple count down state machine which is described by the following state diagram:
+
+<img alt="Count Down state diagram" src="renders/count-down.svg">
+
+To implement this state machine with **Transit** first we need to define the state and message types as Variants:
 
 <!-- PD_START:purs
 pick:
@@ -75,7 +78,7 @@ type Msg = Variant
 
 <!-- PD_END -->
 
-Define a state transitions with a type-level DSL:
+Then we need to define the state machine transitions like this:
 
 <!-- PD_START:purs
 pick:
@@ -98,7 +101,7 @@ type CountDownTransit =
 
 <!-- PD_END -->
 
-Write update function that is checked at compile against the state machine specification:
+Finally, we write the update function that is checked at compile against the state machine specification:
 
 <!-- PD_START:purs
 pick:
@@ -165,7 +168,3 @@ main = do
 ```
 
 <!-- PD_END -->
-
-The result will look like:
-
-<img alt="Count Down state diagram" src="renders/count-down.svg">
