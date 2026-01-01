@@ -31,7 +31,7 @@ spago install transit
 Define a state machine with a type-level DSL:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/DoorSimpleReadme.purs
 pick:
   - DoorSimpleTransit
 -->
@@ -46,8 +46,8 @@ type DoorSimpleTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L53-L56"
-      >test/Examples/DoorSimple.purs L53-L56</a
+    <a href="test/Examples/DoorSimpleReadme.purs#L24-L27"
+      >test/Examples/DoorSimpleReadme.purs L24-L27</a
     >
   </sup>
 </p>
@@ -57,7 +57,7 @@ type DoorSimpleTransit =
 Define the state and message types:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/DoorSimpleReadme.purs
 pick:
   - State
   - Msg
@@ -78,8 +78,8 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L43-L51"
-      >test/Examples/DoorSimple.purs L43-L51</a
+    <a href="test/Examples/DoorSimpleReadme.purs#L14-L22"
+      >test/Examples/DoorSimpleReadme.purs L14-L22</a
     >
   </sup>
 </p>
@@ -89,7 +89,7 @@ type Msg = Variant
 Write update function that must match the state machine specification:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/DoorSimpleReadme.purs
 pick:
   - update
 -->
@@ -104,8 +104,8 @@ update = mkUpdate @DoorSimpleTransit
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L58-L61"
-      >test/Examples/DoorSimple.purs L58-L61</a
+    <a href="test/Examples/DoorSimpleReadme.purs#L29-L32"
+      >test/Examples/DoorSimpleReadme.purs L29-L32</a
     >
   </sup>
 </p>
@@ -115,30 +115,27 @@ update = mkUpdate @DoorSimpleTransit
 Generate state diagram or perform other analysis on the state machine's runtime representation:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/DoorSimpleReadme.purs
 pick:
-  - generateStateDiagram
+  - main
 -->
 
 ```purescript
-generateStateDiagram :: Effect Unit
-generateStateDiagram = do
+main :: Effect Unit
+main = do
   let
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  FS.writeTextFile UTF8 "renders/door-simple-light.dot"
-    (TransitGraphviz.generate transit _ { theme = themeHarmonyLight })
-
-  FS.writeTextFile UTF8 "renders/door-simple-dark.dot"
-    (TransitGraphviz.generate transit _ { theme = themeHarmonyDark })
+  FS.writeTextFile UTF8 "renders/door-simple-readme.dot"
+    (TransitGraphviz.generate_ transit)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L104-L114"
-      >test/Examples/DoorSimple.purs L104-L114</a
+    <a href="test/Examples/DoorSimpleReadme.purs#L34-L41"
+      >test/Examples/DoorSimpleReadme.purs L34-L41</a
     >
   </sup>
 </p>

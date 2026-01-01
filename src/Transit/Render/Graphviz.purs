@@ -17,10 +17,10 @@ import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
 import Data.Maybe (Maybe(..))
-import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeHarmonyLight)
 import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toDotStr)
 import Transit.Data.DotLang as D
+import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeHarmonyDark)
 import Transit.StateGraph (StateNode)
 
 -- | Generates a Graphviz graph from a transit specification.
@@ -222,7 +222,7 @@ type Options =
 defaultOptions :: Options
 defaultOptions =
   { title: Nothing
-  , theme: themeHarmonyLight
+  , theme: themeHarmonyDark
   , globalAttrsRaw: Nothing
   , nodeAttrsRaw: Nothing
   , useDecisionNodes: true
