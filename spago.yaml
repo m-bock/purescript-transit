@@ -26,6 +26,7 @@ package:
 
   build:
     strict: true
+    pedanticPackages: false
   publish:
     version: 0.0.1
     license: BSD-3-Clause
@@ -35,6 +36,8 @@ package:
 
   test:
     main: Test.Main
+    strict: true
+    pedanticPackages: false
     dependencies:
       - patchdown
       - console
