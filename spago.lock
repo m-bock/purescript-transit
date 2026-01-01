@@ -5,23 +5,47 @@
         "path": "./",
         "core": {
           "dependencies": [
+            "arrays",
             {
               "colors": ">=7.0.1 <8.0.0"
             },
+            "console",
+            "control",
+            "effect",
+            "enums",
+            "foldable-traversable",
+            "foreign",
+            "foreign-object",
+            "functions",
+            "identity",
+            "lists",
             {
               "maybe": ">=6.0.0 <7.0.0"
             },
+            "newtype",
+            "node-buffer",
+            "node-fs",
+            "node-path",
+            "ordered-collections",
+            "partial",
             {
               "prelude": ">=6.0.2 <7.0.0"
             },
+            "safe-coerce",
+            "strings",
+            "tuples",
             {
               "typelevel-lists": ">=2.1.0 <3.0.0"
             },
+            "typelevel-prelude",
+            "unsafe-coerce",
             {
               "variant": ">=8.0.0 <9.0.0"
             }
           ],
           "build_plan": [
+            "aff",
+            "arraybuffer-types",
             "arrays",
             "bifunctors",
             "colors",
@@ -29,25 +53,39 @@
             "const",
             "contravariant",
             "control",
+            "datetime",
             "distributive",
             "effect",
             "either",
             "enums",
+            "exceptions",
             "exists",
             "foldable-traversable",
+            "foreign",
+            "foreign-object",
             "functions",
             "functors",
             "gen",
             "identity",
             "integers",
             "invariant",
+            "js-date",
             "lazy",
             "lists",
             "maybe",
             "newtype",
+            "node-buffer",
+            "node-event-emitter",
+            "node-fs",
+            "node-path",
+            "node-streams",
             "nonempty",
+            "now",
+            "nullable",
             "numbers",
+            "ordered-collections",
             "orders",
+            "parallel",
             "partial",
             "prelude",
             "profunctor",
@@ -58,6 +96,7 @@
             "st",
             "strings",
             "tailrec",
+            "transformers",
             "tuples",
             "type-equality",
             "typelevel-lists",
@@ -70,15 +109,17 @@
         },
         "test": {
           "dependencies": [
+            "aff",
             "benchlib",
             "console",
             "effect",
+            "integers",
             "node-fs",
             "node-path",
+            "node-process",
             "patchdown",
             "spec",
-            "spec-node",
-            "undefined"
+            "spec-node"
           ],
           "build_plan": [
             "aff",
@@ -162,7 +203,6 @@
             "tuples",
             "type-equality",
             "typelevel-prelude",
-            "undefined",
             "unfoldable",
             "unicode",
             "unsafe-coerce",
@@ -1962,12 +2002,6 @@
         "prelude",
         "type-equality"
       ]
-    },
-    "undefined": {
-      "type": "registry",
-      "version": "2.0.0",
-      "integrity": "sha256-gYH4KixWI/3G4g0In80XQpTEzBurU+MpcEq1nLYD5KE=",
-      "dependencies": []
     },
     "unfoldable": {
       "type": "registry",

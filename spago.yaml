@@ -6,6 +6,29 @@ package:
     - prelude: ">=6.0.2 <7.0.0"
     - typelevel-lists: ">=2.1.0 <3.0.0"
     - variant: ">=8.0.0 <9.0.0"
+    - arrays
+    - console
+    - control
+    - enums
+    - foldable-traversable
+    - foreign
+    - foreign-object
+    - functions
+    - identity
+    - lists
+    - newtype
+    - node-buffer
+    - node-fs
+    - node-path
+    - ordered-collections
+    - partial
+    - safe-coerce
+    - strings
+    - tuples
+    - typelevel-prelude
+    - unsafe-coerce
+    - effect
+
   test:
     main: Test.Main
     dependencies:
@@ -15,9 +38,11 @@ package:
       - effect
       - spec-node
       - benchlib
-      - undefined
       - node-fs
       - node-path
+      - aff
+      - integers
+      - node-process
 workspace:
   packageSet:
     registry: 68.1.1

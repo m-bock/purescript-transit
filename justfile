@@ -5,7 +5,7 @@ node-run MODULE:
     node -e "import { main } from './output/{{MODULE}}/index.js'; main();"
 
 gen-patchdown:
-    PATCHDOWN_FILE_PATH=README.md just node-run Patchdown
+    PATCHDOWN_FILE_PATH=README.md just node-run Md.Main
 
 gen-svgs:
     find renders assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
@@ -96,3 +96,4 @@ gen:
 watch:
     just gen && \
     npx concurrently "npx browser-sync start --server --files 'renders/**/*.md' 'renders/**/*.html' --port 5000 --no-open --reload-delay 100" "while true; do sleep 30; just gen; done"
+
