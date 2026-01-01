@@ -2,20 +2,17 @@ package:
   name: transit
   dependencies:
     - colors
-    - console
-    - effect
     - maybe
-    - node-fs
-    - node-path
     - prelude
-    - tidy-codegen
     - typelevel-lists
     - variant
   test:
     main: Test.Main
     dependencies:
       - patchdown
+      - console
       - spec
+      - effect
       - spec-node
       - benchlib
       - undefined
