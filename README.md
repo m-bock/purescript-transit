@@ -1,24 +1,40 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [purescript-transit](#purescript-transit)
-  - [Install](#install)
-  - [Minimal Example](#minimal-example)
-  - [Documentation](#documentation)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# purescript-transit
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
+  <img alt="Transit logo" src="assets/logo-light.svg">
+</picture>
 
 A library for building type-safe state machines.
 
-- State Transitions are specified with type level DSL.
-- Compile time guarantees that state update functions are complete and valid.
-- Automatic state diagram generation
-- State machine graph analysis
-- Optimized for speed
+# purescript-transit
 
-## Install
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Features](#features)
+- [Documentation](#documentation)
+- [Installation](#installation)
+- [Minimal Example](#minimal-example)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Features
+
+- State Transitions are specified with **type level DSL**.
+- **Compile time guarantees** that state update functions are complete and valid.
+- Automatic **state diagram generation**
+- State machine **graph analysis**
+- Optimized for **speed**
+
+## Documentation
+
+- [API Reference](https://pursuit.purescript.org/packages/purescript-transit/docs/Transit)
+
+<!--
+- Tutorial
+-->
+
+## Installation
 
 (once published to package set:)
 
@@ -48,7 +64,7 @@ type DoorTransit =
 
 <!-- PD_END -->
 
-Define the state and message types:
+Define the state and message as Variant types:
 
 <!-- PD_START:purs
 pick:
@@ -129,11 +145,3 @@ main =
 The result will look like:
 
 <img alt="Simple Door state diagram" src="renders/door-readme.svg">
-
-## Documentation
-
-- [API Reference](https://pursuit.purescript.org/packages/purescript-transit/docs/Transit)
-
-<!--
-- Tutorial
--->
