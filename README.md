@@ -28,12 +28,15 @@ spago install transit
 
 ## Minimal Example
 
+> Full source code: _[test/Examples/DoorReadme.purs](test/Examples/DoorReadme.purs)_
+
 Define a state machine with a type-level DSL:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorReadme.purs
 pick:
-  - DoorTransit
+  - tag: any
+    name: DoorTransit
+    filePath: test/Examples/DoorReadme.purs
 -->
 
 ```purescript
@@ -43,24 +46,18 @@ type DoorTransit =
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="test/Examples/DoorReadme.purs#L24-L27"
-      >test/Examples/DoorReadme.purs L24-L27</a
-    >
-  </sup>
-</p>
-
 <!-- PD_END -->
 
 Define the state and message types:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorReadme.purs
 pick:
-  - State
-  - Msg
+  - tag: any
+    name: State
+    filePath: test/Examples/DoorReadme.purs
+  - tag: any
+    name: Msg
+    filePath: test/Examples/DoorReadme.purs
 -->
 
 ```purescript
@@ -75,23 +72,15 @@ type Msg = Variant
   )
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="test/Examples/DoorReadme.purs#L14-L22"
-      >test/Examples/DoorReadme.purs L14-L22</a
-    >
-  </sup>
-</p>
-
 <!-- PD_END -->
 
 Write update function that must match the state machine specification:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorReadme.purs
 pick:
-  - update
+  - tag: any
+    name: update
+    filePath: test/Examples/DoorReadme.purs
 -->
 
 ```purescript
@@ -101,23 +90,15 @@ update = mkUpdate @DoorTransit
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="test/Examples/DoorReadme.purs#L29-L32"
-      >test/Examples/DoorReadme.purs L29-L32</a
-    >
-  </sup>
-</p>
-
 <!-- PD_END -->
 
 Retrieve runtime representation of the state machine:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorReadme.purs
 pick:
-  - doorTransit
+  - tag: any
+    name: doorTransit
+    filePath: test/Examples/DoorReadme.purs
 -->
 
 ```purescript
@@ -125,23 +106,15 @@ doorTransit :: TransitCore
 doorTransit = reflectType (Proxy @DoorTransit)
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="test/Examples/DoorReadme.purs#L34-L35"
-      >test/Examples/DoorReadme.purs L34-L35</a
-    >
-  </sup>
-</p>
-
 <!-- PD_END -->
 
 Generate state diagram or perform other analysis on the state machine's runtime representation:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorReadme.purs
 pick:
-  - main
+  - tag: any
+    name: main
+    filePath: test/Examples/DoorReadme.purs
 -->
 
 ```purescript
@@ -150,15 +123,6 @@ main =
   FS.writeTextFile UTF8 "renders/door-readme.dot"
     (TransitGraphviz.generate_ doorTransit)
 ```
-
-<p align="right">
-  <sup
-    >🗎
-    <a href="test/Examples/DoorReadme.purs#L37-L40"
-      >test/Examples/DoorReadme.purs L37-L40</a
-    >
-  </sup>
-</p>
 
 <!-- PD_END -->
 <img alt="Simple Door state diagram" src="renders/door-readme.svg">
