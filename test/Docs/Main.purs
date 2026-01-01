@@ -12,6 +12,7 @@ import Examples.ErrorHandling as Examples.ErrorHandling
 import Examples.ErrorHandlingMonadic as Examples.ErrorHandlingMonadic
 import Examples.Monadic as Examples.Monadic
 import Examples.Common as Examples.Common
+import Examples.DoorReadme as Examples.DoorReadme
 import Test.Spec (Spec)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
@@ -39,6 +40,7 @@ runExamples = do
   Examples.ErrorHandlingMonadic.main
   Examples.Monadic.main
   Examples.Common.main
+  Examples.DoorReadme.main
 
 main :: Effect Unit
 main = do

@@ -31,13 +31,13 @@ spago install transit
 Define a state machine with a type-level DSL:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimpleReadme.purs
+filePath: test/Examples/DoorReadme.purs
 pick:
-  - DoorSimpleTransit
+  - DoorTransit
 -->
 
 ```purescript
-type DoorSimpleTransit =
+type DoorTransit =
   Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -46,8 +46,8 @@ type DoorSimpleTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimpleReadme.purs#L24-L27"
-      >test/Examples/DoorSimpleReadme.purs L24-L27</a
+    <a href="test/Examples/DoorReadme.purs#L24-L27"
+      >test/Examples/DoorReadme.purs L24-L27</a
     >
   </sup>
 </p>
@@ -57,7 +57,7 @@ type DoorSimpleTransit =
 Define the state and message types:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimpleReadme.purs
+filePath: test/Examples/DoorReadme.purs
 pick:
   - State
   - Msg
@@ -78,8 +78,8 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimpleReadme.purs#L14-L22"
-      >test/Examples/DoorSimpleReadme.purs L14-L22</a
+    <a href="test/Examples/DoorReadme.purs#L14-L22"
+      >test/Examples/DoorReadme.purs L14-L22</a
     >
   </sup>
 </p>
@@ -89,14 +89,14 @@ type Msg = Variant
 Write update function that must match the state machine specification:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimpleReadme.purs
+filePath: test/Examples/DoorReadme.purs
 pick:
   - update
 -->
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdate @DoorSimpleTransit
+update = mkUpdate @DoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
@@ -104,8 +104,8 @@ update = mkUpdate @DoorSimpleTransit
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimpleReadme.purs#L29-L32"
-      >test/Examples/DoorSimpleReadme.purs L29-L32</a
+    <a href="test/Examples/DoorReadme.purs#L29-L32"
+      >test/Examples/DoorReadme.purs L29-L32</a
     >
   </sup>
 </p>
@@ -115,21 +115,21 @@ update = mkUpdate @DoorSimpleTransit
 Retrieve runtime representation of the state machine:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimpleReadme.purs
+filePath: test/Examples/DoorReadme.purs
 pick:
-  - doorSimpleTransit
+  - doorTransit
 -->
 
 ```purescript
-doorSimpleTransit :: TransitCore
-doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
+doorTransit :: TransitCore
+doorTransit = reflectType (Proxy @DoorTransit)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimpleReadme.purs#L34-L35"
-      >test/Examples/DoorSimpleReadme.purs L34-L35</a
+    <a href="test/Examples/DoorReadme.purs#L34-L35"
+      >test/Examples/DoorReadme.purs L34-L35</a
     >
   </sup>
 </p>
@@ -139,7 +139,7 @@ doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
 Generate state diagram or perform other analysis on the state machine's runtime representation:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimpleReadme.purs
+filePath: test/Examples/DoorReadme.purs
 pick:
   - main
 -->
@@ -147,26 +147,21 @@ pick:
 ```purescript
 main :: Effect Unit
 main =
-  FS.writeTextFile UTF8 "renders/door-simple-readme.dot"
-    (TransitGraphviz.generate_ doorSimpleTransit)
+  FS.writeTextFile UTF8 "renders/door-readme.dot"
+    (TransitGraphviz.generate_ doorTransit)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimpleReadme.purs#L37-L40"
-      >test/Examples/DoorSimpleReadme.purs L37-L40</a
+    <a href="test/Examples/DoorReadme.purs#L37-L40"
+      >test/Examples/DoorReadme.purs L37-L40</a
     >
   </sup>
 </p>
 
 <!-- PD_END -->
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
-  <img alt="Simple Door state diagram" src="renders/door-simple-light.svg">
-</picture>
+<img alt="Simple Door state diagram" src="renders/door-readme.svg">
 
 ## Documentation
 

@@ -1,4 +1,4 @@
-module Examples.DoorSimpleReadme where
+module Examples.DoorReadme where
 
 import Prelude
 
@@ -21,21 +21,21 @@ type Msg = Variant
   , "Open" :: {}
   )
 
-type DoorSimpleTransit =
+type DoorTransit =
   Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 
 update :: State -> Msg -> State
-update = mkUpdate @DoorSimpleTransit
+update = mkUpdate @DoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
-doorSimpleTransit :: TransitCore
-doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
+doorTransit :: TransitCore
+doorTransit = reflectType (Proxy @DoorTransit)
 
 main :: Effect Unit
 main =
-  FS.writeTextFile UTF8 "renders/door-simple-readme.dot"
-    (TransitGraphviz.generate_ doorSimpleTransit)
+  FS.writeTextFile UTF8 "renders/door-readme.dot"
+    (TransitGraphviz.generate_ doorTransit)
 
