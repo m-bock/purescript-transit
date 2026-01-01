@@ -11,6 +11,8 @@ import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Examples.Common (assertWalk, hasEulerTrail, permutations, (~>))
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), StateGraph, Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
@@ -167,14 +169,18 @@ main = do
     [ { theme: themeHarmonyLight, file: "renders/bridges-koenigsberg-light.dot" }
     , { theme: themeHarmonyDark, file: "renders/bridges-koenigsberg-dark.dot" }
     ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { useUndirectedEdges = true
-        , theme = opts.theme
-        }
+    \opts -> do
+      FS.writeTextFile UTF8 opts.file
+        ( TransitGraphviz.generate transit _
+            { useUndirectedEdges = true
+            , theme = opts.theme
+            }
+        )
 
-  TransitTable.writeToFile "renders/bridges-koenigsberg.md" transit _
-    { useUndirectedEdges = true
-    , outputFormat = TransitTable.Markdown
-    }
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md"
+    ( TransitTable.generate transit _
+        { useUndirectedEdges = true
+        , outputFormat = TransitTable.Markdown
+        }
+    )
 

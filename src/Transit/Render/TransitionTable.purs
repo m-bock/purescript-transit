@@ -5,8 +5,8 @@
 module Transit.Render.TransitionTable
   ( toHtml
   , toTable
-  , writeToFile
-  , writeToFile_
+  , generate
+  , generate_
   , Options
   , defaultOptions
   , OutputFormat(..)
@@ -18,11 +18,6 @@ import Data.Array (catMaybes)
 import Data.Array as Array
 import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..))
-import Effect (Effect)
-import Effect.Class.Console as Console
-import Node.Encoding (Encoding(..))
-import Node.FS.Sync as FS
-import Node.Path (FilePath)
 import Transit.Core (Match(..), MsgName, Return(..), StateName, TransitCore(..))
 import Transit.Data.Html as Html
 import Transit.Data.Table as Table
@@ -151,21 +146,20 @@ defaultOptions =
   , outputFormat: Html
   }
 
--- | Writes a transition table to a file with customizable options.
-writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit
-writeToFile path transitCore mkOptions = do
-  let options = mkOptions defaultOptions
-  let table = toTable options transitCore
+-- | Generates a transition table as a string with customizable options.
+generate :: TransitCore -> (Options -> Options) -> String
+generate transitCore mkOptions =
   let
-    content = case options.outputFormat of
+    options = mkOptions defaultOptions
+    table = toTable options transitCore
+  in
+    case options.outputFormat of
       Html -> Html.nodeToHtml $ toHtml options transitCore
       Markdown -> Table.toMarkdown table
-  FS.writeTextFile UTF8 path content
-  Console.log $ "Wrote transition table to " <> path
 
--- | Writes a transition table to a file with default options.
-writeToFile_ :: FilePath -> TransitCore -> Effect Unit
-writeToFile_ path transitCore = writeToFile path transitCore identity
+-- | Generates a transition table as a string with default options.
+generate_ :: TransitCore -> String
+generate_ transitCore = generate transitCore identity
 
 -- | Checks if there exists a complementary edge (reverse direction with same message)
 -- | and returns its index if found.

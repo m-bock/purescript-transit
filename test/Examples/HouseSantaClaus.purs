@@ -8,6 +8,8 @@ import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Examples.Common (assertWalk, hasEulerTrail, (~>))
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), Transit, match, mkUpdate, return, mkStateGraph, type (|<))
@@ -127,22 +129,28 @@ main = do
       _ -> ""
     globalAttrs = Just "layout=neato"
 
-  TransitGraphviz.writeToFile "renders/house-santa-claus-light.dot" transit _
-    { useUndirectedEdges = true
-    , nodeAttrsRaw = nodeAttrs
-    , globalAttrsRaw = globalAttrs
-    , theme = themeHarmonyLight
-    }
+  FS.writeTextFile UTF8 "renders/house-santa-claus-light.dot"
+    ( TransitGraphviz.generate transit _
+        { useUndirectedEdges = true
+        , nodeAttrsRaw = nodeAttrs
+        , globalAttrsRaw = globalAttrs
+        , theme = themeHarmonyLight
+        }
+    )
 
-  TransitGraphviz.writeToFile "renders/house-santa-claus-dark.dot" transit _
-    { useUndirectedEdges = true
-    , nodeAttrsRaw = nodeAttrs
-    , globalAttrsRaw = globalAttrs
-    , theme = themeHarmonyDark
-    }
+  FS.writeTextFile UTF8 "renders/house-santa-claus-dark.dot"
+    ( TransitGraphviz.generate transit _
+        { useUndirectedEdges = true
+        , nodeAttrsRaw = nodeAttrs
+        , globalAttrsRaw = globalAttrs
+        , theme = themeHarmonyDark
+        }
+    )
 
-  TransitTable.writeToFile "renders/house-santa-claus.md" transit _
-    { useUndirectedEdges = true
-    , outputFormat = TransitTable.Markdown
-    }
+  FS.writeTextFile UTF8 "renders/house-santa-claus.md"
+    ( TransitTable.generate transit _
+        { useUndirectedEdges = true
+        , outputFormat = TransitTable.Markdown
+        }
+    )
 

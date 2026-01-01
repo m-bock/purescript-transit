@@ -4,8 +4,11 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
+import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync as FS
 import Test.Spec (Spec)
 import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
 import Transit.Render.Theme (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
@@ -71,44 +74,24 @@ main :: Effect Unit
 main = do
   let
     transit = reflectType (Proxy @ColorsFSM)
-
     globalAttrs = "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
 
-  TransitGraphviz.writeToFile "renders/themes/harmony-light.dot" transit _
-    { title = Just "Harmony Light"
-    , globalAttrsRaw = Just globalAttrs
-    , theme = themeHarmonyLight
-    }
-
-  TransitGraphviz.writeToFile "renders/themes/harmony-dark.dot" transit _
-    { title = Just "Harmony Dark"
-    , globalAttrsRaw = Just globalAttrs
-    , theme = themeHarmonyDark
-    }
-
-  TransitGraphviz.writeToFile "renders/themes/contrast-light.dot" transit _
-    { title = Just "Contrast Light"
-    , globalAttrsRaw = Just globalAttrs
-    , theme = themeContrastLight
-    }
-
-  TransitGraphviz.writeToFile "renders/themes/contrast-dark.dot" transit _
-    { title = Just "Contrast Dark"
-    , globalAttrsRaw = Just globalAttrs
-    , theme = themeContrastDark
-    }
-
-  TransitGraphviz.writeToFile "renders/themes/gradient-light.dot" transit _
-    { title = Just "Gradient Light"
-    , globalAttrsRaw = Just globalAttrs
-    , theme = themeGradientLight
-    }
-
-  TransitGraphviz.writeToFile "renders/themes/gradient-dark.dot" transit _
-    { title = Just "Gradient Dark"
-    , globalAttrsRaw = Just globalAttrs
-    , theme = themeGradientDark
-    }
+  for_
+    [ { file: "renders/themes/harmony-light.dot", title: "Harmony Light", theme: themeHarmonyLight }
+    , { file: "renders/themes/harmony-dark.dot", title: "Harmony Dark", theme: themeHarmonyDark }
+    , { file: "renders/themes/contrast-light.dot", title: "Contrast Light", theme: themeContrastLight }
+    , { file: "renders/themes/contrast-dark.dot", title: "Contrast Dark", theme: themeContrastDark }
+    , { file: "renders/themes/gradient-light.dot", title: "Gradient Light", theme: themeGradientLight }
+    , { file: "renders/themes/gradient-dark.dot", title: "Gradient Dark", theme: themeGradientDark }
+    ]
+    \opts -> do
+      FS.writeTextFile UTF8 opts.file
+        ( TransitGraphviz.generate transit _
+            { title = Just opts.title
+            , globalAttrsRaw = Just globalAttrs
+            , theme = opts.theme
+            }
+        )
 
 spec :: Spec Unit
 spec = do

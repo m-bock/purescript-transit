@@ -5,10 +5,10 @@
 -- | decision nodes, undirected edges, and customizable themes.
 module Transit.Render.Graphviz
   ( mkGraphvizGraph
+  , generate
+  , generate_
   , Options
   , defaultOptions
-  , writeToFile
-  , writeToFile_
   ) where
 
 import Prelude
@@ -17,11 +17,6 @@ import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
 import Data.Maybe (Maybe(..))
-import Effect (Effect)
-import Effect.Class.Console as Console
-import Node.Encoding (Encoding(..))
-import Node.FS.Sync as FS
-import Node.Path (FilePath)
 import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeHarmonyLight)
 import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toDotStr)
@@ -235,14 +230,12 @@ defaultOptions =
   , entryPoints: []
   }
 
--- | Writes a Graphviz graph to a file with customizable options.
-writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit
-writeToFile path transitCore mkOptions = do
-  FS.writeTextFile UTF8 path
-    (toDotStr (mkGraphvizGraph (mkOptions defaultOptions) transitCore))
-  Console.log $ "Wrote graphviz graph to " <> path
+-- | Generates a Graphviz graph as a string with customizable options.
+generate :: TransitCore -> (Options -> Options) -> String
+generate transitCore mkOptions =
+  toDotStr (mkGraphvizGraph (mkOptions defaultOptions) transitCore)
 
--- | Writes a Graphviz graph to a file with default options.
-writeToFile_ :: FilePath -> TransitCore -> Effect Unit
-writeToFile_ path transitCore = writeToFile path transitCore identity
+-- | Generates a Graphviz graph as a string with default options.
+generate_ :: TransitCore -> String
+generate_ transitCore = generate transitCore identity
 

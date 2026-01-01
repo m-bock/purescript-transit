@@ -16,6 +16,8 @@ import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Examples.Common (assertWalk, (~>))
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:?), type (:@), type (>|), Transit, match, mkUpdate, return, returnVia)
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
@@ -138,13 +140,14 @@ main = do
     [ { theme: themeHarmonyLight, file: "renders/door-pin-light.dot" }
     , { theme: themeHarmonyDark, file: "renders/door-pin-dark.dot" }
     ]
-    \opts ->
-      TransitGraphviz.writeToFile opts.file transit _
-        { title = Just "Door with Pin"
-        , theme = opts.theme
-        , entryPoints = [ "DoorOpen" ]
-        }
+    \opts -> do
+      FS.writeTextFile UTF8 opts.file
+        ( TransitGraphviz.generate transit _
+            { title = Just "Door with Pin"
+            , theme = opts.theme
+            , entryPoints = [ "DoorOpen" ]
+            }
+        )
 
-  TransitTable.writeToFile "renders/door-pin.md" transit _
-    { outputFormat = TransitTable.Markdown
-    }
+  FS.writeTextFile UTF8 "renders/door-pin.md"
+    (TransitTable.generate transit _ { outputFormat = TransitTable.Markdown })

@@ -11,6 +11,8 @@ import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Examples.Common (assertWalk, (~>))
+import Node.Encoding (Encoding(..))
+import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
@@ -105,13 +107,11 @@ generateStateDiagram = do
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  TransitGraphviz.writeToFile "renders/door-simple-light.dot" transit _
-    { theme = themeHarmonyLight
-    }
+  FS.writeTextFile UTF8 "renders/door-simple-light.dot"
+    (TransitGraphviz.generate transit _ { theme = themeHarmonyLight })
 
-  TransitGraphviz.writeToFile "renders/door-simple-dark.dot" transit _
-    { theme = themeHarmonyDark
-    }
+  FS.writeTextFile UTF8 "renders/door-simple-dark.dot"
+    (TransitGraphviz.generate transit _ { theme = themeHarmonyDark })
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
@@ -119,9 +119,8 @@ generateTransitionTable = do
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  TransitTable.writeToFile "renders/door-simple.md" transit _
-    { outputFormat = TransitTable.Markdown
-    }
+  FS.writeTextFile UTF8 "renders/door-simple.md"
+    (TransitTable.generate transit _ { outputFormat = TransitTable.Markdown })
 
 main :: Effect Unit
 main = do

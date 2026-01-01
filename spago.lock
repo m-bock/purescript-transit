@@ -12,13 +12,7 @@
               "colors": ">=7.0.1 <8.0.0"
             },
             {
-              "console": ">=6.1.0 <7.0.0"
-            },
-            {
               "control": ">=6.0.0 <7.0.0"
-            },
-            {
-              "effect": ">=4.0.0 <5.0.0"
             },
             {
               "enums": ">=6.0.1 <7.0.0"
@@ -46,15 +40,6 @@
             },
             {
               "newtype": ">=5.0.0 <6.0.0"
-            },
-            {
-              "node-buffer": ">=9.0.0 <10.0.0"
-            },
-            {
-              "node-fs": ">=9.2.0 <10.0.0"
-            },
-            {
-              "node-path": ">=5.0.1 <6.0.0"
             },
             {
               "ordered-collections": ">=3.2.0 <4.0.0"
@@ -88,8 +73,6 @@
             }
           ],
           "build_plan": [
-            "aff",
-            "arraybuffer-types",
             "arrays",
             "bifunctors",
             "colors",
@@ -97,7 +80,6 @@
             "const",
             "contravariant",
             "control",
-            "datetime",
             "distributive",
             "effect",
             "either",
@@ -113,23 +95,14 @@
             "identity",
             "integers",
             "invariant",
-            "js-date",
             "lazy",
             "lists",
             "maybe",
             "newtype",
-            "node-buffer",
-            "node-event-emitter",
-            "node-fs",
-            "node-path",
-            "node-streams",
             "nonempty",
-            "now",
-            "nullable",
             "numbers",
             "ordered-collections",
             "orders",
-            "parallel",
             "partial",
             "prelude",
             "profunctor",
