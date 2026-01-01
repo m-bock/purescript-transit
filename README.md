@@ -125,6 +125,9 @@ main =
 ```
 
 <!-- PD_END -->
+
+The result will look like:
+
 <img alt="Simple Door state diagram" src="renders/door-readme.svg">
 
 ## Documentation
