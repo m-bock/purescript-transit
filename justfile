@@ -1,8 +1,11 @@
 gen-examples:
-    npx spago run -m Docs.Main
+    just node-run Docs.Main
+
+node-run MODULE:
+    node -e "import { main } from './output/{{MODULE}}/index.js'; main();"
 
 gen-patchdown:
-    PATCHDOWN_FILE_PATH=README.md npx spago run -m Patchdown
+    PATCHDOWN_FILE_PATH=README.md just node-run Patchdown
 
 gen-svgs:
     find renders assets -name "*.dot" -exec sh -c 'dot -Tsvg "$1" -o "${1%.dot}.svg"' _ {} \;
@@ -76,14 +79,20 @@ gen-full:
     just build-es && \
     just bench-run && \
     \
+    just gen-vega && \
+
     just gen
 
 gen:
+    just build && \
     just gen-examples && \
     just gen-md-prettier && \
-    just gen-vega && \
     just gen-svgs && \
     just gen-patchdown && \
     just gen-doctoc && \
     \
     just gen-preview
+
+watch:
+    just gen && \
+    npx concurrently "npx browser-sync start --server --files 'renders/**/*.md' 'renders/**/*.html' --port 5000 --no-open --reload-delay 100" "while true; do sleep 30; just gen; done"

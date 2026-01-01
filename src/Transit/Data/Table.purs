@@ -2,6 +2,7 @@ module Transit.Data.Table where
 
 import Prelude
 
+import Data.Array as Array
 import Data.String as Str
 import Transit.Data.Html as Html
 

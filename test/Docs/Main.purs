@@ -11,6 +11,7 @@ import Examples.HouseSantaClaus as Examples.HouseSantaClaus
 import Examples.ErrorHandling as Examples.ErrorHandling
 import Examples.ErrorHandlingMonadic as Examples.ErrorHandlingMonadic
 import Examples.Monadic as Examples.Monadic
+import Examples.Common as Examples.Common
 import Test.Spec (Spec)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
@@ -25,6 +26,7 @@ spec = do
   Examples.ErrorHandling.spec
   Examples.ErrorHandlingMonadic.spec
   Examples.Monadic.spec
+  Examples.Common.spec
 
 runExamples :: Effect Unit
 runExamples = do
@@ -36,6 +38,7 @@ runExamples = do
   Examples.ErrorHandling.main
   Examples.ErrorHandlingMonadic.main
   Examples.Monadic.main
+  Examples.Common.main
 
 main :: Effect Unit
 main = do

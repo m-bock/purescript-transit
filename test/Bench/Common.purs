@@ -6,7 +6,6 @@ import BenchLib (bench, group, reportConsole, suite_)
 import BenchLib as BenchLib
 import BenchLib.Reporters.VegaLite (reportVegaLite)
 import Data.Array as Array
-import Data.Filterable (filter)
 import Data.Foldable (maximum, minimum)
 import Data.Int as Int
 import Data.Maybe (Maybe(..))
@@ -19,8 +18,6 @@ import Partial.Unsafe (unsafeCrashWith)
 type Config =
   { backend :: String
   , iterations :: Int
-  , minSize :: Maybe Int
-  , maxSize :: Maybe Int
   }
 
 getConfigFromEnv :: Effect Config
@@ -33,10 +30,7 @@ getConfigFromEnv = do
     Just iterations | Just i <- Int.fromString iterations -> pure i
     _ -> unsafeCrashWith "ITERATIONS environment variable must be set to an integer"
 
-  minSize <- lookupEnv "MIN_SIZE" <#> (_ >>= Int.fromString)
-  maxSize <- lookupEnv "MAX_SIZE" <#> (_ >>= Int.fromString)
-
-  pure { backend, iterations, minSize, maxSize }
+  pure { backend, iterations }
 
 mkInput :: forall state msg. (state -> msg -> state) -> state -> Array msg -> (state -> String) -> Input
 mkInput update init msgs print =
@@ -56,23 +50,10 @@ unsafeFind size items = case Array.find (\(s /\ _) -> s == size) items of
   Just item -> item
   Nothing -> unsafeCrashWith "Input not found"
 
-inSizeRange :: Maybe Int -> Maybe Int -> Int -> Boolean
-inSizeRange minSize maxSize size =
-  ( case minSize of
-      Just min -> size >= min
-      Nothing -> true
-  )
-    &&
-      ( case maxSize of
-          Just max -> size <= max
-          Nothing -> true
-      )
-
 runBench :: Config -> { inputs :: Array (Int /\ Input), inputsClassic :: Array (Int /\ Input) } -> Effect Unit
-runBench { backend, iterations, minSize, maxSize } { inputs, inputsClassic } =
+runBench { backend, iterations } { inputs, inputsClassic } =
   let
     allSizes = map fst inputs
-    filteredSizes = filter (inSizeRange minSize maxSize) allSizes
   in
     BenchLib.runNode _
       { reporters =
@@ -89,7 +70,7 @@ runBench { backend, iterations, minSize, maxSize } { inputs, inputsClassic } =
         [ group "Update Functions"
             _
               { iterations = iterations
-              , sizes = filteredSizes
+              , sizes = allSizes
               }
             [ bench
                 "updateClassic"
