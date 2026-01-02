@@ -263,17 +263,15 @@ filePath: src/Transit/Render/Graphviz.purs
 inline: true
 pick:
   - tag: signature_or_foreign
-    name: writeToFile
-    prefix: '- '
+    name: generate
 split: true
 -->
-<ul>
-<li><code>writeToFile :: FilePath -&gt; TransitCore -&gt; (Options -&gt; Options) -&gt; Effect Unit</code></li>
-</ul>
+<p><code>generate :: TransitCore -&gt; (Options -&gt; Options) -&gt; String</code></p>
 <p align="right">
 <sup
-    >🗎 <a href="src/Transit/Render/Graphviz.purs#L239-L239"
-      >src/Transit/Render/Graphviz.purs L239-L239</a
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/src/Transit/Render/Graphviz.purs#L234-L234"
+      >src/Transit/Render/Graphviz.purs L234-L234</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -289,17 +287,16 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    transit ::</span> <span class="dt">TransitCore</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorSimpleTransit</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;renders/door-simple-light.dot&quot;</span> transit _</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    { theme <span class="ot">=</span> themeHarmonyLight</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;renders/door-simple-dark.dot&quot;</span> transit _</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    { theme <span class="ot">=</span> themeHarmonyDark</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-light.dot&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    (TransitGraphviz.generate transit _ { theme <span class="ot">=</span> themeHarmonyLight })</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-dark.dot&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    (TransitGraphviz.generate transit _ { theme <span class="ot">=</span> themeHarmonyDark })</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L102-L114"
-      >test/Examples/DoorSimple.purs L102-L114</a
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L104-L114"
+      >test/Examples/DoorSimple.purs L104-L114</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -341,13 +338,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    transit ::</span> <span class="dt">TransitCore</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorSimpleTransit</span>)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  TransitTable.writeToFile <span class="st">&quot;renders/door-simple.md&quot;</span> transit _</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple.md&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    (TransitTable.generate transit _ { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span> })</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L116-L124"
-      >test/Examples/DoorSimple.purs L116-L124</a
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L116-L123"
+      >test/Examples/DoorSimple.purs L116-L123</a
     > </sup>
 </p>
 <!-- PD_END -->
