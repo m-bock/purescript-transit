@@ -1,0 +1,245 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Your GitHub stylesheet -->
+    <link rel="stylesheet" href="../assets/github.css" />
+
+    <!-- Your custom layout -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        background-color: #0d1117;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        width: 100%;
+        padding: 45px;
+      }
+
+      /* Optional: nicer TOC spacing */
+      nav.toc {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #30363d;
+      }
+    </style>
+
+    <!-- Pandoc syntax highlighting CSS -->
+        <style type="text/css">
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+    </style>
+      </head>
+
+  <body>
+    <article class="markdown-body">
+       <h3 data-number="1.2.3" id="transit-approach">Transit
+Approach</h3>
+<p>With the <strong>Transit</strong> library, we take a different
+approach that addresses the drawbacks of the classic method. Instead of
+writing the update function directly, we first define a type-level
+specification that describes our state machine. This specification
+serves as a single source of truth that the compiler can verify against
+your implementation.</p>
+<h4 data-number="1.2.3.1" id="the-type-level-specification">The
+Type-Level Specification</h4>
+<p>First, we define the state machine structure using
+<strong>Transit</strong>’s type-level DSL:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - DoorSimpleTransit
+-->
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorSimpleTransit</span> <span class="ot">=</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/DoorSimple.purs#L51-L54"
+      >test/Examples/DoorSimple.purs L51-L54</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<p>Breaking down the syntax:</p>
+<ul>
+<li><code>Transit</code> initializes an empty transition list</li>
+<li><code>:*</code> is an infix operator that appends each transition to
+the list</li>
+<li><code>"DoorOpen" :@ "Close" &gt;| "DoorClosed"</code> means: in
+state <code>DoorOpen</code>, when receiving message <code>Close</code>,
+transition to state <code>DoorClosed</code></li>
+<li>The <code>@</code> operator connects a state to a message, and
+<code>&gt;|</code> indicates the target state</li>
+</ul>
+<p>This type-level specification fully defines the state machine’s
+structure. The compiler can now use this specification to ensure our
+implementation is correct.</p>
+<h4 data-number="1.2.3.2" id="state-and-message-types">State and Message
+Types</h4>
+<p><strong>Transit</strong> uses <code>Variant</code> types (from
+<code>purescript-variant</code>)[^variant] for both <code>State</code>
+and <code>Msg</code> instead of traditional ADTs. Variants are open sum
+types where each constructor is labeled with a type-level symbol (like
+<code>"DoorOpen"</code> or <code>"Close"</code>).</p>
+<p>This design choice is crucial for <strong>Transit</strong>’s
+type-level machinery. The key advantage is that <strong>Transit</strong>
+can filter the possible cases (both input states/messages and output
+states) for each handler function. Variants are perfect for this. There
+is no way to express a subset of cases from a traditional ADT.</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - State
+  - Msg
+-->
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;DoorClosed&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;Close&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Open&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/DoorSimple.purs#L41-L49"
+      >test/Examples/DoorSimple.purs L41-L49</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<h4 data-number="1.2.3.3" id="the-update-function-1">The Update
+Function</h4>
+<p>Based on this specification, we create an update function using
+<code>mkUpdate</code>:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - update
+-->
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorSimpleTransit</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/DoorSimple.purs#L56-L59"
+      >test/Examples/DoorSimple.purs L56-L59</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<p>Here’s how this works:</p>
+<ul>
+<li><p><code>mkUpdate @DoorSimpleTransit</code> creates an update
+function based on the <code>DoorSimpleTransit</code> specification. The
+<code>@</code> symbol is type application[^type-app], passing the
+specification to the function.</p></li>
+<li><p>Each <code>match</code> line handles one transition from the
+specification. The first two arguments (<code>@"DoorOpen"</code> and
+<code>@"Close"</code>) are type-level symbols (type applications) that
+specify which state and message to match on. The lambda function defines
+what happens when that transition occurs.</p></li>
+<li><p><code>return @"DoorClosed"</code> specifies which state to
+transition to. The <code>return</code> function is part of
+<strong>Transit</strong>’s DSL for specifying the target state, and the
+<code>@</code> symbol again indicates a type-level symbol.</p></li>
+<li><p><strong>Important</strong>: The order of match handlers must
+match the order of transitions in the DSL specification. In this
+example, the handlers are provided in the same order as they appear in
+<code>DoorSimpleTransit</code>: <code>DoorOpen :@ Close</code>, then
+<code>DoorClosed :@ Open</code>.</p></li>
+</ul>
+<h4 data-number="1.2.3.4"
+id="how-this-solves-the-classic-approachs-problems">How This Solves the
+Classic Approach’s Problems</h4>
+<p>This approach addresses all the drawbacks we saw earlier:</p>
+<ul>
+<li><p><strong>Explicit state machine specification</strong>: The state
+machine’s structure is defined explicitly in the type-level DSL. This
+specification serves as a single source of truth that is accessible for
+various purposes.</p></li>
+<li><p><strong>No documentation drift</strong>: Documentation such as
+state diagrams and transition tables can be generated directly from the
+specification, ensuring they always stay in sync with the code.</p></li>
+<li><p><strong>Static analysis capabilities</strong>: The specification
+can be converted into a graph data structure, enabling sophisticated
+static analysis of the state machine’s properties without running the
+code.</p></li>
+</ul>     </article>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "values": [
+      {
+        "ms": 2154,
+        "series": "update",
+        "size": 20
+      },
+      {
+        "ms": 2593,
+        "series": "update",
+        "size": 40
+      },
+      {
+        "ms": 4131,
+        "series": "update",
+        "size": 60
+      },
+      {
+        "ms": 5419,
+        "series": "update",
+        "size": 80
+      },
+      {
+        "ms": 6207,
+        "series": "update",
+        "size": 100
+      },
+      {
+        "ms": 7867,
+        "series": "update",
+        "size": 120
+      },
+      {
+        "ms": 10489,
+        "series": "update",
+        "size": 140
+      },
+      {
+        "ms": 13513,
+        "series": "update",
+        "size": 160
+      },
+      {
+        "ms": 17381,
+        "series": "update",
+        "size": 180
+      },
+      {
+        "ms": 21543,
+        "series": "update",
+        "size": 200
+      },
+      {
+        "ms": 2078,
+        "series": "updateClassic",
+        "size": 20
+      },
+      {
+        "ms": 2886,
+        "series": "updateClassic",
+        "size": 40
+      },
+      {
+        "ms": 5598,
+        "series": "updateClassic",
+        "size": 60
+      },
+      {
+        "ms": 10718,
+        "series": "updateClassic",
+        "size": 80
+      },
+      {
+        "ms": 17425,
+        "series": "updateClassic",
+        "size": 100
+      },
+      {
+        "ms": 20604,
+        "series": "updateClassic",
+        "size": 120
+      },
+      {
+        "ms": 24916,
+        "series": "updateClassic",
+        "size": 140
+      },
+      {
+        "ms": 29327,
+        "series": "updateClassic",
+        "size": 160
+      },
+      {
+        "ms": 31624,
+        "series": "updateClassic",
+        "size": 180
+      },
+      {
+        "ms": 35208,
+        "series": "updateClassic",
+        "size": 200
+      }
+    ]
+  },
+  "encoding": {
+    "color": {
+      "field": "series",
+      "legend": {
+        "orient": "right",
+        "symbolLimit": 30,
+        "title": "Implementation"
+      },
+      "type": "nominal"
+    },
+    "x": {
+      "field": "size",
+      "scale": {
+        "domain": [
+          20,
+          200
+        ]
+      },
+      "axis": {
+        "tickCount": 10,
+        "values": [
+          20,
+          40,
+          60,
+          80,
+          100,
+          120,
+          140,
+          160,
+          180,
+          200
+        ]
+      },
+      "title": "Size",
+      "type": "quantitative"
+    },
+    "y": {
+      "field": "ms",
+      "title": "Time (ms)",
+      "type": "quantitative"
+    }
+  },
+  "mark": {
+    "point": true,
+    "type": "line"
+  }
+}

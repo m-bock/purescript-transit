@@ -1,0 +1,18 @@
+digraph 
+{
+rankdir = "TD";fontname = "Arial";label = <<b>Untitled</b>>;labelloc = "t";fontsize = 12;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000"
+layout=neato
+N_1 [pos="0,0!",shape = "box", label = <<b>N_1</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+N_2 [pos="2,0!",shape = "box", label = <<b>N_2</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+N_2 -> N_1 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_a</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_3 [pos="2,2!",shape = "box", label = <<b>N_3</b>>, fontsize = 12, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+N_3 -> N_2 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_b</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_3 -> N_1 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_f</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_5 [pos="1,3!",shape = "box", label = <<b>N_5</b>>, fontsize = 12, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+N_5 -> N_3 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_c</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_5 -> N_4 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_d</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_4 [pos="0,2!",shape = "box", label = <<b>N_4</b>>, fontsize = 12, style = "filled", fillcolor = "#2dc472", fontcolor = "#1a7142", color = "#2dc472", fontname = "Arial", labelloc = "c", penwidth = 1.0]
+N_4 -> N_1 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_e</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_4 -> N_2 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_g</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+N_4 -> N_3 [color = "#8c8c8c", fontcolor = "#8c8c8c", fontsize = 12, label = <<b>E_h</b>>, arrowsize = "1.5", penwidth = 2.0, dir = "both", arrowsize = "0.7"]
+}

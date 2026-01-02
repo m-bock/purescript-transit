@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Your GitHub stylesheet -->
+    <link rel="stylesheet" href="../assets/github.css" />
+
+    <!-- Your custom layout -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        background-color: #0d1117;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        width: 100%;
+        padding: 45px;
+      }
+
+      /* Optional: nicer TOC spacing */
+      nav.toc {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #30363d;
+      }
+    </style>
+
+    <!-- Pandoc syntax highlighting CSS -->
+      </head>
+
+  <body>
+    <article class="markdown-body">
+       <h3 data-number="1.2.6" id="conclusion">Conclusion</h3>
+<p>In this example, we’ve seen how <strong>Transit</strong> helps you
+build type-safe state machines. We started with a simple door that can
+be open or closed, and learned the core workflow:</p>
+<ol type="1">
+<li><p><strong>Define the state machine</strong> using
+<strong>Transit</strong>’s type-level DSL specification</p></li>
+<li><p><strong>Implement the update function</strong> using
+<code>mkUpdate</code> with <code>match</code> clauses that the compiler
+verifies against the specification</p></li>
+<li><p><strong>Generate documentation</strong> automatically — both
+state diagrams and transition tables — from the same
+specification</p></li>
+</ol>
+<p>The key advantage is that your specification, implementation, and
+documentation all stay in sync because they share the same source of
+truth. The compiler ensures your code matches your specification, and
+your documentation is generated directly from it.</p>
+<p>While this example was simple, it demonstrates
+<strong>Transit</strong>’s fundamental approach. In the next example,
+we’ll see how <strong>Transit</strong> handles more complex scenarios
+with states that contain data and conditional
+transitions.</p>     </article>
+  </body>
+</html>
