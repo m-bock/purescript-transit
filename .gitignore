@@ -12,7 +12,7 @@ generated-docs/
 .spago
 .spec-results
 /tmp
-gh-preview.html
+docs/gh-preview.html
 /site
 /readme
 test/Bench/Generated

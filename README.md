@@ -11,10 +11,15 @@ A library for building type-safe state machines.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+**Table of Contents**
+
 - [Features](#features)
 - [Documentation](#documentation)
 - [Installation](#installation)
 - [Minimal Example: A Count Down State Machine](#minimal-example-a-count-down-state-machine)
+  - [Types](#types)
+  - [Update Function](#update-function)
+  - [Generate State Diagram](#generate-state-diagram)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -29,10 +34,7 @@ A library for building type-safe state machines.
 ## Documentation
 
 - [API Reference](https://pursuit.purescript.org/packages/purescript-transit/docs/Transit)
-
-<!--
-- Tutorial
--->
+- [Tutorial](docs/tutorial.md)
 
 ## Installation
 
@@ -49,6 +51,8 @@ spago install transit
 Let's consider a simple count down state machine which is described by the following state diagram:
 
 <img alt="Count Down state diagram" src="renders/count-down.svg">
+
+### Types
 
 To implement this state machine with **Transit** first we need to define the state and message types as Variants:
 
@@ -78,7 +82,7 @@ type Msg = Variant
 
 <!-- PD_END -->
 
-Then we need to define the state machine transitions like this:
+Then we need to define the state machine transitions as follows. Note that the last transition has 2 possible return states.
 
 <!-- PD_START:purs
 pick:
@@ -100,6 +104,8 @@ type CountDownTransit =
 ```
 
 <!-- PD_END -->
+
+### Update Function
 
 Finally, we write the update function that is checked at compile against the state machine specification:
 
@@ -131,6 +137,8 @@ update = mkUpdate @CountDownTransit
 ```
 
 <!-- PD_END -->
+
+### Generate State Diagram
 
 Reflect type level state machine specification to a term level representation:
 

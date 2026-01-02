@@ -15,12 +15,25 @@ gen-md-prettier:
 
 gen-doctoc:
     npx doctoc --maxlevel 3 README.md
+    npx doctoc --maxlevel 3 docs/tutorial.md
 
 gen-preview:
-    pandoc README.md \
+    pandoc docs/tutorial.md \
         --highlight-style=zenburn \
         --template=assets/gh-template.html \
-        -o gh-preview.html
+        -o docs/gh-preview.html
+
+gen-book:
+    rm -rf site
+    pandoc docs/tutorial.md -t chunkedhtml \
+      --split-level=3 \
+      --toc --toc-depth=3 \
+      -o site \
+      --highlight-style=zenburn \
+      --template=assets/gh-template.html
+    cp -r assets site/assets
+    cp -r renders site/renders
+    cp -r bench site/bench
 
 build:
     npx spago build
