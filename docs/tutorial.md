@@ -1,22 +1,3 @@
-**Table of Contents**
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [Transit](#transit)
-  - [Introduction](#introduction)
-    - [About This Documentation](#about-this-documentation)
-    - [Installation](#installation)
-  - [Example 1: A Simple Door](#example-1-a-simple-door)
-    - [The State Machine](#the-state-machine)
-    - [Classic Approach](#classic-approach)
-    - [Transit Approach](#transit-approach)
-    - [Testing the update function](#testing-the-update-function)
-    - [State Diagram and Transition Table Generation](#state-diagram-and-transition-table-generation)
-    - [Conclusion](#conclusion)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # Transit
 
 ## Introduction
@@ -37,7 +18,7 @@ All code examples in this documentation are extracted from actual, type-checked 
 
 > Full source code: _[test/Examples/DoorSimple.purs](test/Examples/DoorSimple.purs)_
 
-<img src="../assets/door-simple-header.jpg" width="450" />
+<img src="assets/door-simple-header.jpg" width="450" />
 
 Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of the latter.
 
@@ -52,9 +33,9 @@ Before diving into the code, let's visualize our simple door state machine. This
 The state diagram below shows all possible states and the valid transitions between them:
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../renders/door-simple-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="../renders/door-simple-light.svg">
-  <img alt="Simple Door state diagram" src="../renders/door-simple-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
+  <img alt="Simple Door state diagram" src="renders/door-simple-light.svg">
 </picture>
 
 In this diagram, you can see:

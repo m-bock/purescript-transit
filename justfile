@@ -23,14 +23,15 @@ gen-preview:
         --template=assets/gh-template.html \
         -o docs/gh-preview.html
 
-gen-book:
+gen-book BASEURL='':
     rm -rf site
     pandoc docs/tutorial.md -t chunkedhtml \
       --split-level=3 \
       --toc --toc-depth=3 \
       -o site \
       --highlight-style=zenburn \
-      --template=assets/gh-template.html
+      --template=assets/gh-template.html \
+      --variable=baseurl:{{BASEURL}}
     cp -r assets site/assets
     cp -r renders site/renders
     cp -r bench site/bench
@@ -102,7 +103,6 @@ gen:
     just gen-md-prettier && \
     just gen-svgs && \
     just gen-patchdown && \
-    just gen-doctoc && \
     \
     just gen-preview
 
@@ -110,3 +110,6 @@ watch:
     just gen && \
     npx concurrently "npx browser-sync start --server --files 'renders/**/*.md' 'renders/**/*.html' --port 5000 --no-open --reload-delay 100" "while true; do sleep 30; just gen; done"
 
+deploy:
+    just gen-book 'https://m-bock.github.io/purescript-transit/' && \
+    npx gh-pages -d site
