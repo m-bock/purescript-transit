@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Your GitHub stylesheet -->
+    <link rel="stylesheet" href="assets/github.css" />
+
+    <!-- Your custom layout -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        background-color: #0d1117;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        width: 100%;
+        padding: 45px;
+      }
+
+      /* Optional: nicer TOC spacing */
+      nav.toc {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #30363d;
+      }
+    </style>
+
+    <!-- Pandoc syntax highlighting CSS -->
+      </head>
+
+  <body>
+    <article class="markdown-body">
+       <h3 data-number="1.1.1" id="about-this-documentation">About This
+Documentation</h3>
+<p>All code examples in this documentation are extracted from actual,
+type-checked PureScript source files. Also, whenever you find an
+assertion or a full unit test, it’s ensured that it ran and passed. In
+this sense this text is not just documentation, but also a test suite.
+At the bottom of every code example you can find a link to the actual
+source file. So you can get a better picture of the context and get
+information about the imports used.</p>
+<p><strong>Terminology note</strong>: Throughout this documentation, the
+terms <em>message</em>, <em>action</em>, and <em>transition</em> are
+used interchangeably to refer to the events that trigger state
+changes[^terminology]. In <strong>Transit</strong>’s type system, these
+correspond to the message types in your <code>Msg</code>
+variant.</p>     </article>
+  </body>
+</html>

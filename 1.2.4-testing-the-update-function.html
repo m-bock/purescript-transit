@@ -1,0 +1,278 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Your GitHub stylesheet -->
+    <link rel="stylesheet" href="assets/github.css" />
+
+    <!-- Your custom layout -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        background-color: #0d1117;
+      }
+
+      .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        width: 100%;
+        padding: 45px;
+      }
+
+      /* Optional: nicer TOC spacing */
+      nav.toc {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #30363d;
+      }
+    </style>
+
+    <!-- Pandoc syntax highlighting CSS -->
+        <style type="text/css">
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+    </style>
+      </head>
+
+  <body>
+    <article class="markdown-body">
+       <h3 data-number="1.2.4" id="testing-the-update-function">Testing
+the update function</h3>
+<p>Before we move further, let’s actually verify that our implementation
+of the update function works as we expect it to. We’ll do this by
+writing some tests.</p>
+<h4 data-number="1.2.4.1" id="creating-variant-values">Creating Variant
+Values</h4>
+<p>To create values of type <code>Variant</code>,
+<strong>Transit</strong> provides the <code>v</code> function from
+<code>Transit.VariantUtils</code>. It’s a convenience wrapper around
+<code>Variant</code>’s <code>inj</code> function that uses type
+application (no Proxy needed) and allows omitting empty record
+arguments:</p>
+<ul>
+<li><p>Transit record payload (argument can be omitted)</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> <span class="dt">State</span></span></code></pre></div></li>
+<li><p>Non-empty payload (must provide the data)</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { activePin<span class="op">:</span> <span class="st">&quot;1234&quot;</span> }<span class="ot"> ::</span> <span class="dt">State</span></span></code></pre></div></li>
+</ul>
+<p>This is more ergonomic than using
+<code>V.inj (Proxy :: _ "DoorOpen") {}</code> directly.</p>
+<h4 data-number="1.2.4.2" id="testing-state-transitions">Testing State
+Transitions</h4>
+<p>To test our update function, we’ll use two useful functions from the
+<code>Data.Array</code> module:</p>
+<!-- PD_START:purs
+inline: true
+pick:
+  - tag: signature_or_foreign
+    name: foldl
+    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
+    prefix: '- '
+  - tag: signature_or_foreign
+    name: scanl
+    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
+    prefix: '- '
+split: true
+-->
+<ul>
+<li><code>foldl :: forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; b</code></li>
+<li><code>scanl :: forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; Array b</code></li>
+</ul>
+<!-- PD_END -->
+<p>The simplest way to test the update function is to use
+<code>foldl</code> to apply a sequence of messages and check if the
+final state matches what we expect:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - tag: value
+    name: assert1
+-->
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>assert1 <span class="ot">=</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">foldl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">`shouldEqual`</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/DoorSimple.purs#L66-L69"
+      >test/Examples/DoorSimple.purs L66-L69</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<p>This test starts with the door open, closes it, opens it, then closes
+it again. It checks that we end up with the door closed, as
+expected.</p>
+<p>This test only checks the final result. To be more thorough, we
+should also verify that each step along the way works correctly. The
+<code>scanl</code> function is perfect for this — it shows us all the
+intermediate states, not just the final one.</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - tag: value
+    name: assert2
+-->
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>assert2 <span class="ot">=</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scanl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">`shouldEqual`</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      [ v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> ]</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/DoorSimple.purs#L72-L75"
+      >test/Examples/DoorSimple.purs L72-L75</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<p>This test does the same thing — starts with the door open, closes it,
+opens it, then closes it again. But instead of just checking the final
+result, it verifies each step along the way: after closing, the door is
+closed; after opening, the door is open; and after closing again, the
+door is closed. This makes sure each transition works correctly.</p>
+<p>Since we’ll want to write more of these tests for further examples,
+it’s helpful to define a reusable helper function. The
+<code>assertWalk</code> function takes an update function, an initial
+state, and a list of message/state pairs representing the expected walk
+through the state machine:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - assertWalk
+-->
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>assertWalk</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  ::</span> <span class="kw">forall</span> msg state</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span> <span class="dt">Eq</span> state</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=&gt;</span> <span class="dt">Show</span> state</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=&gt;</span> (state <span class="ot">-&gt;</span> msg <span class="ot">-&gt;</span> state)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">-&gt;</span> state</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">-&gt;</span> <span class="dt">Array</span> (msg <span class="op">/</span>\ state)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">-&gt;</span> <span class="dt">Aff</span> <span class="dt">Unit</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>assertWalk updateFn initState walk <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="ot">    msgs ::</span> <span class="dt">Array</span> msg</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    msgs <span class="ot">=</span> <span class="fu">map</span> <span class="fu">fst</span> walk</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="ot">    expectedStates ::</span> <span class="dt">Array</span> state</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    expectedStates <span class="ot">=</span> <span class="fu">map</span> <span class="fu">snd</span> walk</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="ot">    actualStates ::</span> <span class="dt">Array</span> state</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    actualStates <span class="ot">=</span> <span class="fu">scanl</span> updateFn initState msgs</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  actualStates <span class="ot">`shouldEqual`</span> expectedStates</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/Common.purs#L40-L59"
+      >test/Examples/Common.purs L40-L59</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<p>The function extracts the messages from the pairs, applies them
+sequentially using <code>scanl</code>, and verifies that the resulting
+states match the expected ones. Here’s how we use it:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - tag: value
+    name: assert3
+-->
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>assert3 <span class="ot">=</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  assertWalk update</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    , v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    , v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    ]</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎 <a href="test/Examples/DoorSimple.purs#L78-L88"
+      >test/Examples/DoorSimple.purs L78-L88</a
+    > </sup>
+</p>
+<!-- PD_END -->
+<p>The <code>~&gt;</code> operator is an infix alias for
+<code>Tuple</code>. So <code>v @"Close" ~&gt; v @"DoorClosed"</code> is
+equivalent to <code>Tuple (v @"Close") (v @"DoorClosed")</code>.</p>
+<p>We read it like: Starting from state <code>DoorOpen</code>, when
+receiving message <code>Close</code>, we expect the next state to be
+<code>DoorClosed</code>. From there, when receiving message
+<code>Open</code>, we expect the next state to be <code>DoorOpen</code>.
+And so on.</p>     </article>
+  </body>
+</html>
