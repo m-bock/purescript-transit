@@ -28,9 +28,17 @@
 
       /* Optional: nicer TOC spacing */
       nav.toc {
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Index page subtitle */
+      .page-subtitle {
+        font-size: 18px;
+        color: #8b949e;
+        margin-bottom: 2rem;
       }
 
       /* Sub-TOC for each page */
@@ -105,12 +113,21 @@
       nav.pager .github-link {
         color: #8b949e;
         text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       nav.pager .github-link:hover {
         color: #58a6ff;
+      }
+
+      nav.pager .github-link img {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
       }
 
       /* Scroll to top link */
@@ -159,6 +176,20 @@
       .main-content {
         padding: 45px;
       }
+
+      #TOC > ul > li {
+        margin-bottom: 1rem;
+        font-size: 22px;
+      }
+
+      #TOC > ul > li > ul {
+        margin-top: 0.5rem;
+      }
+
+      #TOC > ul > li > ul > li {
+        margin-bottom: 0rem;
+        font-size: 16px;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -167,47 +198,56 @@
   <body>
     <article class="markdown-body">
       <nav class="pager">
-        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <a
+          href="https://github.com/m-bock/purescript-transit"
+          class="github-link"
+          target="_blank"
+          rel="noopener"
+          title="View on GitHub"
+        >
+          <img src="assets/github-mark-white.svg" alt="GitHub" />
+          m-bock/purescript-transit
+        </a>
         <div class="nav-links">
-                       <a href="1-transit.html" rel="next" title="Transit"
+                       <a href="1-introduction.html" rel="next" title="Introduction"
             >Start reading →</a
           >
                   </div>
       </nav>
 
       <main class="main-content">
-                <nav id="TOC" class="toc"><ul>
-<li><a href="1-transit.html#transit" id="toc-transit">Transit</a>
-<ul>
-<li><a href="1.1-introduction.html#introduction"
+                <h1>Transit</h1>
+        <p class="page-subtitle">
+          A PureScript library for building type-safe state machines
+        </p>
+        <nav id="TOC" class="toc"><ul>
+<li><a href="1-introduction.html#introduction"
 id="toc-introduction">Introduction</a>
 <ul>
-<li><a
-href="1.1.1-about-this-documentation.html#about-this-documentation"
+<li><a href="1.1-about-this-documentation.html#about-this-documentation"
 id="toc-about-this-documentation">About This Documentation</a></li>
-<li><a href="1.1.2-installation.html#installation"
+<li><a href="1.2-installation.html#installation"
 id="toc-installation">Installation</a></li>
 </ul></li>
-<li><a href="1.2-example-1-a-simple-door.html#example-1-a-simple-door"
+<li><a href="2-example-1-a-simple-door.html#example-1-a-simple-door"
 id="toc-example-1-a-simple-door">Example 1: A Simple Door</a>
 <ul>
-<li><a href="1.2.1-the-state-machine.html#the-state-machine"
+<li><a href="2.1-the-state-machine.html#the-state-machine"
 id="toc-the-state-machine">The State Machine</a></li>
-<li><a href="1.2.2-classic-approach.html#classic-approach"
+<li><a href="2.2-classic-approach.html#classic-approach"
 id="toc-classic-approach">Classic Approach</a></li>
-<li><a href="1.2.3-transit-approach.html#transit-approach"
+<li><a href="2.3-transit-approach.html#transit-approach"
 id="toc-transit-approach">Transit Approach</a></li>
 <li><a
-href="1.2.4-testing-the-update-function.html#testing-the-update-function"
+href="2.4-testing-the-update-function.html#testing-the-update-function"
 id="toc-testing-the-update-function">Testing the update
 function</a></li>
 <li><a
-href="1.2.5-state-diagram-and-transition-table-generation.html#state-diagram-and-transition-table-generation"
+href="2.5-state-diagram-and-transition-table-generation.html#state-diagram-and-transition-table-generation"
 id="toc-state-diagram-and-transition-table-generation">State Diagram and
 Transition Table Generation</a></li>
-<li><a href="1.2.6-conclusion.html#conclusion"
+<li><a href="2.6-conclusion.html#conclusion"
 id="toc-conclusion">Conclusion</a></li>
-</ul></li>
 </ul></li>
 </ul></nav>
         

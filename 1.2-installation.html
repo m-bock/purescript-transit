@@ -28,9 +28,17 @@
 
       /* Optional: nicer TOC spacing */
       nav.toc {
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Index page subtitle */
+      .page-subtitle {
+        font-size: 18px;
+        color: #8b949e;
+        margin-bottom: 2rem;
       }
 
       /* Sub-TOC for each page */
@@ -105,12 +113,21 @@
       nav.pager .github-link {
         color: #8b949e;
         text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       nav.pager .github-link:hover {
         color: #58a6ff;
+      }
+
+      nav.pager .github-link img {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
       }
 
       /* Scroll to top link */
@@ -159,6 +176,20 @@
       .main-content {
         padding: 45px;
       }
+
+      #TOC > ul > li {
+        margin-bottom: 1rem;
+        font-size: 22px;
+      }
+
+      #TOC > ul > li > ul {
+        margin-top: 0.5rem;
+      }
+
+      #TOC > ul > li > ul > li {
+        margin-bottom: 0rem;
+        font-size: 16px;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -167,89 +198,30 @@
   <body>
     <article class="markdown-body">
       <nav class="pager">
-        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <a
+          href="https://github.com/m-bock/purescript-transit"
+          class="github-link"
+          target="_blank"
+          rel="noopener"
+          title="View on GitHub"
+        >
+          <img src="assets/github-mark-white.svg" alt="GitHub" />
+          m-bock/purescript-transit
+        </a>
         <div class="nav-links">
-                    <a href="1.2-example-1-a-simple-door.html" rel="prev" title="Example 1: A Simple Door"
+                    <a href="1.1-about-this-documentation.html" rel="prev" title="About This Documentation"
             >← Previous</a
           >
            
           <a href="index.html">≡ Contents</a>
-                     <a href="1.2.2-classic-approach.html" rel="next" title="Classic Approach"
+                     <a href="2-example-1-a-simple-door.html" rel="next" title="Example 1: A Simple Door"
             >Next →</a
           >
                   </div>
       </nav>
 
       <main class="main-content">
-         <h3 data-number="1.2.1" id="the-state-machine">The State
-Machine</h3>
-<p>Think of a door that can be either open or closed. When it’s open,
-you can close it. When it’s closed, you can open it. That’s it — no
-other actions make sense. You can’t open a door that’s already open, and
-you can’t close a door that’s already closed. This simple behavior is
-what we’re modeling here.</p>
-<p>Before diving into the code, let’s visualize our simple door state
-machine. This will help you understand the structure we’re about to
-implement.</p>
-<h4 data-number="1.2.1.1" id="state-diagram">State Diagram</h4>
-<p>The state diagram below shows all possible states and the valid
-transitions between them:</p>
-<p><picture>
-<source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
-<source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
-<img alt="Simple Door state diagram" src="renders/door-simple-light.svg">
-</picture></p>
-<p>In this diagram, you can see:</p>
-<ul>
-<li><strong>Two states</strong>: <code>DoorOpen</code> and
-<code>DoorClosed</code> (shown as rectangles)</li>
-<li><strong>Two transitions</strong>: The <code>Close</code> transition
-moves from <code>DoorOpen</code> to <code>DoorClosed</code>, and the
-<code>Open</code> transition moves from <code>DoorClosed</code> to
-<code>DoorOpen</code></li>
-<li><strong>Arrows</strong>: The direction of each arrow shows which
-state changes are valid</li>
-</ul>
-<h4 data-number="1.2.1.2" id="transition-table">Transition Table</h4>
-<p>For a more structured view, here’s the corresponding transition
-table:</p>
-<!-- PD_START:raw
-filePath: renders/door-simple.md
-wrapNl: true
--->
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th></th>
-<th>Message</th>
-<th></th>
-<th>State</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DoorOpen</td>
-<td><strong>⟶</strong></td>
-<td>Close</td>
-<td><strong>⟶</strong></td>
-<td>DoorClosed</td>
-</tr>
-<tr>
-<td>DoorClosed</td>
-<td><strong>⟶</strong></td>
-<td>Open</td>
-<td><strong>⟶</strong></td>
-<td>DoorOpen</td>
-</tr>
-</tbody>
-</table>
-<!-- PD_END -->
-<p>Each row shows one valid transition: which state you start in, which
-action you take, and which state you end up in. Notice that invalid
-actions — like trying to open an already open door — simply don’t appear
-in the table.</p>
-<p>Now let’s see how we represent this in PureScript code.</p> 
+         <h2 data-number="1.2" id="installation">Installation</h2> 
         <div class="scroll-to-top">
           <a
             href="#"

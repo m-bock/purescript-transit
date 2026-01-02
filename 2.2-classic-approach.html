@@ -28,9 +28,17 @@
 
       /* Optional: nicer TOC spacing */
       nav.toc {
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Index page subtitle */
+      .page-subtitle {
+        font-size: 18px;
+        color: #8b949e;
+        margin-bottom: 2rem;
       }
 
       /* Sub-TOC for each page */
@@ -105,12 +113,21 @@
       nav.pager .github-link {
         color: #8b949e;
         text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       nav.pager .github-link:hover {
         color: #58a6ff;
+      }
+
+      nav.pager .github-link img {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
       }
 
       /* Scroll to top link */
@@ -158,6 +175,20 @@
 
       .main-content {
         padding: 45px;
+      }
+
+      #TOC > ul > li {
+        margin-bottom: 1rem;
+        font-size: 22px;
+      }
+
+      #TOC > ul > li > ul {
+        margin-top: 0.5rem;
+      }
+
+      #TOC > ul > li > ul > li {
+        margin-bottom: 0rem;
+        font-size: 16px;
       }
     </style>
 
@@ -232,127 +263,108 @@
   <body>
     <article class="markdown-body">
       <nav class="pager">
-        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <a
+          href="https://github.com/m-bock/purescript-transit"
+          class="github-link"
+          target="_blank"
+          rel="noopener"
+          title="View on GitHub"
+        >
+          <img src="assets/github-mark-white.svg" alt="GitHub" />
+          m-bock/purescript-transit
+        </a>
         <div class="nav-links">
-                    <a href="1.2.4-testing-the-update-function.html" rel="prev" title="Testing the update function"
+                    <a href="2.1-the-state-machine.html" rel="prev" title="The State Machine"
             >← Previous</a
           >
            
           <a href="index.html">≡ Contents</a>
-                     <a href="1.2.6-conclusion.html" rel="next" title="Conclusion"
+                     <a href="2.3-transit-approach.html" rel="next" title="Transit Approach"
             >Next →</a
           >
                   </div>
       </nav>
 
       <main class="main-content">
-         <h3 data-number="1.2.5"
-id="state-diagram-and-transition-table-generation">State Diagram and
-Transition Table Generation</h3>
-<p><strong>Transit</strong> can generate both state diagrams and
-transition tables directly from your type-level specification. Both
-generation processes use the same approach: <code>reflectType</code>
-converts your type-level DSL specification to a term-level equivalent,
-which can then be used to generate the documentation.</p>
-<h4 data-number="1.2.5.1" id="state-diagrams">State Diagrams</h4>
-<p>To generate a state diagram, you use
-<code>TransitGraphviz.writeToFile</code> to render a Graphviz
-<code>.dot</code> file:</p>
-<!-- PD_START:purs
-filePath: src/Transit/Render/Graphviz.purs
-inline: true
-pick:
-  - tag: signature_or_foreign
-    name: generate
-split: true
--->
-<p><code>generate :: TransitCore -&gt; (Options -&gt; Options) -&gt; String</code></p>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/src/Transit/Render/Graphviz.purs#L234-L234"
-      >src/Transit/Render/Graphviz.purs L234-L234</a
-    > </sup>
-</p>
-<!-- PD_END -->
+         <h2 data-number="2.2" id="classic-approach">Classic
+Approach</h2>
+<p>Before diving into <strong>Transit</strong>, let’s first look at how
+state machines are typically implemented in PureScript using pattern
+matching. This classic approach is familiar to most PureScript
+developers and serves as a baseline for understanding what
+<strong>Transit</strong> improves upon.</p>
+<h3 data-number="2.2.1" id="states-and-message-types">States and Message
+types</h3>
+<p>To represent our door in code, we need two major types: the states
+the door can be in, and the actions that can change those states. In
+PureScript, we define these as simple data types. We are using the
+suffix <code>D</code> to denote the traditional approach (D = data).</p>
 <!-- PD_START:purs
 filePath: test/Examples/DoorSimple.purs
 pick:
-  - generateStateDiagram
+  - StateD
+  - MsgD
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagram ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagram <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    transit ::</span> <span class="dt">TransitCore</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorSimpleTransit</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-light.dot&quot;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    (TransitGraphviz.generate transit _ { theme <span class="ot">=</span> themeHarmonyLight })</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-dark.dot&quot;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    (TransitGraphviz.generate transit _ { theme <span class="ot">=</span> themeHarmonyDark })</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">StateD</span> <span class="ot">=</span> <span class="dt">DoorOpen</span> <span class="op">|</span> <span class="dt">DoorClosed</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">MsgD</span> <span class="ot">=</span> <span class="dt">Close</span> <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L104-L114"
-      >test/Examples/DoorSimple.purs L104-L114</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L29-L31">test/Examples/DoorSimple.purs
+L29-L31</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The process works in two steps:</p>
-<ol type="1">
-<li><code>reflectType</code> converts your type-level DSL specification
-to a term-level equivalent of type <code>TransitCore</code></li>
-<li><code>TransitGraphviz.writeToFile</code> uses that to render a
-Graphviz <code>.dot</code> file</li>
-</ol>
-<p>The <code>writeToFile</code> function accepts an options record that
-lets you customize the diagram. E.g. the <code>theme</code> option which
-we’re using above controls the color scheme. <strong>Transit</strong>
-provides a couple of built-in themes. But you can also provide your own.
-See <a href="docs/themes.md">themes.md</a> for more details.</p>
-<p>To convert the <code>.dot</code> file to an SVG (or other formats),
-use the Graphviz[^graphviz] command-line tools:</p>
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> renders/door-simple.dot <span class="at">-o</span> renders/door-simple.svg</span></code></pre></div>
-<p>Or for PNG:</p>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> renders/door-simple.dot <span class="at">-o</span> renders/door-simple.png</span></code></pre></div>
-<h4 data-number="1.2.5.2" id="transition-tables">Transition Tables</h4>
-<p>In addition to state diagrams, you can also generate transition
-tables from the same specification. This provides a tabular view of all
-state transitions, which can be easier to read for some use cases.</p>
-<p>The process is identical — you use <code>reflectType</code> to
-convert your DSL specification, but then use
-<code>TransitTable.writeToFile</code> instead:</p>
+<p>The <code>State</code> type captures the two possible states we saw
+in the diagram: <code>DoorOpen</code> and <code>DoorClosed</code>. The
+<code>Msg</code> type represents the two actions: <code>Close</code> and
+<code>Open</code>. These correspond directly to what we visualized
+earlier — each state and each transition from the diagram has a
+corresponding value in these types.</p>
+<h3 data-number="2.2.2" id="the-update-function">The update
+function</h3>
+<p>Now that we have our types, we need a function that takes the current
+state and a message, and returns the new state. The traditional way to
+implement this is with a pattern-matching function:</p>
 <!-- PD_START:purs
 filePath: test/Examples/DoorSimple.purs
 pick:
-  - generateTransitionTable
+  - updateD
 -->
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTransitionTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    transit ::</span> <span class="dt">TransitCore</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorSimpleTransit</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple.md&quot;</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    (TransitTable.generate transit _ { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span> })</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">updateD ::</span> <span class="dt">StateD</span> <span class="ot">-&gt;</span> <span class="dt">MsgD</span> <span class="ot">-&gt;</span> <span class="dt">StateD</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>updateD state msg <span class="ot">=</span> <span class="kw">case</span> state, msg <span class="kw">of</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L116-L123"
-      >test/Examples/DoorSimple.purs L116-L123</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L33-L37">test/Examples/DoorSimple.purs
+L33-L37</a> </sup>
 </p>
 <!-- PD_END -->
-<p>This generates a Markdown file containing a table with columns for
-“From State”, “Message”, and “To State”.</p>
-<p>Since both the state diagram and transition table are generated from
-the same DSL specification, they’re guaranteed to be consistent with
-each other and with your type-level specification.</p> 
+<p>We pattern match on both the current state and the message at once.
+It could also be written as a nested pattern match.</p>
+<p>This function handles the two valid transitions we saw in the
+diagram: closing an open door and opening a closed door. The catch-all
+case <code>_, _ -&gt; state</code> handles any invalid combinations
+(like trying to open an already open door) by returning the current
+state unchanged.</p>
+<p>While this approach works and is straightforward, it has some
+drawbacks:</p>
+<ul>
+<li><p><strong>Implicit state machine specification</strong>: The state
+machine’s structure is only defined implicitly within the update
+function’s pattern matching and return values.</p></li>
+<li><p><strong>Documentation drift</strong>: If you maintain a state
+diagram for documentation purposes, there’s nothing ensuring the code
+stays in sync — you have to remember to update both manually.</p></li>
+<li><p><strong>Limited analysis capabilities</strong>: There’s no way to
+analyze the state machine’s structure or behavior statically — you can
+only understand it by running the code.</p></li>
+</ul> 
         <div class="scroll-to-top">
           <a
             href="#"

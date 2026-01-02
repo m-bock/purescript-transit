@@ -28,9 +28,17 @@
 
       /* Optional: nicer TOC spacing */
       nav.toc {
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Index page subtitle */
+      .page-subtitle {
+        font-size: 18px;
+        color: #8b949e;
+        margin-bottom: 2rem;
       }
 
       /* Sub-TOC for each page */
@@ -105,12 +113,21 @@
       nav.pager .github-link {
         color: #8b949e;
         text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       nav.pager .github-link:hover {
         color: #58a6ff;
+      }
+
+      nav.pager .github-link img {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
       }
 
       /* Scroll to top link */
@@ -158,6 +175,20 @@
 
       .main-content {
         padding: 45px;
+      }
+
+      #TOC > ul > li {
+        margin-bottom: 1rem;
+        font-size: 22px;
+      }
+
+      #TOC > ul > li > ul {
+        margin-top: 0.5rem;
+      }
+
+      #TOC > ul > li > ul > li {
+        margin-bottom: 0rem;
+        font-size: 16px;
       }
     </style>
 
@@ -232,27 +263,36 @@
   <body>
     <article class="markdown-body">
       <nav class="pager">
-        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <a
+          href="https://github.com/m-bock/purescript-transit"
+          class="github-link"
+          target="_blank"
+          rel="noopener"
+          title="View on GitHub"
+        >
+          <img src="assets/github-mark-white.svg" alt="GitHub" />
+          m-bock/purescript-transit
+        </a>
         <div class="nav-links">
-                    <a href="1.2.3-transit-approach.html" rel="prev" title="Transit Approach"
+                    <a href="2.3-transit-approach.html" rel="prev" title="Transit Approach"
             >← Previous</a
           >
            
           <a href="index.html">≡ Contents</a>
-                     <a href="1.2.5-state-diagram-and-transition-table-generation.html" rel="next" title="State Diagram and Transition Table Generation"
+                     <a href="2.5-state-diagram-and-transition-table-generation.html" rel="next" title="State Diagram and Transition Table Generation"
             >Next →</a
           >
                   </div>
       </nav>
 
       <main class="main-content">
-         <h3 data-number="1.2.4"
-id="testing-the-update-function">Testing the update function</h3>
+         <h2 data-number="2.4" id="testing-the-update-function">Testing
+the update function</h2>
 <p>Before we move further, let’s actually verify that our implementation
 of the update function works as we expect it to. We’ll do this by
 writing some tests.</p>
-<h4 data-number="1.2.4.1" id="creating-variant-values">Creating Variant
-Values</h4>
+<h3 data-number="2.4.1" id="creating-variant-values">Creating Variant
+Values</h3>
 <p>To create values of type <code>Variant</code>,
 <strong>Transit</strong> provides the <code>v</code> function from
 <code>Transit.VariantUtils</code>. It’s a convenience wrapper around
@@ -269,8 +309,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 </ul>
 <p>This is more ergonomic than using
 <code>V.inj (Proxy :: _ "DoorOpen") {}</code> directly.</p>
-<h4 data-number="1.2.4.2" id="testing-state-transitions">Testing State
-Transitions</h4>
+<h3 data-number="2.4.2" id="testing-state-transitions">Testing State
+Transitions</h3>
 <p>To test our update function, we’ll use two useful functions from the
 <code>Data.Array</code> module:</p>
 <!-- PD_START:purs
@@ -308,9 +348,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L68-L71"
-      >test/Examples/DoorSimple.purs L68-L71</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L68-L71">test/Examples/DoorSimple.purs
+L68-L71</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This test starts with the door open, closes it, opens it, then closes
@@ -334,9 +373,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L74-L77"
-      >test/Examples/DoorSimple.purs L74-L77</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L74-L77">test/Examples/DoorSimple.purs
+L74-L77</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This test does the same thing — starts with the door open, closes it,
@@ -378,9 +416,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L40-L59"
-      >test/Examples/Common.purs L40-L59</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L40-L59">test/Examples/Common.purs
+L40-L59</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The function extracts the messages from the pairs, applies them
@@ -407,9 +444,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L80-L90"
-      >test/Examples/DoorSimple.purs L80-L90</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L80-L90">test/Examples/DoorSimple.purs
+L80-L90</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>~&gt;</code> operator is an infix alias for

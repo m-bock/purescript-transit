@@ -28,9 +28,17 @@
 
       /* Optional: nicer TOC spacing */
       nav.toc {
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Index page subtitle */
+      .page-subtitle {
+        font-size: 18px;
+        color: #8b949e;
+        margin-bottom: 2rem;
       }
 
       /* Sub-TOC for each page */
@@ -105,12 +113,21 @@
       nav.pager .github-link {
         color: #8b949e;
         text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       nav.pager .github-link:hover {
         color: #58a6ff;
+      }
+
+      nav.pager .github-link img {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
       }
 
       /* Scroll to top link */
@@ -159,6 +176,20 @@
       .main-content {
         padding: 45px;
       }
+
+      #TOC > ul > li {
+        margin-bottom: 1rem;
+        font-size: 22px;
+      }
+
+      #TOC > ul > li > ul {
+        margin-top: 0.5rem;
+      }
+
+      #TOC > ul > li > ul > li {
+        margin-bottom: 0rem;
+        font-size: 16px;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -172,7 +203,16 @@
   <body>
     <article class="markdown-body">
       <nav class="pager">
-        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <a
+          href="https://github.com/m-bock/purescript-transit"
+          class="github-link"
+          target="_blank"
+          rel="noopener"
+          title="View on GitHub"
+        >
+          <img src="assets/github-mark-white.svg" alt="GitHub" />
+          m-bock/purescript-transit
+        </a>
         <div class="nav-links">
           $if(previous.url)$
           <a href="$previous.url$" rel="prev" title="$previous.title$"
@@ -190,6 +230,10 @@
 
       <main class="main-content">
         $if(toc)$
+        <h1>Transit</h1>
+        <p class="page-subtitle">
+          A PureScript library for building type-safe state machines
+        </p>
         <nav id="TOC" class="toc">$table-of-contents$</nav>
         $else$ $body$ $endif$
 

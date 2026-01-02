@@ -28,9 +28,17 @@
 
       /* Optional: nicer TOC spacing */
       nav.toc {
+        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Index page subtitle */
+      .page-subtitle {
+        font-size: 18px;
+        color: #8b949e;
+        margin-bottom: 2rem;
       }
 
       /* Sub-TOC for each page */
@@ -105,12 +113,21 @@
       nav.pager .github-link {
         color: #8b949e;
         text-decoration: none;
-        font-size: 18px;
+        font-size: 14px;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
       nav.pager .github-link:hover {
         color: #58a6ff;
+      }
+
+      nav.pager .github-link img {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
       }
 
       /* Scroll to top link */
@@ -158,6 +175,20 @@
 
       .main-content {
         padding: 45px;
+      }
+
+      #TOC > ul > li {
+        margin-bottom: 1rem;
+        font-size: 22px;
+      }
+
+      #TOC > ul > li > ul {
+        margin-top: 0.5rem;
+      }
+
+      #TOC > ul > li > ul > li {
+        margin-bottom: 0rem;
+        font-size: 16px;
       }
     </style>
 
@@ -232,30 +263,39 @@
   <body>
     <article class="markdown-body">
       <nav class="pager">
-        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <a
+          href="https://github.com/m-bock/purescript-transit"
+          class="github-link"
+          target="_blank"
+          rel="noopener"
+          title="View on GitHub"
+        >
+          <img src="assets/github-mark-white.svg" alt="GitHub" />
+          m-bock/purescript-transit
+        </a>
         <div class="nav-links">
-                    <a href="1.2.2-classic-approach.html" rel="prev" title="Classic Approach"
+                    <a href="2.2-classic-approach.html" rel="prev" title="Classic Approach"
             >← Previous</a
           >
            
           <a href="index.html">≡ Contents</a>
-                     <a href="1.2.4-testing-the-update-function.html" rel="next" title="Testing the update function"
+                     <a href="2.4-testing-the-update-function.html" rel="next" title="Testing the update function"
             >Next →</a
           >
                   </div>
       </nav>
 
       <main class="main-content">
-         <h3 data-number="1.2.3" id="transit-approach">Transit
-Approach</h3>
+         <h2 data-number="2.3" id="transit-approach">Transit
+Approach</h2>
 <p>With the <strong>Transit</strong> library, we take a different
 approach that addresses the drawbacks of the classic method. Instead of
 writing the update function directly, we first define a type-level
 specification that describes our state machine. This specification
 serves as a single source of truth that the compiler can verify against
 your implementation.</p>
-<h4 data-number="1.2.3.1" id="the-type-level-specification">The
-Type-Level Specification</h4>
+<h3 data-number="2.3.1" id="the-type-level-specification">The Type-Level
+Specification</h3>
 <p>First, we define the state machine structure using
 <strong>Transit</strong>’s type-level DSL:</p>
 <!-- PD_START:purs
@@ -271,9 +311,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L53-L56"
-      >test/Examples/DoorSimple.purs L53-L56</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L53-L56">test/Examples/DoorSimple.purs
+L53-L56</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Breaking down the syntax:</p>
@@ -290,8 +329,8 @@ transition to state <code>DoorClosed</code></li>
 <p>This type-level specification fully defines the state machine’s
 structure. The compiler can now use this specification to ensure our
 implementation is correct.</p>
-<h4 data-number="1.2.3.2" id="state-and-message-types">State and Message
-Types</h4>
+<h3 data-number="2.3.2" id="state-and-message-types">State and Message
+Types</h3>
 <p><strong>Transit</strong> uses <code>Variant</code> types (from
 <code>purescript-variant</code>)[^variant] for both <code>State</code>
 and <code>Msg</code> instead of traditional ADTs. Variants are open sum
@@ -321,13 +360,12 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L43-L51"
-      >test/Examples/DoorSimple.purs L43-L51</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L43-L51">test/Examples/DoorSimple.purs
+L43-L51</a> </sup>
 </p>
 <!-- PD_END -->
-<h4 data-number="1.2.3.3" id="the-update-function-1">The Update
-Function</h4>
+<h3 data-number="2.3.3" id="the-update-function-1">The Update
+Function</h3>
 <p>Based on this specification, we create an update function using
 <code>mkUpdate</code>:</p>
 <!-- PD_START:purs
@@ -343,9 +381,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L58-L61"
-      >test/Examples/DoorSimple.purs L58-L61</a
-    > </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L58-L61">test/Examples/DoorSimple.purs
+L58-L61</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Here’s how this works:</p>
@@ -369,9 +406,9 @@ example, the handlers are provided in the same order as they appear in
 <code>DoorSimpleTransit</code>: <code>DoorOpen :@ Close</code>, then
 <code>DoorClosed :@ Open</code>.</p></li>
 </ul>
-<h4 data-number="1.2.3.4"
+<h3 data-number="2.3.4"
 id="how-this-solves-the-classic-approachs-problems">How This Solves the
-Classic Approach’s Problems</h4>
+Classic Approach’s Problems</h3>
 <p>This approach addresses all the drawbacks we saw earlier:</p>
 <ul>
 <li><p><strong>Explicit state machine specification</strong>: The state
