@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
+
     <!-- Your GitHub stylesheet -->
-    <link rel="stylesheet" href="assets/github.css" />
+    <link rel="stylesheet" href="../assets/github.css" />
 
     <!-- Your custom layout -->
     <style>
@@ -23,7 +23,7 @@
         min-width: 200px;
         max-width: 980px;
         width: 100%;
-        padding: 45px;
+        padding: 80px 45px 45px;
       }
 
       /* Optional: nicer TOC spacing */
@@ -31,6 +31,133 @@
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
+      }
+
+      /* Sub-TOC for each page */
+      nav.page-toc {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background-color: #161b22;
+        border-radius: 6px;
+        border: 1px solid #30363d;
+      }
+
+      nav.page-toc ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+      }
+
+      nav.page-toc li {
+        margin: 0.5rem 0;
+      }
+
+      nav.page-toc a {
+        color: #8b949e;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      nav.page-toc a:hover {
+        color: #58a6ff;
+      }
+
+      nav.page-toc ul ul {
+        padding-left: 1.5rem;
+        margin-top: 0.25rem;
+      }
+
+      /* Pager navigation */
+      nav.pager {
+        position: fixed;
+        top: 0;
+        left: 0px;
+        right: 0px;
+        box-sizing: border-box;
+        z-index: 100;
+        background-color: #0d1117;
+        padding: 1rem 45px 1.5rem;
+        border-bottom: 1px solid #30363d;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      nav.pager .header-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #c9d1d9;
+        text-decoration: none;
+        margin-right: auto;
+      }
+
+      nav.pager .header-title:hover {
+        color: #58a6ff;
+      }
+
+      nav.pager .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      nav.pager .github-link {
+        color: #8b949e;
+        text-decoration: none;
+        font-size: 18px;
+        transition: color 0.2s ease;
+      }
+
+      nav.pager .github-link:hover {
+        color: #58a6ff;
+      }
+
+      /* Scroll to top link */
+      .scroll-to-top {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #30363d;
+        text-align: center;
+        display: none;
+      }
+
+      .scroll-to-top.visible {
+        display: block;
+      }
+
+      .scroll-to-top a {
+        color: #58a6ff;
+        text-decoration: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        display: inline-block;
+      }
+
+      .scroll-to-top a:hover {
+        background-color: #161b22;
+        color: #79c0ff;
+      }
+
+      nav.pager a {
+        color: #58a6ff;
+        text-decoration: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        display: inline-block;
+      }
+
+      nav.pager a:hover {
+        background-color: #161b22;
+        color: #79c0ff;
+      }
+
+      .main-content {
+        padding: 45px;
       }
     </style>
 
@@ -104,8 +231,23 @@
 
   <body>
     <article class="markdown-body">
-       <h3 data-number="1.2.4" id="testing-the-update-function">Testing
-the update function</h3>
+      <nav class="pager">
+        <a href="index.html" class="header-title">Transit Tutorial</a>
+        <div class="nav-links">
+                    <a href="1.2.3-transit-approach.html" rel="prev" title="Transit Approach"
+            >← Previous</a
+          >
+           
+          <a href="index.html">≡ Contents</a>
+                     <a href="1.2.5-state-diagram-and-transition-table-generation.html" rel="next" title="State Diagram and Transition Table Generation"
+            >Next →</a
+          >
+                  </div>
+      </nav>
+
+      <main class="main-content">
+         <h3 data-number="1.2.4"
+id="testing-the-update-function">Testing the update function</h3>
 <p>Before we move further, let’s actually verify that our implementation
 of the update function works as we expect it to. We’ll do this by
 writing some tests.</p>
@@ -273,6 +415,40 @@ equivalent to <code>Tuple (v @"Close") (v @"DoorClosed")</code>.</p>
 receiving message <code>Close</code>, we expect the next state to be
 <code>DoorClosed</code>. From there, when receiving message
 <code>Open</code>, we expect the next state to be <code>DoorOpen</code>.
-And so on.</p>     </article>
+And so on.</p> 
+        <div class="scroll-to-top">
+          <a
+            href="#"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            >↑ Back to top</a
+          >
+        </div>
+      </main>
+    </article>
+    <script>
+      (function () {
+        function checkScrollable() {
+          const scrollToTop = document.querySelector(".scroll-to-top");
+          if (!scrollToTop) return;
+
+          const isScrollable =
+            document.documentElement.scrollHeight > window.innerHeight;
+          if (isScrollable) {
+            scrollToTop.classList.add("visible");
+          } else {
+            scrollToTop.classList.remove("visible");
+          }
+        }
+
+        // Check on load
+        checkScrollable();
+
+        // Check on resize (in case window size changes)
+        window.addEventListener("resize", checkScrollable);
+      })();
+    </script>
   </body>
 </html>
