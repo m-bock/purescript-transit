@@ -31,8 +31,8 @@ gen-preview:
 gen-book BASEURL='':
     rm -rf site
     pandoc docs/tutorial.md -t chunkedhtml \
-      --split-level=3 \
-      --toc --toc-depth=3 \
+      --split-level=2 \
+      --toc --toc-depth=2 \
       -o site \
       --highlight-style=zenburn \
       --template=assets/gh-template.html \

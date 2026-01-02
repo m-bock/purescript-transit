@@ -14,6 +14,7 @@ import Examples.Monadic as Examples.Monadic
 import Examples.Common as Examples.Common
 import Examples.DoorReadme as Examples.DoorReadme
 import Examples.CountDown as Examples.CountDown
+import Examples.Circle as Examples.Circle
 import Test.Spec (Spec)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner.Node (runSpecAndExitProcess)
@@ -44,6 +45,7 @@ runExamples = do
   Examples.Common.main
   Examples.DoorReadme.main
   Examples.CountDown.main
+  Examples.Circle.main
 
 main :: Effect Unit
 main = do
