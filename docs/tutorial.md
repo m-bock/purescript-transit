@@ -52,7 +52,6 @@ For a more structured view, here's the corresponding transition table:
 filePath: renders/door-simple.md
 wrapNl: true
 -->
-
 | State      |       | Message |       | State      |
 | ---------- | ----- | ------- | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |
@@ -88,8 +87,8 @@ data MsgD = Close | Open
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L27-L29"
-      >test/Examples/DoorSimple.purs L27-L29</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L29-L31"
+      >test/Examples/DoorSimple.purs L29-L31</a
     >
   </sup>
 </p>
@@ -119,8 +118,8 @@ updateD state msg = case state, msg of
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L31-L35"
-      >test/Examples/DoorSimple.purs L31-L35</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L33-L37"
+      >test/Examples/DoorSimple.purs L33-L37</a
     >
   </sup>
 </p>
@@ -163,8 +162,8 @@ type DoorSimpleTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L51-L54"
-      >test/Examples/DoorSimple.purs L51-L54</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L53-L56"
+      >test/Examples/DoorSimple.purs L53-L56</a
     >
   </sup>
 </p>
@@ -208,8 +207,8 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L41-L49"
-      >test/Examples/DoorSimple.purs L41-L49</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L43-L51"
+      >test/Examples/DoorSimple.purs L43-L51</a
     >
   </sup>
 </p>
@@ -236,8 +235,8 @@ update = mkUpdate @DoorSimpleTransit
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L56-L59"
-      >test/Examples/DoorSimple.purs L56-L59</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L58-L61"
+      >test/Examples/DoorSimple.purs L58-L61</a
     >
   </sup>
 </p>
@@ -327,8 +326,8 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L66-L69"
-      >test/Examples/DoorSimple.purs L66-L69</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L68-L71"
+      >test/Examples/DoorSimple.purs L68-L71</a
     >
   </sup>
 </p>
@@ -356,8 +355,8 @@ assert2 =
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L72-L75"
-      >test/Examples/DoorSimple.purs L72-L75</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L74-L77"
+      >test/Examples/DoorSimple.purs L74-L77</a
     >
   </sup>
 </p>
@@ -400,7 +399,7 @@ assertWalk updateFn initState walk = do
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/Common.purs#L40-L59"
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L40-L59"
       >test/Examples/Common.purs L40-L59</a
     >
   </sup>
@@ -434,8 +433,8 @@ assert3 =
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L78-L88"
-      >test/Examples/DoorSimple.purs L78-L88</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L80-L90"
+      >test/Examples/DoorSimple.purs L80-L90</a
     >
   </sup>
 </p>
@@ -459,18 +458,17 @@ filePath: src/Transit/Render/Graphviz.purs
 inline: true
 pick:
   - tag: signature_or_foreign
-    name: writeToFile
-    prefix: '- '
+    name: generate
 split: true
 -->
 
-- `writeToFile :: FilePath -> TransitCore -> (Options -> Options) -> Effect Unit`
+`generate :: TransitCore -> (Options -> Options) -> String`
 
 <p align="right">
   <sup
     >🗎
-    <a href="src/Transit/Render/Graphviz.purs#L239-L239"
-      >src/Transit/Render/Graphviz.purs L239-L239</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/src/Transit/Render/Graphviz.purs#L234-L234"
+      >src/Transit/Render/Graphviz.purs L234-L234</a
     >
   </sup>
 </p>
@@ -490,20 +488,18 @@ generateStateDiagram = do
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  TransitGraphviz.writeToFile "renders/door-simple-light.dot" transit _
-    { theme = themeHarmonyLight
-    }
+  FS.writeTextFile UTF8 "renders/door-simple-light.dot"
+    (TransitGraphviz.generate transit _ { theme = themeHarmonyLight })
 
-  TransitGraphviz.writeToFile "renders/door-simple-dark.dot" transit _
-    { theme = themeHarmonyDark
-    }
+  FS.writeTextFile UTF8 "renders/door-simple-dark.dot"
+    (TransitGraphviz.generate transit _ { theme = themeHarmonyDark })
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L102-L114"
-      >test/Examples/DoorSimple.purs L102-L114</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L104-L114"
+      >test/Examples/DoorSimple.purs L104-L114</a
     >
   </sup>
 </p>
@@ -548,16 +544,15 @@ generateTransitionTable = do
     transit :: TransitCore
     transit = reflectType (Proxy @DoorSimpleTransit)
 
-  TransitTable.writeToFile "renders/door-simple.md" transit _
-    { outputFormat = TransitTable.Markdown
-    }
+  FS.writeTextFile UTF8 "renders/door-simple.md"
+    (TransitTable.generate transit _ { outputFormat = TransitTable.Markdown })
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="test/Examples/DoorSimple.purs#L116-L124"
-      >test/Examples/DoorSimple.purs L116-L124</a
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L116-L123"
+      >test/Examples/DoorSimple.purs L116-L123</a
     >
   </sup>
 </p>
