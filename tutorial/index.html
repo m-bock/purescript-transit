@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://m-bock.github.io/purescript-transit/tutorial/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Tutorial - Transit</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Transit</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Welcome to MkDocs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../themes/" class="nav-link">Color Themes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Tutorial</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../themes/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#transit" class="nav-link">Transit</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#example-1-a-simple-door" class="nav-link">Example 1: A Simple Door</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<p><strong>Table of Contents</strong></p>
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+<ul>
+<li><a href="#transit">Transit</a></li>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#about-this-documentation">About This Documentation</a></li>
+<li><a href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a href="#example-1-a-simple-door">Example 1: A Simple Door</a><ul>
+<li><a href="#the-state-machine">The State Machine</a></li>
+<li><a href="#classic-approach">Classic Approach</a></li>
+<li><a href="#transit-approach">Transit Approach</a></li>
+<li><a href="#testing-the-update-function">Testing the update function</a></li>
+<li><a href="#state-diagram-and-transition-table-generation">State Diagram and Transition Table Generation</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+<h1 id="transit">Transit</h1>
+<h2 id="introduction">Introduction</h2>
+<p><strong>Transit</strong> is a PureScript library for building type-safe state machines. It provides a type-level DSL for specifying state transitions. You define your state machine once using this specification, and the compiler ensures your implementation matches it — eliminating bugs from invalid transitions, missing cases, or documentation drift.</p>
+<blockquote>
+<p>If you're familiar with Servant[^servant] from Haskell, <strong>Transit</strong> follows a similar philosophy: just as Servant uses a REST API type-level specification to ensure type-safe routing functions and generate OpenAPI documentation, <strong>Transit</strong> uses a state machine graph type-level specification to ensure type-safe update functions and generate state diagrams.</p>
+</blockquote>
+<h3 id="about-this-documentation">About This Documentation</h3>
+<p>All code examples in this documentation are extracted from actual, type-checked PureScript source files. Also, whenever you find an assertion or a full unit test, it's ensured that it ran and passed. In this sense this text is not just documentation, but also a test suite. At the bottom of every code example you can find a link to the actual source file. So you can get a better picture of the context and get information about the imports used.</p>
+<p><strong>Terminology note</strong>: Throughout this documentation, the terms <em>message</em>, <em>action</em>, and <em>transition</em> are used interchangeably to refer to the events that trigger state changes[^terminology]. In <strong>Transit</strong>'s type system, these correspond to the message types in your <code>Msg</code> variant.</p>
+<h3 id="installation">Installation</h3>
+<h2 id="example-1-a-simple-door">Example 1: A Simple Door</h2>
+<blockquote>
+<p>Full source code: <em><a href="test/Examples/DoorSimple.purs">test/Examples/DoorSimple.purs</a></em></p>
+</blockquote>
+<p><img src="assets/door-simple-header.jpg" width="450" /></p>
+<p>Let's start with a simple door state machine to demonstrate <strong>Transit</strong>'s core concepts. This example will show you how to define a state machine using <strong>Transit</strong>'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with <strong>Transit</strong>'s approach to highlight the benefits of the latter.</p>
+<h3 id="the-state-machine">The State Machine</h3>
+<p>Think of a door that can be either open or closed. When it's open, you can close it. When it's closed, you can open it. That's it — no other actions make sense. You can't open a door that's already open, and you can't close a door that's already closed. This simple behavior is what we're modeling here.</p>
+<p>Before diving into the code, let's visualize our simple door state machine. This will help you understand the structure we're about to implement.</p>
+<h4 id="state-diagram">State Diagram</h4>
+<p>The state diagram below shows all possible states and the valid transitions between them:</p>
+<p><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
+  <img alt="Simple Door state diagram" src="renders/door-simple-light.svg">
+</picture></p>
+<p>In this diagram, you can see:</p>
+<ul>
+<li><strong>Two states</strong>: <code>DoorOpen</code> and <code>DoorClosed</code> (shown as rectangles)</li>
+<li><strong>Two transitions</strong>: The <code>Close</code> transition moves from <code>DoorOpen</code> to <code>DoorClosed</code>, and the <code>Open</code> transition moves from <code>DoorClosed</code> to <code>DoorOpen</code></li>
+<li><strong>Arrows</strong>: The direction of each arrow shows which state changes are valid</li>
+</ul>
+<h4 id="transition-table">Transition Table</h4>
+<p>For a more structured view, here's the corresponding transition table:</p>
+<!-- PD_START:raw
+filePath: renders/door-simple.md
+wrapNl: true
+-->
+
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th></th>
+<th>Message</th>
+<th></th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DoorOpen</td>
+<td><strong>⟶</strong></td>
+<td>Close</td>
+<td><strong>⟶</strong></td>
+<td>DoorClosed</td>
+</tr>
+<tr>
+<td>DoorClosed</td>
+<td><strong>⟶</strong></td>
+<td>Open</td>
+<td><strong>⟶</strong></td>
+<td>DoorOpen</td>
+</tr>
+</tbody>
+</table>
+<!-- PD_END -->
+
+<p>Each row shows one valid transition: which state you start in, which action you take, and which state you end up in. Notice that invalid actions — like trying to open an already open door — simply don't appear in the table.</p>
+<p>Now let's see how we represent this in PureScript code.</p>
+<h3 id="classic-approach">Classic Approach</h3>
+<p>Before diving into <strong>Transit</strong>, let's first look at how state machines are typically implemented in PureScript using pattern matching. This classic approach is familiar to most PureScript developers and serves as a baseline for understanding what <strong>Transit</strong> improves upon.</p>
+<h4 id="states-and-message-types">States and Message types</h4>
+<p>To represent our door in code, we need two major types: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types. We are using the suffix <code>D</code> to denote the traditional approach (D = data).</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - StateD
+  - MsgD
+-->
+
+<pre><code class="language-purescript">data StateD = DoorOpen | DoorClosed
+
+data MsgD = Close | Open
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L27-L29"
+      >test/Examples/DoorSimple.purs L27-L29</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>The <code>State</code> type captures the two possible states we saw in the diagram: <code>DoorOpen</code> and <code>DoorClosed</code>. The <code>Msg</code> type represents the two actions: <code>Close</code> and <code>Open</code>. These correspond directly to what we visualized earlier — each state and each transition from the diagram has a corresponding value in these types.</p>
+<h4 id="the-update-function">The update function</h4>
+<p>Now that we have our types, we need a function that takes the current state and a message, and returns the new state. The traditional way to implement this is with a pattern-matching function:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - updateD
+-->
+
+<pre><code class="language-purescript">updateD :: StateD -&gt; MsgD -&gt; StateD
+updateD state msg = case state, msg of
+  DoorOpen, Close -&gt; DoorClosed
+  DoorClosed, Open -&gt; DoorOpen
+  _, _ -&gt; state
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L31-L35"
+      >test/Examples/DoorSimple.purs L31-L35</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>We pattern match on both the current state and the message at once. It could also be written as a nested pattern match.</p>
+<p>This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case <code>_, _ -&gt; state</code> handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.</p>
+<p>While this approach works and is straightforward, it has some drawbacks:</p>
+<ul>
+<li>
+<p><strong>Implicit state machine specification</strong>: The state machine's structure is only defined implicitly within the update function's pattern matching and return values.</p>
+</li>
+<li>
+<p><strong>Documentation drift</strong>: If you maintain a state diagram for documentation purposes, there's nothing ensuring the code stays in sync — you have to remember to update both manually.</p>
+</li>
+<li>
+<p><strong>Limited analysis capabilities</strong>: There's no way to analyze the state machine's structure or behavior statically — you can only understand it by running the code.</p>
+</li>
+</ul>
+<h3 id="transit-approach">Transit Approach</h3>
+<p>With the <strong>Transit</strong> library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify against your implementation.</p>
+<h4 id="the-type-level-specification">The Type-Level Specification</h4>
+<p>First, we define the state machine structure using <strong>Transit</strong>'s type-level DSL:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - DoorSimpleTransit
+-->
+
+<pre><code class="language-purescript">type DoorSimpleTransit =
+  Transit
+    :* (&quot;DoorOpen&quot; :@ &quot;Close&quot; &gt;| &quot;DoorClosed&quot;)
+    :* (&quot;DoorClosed&quot; :@ &quot;Open&quot; &gt;| &quot;DoorOpen&quot;)
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L51-L54"
+      >test/Examples/DoorSimple.purs L51-L54</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>Breaking down the syntax:</p>
+<ul>
+<li><code>Transit</code> initializes an empty transition list</li>
+<li><code>:*</code> is an infix operator that appends each transition to the list</li>
+<li><code>"DoorOpen" :@ "Close" &gt;| "DoorClosed"</code> means: in state <code>DoorOpen</code>, when receiving message <code>Close</code>, transition to state <code>DoorClosed</code></li>
+<li>The <code>@</code> operator connects a state to a message, and <code>&gt;|</code> indicates the target state</li>
+</ul>
+<p>This type-level specification fully defines the state machine's structure. The compiler can now use this specification to ensure our implementation is correct.</p>
+<h4 id="state-and-message-types">State and Message Types</h4>
+<p><strong>Transit</strong> uses <code>Variant</code> types (from <code>purescript-variant</code>)[^variant] for both <code>State</code> and <code>Msg</code> instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like <code>"DoorOpen"</code> or <code>"Close"</code>).</p>
+<p>This design choice is crucial for <strong>Transit</strong>'s type-level machinery. The key advantage is that <strong>Transit</strong> can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - State
+  - Msg
+-->
+
+<pre><code class="language-purescript">type State = Variant
+  ( &quot;DoorOpen&quot; :: {}
+  , &quot;DoorClosed&quot; :: {}
+  )
+
+type Msg = Variant
+  ( &quot;Close&quot; :: {}
+  , &quot;Open&quot; :: {}
+  )
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L41-L49"
+      >test/Examples/DoorSimple.purs L41-L49</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<h4 id="the-update-function_1">The Update Function</h4>
+<p>Based on this specification, we create an update function using <code>mkUpdate</code>:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - update
+-->
+
+<pre><code class="language-purescript">update :: State -&gt; Msg -&gt; State
+update = mkUpdate @DoorSimpleTransit
+  (match @&quot;DoorOpen&quot; @&quot;Close&quot; \_ _ -&gt; return @&quot;DoorClosed&quot;)
+  (match @&quot;DoorClosed&quot; @&quot;Open&quot; \_ _ -&gt; return @&quot;DoorOpen&quot;)
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L56-L59"
+      >test/Examples/DoorSimple.purs L56-L59</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>Here's how this works:</p>
+<ul>
+<li>
+<p><code>mkUpdate @DoorSimpleTransit</code> creates an update function based on the <code>DoorSimpleTransit</code> specification. The <code>@</code> symbol is type application[^type-app], passing the specification to the function.</p>
+</li>
+<li>
+<p>Each <code>match</code> line handles one transition from the specification. The first two arguments (<code>@"DoorOpen"</code> and <code>@"Close"</code>) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.</p>
+</li>
+<li>
+<p><code>return @"DoorClosed"</code> specifies which state to transition to. The <code>return</code> function is part of <strong>Transit</strong>'s DSL for specifying the target state, and the <code>@</code> symbol again indicates a type-level symbol.</p>
+</li>
+<li>
+<p><strong>Important</strong>: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in <code>DoorSimpleTransit</code>: <code>DoorOpen :@ Close</code>, then <code>DoorClosed :@ Open</code>.</p>
+</li>
+</ul>
+<h4 id="how-this-solves-the-classic-approachs-problems">How This Solves the Classic Approach's Problems</h4>
+<p>This approach addresses all the drawbacks we saw earlier:</p>
+<ul>
+<li>
+<p><strong>Explicit state machine specification</strong>: The state machine's structure is defined explicitly in the type-level DSL. This specification serves as a single source of truth that is accessible for various purposes.</p>
+</li>
+<li>
+<p><strong>No documentation drift</strong>: Documentation such as state diagrams and transition tables can be generated directly from the specification, ensuring they always stay in sync with the code.</p>
+</li>
+<li>
+<p><strong>Static analysis capabilities</strong>: The specification can be converted into a graph data structure, enabling sophisticated static analysis of the state machine's properties without running the code.</p>
+</li>
+</ul>
+<h3 id="testing-the-update-function">Testing the update function</h3>
+<p>Before we move further, let's actually verify that our implementation of the update function works as we expect it to. We'll do this by writing some tests.</p>
+<h4 id="creating-variant-values">Creating Variant Values</h4>
+<p>To create values of type <code>Variant</code>, <strong>Transit</strong> provides the <code>v</code> function from <code>Transit.VariantUtils</code>. It's a convenience wrapper around <code>Variant</code>'s <code>inj</code> function that uses type application (no Proxy needed) and allows omitting empty record arguments:</p>
+<ul>
+<li>Transit record payload (argument can be omitted)</li>
+</ul>
+<p><code>purescript
+  v @"DoorOpen" :: State</code></p>
+<ul>
+<li>Non-empty payload (must provide the data)
+  <code>purescript
+  v @"DoorLocked" { activePin: "1234" } :: State</code></li>
+</ul>
+<p>This is more ergonomic than using <code>V.inj (Proxy :: _ "DoorOpen") {}</code> directly.</p>
+<h4 id="testing-state-transitions">Testing State Transitions</h4>
+<p>To test our update function, we'll use two useful functions from the <code>Data.Array</code> module:</p>
+<!-- PD_START:purs
+inline: true
+pick:
+  - tag: signature_or_foreign
+    name: foldl
+    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
+    prefix: '- '
+  - tag: signature_or_foreign
+    name: scanl
+    filePath: .spago/p/arrays-7.3.0/src/Data/Array.purs
+    prefix: '- '
+split: true
+-->
+
+<ul>
+<li><code>foldl :: forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; b</code></li>
+<li><code>scanl :: forall a b. (b -&gt; a -&gt; b) -&gt; b -&gt; Array a -&gt; Array b</code></li>
+</ul>
+<!-- PD_END -->
+
+<p>The simplest way to test the update function is to use <code>foldl</code> to apply a sequence of messages and check if the final state matches what we expect:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - tag: value
+    name: assert1
+-->
+
+<pre><code class="language-purescript">assert1 =
+  foldl update (v @&quot;DoorOpen&quot;) [ v @&quot;Close&quot;, v @&quot;Open&quot;, v @&quot;Close&quot; ]
+    `shouldEqual`
+      (v @&quot;DoorClosed&quot;)
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L66-L69"
+      >test/Examples/DoorSimple.purs L66-L69</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.</p>
+<p>This test only checks the final result. To be more thorough, we should also verify that each step along the way works correctly. The <code>scanl</code> function is perfect for this — it shows us all the intermediate states, not just the final one.</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - tag: value
+    name: assert2
+-->
+
+<pre><code class="language-purescript">assert2 =
+  scanl update (v @&quot;DoorOpen&quot;) [ v @&quot;Close&quot;, v @&quot;Open&quot;, v @&quot;Close&quot; ]
+    `shouldEqual`
+      [ v @&quot;DoorClosed&quot;, v @&quot;DoorOpen&quot;, v @&quot;DoorClosed&quot; ]
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L72-L75"
+      >test/Examples/DoorSimple.purs L72-L75</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>This test does the same thing — starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.</p>
+<p>Since we'll want to write more of these tests for further examples, it's helpful to define a reusable helper function. The <code>assertWalk</code> function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - assertWalk
+-->
+
+<pre><code class="language-purescript">assertWalk
+  :: forall msg state
+   . Eq state
+  =&gt; Show state
+  =&gt; (state -&gt; msg -&gt; state)
+  -&gt; state
+  -&gt; Array (msg /\ state)
+  -&gt; Aff Unit
+assertWalk updateFn initState walk = do
+  let
+    msgs :: Array msg
+    msgs = map fst walk
+
+    expectedStates :: Array state
+    expectedStates = map snd walk
+
+    actualStates :: Array state
+    actualStates = scanl updateFn initState msgs
+
+  actualStates `shouldEqual` expectedStates
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/Common.purs#L40-L59"
+      >test/Examples/Common.purs L40-L59</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>The function extracts the messages from the pairs, applies them sequentially using <code>scanl</code>, and verifies that the resulting states match the expected ones. Here's how we use it:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - tag: value
+    name: assert3
+-->
+
+<pre><code class="language-purescript">assert3 =
+  assertWalk update
+    (v @&quot;DoorOpen&quot;)
+    [ v @&quot;Close&quot; ~&gt; v @&quot;DoorClosed&quot;
+    , v @&quot;Open&quot; ~&gt; v @&quot;DoorOpen&quot;
+    , v @&quot;Close&quot; ~&gt; v @&quot;DoorClosed&quot;
+    , v @&quot;Close&quot; ~&gt; v @&quot;DoorClosed&quot;
+    , v @&quot;Open&quot; ~&gt; v @&quot;DoorOpen&quot;
+    , v @&quot;Open&quot; ~&gt; v @&quot;DoorOpen&quot;
+    , v @&quot;Open&quot; ~&gt; v @&quot;DoorOpen&quot;
+    ]
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L78-L88"
+      >test/Examples/DoorSimple.purs L78-L88</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>The <code>~&gt;</code> operator is an infix alias for <code>Tuple</code>. So <code>v @"Close" ~&gt; v @"DoorClosed"</code> is equivalent to <code>Tuple (v @"Close") (v @"DoorClosed")</code>.</p>
+<p>We read it like: Starting from state <code>DoorOpen</code>, when receiving message <code>Close</code>, we expect the next state to be <code>DoorClosed</code>. From there, when receiving message <code>Open</code>, we expect the next state to be <code>DoorOpen</code>. And so on.</p>
+<h3 id="state-diagram-and-transition-table-generation">State Diagram and Transition Table Generation</h3>
+<p><strong>Transit</strong> can generate both state diagrams and transition tables directly from your type-level specification. Both generation processes use the same approach: <code>reflectType</code> converts your type-level DSL specification to a term-level equivalent, which can then be used to generate the documentation.</p>
+<h4 id="state-diagrams">State Diagrams</h4>
+<p>To generate a state diagram, you use <code>TransitGraphviz.writeToFile</code> to render a Graphviz <code>.dot</code> file:</p>
+<!-- PD_START:purs
+filePath: src/Transit/Render/Graphviz.purs
+inline: true
+pick:
+  - tag: signature_or_foreign
+    name: writeToFile
+    prefix: '- '
+split: true
+-->
+
+<ul>
+<li><code>writeToFile :: FilePath -&gt; TransitCore -&gt; (Options -&gt; Options) -&gt; Effect Unit</code></li>
+</ul>
+<p align="right">
+  <sup
+    >🗎
+    <a href="src/Transit/Render/Graphviz.purs#L239-L239"
+      >src/Transit/Render/Graphviz.purs L239-L239</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - generateStateDiagram
+-->
+
+<pre><code class="language-purescript">generateStateDiagram :: Effect Unit
+generateStateDiagram = do
+  let
+    transit :: TransitCore
+    transit = reflectType (Proxy @DoorSimpleTransit)
+
+  TransitGraphviz.writeToFile &quot;renders/door-simple-light.dot&quot; transit _
+    { theme = themeHarmonyLight
+    }
+
+  TransitGraphviz.writeToFile &quot;renders/door-simple-dark.dot&quot; transit _
+    { theme = themeHarmonyDark
+    }
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L102-L114"
+      >test/Examples/DoorSimple.purs L102-L114</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>The process works in two steps:</p>
+<ol>
+<li><code>reflectType</code> converts your type-level DSL specification to a term-level equivalent of type <code>TransitCore</code></li>
+<li><code>TransitGraphviz.writeToFile</code> uses that to render a Graphviz <code>.dot</code> file</li>
+</ol>
+<p>The <code>writeToFile</code> function accepts an options record that lets you customize the diagram. E.g. the <code>theme</code> option which we're using above controls the color scheme. <strong>Transit</strong> provides a couple of built-in themes. But you can also provide your own. See <a href="docs/themes.md">themes.md</a> for more details.</p>
+<p>To convert the <code>.dot</code> file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:</p>
+<pre><code class="language-bash">dot -Tsvg renders/door-simple.dot -o renders/door-simple.svg
+</code></pre>
+<p>Or for PNG:</p>
+<pre><code class="language-bash">dot -Tpng renders/door-simple.dot -o renders/door-simple.png
+</code></pre>
+<h4 id="transition-tables">Transition Tables</h4>
+<p>In addition to state diagrams, you can also generate transition tables from the same specification. This provides a tabular view of all state transitions, which can be easier to read for some use cases.</p>
+<p>The process is identical — you use <code>reflectType</code> to convert your DSL specification, but then use <code>TransitTable.writeToFile</code> instead:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorSimple.purs
+pick:
+  - generateTransitionTable
+-->
+
+<pre><code class="language-purescript">generateTransitionTable :: Effect Unit
+generateTransitionTable = do
+  let
+    transit :: TransitCore
+    transit = reflectType (Proxy @DoorSimpleTransit)
+
+  TransitTable.writeToFile &quot;renders/door-simple.md&quot; transit _
+    { outputFormat = TransitTable.Markdown
+    }
+</code></pre>
+<p align="right">
+  <sup
+    >🗎
+    <a href="test/Examples/DoorSimple.purs#L116-L124"
+      >test/Examples/DoorSimple.purs L116-L124</a
+    >
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<p>This generates a Markdown file containing a table with columns for "From State", "Message", and "To State".</p>
+<p>Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>In this example, we've seen how <strong>Transit</strong> helps you build type-safe state machines. We started with a simple door that can be open or closed, and learned the core workflow:</p>
+<ol>
+<li>
+<p><strong>Define the state machine</strong> using <strong>Transit</strong>'s type-level DSL specification</p>
+</li>
+<li>
+<p><strong>Implement the update function</strong> using <code>mkUpdate</code> with <code>match</code> clauses that the compiler verifies against the specification</p>
+</li>
+<li>
+<p><strong>Generate documentation</strong> automatically — both state diagrams and transition tables — from the same specification</p>
+</li>
+</ol>
+<p>The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.</p>
+<p>While this example was simple, it demonstrates <strong>Transit</strong>'s fundamental approach. In the next example, we'll see how <strong>Transit</strong> handles more complex scenarios with states that contain data and conditional transitions.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">
-<path fill="none" stroke="#000" stroke-width="2" d="m32,48h64v64H32V48l32-32 32,32-64,64h64z"/>
-<path stroke="#F00" stroke-width="4" stroke-linecap="round" d="m32,48h0m32-32h0m32,32h0m0,64h0m-64,0h0"/>
-<text fill="#000" font-size="13" font-family="Bitstream Vera Sans" x="50" y="16">5
-<tspan x="18" y="118">1</tspan><tspan x="103">2</tspan>
-<tspan x="18" y="54">4</tspan><tspan x="103">3</tspan></text>
-</svg>
