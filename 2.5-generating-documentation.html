@@ -358,9 +358,7 @@ L69-L70</a> </sup>
 </p>
 <!-- PD_END -->
 <h3 data-number="2.5.1" id="state-diagrams">State Diagrams</h3>
-<p>To generate a state diagram, you use
-<code>TransitGraphviz.writeToFile</code> to render a Graphviz
-<code>.dot</code> file:</p>
+<p>To generate a state diagram we’ll use the following function:</p>
 <!-- PD_START:purs
 inline: true
 pick:
@@ -371,44 +369,36 @@ split: true
 -->
 <p><code>generate :: TransitCore -&gt; (Options -&gt; Options) -&gt; String</code></p>
 <!-- PD_END -->
+<p>It takes the <code>TransitCore</code> value which we’ve created in
+the previous step and a function that takes the default options and
+returns the options we want to use.</p>
+<p>This is how we use it to generate a state diagram:</p>
 <!-- PD_START:purs
 filePath: test/Examples/DoorSimple.purs
 pick:
-  - generateStateDiagram
+  - generateStateDiagramDark
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagram ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagram <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-light.dot&quot;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    ( TransitGraphviz.generate doorSimpleTransit _</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        { theme <span class="ot">=</span> themeHarmonyLight</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-dark.dot&quot;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    ( TransitGraphviz.generate doorSimpleTransit _</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        { theme <span class="ot">=</span> themeHarmonyDark</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">String</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate doorSimpleTransit _</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyDark</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple-dark.dot&quot;</span> graph</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L115-L127">test/Examples/DoorSimple.purs
-L115-L127</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L124-L132">test/Examples/DoorSimple.purs
+L124-L132</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The process works in two steps:</p>
-<ol type="1">
-<li><code>reflectType</code> converts your type-level DSL specification
-to a term-level equivalent of type <code>TransitCore</code></li>
-<li><code>TransitGraphviz.writeToFile</code> uses that to render a
-Graphviz <code>.dot</code> file</li>
-</ol>
-<p>The <code>writeToFile</code> function accepts an options record that
-lets you customize the diagram. E.g. the <code>theme</code> option which
-we’re using above controls the color scheme. <strong>Transit</strong>
-provides a couple of built-in themes. But you can also provide your own.
-See <a href="docs/themes.md">themes.md</a> for more details.</p>
+<p>The <code>theme</code> option which we’re using above controls the
+color scheme. <strong>Transit</strong> provides a couple of built-in
+themes. But you can also provide your own. See <a
+href="docs/themes.md">themes.md</a> for more details.</p>
 <p>To convert the <code>.dot</code> file to an SVG (or other formats),
 use the Graphviz[^graphviz] command-line tools:</p>
 <div class="sourceCode" id="cb3"><pre
@@ -420,9 +410,6 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="
 <p>In addition to state diagrams, you can also generate transition
 tables from the same specification. This provides a tabular view of all
 state transitions, which can be easier to read for some use cases.</p>
-<p>The process is identical — you use <code>reflectType</code> to
-convert your DSL specification, but then use
-<code>TransitTable.writeToFile</code> instead:</p>
 <!-- PD_START:purs
 filePath: test/Examples/DoorSimple.purs
 pick:
@@ -431,13 +418,18 @@ pick:
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTransitionTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple.md&quot;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    (TransitTable.generate doorSimpleTransit _ { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span> })</span></code></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">String</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate doorSimpleTransit _</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-simple.md&quot;</span> table</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L129-L132">test/Examples/DoorSimple.purs
-L129-L132</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L134-L142">test/Examples/DoorSimple.purs
+L134-L142</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This generates a Markdown file containing a table with columns for

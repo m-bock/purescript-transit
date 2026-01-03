@@ -453,23 +453,6 @@ match the order of transitions in the DSL specification. In this
 example, the handlers are provided in the same order as they appear in
 <code>DoorSimpleTransit</code>: <code>DoorOpen :@ Close</code>, then
 <code>DoorClosed :@ Open</code>.</p></li>
-</ul>
-<h3 data-number="2.3.4"
-id="how-this-solves-the-classic-approachs-problems">How This Solves the
-Classic Approach’s Problems</h3>
-<p>This approach addresses all the drawbacks we saw earlier:</p>
-<ul>
-<li><p><strong>Explicit state machine specification</strong>: The state
-machine’s structure is defined explicitly in the type-level DSL. This
-specification serves as a single source of truth that is accessible for
-various purposes.</p></li>
-<li><p><strong>No documentation drift</strong>: Documentation such as
-state diagrams and transition tables can be generated directly from the
-specification, ensuring they always stay in sync with the code.</p></li>
-<li><p><strong>Static analysis capabilities</strong>: The specification
-can be converted into a graph data structure, enabling sophisticated
-static analysis of the state machine’s properties without running the
-code.</p></li>
 </ul> 
       <div class="scroll-to-top">
         <a

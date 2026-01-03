@@ -357,10 +357,11 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { activePin<span class="op">:</span> <span class="st">&quot;1234&quot;</span> }</span></code></pre></div></li>
 </ul>
 <p>This is more ergonomic than using
-<code>V.inj (Proxy :: _ "DoorOpen") {}</code> directly.</p>
+<code>V.inj (Proxy :: _ "DoorOpen") {}</code> directly which is the
+default way to create a Variant value.</p>
 <h3 data-number="2.4.2" id="testing-state-transitions">Testing State
 Transitions</h3>
-<p>To test our update function, we’ll use two useful functions from the
+<p>To test our update function, we’ll use two functions from the
 <code>Data.Array</code> module:</p>
 <!-- PD_START:purs
 inline: true
@@ -428,11 +429,11 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 L84-L88</a> </sup>
 </p>
 <!-- PD_END -->
-<p>This test does the same thing — starts with the door open, closes it,
-opens it, then closes it again. But instead of just checking the final
-result, it verifies each step along the way: after closing, the door is
-closed; after opening, the door is open; and after closing again, the
-door is closed. This makes sure each transition works correctly.</p>
+<p>This test is similar to the previous one. But instead of just
+checking the final result, it verifies each step along the way: after
+closing, the door is closed; after opening, the door is open; and after
+closing again, the door remains closed. This makes sure each transition
+works correctly.</p>
 <p>Since we’ll want to write more of these tests for further examples,
 it’s helpful to define a reusable helper function. The
 <code>assertWalk</code> function takes an update function, an initial
