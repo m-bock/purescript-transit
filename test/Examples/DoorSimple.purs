@@ -4,13 +4,11 @@ import Prelude
 
 import Data.Foldable (foldl)
 import Data.Generic.Rep (class Generic)
-import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Data.Traversable (scanl)
 import Data.Variant (Variant)
 import Effect (Effect)
-import Effect.Aff (Aff)
 import Examples.Common (assertWalk, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
@@ -101,12 +99,26 @@ spec3 =
       , v @"Open" ~> v @"DoorOpen"
       ]
 
+spec4 :: Spec Unit
+spec4 =
+  it "follows the walk and visits the expected intermediate states" do
+    assertWalk updateD
+      DoorOpen
+      [ Close ~> DoorClosed
+      , Open ~> DoorOpen
+      , Close ~> DoorClosed
+      , Close ~> DoorClosed
+      , Open ~> DoorOpen
+      , Open ~> DoorOpen
+      ]
+
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
     spec1
     spec2
     spec3
+    spec4
 
 --------------------------------------------------------------------------------
 --- Diagram and Table generation
