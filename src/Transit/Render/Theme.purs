@@ -286,7 +286,7 @@ themeHarmonyLight =
 -- | Dark theme with colorful harmonies.
 themeHarmonyDark :: Theme
 themeHarmonyDark =
-  { bgColor: Color.rgb 20 20 20
+  { bgColor: Color.rgba 0 0 0 0.0
   , titleColor: Color.rgb 200 200 200
   , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 255 255 255
@@ -296,7 +296,7 @@ themeHarmonyDark =
 -- | Light theme with high contrast (black and white).
 themeContrastLight :: Theme
 themeContrastLight =
-  { bgColor: Color.white
+  { bgColor: Color.rgba 0 0 0 0.0
   , titleColor: Color.black
   , colorHarmonies: pure
       { nodeBg: Color.white

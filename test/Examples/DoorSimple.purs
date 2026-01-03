@@ -4,6 +4,7 @@ import Prelude
 
 import Data.Foldable (foldl)
 import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Show.Generic (genericShow)
 import Data.Traversable (scanl)
@@ -26,15 +27,20 @@ import Type.Prelude (Proxy(..))
 --- Classic Approach
 --------------------------------------------------------------------------------
 
-data StateD = DoorOpen | DoorClosed
+data StateD
+  = DoorOpen
+  | DoorClosed
 
-data MsgD = Close | Open
+data MsgD
+  = Close
+  | Open
 
 updateD :: StateD -> MsgD -> StateD
-updateD state msg = case state, msg of
-  DoorOpen, Close -> DoorClosed
-  DoorClosed, Open -> DoorOpen
-  _, _ -> state
+updateD state msg =
+  case state, msg of
+    DoorOpen, Close -> DoorClosed
+    DoorClosed, Open -> DoorOpen
+    _, _ -> state
 
 --------------------------------------------------------------------------------
 --- Transit Approach
@@ -60,42 +66,47 @@ update = mkUpdate @DoorSimpleTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
+doorSimpleTransit :: TransitCore
+doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
+
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
 
-assert1 :: Aff Unit
-assert1 =
-  foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
-    `shouldEqual`
-      (v @"DoorClosed")
+spec1 :: Spec Unit
+spec1 =
+  it "follows the walk and ends in expected final state" do
+    foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
+      `shouldEqual`
+        (v @"DoorClosed")
 
-assert2 :: Aff Unit
-assert2 =
-  scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
-    `shouldEqual`
-      [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
+spec2 :: Spec Unit
+spec2 =
+  it "follows the walk and visits the expected intermediate states" do
+    scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
+      `shouldEqual`
+        [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 
-assert3 :: Aff Unit
-assert3 =
-  assertWalk update
-    (v @"DoorOpen")
-    [ v @"Close" ~> v @"DoorClosed"
-    , v @"Open" ~> v @"DoorOpen"
-    , v @"Close" ~> v @"DoorClosed"
-    , v @"Close" ~> v @"DoorClosed"
-    , v @"Open" ~> v @"DoorOpen"
-    , v @"Open" ~> v @"DoorOpen"
-    , v @"Open" ~> v @"DoorOpen"
-    ]
+spec3 :: Spec Unit
+spec3 =
+  it "follows the walk and visits the expected intermediate states" do
+    assertWalk update
+      (v @"DoorOpen")
+      [ v @"Close" ~> v @"DoorClosed"
+      , v @"Open" ~> v @"DoorOpen"
+      , v @"Close" ~> v @"DoorClosed"
+      , v @"Close" ~> v @"DoorClosed"
+      , v @"Open" ~> v @"DoorOpen"
+      , v @"Open" ~> v @"DoorOpen"
+      , v @"Open" ~> v @"DoorOpen"
+      ]
 
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
-    it "Tests" do
-      assert1
-      assert2
-      assert3
+    spec1
+    spec2
+    spec3
 
 --------------------------------------------------------------------------------
 --- Diagram and Table generation
@@ -103,24 +114,22 @@ spec = do
 
 generateStateDiagram :: Effect Unit
 generateStateDiagram = do
-  let
-    transit :: TransitCore
-    transit = reflectType (Proxy @DoorSimpleTransit)
-
   FS.writeTextFile UTF8 "renders/door-simple-light.dot"
-    (TransitGraphviz.generate transit _ { theme = themeHarmonyLight })
+    ( TransitGraphviz.generate doorSimpleTransit _
+        { theme = themeHarmonyLight
+        }
+    )
 
   FS.writeTextFile UTF8 "renders/door-simple-dark.dot"
-    (TransitGraphviz.generate transit _ { theme = themeHarmonyDark })
+    ( TransitGraphviz.generate doorSimpleTransit _
+        { theme = themeHarmonyDark
+        }
+    )
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
-  let
-    transit :: TransitCore
-    transit = reflectType (Proxy @DoorSimpleTransit)
-
   FS.writeTextFile UTF8 "renders/door-simple.md"
-    (TransitTable.generate transit _ { outputFormat = TransitTable.Markdown })
+    (TransitTable.generate doorSimpleTransit _ { outputFormat = TransitTable.Markdown })
 
 main :: Effect Unit
 main = do

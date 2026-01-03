@@ -118,6 +118,7 @@ mkGlobalAttrs options =
     , pure $ D.bgColor options.theme.bgColor
     , pure $ D.color options.theme.titleColor
     , pure $ D.fontColor options.theme.titleColor
+    , pure $ D.pad 0.2
     ]
 
 -- | Creates a state node with styling.

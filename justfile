@@ -22,12 +22,6 @@ gen-doctoc:
     npx doctoc --maxlevel 3 README.md
     npx doctoc --maxlevel 3 docs/tutorial.md
 
-gen-preview:
-    pandoc docs/tutorial.md \
-        --highlight-style=zenburn \
-        --template=assets/gh-template.html \
-        -o docs/gh-preview.html
-
 gen-book BASEURL='':
     rm -rf site
     pandoc docs/tutorial.md -t chunkedhtml \
@@ -50,13 +44,15 @@ build-es:
 
 bench-run ITERATIONS='1000':
     export ITERATIONS={{ITERATIONS}} && \
-    BACKEND=ES \
-    just node-bench output-es Bench.Generated.Main && \
-    BACKEND=JS \
-    just node-bench output Bench.Generated.Main
+    BACKEND=ES just node-bench output-es Bench.Generated.Main && \
+    BACKEND=JS just node-bench output Bench.Generated.Main
 
 node-bench OUTPUT_DIR MODULE:
-    node --no-lazy --predictable --expose-gc --max-old-space-size=4096 --jitless --single-threaded-gc --no-opt -e "import { main } from './{{OUTPUT_DIR}}/{{MODULE}}/index.js'; main();"
+    node \
+      --no-lazy --predictable --expose-gc \
+      --max-old-space-size=4096 --jitless \
+      --single-threaded-gc --no-opt \
+      -e "import { main } from './{{OUTPUT_DIR}}/{{MODULE}}/index.js'; main();"
 
 test:
     npx spago test
@@ -86,10 +82,8 @@ clean:
 compile-time-bench:
     node scripts/compile-time-bench.js
 
-gen-full:
+gen-bench:
     just clean && \
-    \
-    just test && \
     \
     just gen-bench-modules && \
     \
@@ -98,25 +92,22 @@ gen-full:
     just build-es && \
     just bench-run && \
     \
-    just gen-vega && \
-
-    just gen
+    just gen-vega
 
 gen:
     just build && \
     just gen-examples && \
     just gen-md-prettier && \
     just gen-svgs && \
-    just gen-patchdown && \
-    \
-    just gen-preview
+    just gen-patchdown
 
 watch:
     just gen && \
     npx concurrently "npx browser-sync start --server --files 'renders/**/*.md' 'renders/**/*.html' --port 5000 --no-open --reload-delay 100" "while true; do sleep 30; just gen; done"
 
 deploy:
-    cp -r assets -t site && \
-    cp -r renders -t site && \
+    cp -r assets renders -t site && \
+    just test && \
+    just gen && \
     just gen-book 'https://m-bock.github.io/purescript-transit/' && \
     npx gh-pages -d site

@@ -10,6 +10,10 @@
 
     <!-- Your custom layout -->
     <style>
+      html {
+        overflow-y: scroll;
+      }
+
       body {
         margin: 0;
         padding: 0;
@@ -48,13 +52,23 @@
         border: 1px solid #30363d;
       }
 
-      nav.page-toc ul {
-        list-style: none;
-        padding-left: 0;
-        margin: 0;
+      nav.page-toc ul > li {
+        margin-bottom: 1rem;
       }
 
-      nav.page-toc li {
+      #TOC > ul {
+        padding-left: 0;
+      }
+
+      #TOC > ul > li {
+        margin: 1rem;
+      }
+
+      #TOC > ul > li > a {
+        font-size: 20px;
+      }
+
+      #TOC > ul > li > ul > li {
         margin: 0.5rem 0;
       }
 
@@ -199,6 +213,30 @@
       .markdown-body h5,
       .markdown-body h6 {
         scroll-margin-top: 200px;
+      }
+
+      /* Remove zebra striping from tables and use lighter background */
+      .markdown-body table {
+        background-color: var(--bgColor-muted);
+      }
+
+      .markdown-body table tr {
+        background-color: var(--bgColor-muted);
+      }
+
+      .markdown-body table tr:nth-child(2n) {
+        background-color: var(--bgColor-muted);
+      }
+
+      .state-diagram {
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 1rem;
+        background-color: var(--bgColor-muted);
+      }
+
+      .footnotes {
+        border-top: 0 !important;
       }
     </style>
 

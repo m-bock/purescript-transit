@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Contrast Dark</b>>;labelloc = "t";fontsize = 12;bgcolor = "#000000";color = "#ffffff";fontcolor = "#ffffff"
+rankdir = "TD";fontname = "Arial";label = <<b>Contrast Dark</b>>;labelloc = "t";fontsize = 12;bgcolor = "#000000";color = "#ffffff";fontcolor = "#ffffff";pad = 0.2
 graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];
 SpringGreen [shape = "box", label = <<b>SpringGreen</b>>, fontsize = 12, style = "filled", fillcolor = "#000000", fontcolor = "#ffffff", color = "#ffffff", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 SpringGreen -> LemonYellow [color = "#ffffff", fontcolor = "#ffffff", fontsize = 12, arrowsize = "0.7", label = <<b>MsgA</b>>, penwidth = 1.8]

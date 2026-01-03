@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12;bgcolor = "#000000";color = "#ffffff";fontcolor = "#ffffff"
+rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12;bgcolor = "#000000";color = "#ffffff";fontcolor = "#ffffff";pad = 0.2
 layout=circo;
 State001 [shape = "box", label = <<b>State001</b>>, fontsize = 12, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 State001 -> State002 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12, arrowsize = "0.7", label = <<b>Msg001</b>>, penwidth = 1.8]

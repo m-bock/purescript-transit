@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";label = <<b>Door with Pin</b>>;labelloc = "t";fontsize = 12;bgcolor = "#141414";color = "#c8c8c8";fontcolor = "#c8c8c8"
+rankdir = "TD";fontname = "Arial";label = <<b>Door with Pin</b>>;labelloc = "t";fontsize = 12;bgcolor = "#00000000";color = "#c8c8c8";fontcolor = "#c8c8c8";pad = 0.2
 DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 __Start__ [shape = "circle", label = "", width = 0.15, height = 0.15, fixedsize = true, style = "filled", fillcolor = "#8c8c8c", penwidth = 0.0]
 __Start__ -> DoorOpen [color = "#8c8c8c", fontsize = 12, arrowsize = "0.7", penwidth = 1.8]

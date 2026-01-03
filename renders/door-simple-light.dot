@@ -1,6 +1,6 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000"
+rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000";pad = 0.2
 DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0]
 DoorOpen -> DoorClosed [color = "#a3e635", fontcolor = "#6ca114", fontsize = 12, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
 DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0]

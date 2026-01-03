@@ -32,6 +32,7 @@ module Transit.Data.DotLang
   , labelLocC
   , labelLocT
   , margin
+  , pad
   , penWidth
   , rankDirTD
   , shapeBox
@@ -215,3 +216,6 @@ bgColor c = Attr "bgcolor" (ValueColors [ c ])
 
 margin :: Number -> Attr
 margin size = Attr "margin" (ValueNumber size)
+
+pad :: Number -> Attr
+pad size = Attr "pad" (ValueNumber size)
