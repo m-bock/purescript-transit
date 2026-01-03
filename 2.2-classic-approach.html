@@ -10,11 +10,13 @@
 
     <!-- Your custom layout -->
     <style>
+      html {
+        overflow-y: scroll;
+      }
+
       body {
         margin: 0;
         padding: 0;
-        display: flex;
-        justify-content: center;
         background-color: #0d1117;
       }
 
@@ -23,12 +25,12 @@
         min-width: 200px;
         max-width: 980px;
         width: 100%;
-        padding: 80px 45px 45px;
+        margin: 0 auto;
+        padding: 60px 45px 45px;
       }
 
       /* Optional: nicer TOC spacing */
       nav.toc {
-        margin-top: 1rem;
         margin-bottom: 2.5rem;
         padding-bottom: 1.5rem;
         border-bottom: 1px solid #30363d;
@@ -50,13 +52,23 @@
         border: 1px solid #30363d;
       }
 
-      nav.page-toc ul {
-        list-style: none;
-        padding-left: 0;
-        margin: 0;
+      nav.page-toc ul > li {
+        margin-bottom: 1rem;
       }
 
-      nav.page-toc li {
+      #TOC > ul {
+        padding-left: 0;
+      }
+
+      #TOC > ul > li {
+        margin: 1rem;
+      }
+
+      #TOC > ul > li > a {
+        font-size: 20px;
+      }
+
+      #TOC > ul > li > ul > li {
         margin: 0.5rem 0;
       }
 
@@ -77,15 +89,22 @@
 
       /* Pager navigation */
       nav.pager {
-        position: fixed;
+        position: sticky;
         top: 0;
-        left: 0px;
-        right: 0px;
         box-sizing: border-box;
         z-index: 100;
         background-color: #0d1117;
         padding: 1rem 45px 1.5rem;
         border-bottom: 1px solid #30363d;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+
+      nav.pager .pager-inner {
+        max-width: 1400px;
+        width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -173,22 +192,51 @@
         color: #79c0ff;
       }
 
-      .main-content {
-        padding: 45px;
+      nav.pager a.disabled,
+      nav.pager span.disabled {
+        color: #30363d;
+        cursor: not-allowed;
+        pointer-events: none;
       }
 
-      #TOC > ul > li {
-        margin-bottom: 1rem;
-        font-size: 22px;
+      nav.pager a.disabled:hover,
+      nav.pager span.disabled:hover {
+        background-color: transparent;
+        color: #30363d;
       }
 
-      #TOC > ul > li > ul {
-        margin-top: 0.5rem;
+      /* Scroll offset for anchor links to account for sticky header */
+      .markdown-body h1,
+      .markdown-body h2,
+      .markdown-body h3,
+      .markdown-body h4,
+      .markdown-body h5,
+      .markdown-body h6 {
+        scroll-margin-top: 200px;
       }
 
-      #TOC > ul > li > ul > li {
-        margin-bottom: 0rem;
-        font-size: 16px;
+      /* Remove zebra striping from tables and use lighter background */
+      .markdown-body table {
+        background-color: var(--bgColor-muted);
+      }
+
+      .markdown-body table tr {
+        background-color: var(--bgColor-muted);
+      }
+
+      .markdown-body table tr:nth-child(2n) {
+        background-color: var(--bgColor-muted);
+      }
+
+      .state-diagram {
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 1rem;
+        background-color: var(--bgColor-muted);
+      }
+
+      .footnotes {
+        border-top: 0 !important;
       }
     </style>
 
@@ -261,8 +309,8 @@
       </head>
 
   <body>
-    <article class="markdown-body">
-      <nav class="pager">
+    <nav class="pager">
+      <div class="pager-inner">
         <a
           href="https://github.com/m-bock/purescript-transit"
           class="github-link"
@@ -278,16 +326,16 @@
             >← Previous</a
           >
            
+
           <a href="index.html">≡ Contents</a>
                      <a href="2.3-transit-approach.html" rel="next" title="Transit Approach"
             >Next →</a
           >
                   </div>
-      </nav>
-
-      <main class="main-content">
-         <h2 data-number="2.2" id="classic-approach">Classic
-Approach</h2>
+      </div>
+    </nav>
+    <article class="markdown-body">
+       <h2 data-number="2.2" id="classic-approach">Classic Approach</h2>
 <p>Before diving into <strong>Transit</strong>, let’s first look at how
 state machines are typically implemented in PureScript using pattern
 matching. This classic approach is familiar to most PureScript
@@ -306,14 +354,18 @@ pick:
   - MsgD
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">StateD</span> <span class="ot">=</span> <span class="dt">DoorOpen</span> <span class="op">|</span> <span class="dt">DoorClosed</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">MsgD</span> <span class="ot">=</span> <span class="dt">Close</span> <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">StateD</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">DoorClosed</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">MsgD</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Close</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L29-L31">test/Examples/DoorSimple.purs
-L29-L31</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L30-L36">test/Examples/DoorSimple.purs
+L30-L36</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>State</code> type captures the two possible states we saw
@@ -334,15 +386,16 @@ pick:
 -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">updateD ::</span> <span class="dt">StateD</span> <span class="ot">-&gt;</span> <span class="dt">MsgD</span> <span class="ot">-&gt;</span> <span class="dt">StateD</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>updateD state msg <span class="ot">=</span> <span class="kw">case</span> state, msg <span class="kw">of</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>updateD state msg <span class="ot">=</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> state, msg <span class="kw">of</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L33-L37">test/Examples/DoorSimple.purs
-L33-L37</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L38-L43">test/Examples/DoorSimple.purs
+L38-L43</a> </sup>
 </p>
 <!-- PD_END -->
 <p>We pattern match on both the current state and the message at once.
@@ -365,17 +418,16 @@ stays in sync — you have to remember to update both manually.</p></li>
 analyze the state machine’s structure or behavior statically — you can
 only understand it by running the code.</p></li>
 </ul> 
-        <div class="scroll-to-top">
-          <a
-            href="#"
-            onclick="
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              return false;
-            "
-            >↑ Back to top</a
-          >
-        </div>
-      </main>
+      <div class="scroll-to-top">
+        <a
+          href="#"
+          onclick="
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return false;
+          "
+          >↑ Back to top</a
+        >
+      </div>
     </article>
     <script>
       (function () {
