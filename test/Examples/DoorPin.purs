@@ -26,37 +26,6 @@ import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Proxy (Proxy(..))
 
---------------------------------------------------------------------------------
---- Classic Approach
---------------------------------------------------------------------------------
-
-data StateD
-  = DoorOpen
-  | DoorClosed
-  | DoorLocked { storedPin :: String }
-
-data MsgD
-  = Close
-  | Open
-  | Lock { newPin :: String }
-  | Unlock { enteredPin :: String }
-
-updateClassic :: StateD -> MsgD -> StateD
-updateClassic state msg = case state, msg of
-  DoorOpen, Close -> DoorClosed
-  DoorClosed, Open -> DoorOpen
-  DoorClosed, Lock { newPin } -> DoorLocked { storedPin: newPin }
-  DoorLocked { storedPin }, Unlock { enteredPin } ->
-    if storedPin == enteredPin then
-      DoorClosed
-    else
-      DoorLocked { storedPin }
-  _, _ -> state
-
---------------------------------------------------------------------------------
---- Transit Approach
---------------------------------------------------------------------------------
-
 type State = Variant
   ( "DoorOpen" :: {}
   , "DoorClosed" :: {}

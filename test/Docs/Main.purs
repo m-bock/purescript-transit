@@ -13,7 +13,6 @@ import Examples.ErrorHandling as Examples.ErrorHandling
 import Examples.ErrorHandlingMonadic as Examples.ErrorHandlingMonadic
 import Examples.Monadic as Examples.Monadic
 import Examples.Common as Examples.Common
-import Examples.DoorReadme as Examples.DoorReadme
 import Examples.CountDown as Examples.CountDown
 import Examples.Circle as Examples.Circle
 import Test.Spec (Spec)
@@ -45,7 +44,6 @@ runExamples = do
   Examples.ErrorHandlingMonadic.main
   Examples.Monadic.main
   Examples.Common.main
-  Examples.DoorReadme.main
   Examples.CountDown.main
   Examples.Circle.main
 

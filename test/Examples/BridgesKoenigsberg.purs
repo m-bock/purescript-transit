@@ -10,6 +10,7 @@ import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
+import Examples.Classic.BridgesKoenigsberg as Classic
 import Examples.Common (assertWalk, hasEulerTrail, permutations, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
@@ -21,35 +22,6 @@ import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
-
-data MsgD = Cross_a | Cross_b | Cross_c | Cross_d | Cross_e | Cross_f | Cross_g
-
-derive instance Eq MsgD
-derive instance Ord MsgD
-
-data StateD = LandA | LandB | LandC | LandD
-
-updateClassic :: StateD -> MsgD -> Maybe StateD
-updateClassic state msg = case state, msg of
-  LandA, Cross_a -> Just LandB
-  LandB, Cross_a -> Just LandA
-  LandA, Cross_b -> Just LandB
-  LandB, Cross_b -> Just LandA
-  LandA, Cross_c -> Just LandC
-  LandC, Cross_c -> Just LandA
-  LandA, Cross_d -> Just LandC
-  LandC, Cross_d -> Just LandA
-  LandA, Cross_e -> Just LandD
-  LandD, Cross_e -> Just LandA
-  LandB, Cross_f -> Just LandD
-  LandD, Cross_f -> Just LandB
-  LandC, Cross_g -> Just LandD
-  LandD, Cross_g -> Just LandC
-  _, _ -> Nothing
-
---------------------------------------------------------------------------------
---- Transit Approach
---------------------------------------------------------------------------------
 
 type State = Variant
   ( "LandA" :: {}
@@ -129,24 +101,24 @@ assert2 :: Aff Unit
 assert2 = do
   hasEulerTrail graph `shouldEqual` false
 
-x :: Array (Maybe StateD)
+x :: Array (Maybe Classic.State)
 x = do
-  init <- [ LandA, LandB, LandC, LandD ]
-  walk <- Array.fromFoldable $ permutations [ Cross_a, Cross_b, Cross_c, Cross_d, Cross_e, Cross_f, Cross_g ]
-  pure $ foldM updateClassic init walk
+  init <- [ Classic.LandA, Classic.LandB, Classic.LandC, Classic.LandD ]
+  walk <- Array.fromFoldable $ permutations [ Classic.Cross_a, Classic.Cross_b, Classic.Cross_c, Classic.Cross_d, Classic.Cross_e, Classic.Cross_f, Classic.Cross_g ]
+  pure $ foldM Classic.update init walk
 
 -- assert4 :: Aff Unit
 -- assert4 = do
---   Array.length (Array.mapMaybe (updateClassic LandA) (Array.fromFoldable allWalks))
+--   Array.length (Array.mapMaybe (Classic.update Classic.LandA) (Array.fromFoldable allWalks))
 --     `shouldEqual` 0
 
---   Array.length (Array.mapMaybe (updateClassic LandB) (Array.fromFoldable allWalks))
+--   Array.length (Array.mapMaybe (Classic.update Classic.LandB) (Array.fromFoldable allWalks))
 --     `shouldEqual` 0
 
---   Array.length (Array.mapMaybe (updateClassic LandC) (Array.fromFoldable allWalks))
+--   Array.length (Array.mapMaybe (Classic.update Classic.LandC) (Array.fromFoldable allWalks))
 --     `shouldEqual` 0
 
---   Array.length (Array.mapMaybe (updateClassic LandD) (Array.fromFoldable allWalks))
+--   Array.length (Array.mapMaybe (Classic.update Classic.LandD) (Array.fromFoldable allWalks))
 --     `shouldEqual` 0
 
 spec :: Spec Unit

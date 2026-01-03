@@ -52,7 +52,6 @@ For a more structured view, here's the corresponding transition table:
 filePath: renders/door.md
 wrapNl: true
 -->
-
 | State      |       | Message |       | State      |
 | ---------- | ----- | ------- | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |
@@ -164,7 +163,7 @@ type DoorTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L36-L39">test/Examples/Door.purs L36-L39</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L32-L35">test/Examples/Door.purs L32-L35</a>
   </sup>
 </p>
 
@@ -207,7 +206,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L26-L34">test/Examples/Door.purs L26-L34</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L22-L30">test/Examples/Door.purs L22-L30</a>
   </sup>
 </p>
 
@@ -233,7 +232,7 @@ update = mkUpdate @DoorTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L41-L44">test/Examples/Door.purs L41-L44</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40">test/Examples/Door.purs L37-L40</a>
   </sup>
 </p>
 
@@ -313,7 +312,7 @@ spec1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L58">test/Examples/Door.purs L54-L58</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L50-L54">test/Examples/Door.purs L50-L54</a>
   </sup>
 </p>
 
@@ -341,7 +340,7 @@ spec2 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L65">test/Examples/Door.purs L61-L65</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L57-L61">test/Examples/Door.purs L57-L61</a>
   </sup>
 </p>
 
@@ -416,7 +415,7 @@ spec3 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L79">test/Examples/Door.purs L68-L79</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L64-L75">test/Examples/Door.purs L64-L75</a>
   </sup>
 </p>
 
@@ -444,7 +443,7 @@ doorTransit = reflectType (Proxy @DoorTransit)
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L46-L47">test/Examples/Door.purs L46-L47</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L42-L43">test/Examples/Door.purs L42-L43</a>
   </sup>
 </p>
 
@@ -492,7 +491,7 @@ generateStateDiagramDark =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L101-L109">test/Examples/Door.purs L101-L109</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L97-L105">test/Examples/Door.purs L97-L105</a>
   </sup>
 </p>
 
@@ -537,7 +536,7 @@ generateTransitionTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L111-L119">test/Examples/Door.purs L111-L119</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L107-L115">test/Examples/Door.purs L107-L115</a>
   </sup>
 </p>
 
@@ -560,5 +559,238 @@ In this example, we've seen how **Transit** helps you build type-safe state mach
 The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.
 
 While this example was simple, it demonstrates **Transit**'s fundamental approach. In the next example, we'll see how **Transit** handles more complex scenarios with states that contain data and conditional transitions.
+
+# Example 2: Door with Pin
+
+> Full source code: _[test/Examples/DoorPin.purs](test/Examples/DoorPin.purs)_
+
+<img src="assets/door-pin-header.jpg" width="450" />
+
+Now let's extend our door to support PIN-based locking. In this enhanced version, you can lock the door with a PIN code, and then unlock it by entering the correct PIN. This introduces two important concepts: **states with data** and **conditional transitions**.
+
+## The State Machine
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-pin-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-pin-light.svg">
+  <img alt="Door with Pin state diagram" src="renders/door-pin-light.svg">
+</picture>
+
+In this example, the `DoorLocked` state stores a PIN code, and the `Unlock` message includes the entered PIN. The unlock operation can succeed (transitioning to `DoorClosed`) or fail (staying in `DoorLocked`), depending on whether the entered PIN matches the stored one.
+
+Notice the diamond node in the state diagram — this represents a conditional transition where the outcome depends on runtime data.
+
+The transition table shows both possible outcomes:
+
+<!-- PD_START:raw
+filePath: renders/door-pin.md
+wrapNl: true
+-->
+| State      |       | Message |       | Guard        |       | State      |
+| ---------- | ----- | ------- | ----- | ------------ | ----- | ---------- |
+| DoorOpen   | **⟶** | Close   |       |              | **⟶** | DoorClosed |
+| DoorClosed | **⟶** | Open    |       |              | **⟶** | DoorOpen   |
+| DoorClosed | **⟶** | Lock    |       |              | **⟶** | DoorLocked |
+| DoorLocked | **⟶** | Unlock  | **?** | PinIncorrect | **⟶** | DoorLocked |
+| DoorLocked | **⟶** | Unlock  | **?** | PinCorrect   | **⟶** | DoorClosed |
+
+<!-- PD_END -->
+
+Notice the **Guard** column in the transition table. For most transitions, this column is empty — these are unconditional transitions that always succeed. However, the `Unlock` message from `DoorLocked` shows two rows with guards: `PinIncorrect` and `PinCorrect`. These **guards** represent the conditions that determine which transition path is taken at runtime. When the `Unlock` message is received, the implementation checks whether the entered PIN matches the stored PIN, and the guard label (`PinCorrect` or `PinIncorrect`) indicates which condition was met. This allows a single message type to have multiple possible outcomes based on runtime data.
+
+## The Classic Approach
+
+Let's briefly recap how we would implement this using the classic approach.
+
+### States and Message types
+
+The PureScript types now include data in both states and messages:
+
+<!-- PD_START:purs
+filePath: test/Examples/Classic/DoorPin.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+data State
+  = DoorOpen
+  | DoorClosed
+  | DoorLocked { storedPin :: String }
+
+data Msg
+  = Close
+  | Open
+  | Lock { newPin :: String }
+  | Unlock { enteredPin :: String }
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L9-L18">test/Examples/Classic/DoorPin.purs L9-L18</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+### The update function
+
+The classic update function now needs to handle state and message data:
+
+<!-- PD_START:purs
+filePath: test/Examples/Classic/DoorPin.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update state msg = case state, msg of
+  DoorOpen, Close -> DoorClosed
+  DoorClosed, Open -> DoorOpen
+  DoorClosed, Lock { newPin } -> DoorLocked { storedPin: newPin }
+  DoorLocked { storedPin }, Unlock { enteredPin } ->
+    if storedPin == enteredPin then
+      DoorClosed
+    else
+      DoorLocked { storedPin }
+  _, _ -> state
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L20-L30">test/Examples/Classic/DoorPin.purs L20-L30</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+## The Transit Approach
+
+In the DSL specification, we express conditional transitions by listing multiple possible target states:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  , "DoorLocked" :: { storedPin :: String }
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  , "Lock" :: { newPin :: String }
+  , "Unlock" :: { enteredPin :: String }
+  )
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L29-L40">test/Examples/DoorPin.purs L29-L40</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - DoorPinTransit
+-->
+
+```purescript
+type DoorPinTransit =
+  Transit
+    :* ("DoorOpen" :@ "Close" >| "DoorClosed")
+    :* ("DoorClosed" :@ "Open" >| "DoorOpen")
+    :* ("DoorClosed" :@ "Lock" >| "DoorLocked")
+    :*
+      ( "DoorLocked" :@ "Unlock"
+          >| ("PinCorrect" :? "DoorClosed")
+          >| ("PinIncorrect" :? "DoorLocked")
+      )
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L42-L51">test/Examples/DoorPin.purs L42-L51</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
+
+The update function now has access to both the current state and the message data, allowing you to implement the conditional logic:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - update
+-->
+
+```purescript
+update :: State -> Msg -> State
+update = mkUpdate @DoorPinTransit
+  ( match @"DoorOpen" @"Close" \_ _ ->
+      return @"DoorClosed"
+  )
+  ( match @"DoorClosed" @"Open" \_ _ ->
+      return @"DoorOpen"
+  )
+  ( match @"DoorClosed" @"Lock" \_ msg ->
+      return @"DoorLocked" { storedPin: msg.newPin }
+  )
+  ( match @"DoorLocked" @"Unlock" \state msg ->
+      let
+        isCorrect = state.storedPin == msg.enteredPin
+      in
+        if isCorrect then
+          returnVia @"PinCorrect" @"DoorClosed"
+        else
+          returnVia @"PinIncorrect" @"DoorLocked" { storedPin: state.storedPin }
+  )
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L53-L72">test/Examples/DoorPin.purs L53-L72</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+The match handlers receive both the current state and the message, giving you access to all the data needed to make runtime decisions. The type system still ensures that only valid target states can be returned.
+
+> **Important**: The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification.
+
+> **Limitation**: The compiler cannot detect if an implementation forgets to return a possible case.
+> For example, if a transition can return either `DoorClosed` or `DoorLocked`, your handler always returns `DoorClosed` then the compiler would not detect this error. Obviously the compiler cannot detect if your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
+
+## Conclusion
+
+This example demonstrates how **Transit** extends beyond simple state machines to handle real-world complexity:
+
+- **States and messages with data**: Both states and messages can carry data (like `activePin` in `DoorLocked` or `newPin` in `Lock`), and handlers receive this data.
+- **Conditional transitions**: The DSL supports transitions with multiple possible outcomes using guard labels (`PinCorrect` and `PinIncorrect`). The type system ensures that conditional transitions can only return valid target states, and each outcome must be associated with its corresponding guard label using `RetVia`
+
+By leveraging PureScript's `Variant` types to express subsets of possible states (which traditional ADTs cannot represent), **Transit** provides compile-time guarantees that your implementation matches your specification. The type system catches errors at compile time, ensuring that:
+
+- You cannot return invalid target states
+- You cannot return more cases than specified
+- However, the compiler cannot detect if you forget to return a possible case (you can return fewer cases than specified)
 
 [^servant]: [Servant](https://haskell-servant.readthedocs.io/) is a Haskell library for building type-safe web APIs.
