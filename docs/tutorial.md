@@ -52,6 +52,7 @@ For a more structured view, here's the corresponding transition table:
 filePath: renders/door.md
 wrapNl: true
 -->
+
 | State      |       | Message |       | State      |
 | ---------- | ----- | ------- | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |
@@ -69,21 +70,21 @@ Before diving into **Transit**, let's first look at how state machines are typic
 
 ### States and Message types
 
-To represent our door in code, we need two major types: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types. We are using the suffix `D` to denote the traditional approach (D = data).
+To represent our door in code, we need two major types: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types.
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/Classic/Door.purs
 pick:
-  - StateD
-  - MsgD
+  - State
+  - Msg
 -->
 
 ```purescript
-data StateD
+data State
   = DoorOpen
   | DoorClosed
 
-data MsgD
+data Msg
   = Close
   | Open
 ```
@@ -91,7 +92,7 @@ data MsgD
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L28-L34">test/Examples/Door.purs L28-L34</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L14-L20">test/Examples/Classic/Door.purs L14-L20</a>
   </sup>
 </p>
 
@@ -104,14 +105,14 @@ The `State` type captures the two possible states we saw in the diagram: `DoorOp
 Now that we have our types, we need a function that takes the current state and a message, and returns the new state. The traditional way to implement this is with a pattern-matching function:
 
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/Classic/Door.purs
 pick:
-  - updateD
+  - update
 -->
 
 ```purescript
-updateD :: StateD -> MsgD -> StateD
-updateD state msg =
+update :: State -> Msg -> State
+update state msg =
   case state, msg of
     DoorOpen, Close -> DoorClosed
     DoorClosed, Open -> DoorOpen
@@ -121,7 +122,7 @@ updateD state msg =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L36-L41">test/Examples/Door.purs L36-L41</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L22-L27">test/Examples/Classic/Door.purs L22-L27</a>
   </sup>
 </p>
 
@@ -163,7 +164,7 @@ type DoorTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L57-L60">test/Examples/Door.purs L57-L60</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L36-L39">test/Examples/Door.purs L36-L39</a>
   </sup>
 </p>
 
@@ -206,7 +207,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L55">test/Examples/Door.purs L47-L55</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L26-L34">test/Examples/Door.purs L26-L34</a>
   </sup>
 </p>
 
@@ -232,7 +233,7 @@ update = mkUpdate @DoorTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L62-L65">test/Examples/Door.purs L62-L65</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L41-L44">test/Examples/Door.purs L41-L44</a>
   </sup>
 </p>
 
@@ -312,7 +313,7 @@ spec1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L75-L79">test/Examples/Door.purs L75-L79</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L58">test/Examples/Door.purs L54-L58</a>
   </sup>
 </p>
 
@@ -340,7 +341,7 @@ spec2 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L82-L86">test/Examples/Door.purs L82-L86</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L65">test/Examples/Door.purs L61-L65</a>
   </sup>
 </p>
 
@@ -415,7 +416,7 @@ spec3 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L89-L100">test/Examples/Door.purs L89-L100</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L79">test/Examples/Door.purs L68-L79</a>
   </sup>
 </p>
 
@@ -443,7 +444,7 @@ doorTransit = reflectType (Proxy @DoorTransit)
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L67-L68">test/Examples/Door.purs L67-L68</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L46-L47">test/Examples/Door.purs L46-L47</a>
   </sup>
 </p>
 
@@ -491,7 +492,7 @@ generateStateDiagramDark =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L136-L144">test/Examples/Door.purs L136-L144</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L101-L109">test/Examples/Door.purs L101-L109</a>
   </sup>
 </p>
 
@@ -536,7 +537,7 @@ generateTransitionTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L146-L154">test/Examples/Door.purs L146-L154</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L111-L119">test/Examples/Door.purs L111-L119</a>
   </sup>
 </p>
 

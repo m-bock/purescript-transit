@@ -4,6 +4,7 @@ import Prelude
 
 import Effect (Effect)
 import Examples.Door as Examples.Door
+import Examples.Classic.Door as Examples.Classic.Door
 import Examples.BridgesKoenigsberg as Examples.BridgesKoenigsberg
 import Examples.ColorRing as Examples.ColorRing
 import Examples.DoorPin as Examples.DoorPin
@@ -22,6 +23,7 @@ import Test.Spec.Runner.Node (runSpecAndExitProcess)
 spec :: Spec Unit
 spec = do
   Examples.Door.spec
+  Examples.Classic.Door.spec
   Examples.DoorPin.spec
   Examples.BridgesKoenigsberg.spec
   Examples.HouseSantaClaus.spec

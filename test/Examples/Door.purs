@@ -3,9 +3,7 @@ module Examples.Door (main, spec, DoorTransit, State(..), Msg(..)) where
 import Prelude
 
 import Data.Foldable (foldl)
-import Data.Generic.Rep (class Generic)
 import Data.Reflectable (reflectType)
-import Data.Show.Generic (genericShow)
 import Data.Traversable (scanl)
 import Data.Variant (Variant)
 import Effect (Effect)
@@ -20,29 +18,6 @@ import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
-
---------------------------------------------------------------------------------
---- Classic Approach
---------------------------------------------------------------------------------
-
-data StateD
-  = DoorOpen
-  | DoorClosed
-
-data MsgD
-  = Close
-  | Open
-
-updateD :: StateD -> MsgD -> StateD
-updateD state msg =
-  case state, msg of
-    DoorOpen, Close -> DoorClosed
-    DoorClosed, Open -> DoorOpen
-    _, _ -> state
-
---------------------------------------------------------------------------------
---- Transit Approach
---------------------------------------------------------------------------------
 
 type State = Variant
   ( "DoorOpen" :: {}
@@ -99,26 +74,12 @@ spec3 =
       , v @"Open" ~> v @"DoorOpen"
       ]
 
-spec4 :: Spec Unit
-spec4 =
-  it "follows the walk and visits the expected intermediate states" do
-    assertWalk updateD
-      DoorOpen
-      [ Close ~> DoorClosed
-      , Open ~> DoorOpen
-      , Close ~> DoorClosed
-      , Close ~> DoorClosed
-      , Open ~> DoorOpen
-      , Open ~> DoorOpen
-      ]
-
 spec :: Spec Unit
 spec = do
   describe "SimpleDoor" do
     spec1
     spec2
     spec3
-    spec4
 
 --------------------------------------------------------------------------------
 --- Diagram and Table generation
@@ -158,20 +119,4 @@ main = do
   generateStateDiagramLight
   generateStateDiagramDark
   generateTransitionTable
-
---------------------------------------------------------------------------------
---- Instances
---------------------------------------------------------------------------------
-
-derive instance Eq StateD
-derive instance Eq MsgD
-
-derive instance Generic StateD _
-derive instance Generic MsgD _
-
-instance Show StateD where
-  show = genericShow
-
-instance Show MsgD where
-  show = genericShow
 
