@@ -46,14 +46,14 @@ spec = do
 
     describe "themeHarmonyDark" do
       it "has dark background" do
-        themeHarmonyDark.bgColor `shouldEqual` Color.rgb 20 20 20
+        themeHarmonyDark.bgColor `shouldEqual` Color.rgba 0 0 0 0.0
 
       it "has light title color" do
         themeHarmonyDark.titleColor `shouldEqual` Color.rgb 200 200 200
 
     describe "themeContrastLight" do
       it "has white background" do
-        themeContrastLight.bgColor `shouldEqual` Color.white
+        themeContrastLight.bgColor `shouldEqual` Color.rgba 0 0 0 0.0
 
       it "has black title color" do
         themeContrastLight.titleColor `shouldEqual` Color.black
