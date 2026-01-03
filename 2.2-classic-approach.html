@@ -345,27 +345,26 @@ developers and serves as a baseline for understanding what
 types</h3>
 <p>To represent our door in code, we need two major types: the states
 the door can be in, and the actions that can change those states. In
-PureScript, we define these as simple data types. We are using the
-suffix <code>D</code> to denote the traditional approach (D = data).</p>
+PureScript, we define these as simple data types.</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Classic/Door.purs
 pick:
-  - StateD
-  - MsgD
+  - State
+  - Msg
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">StateD</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">DoorClosed</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">MsgD</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Close</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L30-L36">test/Examples/DoorSimple.purs
-L30-L36</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L14-L20">test/Examples/Classic/Door.purs
+L14-L20</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>State</code> type captures the two possible states we saw
@@ -380,13 +379,13 @@ function</h3>
 state and a message, and returns the new state. The traditional way to
 implement this is with a pattern-matching function:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Classic/Door.purs
 pick:
-  - updateD
+  - update
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">updateD ::</span> <span class="dt">StateD</span> <span class="ot">-&gt;</span> <span class="dt">MsgD</span> <span class="ot">-&gt;</span> <span class="dt">StateD</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>updateD state msg <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>update state msg <span class="ot">=</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> state, msg <span class="kw">of</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
@@ -394,8 +393,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L38-L43">test/Examples/DoorSimple.purs
-L38-L43</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L22-L27">test/Examples/Classic/Door.purs
+L22-L27</a> </sup>
 </p>
 <!-- PD_END -->
 <p>We pattern match on both the current state and the message at once.

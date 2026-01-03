@@ -347,20 +347,20 @@ Specification</h3>
 <p>First, we define the state machine structure using
 <strong>Transit</strong>’s type-level DSL:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
-  - DoorSimpleTransit
+  - DoorTransit
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorSimpleTransit</span> <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorTransit</span> <span class="ot">=</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L59-L62">test/Examples/DoorSimple.purs
-L59-L62</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L32-L35">test/Examples/Door.purs
+L32-L35</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Breaking down the syntax:</p>
@@ -390,7 +390,7 @@ can filter the possible cases (both input states/messages and output
 states) for each handler function. Variants are perfect for this. There
 is no way to express a subset of cases from a traditional ADT.</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - State
   - Msg
@@ -408,8 +408,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L49-L57">test/Examples/DoorSimple.purs
-L49-L57</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L22-L30">test/Examples/Door.purs
+L22-L30</a> </sup>
 </p>
 <!-- PD_END -->
 <h3 data-number="2.3.3" id="the-update-function-1">The Update
@@ -417,28 +417,28 @@ Function</h3>
 <p>Based on this specification, we create an update function using
 <code>mkUpdate</code>:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - update
 -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorSimpleTransit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorTransit</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L64-L67">test/Examples/DoorSimple.purs
-L64-L67</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40">test/Examples/Door.purs
+L37-L40</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Here’s how this works:</p>
 <ul>
-<li><p><code>mkUpdate @DoorSimpleTransit</code> creates an update
-function based on the <code>DoorSimpleTransit</code> specification. The
-<code>@</code> symbol is type application[^type-app], passing the
-specification to the function.</p></li>
+<li><p><code>mkUpdate @DoorTransit</code> creates an update function
+based on the <code>DoorTransit</code> specification. The <code>@</code>
+symbol is type application[^type-app], passing the specification to the
+function.</p></li>
 <li><p>Each <code>match</code> line handles one transition from the
 specification. The first two arguments (<code>@"DoorOpen"</code> and
 <code>@"Close"</code>) are type-level symbols (type applications) that
@@ -451,7 +451,7 @@ transition to. The <code>return</code> function is part of
 <li><p><strong>Important</strong>: The order of match handlers must
 match the order of transitions in the DSL specification. In this
 example, the handlers are provided in the same order as they appear in
-<code>DoorSimpleTransit</code>: <code>DoorOpen :@ Close</code>, then
+<code>DoorTransit</code>: <code>DoorOpen :@ Close</code>, then
 <code>DoorClosed :@ Open</code>.</p></li>
 </ul> 
       <div class="scroll-to-top">

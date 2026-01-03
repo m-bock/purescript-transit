@@ -385,7 +385,7 @@ split: true
 <code>foldl</code> to apply a sequence of messages and check if the
 final state matches what we expect:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: spec1
@@ -399,8 +399,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L77-L81">test/Examples/DoorSimple.purs
-L77-L81</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L50-L54">test/Examples/Door.purs
+L50-L54</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This test starts with the door open, closes it, opens it, then closes
@@ -411,7 +411,7 @@ should also verify that each step along the way works correctly. The
 <code>scanl</code> function is perfect for this — it shows us all the
 intermediate states, not just the final one.</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: spec2
@@ -425,8 +425,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L84-L88">test/Examples/DoorSimple.purs
-L84-L88</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L57-L61">test/Examples/Door.purs
+L57-L61</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This test is similar to the previous one. But instead of just
@@ -476,7 +476,7 @@ L40-L59</a> </sup>
 sequentially using <code>scanl</code>, and verifies that the resulting
 states match the expected ones. Here’s how we use it:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: spec3
@@ -497,8 +497,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L91-L102">test/Examples/DoorSimple.purs
-L91-L102</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L64-L75">test/Examples/Door.purs
+L64-L75</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>~&gt;</code> operator is an infix alias for
