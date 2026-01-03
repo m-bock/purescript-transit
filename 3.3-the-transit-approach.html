@@ -328,138 +328,133 @@
           m-bock/purescript-transit
         </a>
         <div class="nav-links">
-                    <a href="2.2-classic-approach.html" rel="prev" title="Classic Approach"
+                    <a href="3.2-the-classic-approach.html" rel="prev" title="The Classic Approach"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="2.4-testing-the-update-function.html" rel="next" title="Testing the update function"
+                     <a href="3.4-conclusion-1.html" rel="next" title="Conclusion"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="2.3" id="transit-approach">Transit Approach</h2>
-<p>With the <strong>Transit</strong> library, we take a different
-approach that addresses the drawbacks of the classic method. Instead of
-writing the update function directly, we first define a type-level
-specification that describes our state machine. This specification
-serves as a single source of truth that the compiler can verify against
-your implementation.</p>
-<h3 data-number="2.3.1" id="the-type-level-specification">The Type-Level
-Specification</h3>
-<p>First, we define the state machine structure using
-<strong>Transit</strong>’s type-level DSL:</p>
+       <h2 data-number="3.3" id="the-transit-approach">The Transit
+Approach</h2>
+<p>In the DSL specification, we express conditional transitions by
+listing multiple possible target states:</p>
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - DoorTransit
--->
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorTransit</span> <span class="ot">=</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L32-L35">test/Examples/Door.purs
-L32-L35</a> </sup>
-</p>
-<!-- PD_END -->
-<p>Breaking down the syntax:</p>
-<ul>
-<li><code>Transit</code> initializes an empty transition list</li>
-<li><code>:*</code> is an infix operator that appends each transition to
-the list</li>
-<li><code>"DoorOpen" :@ "Close" &gt;| "DoorClosed"</code> means: in
-state <code>DoorOpen</code>, when receiving message <code>Close</code>,
-transition to state <code>DoorClosed</code></li>
-<li>The <code>@</code> operator connects a state to a message, and
-<code>&gt;|</code> indicates the target state</li>
-</ul>
-<p>This type-level specification fully defines the state machine’s
-structure. The compiler can now use this specification to ensure our
-implementation is correct.</p>
-<h3 data-number="2.3.2" id="state-and-message-types">State and Message
-Types</h3>
-<p><strong>Transit</strong> uses <code>Variant</code> types (from
-<code>purescript-variant</code>)[^variant] for both <code>State</code>
-and <code>Msg</code> instead of traditional ADTs. Variants are open sum
-types where each constructor is labeled with a type-level symbol (like
-<code>"DoorOpen"</code> or <code>"Close"</code>).</p>
-<p>This design choice is crucial for <strong>Transit</strong>’s
-type-level machinery. The key advantage is that <strong>Transit</strong>
-can filter the possible cases (both input states/messages and output
-states) for each handler function. Variants are perfect for this. There
-is no way to express a subset of cases from a traditional ADT.</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/DoorPin.purs
 pick:
   - State
   - Msg
 -->
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;DoorClosed&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;Close&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Open&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;DoorClosed&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;DoorLocked&quot;</span><span class="ot"> ::</span> {<span class="ot"> storedPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;Close&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Open&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Lock&quot;</span><span class="ot"> ::</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Unlock&quot;</span><span class="ot"> ::</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L22-L30">test/Examples/Door.purs
-L22-L30</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L29-L40">test/Examples/DoorPin.purs
+L29-L40</a> </sup>
 </p>
 <!-- PD_END -->
-<h3 data-number="2.3.3" id="the-update-function-1">The Update
-Function</h3>
-<p>Based on this specification, we create an update function using
-<code>mkUpdate</code>:</p>
 <!-- PD_START:purs
-filePath: test/Examples/Door.purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - DoorPinTransit
+-->
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorPinTransit</span> <span class="ot">=</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Lock&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorLocked&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      ( <span class="st">&quot;DoorLocked&quot;</span> <span class="op">:@</span> <span class="st">&quot;Unlock&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;PinCorrect&quot;</span> <span class="op">:?</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;PinIncorrect&quot;</span> <span class="op">:?</span> <span class="st">&quot;DoorLocked&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      )</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L42-L51">test/Examples/DoorPin.purs
+L42-L51</a> </sup>
+</p>
+<!-- PD_END -->
+<p>The syntax
+<code>("PinCorrect" :? "DoorClosed") &gt;| ("PinIncorrect" :? "DoorLocked")</code>
+indicates that the <code>Unlock</code> message from
+<code>DoorLocked</code> can transition to either state, depending on
+runtime conditions. The <code>:?</code> operator associates a condition
+label (like <code>"PinCorrect"</code>) with a target state, and
+<code>&gt;|</code> chains multiple conditional outcomes together.</p>
+<p>The update function now has access to both the current state and the
+message data, allowing you to implement the conditional logic:</p>
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
 pick:
   - update
 -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorTransit</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorPinTransit</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Lock&quot;</span> \_ msg <span class="ot">-&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { storedPin<span class="op">:</span> msg<span class="op">.</span>newPin }</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> <span class="op">@</span><span class="st">&quot;Unlock&quot;</span> \state msg <span class="ot">-&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        isCorrect <span class="ot">=</span> state<span class="op">.</span>storedPin <span class="op">==</span> msg<span class="op">.</span>enteredPin</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="kw">in</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> isCorrect <span class="kw">then</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>          returnVia <span class="op">@</span><span class="st">&quot;PinCorrect&quot;</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">else</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>          returnVia <span class="op">@</span><span class="st">&quot;PinIncorrect&quot;</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { storedPin<span class="op">:</span> state<span class="op">.</span>storedPin }</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40">test/Examples/Door.purs
-L37-L40</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L53-L72">test/Examples/DoorPin.purs
+L53-L72</a> </sup>
 </p>
 <!-- PD_END -->
-<p>Here’s how this works:</p>
-<ul>
-<li><p><code>mkUpdate @DoorTransit</code> creates an update function
-based on the <code>DoorTransit</code> specification. The <code>@</code>
-symbol is type application[^type-app], passing the specification to the
-function.</p></li>
-<li><p>Each <code>match</code> line handles one transition from the
-specification. The first two arguments (<code>@"DoorOpen"</code> and
-<code>@"Close"</code>) are type-level symbols (type applications) that
-specify which state and message to match on. The lambda function defines
-what happens when that transition occurs.</p></li>
-<li><p><code>return @"DoorClosed"</code> specifies which state to
-transition to. The <code>return</code> function is part of
-<strong>Transit</strong>’s DSL for specifying the target state, and the
-<code>@</code> symbol again indicates a type-level symbol.</p></li>
-<li><p><strong>Important</strong>: The order of match handlers must
-match the order of transitions in the DSL specification. In this
-example, the handlers are provided in the same order as they appear in
-<code>DoorTransit</code>: <code>DoorOpen :@ Close</code>, then
-<code>DoorClosed :@ Open</code>.</p></li>
-</ul> 
+<p>The match handlers receive both the current state and the message,
+giving you access to all the data needed to make runtime decisions. The
+type system still ensures that only valid target states can be
+returned.</p>
+<blockquote>
+<p><strong>Important</strong>: The order of match handlers in
+<code>mkUpdate</code> must match the order of transitions in the DSL
+specification.</p>
+</blockquote>
+<blockquote>
+<p><strong>Limitation</strong>: The compiler cannot detect if an
+implementation forgets to return a possible case. For example, if a
+transition can return either <code>DoorClosed</code> or
+<code>DoorLocked</code>, your handler always returns
+<code>DoorClosed</code> then the compiler would not detect this error.
+Obviously the compiler cannot detect if your handler implements the
+conditional logic correctly, so missing a case is just one of many
+possible errors.</p>
+</blockquote> 
       <div class="scroll-to-top">
         <a
           href="#"

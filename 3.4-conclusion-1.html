@@ -263,94 +263,43 @@
           m-bock/purescript-transit
         </a>
         <div class="nav-links">
-                    <a href="2-example-1-a-simple-door.html" rel="prev" title="Example 1: A Simple Door"
+                    <a href="3.3-the-transit-approach.html" rel="prev" title="The Transit Approach"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="2.2-classic-approach.html" rel="next" title="Classic Approach"
-            >Next →</a
-          >
+                     <span class="disabled">Next →</span>
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="2.1" id="the-state-machine">The State
-Machine</h2>
-<p>Think of a door that can be either open or closed. When it’s open,
-you can close it. When it’s closed, you can open it. That’s it — no
-other actions make sense. You can’t open a door that’s already open, and
-you can’t close a door that’s already closed. This simple behavior is
-what we’re modeling here.</p>
-<p>Before diving into the code, let’s visualize our simple door state
-machine. This will help you understand the structure we’re about to
-implement.</p>
-<h3 data-number="2.1.1" id="state-diagram">State Diagram</h3>
-<p>The state diagram below shows all possible states and the valid
-transitions between them:</p>
-<p><strong>Door State Diagram</strong></p>
-<p><picture>
-<source media="(prefers-color-scheme: dark)" srcset="renders/door-dark.svg">
-<source media="(prefers-color-scheme: light)" srcset="renders/door-light.svg">
-<img class="state-diagram" alt="Simple Door state diagram" src="renders/door-light.svg">
-</picture></p>
-<p>In this diagram, you can see:</p>
+       <h2 data-number="3.4" id="conclusion-1">Conclusion</h2>
+<p>This example demonstrates how <strong>Transit</strong> extends beyond
+simple state machines to handle real-world complexity:</p>
 <ul>
-<li><strong>Two states</strong>: <code>DoorOpen</code> and
-<code>DoorClosed</code> (shown as rectangles)</li>
-<li><strong>Two transitions</strong>: The <code>Close</code> transition
-moves from <code>DoorOpen</code> to <code>DoorClosed</code>, and the
-<code>Open</code> transition moves from <code>DoorClosed</code> to
-<code>DoorOpen</code></li>
-<li><strong>Arrows</strong>: The direction of each arrow shows which
-state changes are valid</li>
+<li><strong>States and messages with data</strong>: Both states and
+messages can carry data (like <code>activePin</code> in
+<code>DoorLocked</code> or <code>newPin</code> in <code>Lock</code>),
+and handlers receive this data.</li>
+<li><strong>Conditional transitions</strong>: The DSL supports
+transitions with multiple possible outcomes using guard labels
+(<code>PinCorrect</code> and <code>PinIncorrect</code>). The type system
+ensures that conditional transitions can only return valid target
+states, and each outcome must be associated with its corresponding guard
+label using <code>RetVia</code></li>
 </ul>
-<p><strong>Terminology note</strong>: Throughout this documentation, the
-terms <em>message</em>, <em>action</em>, and <em>transition</em> are
-used interchangeably to refer to the events that trigger state
-changes[^terminology]. In <strong>Transit</strong>’s type system, these
-correspond to the message types in your <code>Msg</code> variant.</p>
-<h3 data-number="2.1.2" id="transition-table">Transition Table</h3>
-<p>For a more structured view, here’s the corresponding transition
-table:</p>
-<!-- PD_START:raw
-filePath: renders/door.md
-wrapNl: true
--->
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th></th>
-<th>Message</th>
-<th></th>
-<th>State</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DoorOpen</td>
-<td><strong>⟶</strong></td>
-<td>Close</td>
-<td><strong>⟶</strong></td>
-<td>DoorClosed</td>
-</tr>
-<tr>
-<td>DoorClosed</td>
-<td><strong>⟶</strong></td>
-<td>Open</td>
-<td><strong>⟶</strong></td>
-<td>DoorOpen</td>
-</tr>
-</tbody>
-</table>
-<!-- PD_END -->
-<p>Each row shows one valid transition: which state you start in, which
-action you take, and which state you end up in. Notice that invalid
-actions — like trying to open an already open door — simply don’t appear
-in the table.</p>
-<p>Now let’s see how we represent this in PureScript code.</p> 
+<p>By leveraging PureScript’s <code>Variant</code> types to express
+subsets of possible states (which traditional ADTs cannot represent),
+<strong>Transit</strong> provides compile-time guarantees that your
+implementation matches your specification. The type system catches
+errors at compile time, ensuring that:</p>
+<ul>
+<li>You cannot return invalid target states</li>
+<li>You cannot return more cases than specified</li>
+<li>However, the compiler cannot detect if you forget to return a
+possible case (you can return fewer cases than specified)</li>
+</ul> 
       <div class="scroll-to-top">
         <a
           href="#"

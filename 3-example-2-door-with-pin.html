@@ -263,94 +263,31 @@
           m-bock/purescript-transit
         </a>
         <div class="nav-links">
-                    <a href="2-example-1-a-simple-door.html" rel="prev" title="Example 1: A Simple Door"
+                    <a href="2.6-conclusion.html" rel="prev" title="Conclusion"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="2.2-classic-approach.html" rel="next" title="Classic Approach"
+                     <a href="3.1-the-state-machine-1.html" rel="next" title="The State Machine"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="2.1" id="the-state-machine">The State
-Machine</h2>
-<p>Think of a door that can be either open or closed. When it’s open,
-you can close it. When it’s closed, you can open it. That’s it — no
-other actions make sense. You can’t open a door that’s already open, and
-you can’t close a door that’s already closed. This simple behavior is
-what we’re modeling here.</p>
-<p>Before diving into the code, let’s visualize our simple door state
-machine. This will help you understand the structure we’re about to
-implement.</p>
-<h3 data-number="2.1.1" id="state-diagram">State Diagram</h3>
-<p>The state diagram below shows all possible states and the valid
-transitions between them:</p>
-<p><strong>Door State Diagram</strong></p>
-<p><picture>
-<source media="(prefers-color-scheme: dark)" srcset="renders/door-dark.svg">
-<source media="(prefers-color-scheme: light)" srcset="renders/door-light.svg">
-<img class="state-diagram" alt="Simple Door state diagram" src="renders/door-light.svg">
-</picture></p>
-<p>In this diagram, you can see:</p>
-<ul>
-<li><strong>Two states</strong>: <code>DoorOpen</code> and
-<code>DoorClosed</code> (shown as rectangles)</li>
-<li><strong>Two transitions</strong>: The <code>Close</code> transition
-moves from <code>DoorOpen</code> to <code>DoorClosed</code>, and the
-<code>Open</code> transition moves from <code>DoorClosed</code> to
-<code>DoorOpen</code></li>
-<li><strong>Arrows</strong>: The direction of each arrow shows which
-state changes are valid</li>
-</ul>
-<p><strong>Terminology note</strong>: Throughout this documentation, the
-terms <em>message</em>, <em>action</em>, and <em>transition</em> are
-used interchangeably to refer to the events that trigger state
-changes[^terminology]. In <strong>Transit</strong>’s type system, these
-correspond to the message types in your <code>Msg</code> variant.</p>
-<h3 data-number="2.1.2" id="transition-table">Transition Table</h3>
-<p>For a more structured view, here’s the corresponding transition
-table:</p>
-<!-- PD_START:raw
-filePath: renders/door.md
-wrapNl: true
--->
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th></th>
-<th>Message</th>
-<th></th>
-<th>State</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DoorOpen</td>
-<td><strong>⟶</strong></td>
-<td>Close</td>
-<td><strong>⟶</strong></td>
-<td>DoorClosed</td>
-</tr>
-<tr>
-<td>DoorClosed</td>
-<td><strong>⟶</strong></td>
-<td>Open</td>
-<td><strong>⟶</strong></td>
-<td>DoorOpen</td>
-</tr>
-</tbody>
-</table>
-<!-- PD_END -->
-<p>Each row shows one valid transition: which state you start in, which
-action you take, and which state you end up in. Notice that invalid
-actions — like trying to open an already open door — simply don’t appear
-in the table.</p>
-<p>Now let’s see how we represent this in PureScript code.</p> 
+       <h1 data-number="3" id="example-2-door-with-pin">Example 2: Door
+with Pin</h1>
+<blockquote>
+<p>Full source code: <em><a
+href="test/Examples/DoorPin.purs">test/Examples/DoorPin.purs</a></em></p>
+</blockquote>
+<p><img src="assets/door-pin-header.jpg" width="450" /></p>
+<p>Now let’s extend our door to support PIN-based locking. In this
+enhanced version, you can lock the door with a PIN code, and then unlock
+it by entering the correct PIN. This introduces two important concepts:
+<strong>states with data</strong> and <strong>conditional
+transitions</strong>.</p> 
       <div class="scroll-to-top">
         <a
           href="#"
