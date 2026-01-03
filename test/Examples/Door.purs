@@ -1,4 +1,4 @@
-module Examples.DoorSimple (main, spec, DoorSimpleTransit, State(..), Msg(..)) where
+module Examples.Door (main, spec, DoorTransit, State(..), Msg(..)) where
 
 import Prelude
 
@@ -54,18 +54,18 @@ type Msg = Variant
   , "Open" :: {}
   )
 
-type DoorSimpleTransit =
+type DoorTransit =
   Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
 
 update :: State -> Msg -> State
-update = mkUpdate @DoorSimpleTransit
+update = mkUpdate @DoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 
-doorSimpleTransit :: TransitCore
-doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
+doorTransit :: TransitCore
+doorTransit = reflectType (Proxy @DoorTransit)
 
 --------------------------------------------------------------------------------
 --- Tests
@@ -127,31 +127,31 @@ spec = do
 generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight =
   let
-    graph = TransitGraphviz.generate doorSimpleTransit _
+    graph = TransitGraphviz.generate doorTransit _
       { theme = themeHarmonyLight
       }
   in
-    FS.writeTextFile UTF8 "renders/door-simple-light.dot" graph
+    FS.writeTextFile UTF8 "renders/door-light.dot" graph
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
   let
     graph :: String
-    graph = TransitGraphviz.generate doorSimpleTransit _
+    graph = TransitGraphviz.generate doorTransit _
       { theme = themeHarmonyDark
       }
   in
-    FS.writeTextFile UTF8 "renders/door-simple-dark.dot" graph
+    FS.writeTextFile UTF8 "renders/door-dark.dot" graph
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: String
-    table = TransitTable.generate doorSimpleTransit _
+    table = TransitTable.generate doorTransit _
       { outputFormat = TransitTable.Markdown
       }
 
-  FS.writeTextFile UTF8 "renders/door-simple.md" table
+  FS.writeTextFile UTF8 "renders/door.md" table
 
 main :: Effect Unit
 main = do
@@ -174,3 +174,4 @@ instance Show StateD where
 
 instance Show MsgD where
   show = genericShow
+

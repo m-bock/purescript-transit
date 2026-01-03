@@ -163,7 +163,7 @@ correspond to the message types in your <code>Msg</code> variant.</p>
 <h2 id="example-1-a-simple-door">Example 1: A Simple Door</h2>
 <blockquote>
 <p>Full source code: <em><a
-href="test/Examples/DoorSimple.purs">test/Examples/DoorSimple.purs</a></em></p>
+href="test/Examples/Door.purs">test/Examples/Door.purs</a></em></p>
 </blockquote>
 <p><img src="../assets/header-door.png" width="450" /></p>
 <p>Let’s start with a simple door state machine to demonstrate
@@ -186,9 +186,9 @@ implement.</p>
 <p>The state diagram below shows all possible states and the valid
 transitions between them:</p>
 <p><picture>
-<source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
-<source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
-<img alt="Simple Door state diagram" src="renders/door-simple-light.svg">
+<source media="(prefers-color-scheme: dark)" srcset="renders/door-dark.svg">
+<source media="(prefers-color-scheme: light)" srcset="renders/door-light.svg">
+<img alt="Simple Door state diagram" src="renders/door-light.svg">
 </picture></p>
 <p>In this diagram, you can see:</p>
 <ul>
@@ -205,7 +205,7 @@ state changes are valid</li>
 <p>For a more structured view, here’s the corresponding transition
 table:</p>
 <!-- PD_START:raw
-filePath: renders/door-simple.md
+filePath: renders/door.md
 wrapNl: true
 -->
 <table>
@@ -253,7 +253,7 @@ the door can be in, and the actions that can change those states. In
 PureScript, we define these as simple data types. We are using the
 suffix <code>D</code> to denote the traditional approach (D = data).</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - StateD
   - MsgD
@@ -264,8 +264,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">MsgD</span> <span class="ot">=</span> <span class="dt">Close</span> <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L27-L29"
-      >test/Examples/DoorSimple.purs L27-L29</a
+    >🗎 <a href="test/Examples/Door.purs#L27-L29"
+      >test/Examples/Door.purs L27-L29</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -280,7 +280,7 @@ corresponding value in these types.</p>
 state and a message, and returns the new state. The traditional way to
 implement this is with a pattern-matching function:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - updateD
 -->
@@ -292,8 +292,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L31-L35"
-      >test/Examples/DoorSimple.purs L31-L35</a
+    >🗎 <a href="test/Examples/Door.purs#L31-L35"
+      >test/Examples/Door.purs L31-L35</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -328,19 +328,19 @@ your implementation.</p>
 <p>First, we define the state machine structure using
 <strong>Transit</strong>’s type-level DSL:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
-  - DoorSimpleTransit
+  - DoorTransit
 -->
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorSimpleTransit</span> <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorTransit</span> <span class="ot">=</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorOpen&quot;</span> <span class="op">:@</span> <span class="st">&quot;Close&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;DoorClosed&quot;</span> <span class="op">:@</span> <span class="st">&quot;Open&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L51-L54"
-      >test/Examples/DoorSimple.purs L51-L54</a
+    >🗎 <a href="test/Examples/Door.purs#L51-L54"
+      >test/Examples/Door.purs L51-L54</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -370,7 +370,7 @@ can filter the possible cases (both input states/messages and output
 states) for each handler function. Variants are perfect for this. There
 is no way to express a subset of cases from a traditional ADT.</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - State
   - Msg
@@ -387,8 +387,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L41-L49"
-      >test/Examples/DoorSimple.purs L41-L49</a
+    >🗎 <a href="test/Examples/Door.purs#L41-L49"
+      >test/Examples/Door.purs L41-L49</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -396,26 +396,26 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <p>Based on this specification, we create an update function using
 <code>mkUpdate</code>:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - update
 -->
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorSimpleTransit</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorTransit</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L56-L59"
-      >test/Examples/DoorSimple.purs L56-L59</a
+    >🗎 <a href="test/Examples/Door.purs#L56-L59"
+      >test/Examples/Door.purs L56-L59</a
     > </sup>
 </p>
 <!-- PD_END -->
 <p>Here’s how this works:</p>
 <ul>
-<li><p><code>mkUpdate @DoorSimpleTransit</code> creates an update
-function based on the <code>DoorSimpleTransit</code> specification. The
+<li><p><code>mkUpdate @DoorTransit</code> creates an update
+function based on the <code>DoorTransit</code> specification. The
 <code>@</code> symbol is type application[^type-app], passing the
 specification to the function.</p></li>
 <li><p>Each <code>match</code> line handles one transition from the
@@ -430,7 +430,7 @@ transition to. The <code>return</code> function is part of
 <li><p><strong>Important</strong>: The order of match handlers must
 match the order of transitions in the DSL specification. In this
 example, the handlers are provided in the same order as they appear in
-<code>DoorSimpleTransit</code>: <code>DoorOpen :@ Close</code>, then
+<code>DoorTransit</code>: <code>DoorOpen :@ Close</code>, then
 <code>DoorClosed :@ Open</code>.</p></li>
 </ul>
 <h4 id="how-this-solves-the-classic-approachs-problems">How This Solves
@@ -496,7 +496,7 @@ split: true
 <code>foldl</code> to apply a sequence of messages and check if the
 final state matches what we expect:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: assert1
@@ -508,8 +508,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb8-
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L66-L69"
-      >test/Examples/DoorSimple.purs L66-L69</a
+    >🗎 <a href="test/Examples/Door.purs#L66-L69"
+      >test/Examples/Door.purs L66-L69</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -521,7 +521,7 @@ should also verify that each step along the way works correctly. The
 <code>scanl</code> function is perfect for this — it shows us all the
 intermediate states, not just the final one.</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: assert2
@@ -533,8 +533,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb9-
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      [ v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> ]</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L72-L75"
-      >test/Examples/DoorSimple.purs L72-L75</a
+    >🗎 <a href="test/Examples/Door.purs#L72-L75"
+      >test/Examples/Door.purs L72-L75</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -585,7 +585,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb10
 sequentially using <code>scanl</code>, and verifies that the resulting
 states match the expected ones. Here’s how we use it:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: assert3
@@ -604,8 +604,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb11
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    ]</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L78-L88"
-      >test/Examples/DoorSimple.purs L78-L88</a
+    >🗎 <a href="test/Examples/Door.purs#L78-L88"
+      >test/Examples/Door.purs L78-L88</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -649,7 +649,7 @@ split: true
 </p>
 <!-- PD_END -->
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - generateStateDiagram
 -->
@@ -658,19 +658,19 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb12
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagram <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    transit ::</span> <span class="dt">TransitCore</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorSimpleTransit</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorTransit</span>)</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;renders/door-simple-light.dot&quot;</span> transit _</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;renders/door-light.dot&quot;</span> transit _</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    { theme <span class="ot">=</span> themeHarmonyLight</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;renders/door-simple-dark.dot&quot;</span> transit _</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  TransitGraphviz.writeToFile <span class="st">&quot;renders/door-dark.dot&quot;</span> transit _</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    { theme <span class="ot">=</span> themeHarmonyDark</span>
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L102-L114"
-      >test/Examples/DoorSimple.purs L102-L114</a
+    >🗎 <a href="test/Examples/Door.purs#L102-L114"
+      >test/Examples/Door.purs L102-L114</a
     > </sup>
 </p>
 <!-- PD_END -->
@@ -689,10 +689,10 @@ See <a href="docs/themes.md">themes.md</a> for more details.</p>
 <p>To convert the <code>.dot</code> file to an SVG (or other formats),
 use the Graphviz[^graphviz] command-line tools:</p>
 <div class="sourceCode" id="cb13"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> renders/door-simple.dot <span class="at">-o</span> renders/door-simple.svg</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> renders/door.dot <span class="at">-o</span> renders/door.svg</span></code></pre></div>
 <p>Or for PNG:</p>
 <div class="sourceCode" id="cb14"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> renders/door-simple.dot <span class="at">-o</span> renders/door-simple.png</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> renders/door.dot <span class="at">-o</span> renders/door.png</span></code></pre></div>
 <h4 id="transition-tables">Transition Tables</h4>
 <p>In addition to state diagrams, you can also generate transition
 tables from the same specification. This provides a tabular view of all
@@ -701,7 +701,7 @@ state transitions, which can be easier to read for some use cases.</p>
 convert your DSL specification, but then use
 <code>TransitTable.writeToFile</code> instead:</p>
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - generateTransitionTable
 -->
@@ -710,15 +710,15 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb15
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    transit ::</span> <span class="dt">TransitCore</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorSimpleTransit</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    transit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorTransit</span>)</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  TransitTable.writeToFile <span class="st">&quot;renders/door-simple.md&quot;</span> transit _</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  TransitTable.writeToFile <span class="st">&quot;renders/door.md&quot;</span> transit _</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span></span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div>
 <p align="right">
 <sup
-    >🗎 <a href="test/Examples/DoorSimple.purs#L116-L124"
-      >test/Examples/DoorSimple.purs L116-L124</a
+    >🗎 <a href="test/Examples/Door.purs#L116-L124"
+      >test/Examples/Door.purs L116-L124</a
     > </sup>
 </p>
 <!-- PD_END -->

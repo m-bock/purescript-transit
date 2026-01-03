@@ -4,7 +4,7 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
-import Examples.DoorSimple (Msg, State, DoorSimpleTransit)
+import Examples.Door (Msg, State, DoorTransit)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (match, mkUpdateMaybe, return)
 import Transit.VariantUtils (v)
@@ -12,7 +12,7 @@ import Test.Spec (Spec, describe, it)
 import Effect (Effect)
 
 update :: State -> Msg -> Maybe State
-update = mkUpdateMaybe @DoorSimpleTransit
+update = mkUpdateMaybe @DoorTransit
   ( match @"DoorOpen" @"Close" \_ _ ->
       return @"DoorClosed"
   )

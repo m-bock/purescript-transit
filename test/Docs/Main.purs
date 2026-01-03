@@ -3,7 +3,7 @@ module Docs.Main where
 import Prelude
 
 import Effect (Effect)
-import Examples.DoorSimple as Examples.DoorSimple
+import Examples.Door as Examples.Door
 import Examples.BridgesKoenigsberg as Examples.BridgesKoenigsberg
 import Examples.ColorRing as Examples.ColorRing
 import Examples.DoorPin as Examples.DoorPin
@@ -21,7 +21,7 @@ import Test.Spec.Runner.Node (runSpecAndExitProcess)
 
 spec :: Spec Unit
 spec = do
-  Examples.DoorSimple.spec
+  Examples.Door.spec
   Examples.DoorPin.spec
   Examples.BridgesKoenigsberg.spec
   Examples.HouseSantaClaus.spec
@@ -34,7 +34,7 @@ spec = do
 
 runExamples :: Effect Unit
 runExamples = do
-  Examples.DoorSimple.main
+  Examples.Door.main
   Examples.DoorPin.main
   Examples.BridgesKoenigsberg.main
   Examples.HouseSantaClaus.main

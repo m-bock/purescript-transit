@@ -12,9 +12,9 @@ All code examples in this documentation are extracted from actual, type-checked 
 
 # Example 1: A Simple Door
 
-> Full source code: _[test/Examples/DoorSimple.purs](test/Examples/DoorSimple.purs)_
+> Full source code: _[test/Examples/Door.purs](test/Examples/Door.purs)_
 
-<img src="assets/door-simple-header.jpg" width="450" />
+<img src="assets/door-header.jpg" width="450" />
 
 Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of the latter.
 
@@ -31,9 +31,9 @@ The state diagram below shows all possible states and the valid transitions betw
 **Door State Diagram**
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="renders/door-simple-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="renders/door-simple-light.svg">
-  <img class="state-diagram" alt="Simple Door state diagram" src="renders/door-simple-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-light.svg">
+  <img class="state-diagram" alt="Simple Door state diagram" src="renders/door-light.svg">
 </picture>
 
 In this diagram, you can see:
@@ -49,7 +49,7 @@ In this diagram, you can see:
 For a more structured view, here's the corresponding transition table:
 
 <!-- PD_START:raw
-filePath: renders/door-simple.md
+filePath: renders/door.md
 wrapNl: true
 -->
 | State      |       | Message |       | State      |
@@ -72,7 +72,7 @@ Before diving into **Transit**, let's first look at how state machines are typic
 To represent our door in code, we need two major types: the states the door can be in, and the actions that can change those states. In PureScript, we define these as simple data types. We are using the suffix `D` to denote the traditional approach (D = data).
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - StateD
   - MsgD
@@ -91,7 +91,7 @@ data MsgD
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L30-L36">test/Examples/DoorSimple.purs L30-L36</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L28-L34">test/Examples/Door.purs L28-L34</a>
   </sup>
 </p>
 
@@ -104,7 +104,7 @@ The `State` type captures the two possible states we saw in the diagram: `DoorOp
 Now that we have our types, we need a function that takes the current state and a message, and returns the new state. The traditional way to implement this is with a pattern-matching function:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - updateD
 -->
@@ -121,7 +121,7 @@ updateD state msg =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L38-L43">test/Examples/DoorSimple.purs L38-L43</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L36-L41">test/Examples/Door.purs L36-L41</a>
   </sup>
 </p>
 
@@ -148,13 +148,13 @@ With the **Transit** library, we take a different approach that addresses the dr
 First, we define the state machine structure using **Transit**'s type-level DSL:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
-  - DoorSimpleTransit
+  - DoorTransit
 -->
 
 ```purescript
-type DoorSimpleTransit =
+type DoorTransit =
   Transit
     :* ("DoorOpen" :@ "Close" >| "DoorClosed")
     :* ("DoorClosed" :@ "Open" >| "DoorOpen")
@@ -163,7 +163,7 @@ type DoorSimpleTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L59-L62">test/Examples/DoorSimple.purs L59-L62</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L57-L60">test/Examples/Door.purs L57-L60</a>
   </sup>
 </p>
 
@@ -185,7 +185,7 @@ This type-level specification fully defines the state machine's structure. The c
 This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - State
   - Msg
@@ -206,7 +206,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L49-L57">test/Examples/DoorSimple.purs L49-L57</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L55">test/Examples/Door.purs L47-L55</a>
   </sup>
 </p>
 
@@ -217,14 +217,14 @@ type Msg = Variant
 Based on this specification, we create an update function using `mkUpdate`:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - update
 -->
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdate @DoorSimpleTransit
+update = mkUpdate @DoorTransit
   (match @"DoorOpen" @"Close" \_ _ -> return @"DoorClosed")
   (match @"DoorClosed" @"Open" \_ _ -> return @"DoorOpen")
 ```
@@ -232,7 +232,7 @@ update = mkUpdate @DoorSimpleTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L64-L67">test/Examples/DoorSimple.purs L64-L67</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L62-L65">test/Examples/Door.purs L62-L65</a>
   </sup>
 </p>
 
@@ -240,13 +240,13 @@ update = mkUpdate @DoorSimpleTransit
 
 Here's how this works:
 
-- `mkUpdate @DoorSimpleTransit` creates an update function based on the `DoorSimpleTransit` specification. The `@` symbol is type application[^type-app], passing the specification to the function.
+- `mkUpdate @DoorTransit` creates an update function based on the `DoorTransit` specification. The `@` symbol is type application[^type-app], passing the specification to the function.
 
 - Each `match` line handles one transition from the specification. The first two arguments (`@"DoorOpen"` and `@"Close"`) are type-level symbols (type applications) that specify which state and message to match on. The lambda function defines what happens when that transition occurs.
 
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
 
-- **Important**: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in `DoorSimpleTransit`: `DoorOpen :@ Close`, then `DoorClosed :@ Open`.
+- **Important**: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in `DoorTransit`: `DoorOpen :@ Close`, then `DoorClosed :@ Open`.
 
 ## Testing the update function
 
@@ -295,7 +295,7 @@ split: true
 The simplest way to test the update function is to use `foldl` to apply a sequence of messages and check if the final state matches what we expect:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: spec1
@@ -312,7 +312,7 @@ spec1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L77-L81">test/Examples/DoorSimple.purs L77-L81</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L75-L79">test/Examples/Door.purs L75-L79</a>
   </sup>
 </p>
 
@@ -323,7 +323,7 @@ This test starts with the door open, closes it, opens it, then closes it again. 
 This test only checks the final result. To be more thorough, we should also verify that each step along the way works correctly. The `scanl` function is perfect for this — it shows us all the intermediate states, not just the final one.
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: spec2
@@ -340,7 +340,7 @@ spec2 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L84-L88">test/Examples/DoorSimple.purs L84-L88</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L82-L86">test/Examples/Door.purs L82-L86</a>
   </sup>
 </p>
 
@@ -391,7 +391,7 @@ assertWalk updateFn initState walk = do
 The function extracts the messages from the pairs, applies them sequentially using `scanl`, and verifies that the resulting states match the expected ones. Here's how we use it:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - tag: value
     name: spec3
@@ -415,7 +415,7 @@ spec3 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L91-L102">test/Examples/DoorSimple.purs L91-L102</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L89-L100">test/Examples/Door.purs L89-L100</a>
   </sup>
 </p>
 
@@ -430,20 +430,20 @@ We read it like: Starting from state `DoorOpen`, when receiving message `Close`,
 **Transit** can generate both state diagrams and transition tables directly from your type-level specification. Both generation processes use the same approach: `reflectType` converts your type-level DSL specification to a term-level equivalent, which can then be used to generate the documentation.
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
-  - doorSimpleTransit
+  - doorTransit
 -->
 
 ```purescript
-doorSimpleTransit :: TransitCore
-doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
+doorTransit :: TransitCore
+doorTransit = reflectType (Proxy @DoorTransit)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L69-L70">test/Examples/DoorSimple.purs L69-L70</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L67-L68">test/Examples/Door.purs L67-L68</a>
   </sup>
 </p>
 
@@ -471,7 +471,7 @@ It takes the `TransitCore` value which we've created in the previous step and a 
 This is how we use it to generate a state diagram:
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - generateStateDiagramDark
 -->
@@ -481,17 +481,17 @@ generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
   let
     graph :: String
-    graph = TransitGraphviz.generate doorSimpleTransit _
+    graph = TransitGraphviz.generate doorTransit _
       { theme = themeHarmonyDark
       }
   in
-    FS.writeTextFile UTF8 "renders/door-simple-dark.dot" graph
+    FS.writeTextFile UTF8 "renders/door-dark.dot" graph
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L124-L132">test/Examples/DoorSimple.purs L124-L132</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L136-L144">test/Examples/Door.purs L136-L144</a>
   </sup>
 </p>
 
@@ -502,13 +502,13 @@ The `theme` option which we're using above controls the color scheme. **Transit*
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
 ```bash
-dot -Tsvg renders/door-simple.dot -o renders/door-simple.svg
+dot -Tsvg renders/door.dot -o renders/door.svg
 ```
 
 Or for PNG:
 
 ```bash
-dot -Tpng renders/door-simple.dot -o renders/door-simple.png
+dot -Tpng renders/door.dot -o renders/door.png
 ```
 
 ### Transition Tables
@@ -516,7 +516,7 @@ dot -Tpng renders/door-simple.dot -o renders/door-simple.png
 In addition to state diagrams, you can also generate transition tables from the same specification. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
 
 <!-- PD_START:purs
-filePath: test/Examples/DoorSimple.purs
+filePath: test/Examples/Door.purs
 pick:
   - generateTransitionTable
 -->
@@ -526,17 +526,17 @@ generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: String
-    table = TransitTable.generate doorSimpleTransit _
+    table = TransitTable.generate doorTransit _
       { outputFormat = TransitTable.Markdown
       }
 
-  FS.writeTextFile UTF8 "renders/door-simple.md" table
+  FS.writeTextFile UTF8 "renders/door.md" table
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L134-L142">test/Examples/DoorSimple.purs L134-L142</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L146-L154">test/Examples/Door.purs L146-L154</a>
   </sup>
 </p>
 

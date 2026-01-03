@@ -4,12 +4,12 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Class.Console as Console
-import Examples.DoorSimple (Msg, State, DoorSimpleTransit)
+import Examples.Door (Msg, State, DoorTransit)
 import Transit (matchM, mkUpdateM, return)
 import Test.Spec (Spec)
 
 update :: State -> Msg -> Effect State
-update = mkUpdateM @DoorSimpleTransit
+update = mkUpdateM @DoorTransit
   ( matchM @"DoorOpen" @"Close" \_ _ -> do
       Console.log "You just closed the door"
       pure $ return @"DoorClosed"
