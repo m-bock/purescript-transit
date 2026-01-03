@@ -112,28 +112,39 @@ spec = do
 --- Diagram and Table generation
 --------------------------------------------------------------------------------
 
-generateStateDiagram :: Effect Unit
-generateStateDiagram = do
-  FS.writeTextFile UTF8 "renders/door-simple-light.dot"
-    ( TransitGraphviz.generate doorSimpleTransit _
-        { theme = themeHarmonyLight
-        }
-    )
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight =
+  let
+    graph = TransitGraphviz.generate doorSimpleTransit _
+      { theme = themeHarmonyLight
+      }
+  in
+    FS.writeTextFile UTF8 "renders/door-simple-light.dot" graph
 
-  FS.writeTextFile UTF8 "renders/door-simple-dark.dot"
-    ( TransitGraphviz.generate doorSimpleTransit _
-        { theme = themeHarmonyDark
-        }
-    )
+generateStateDiagramDark :: Effect Unit
+generateStateDiagramDark =
+  let
+    graph :: String
+    graph = TransitGraphviz.generate doorSimpleTransit _
+      { theme = themeHarmonyDark
+      }
+  in
+    FS.writeTextFile UTF8 "renders/door-simple-dark.dot" graph
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
-  FS.writeTextFile UTF8 "renders/door-simple.md"
-    (TransitTable.generate doorSimpleTransit _ { outputFormat = TransitTable.Markdown })
+  let
+    table :: String
+    table = TransitTable.generate doorSimpleTransit _
+      { outputFormat = TransitTable.Markdown
+      }
+
+  FS.writeTextFile UTF8 "renders/door-simple.md" table
 
 main :: Effect Unit
 main = do
-  generateStateDiagram
+  generateStateDiagramLight
+  generateStateDiagramDark
   generateTransitionTable
 
 --------------------------------------------------------------------------------

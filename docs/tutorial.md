@@ -248,16 +248,6 @@ Here's how this works:
 
 - **Important**: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in `DoorSimpleTransit`: `DoorOpen :@ Close`, then `DoorClosed :@ Open`.
 
-### How This Solves the Classic Approach's Problems
-
-This approach addresses all the drawbacks we saw earlier:
-
-- **Explicit state machine specification**: The state machine's structure is defined explicitly in the type-level DSL. This specification serves as a single source of truth that is accessible for various purposes.
-
-- **No documentation drift**: Documentation such as state diagrams and transition tables can be generated directly from the specification, ensuring they always stay in sync with the code.
-
-- **Static analysis capabilities**: The specification can be converted into a graph data structure, enabling sophisticated static analysis of the state machine's properties without running the code.
-
 ## Testing the update function
 
 Before we move further, let's actually verify that our implementation of the update function works as we expect it to. We'll do this by writing some tests.
@@ -277,11 +267,11 @@ To create values of type `Variant`, **Transit** provides the `v` function from `
   v @"DoorLocked" { activePin: "1234" }
   ```
 
-This is more ergonomic than using `V.inj (Proxy :: _ "DoorOpen") {}` directly.
+This is more ergonomic than using `V.inj (Proxy :: _ "DoorOpen") {}` directly which is the default way to create a Variant value.
 
 ### Testing State Transitions
 
-To test our update function, we'll use two useful functions from the `Data.Array` module:
+To test our update function, we'll use two functions from the `Data.Array` module:
 
 <!-- PD_START:purs
 inline: true
@@ -356,7 +346,7 @@ spec2 =
 
 <!-- PD_END -->
 
-This test does the same thing — starts with the door open, closes it, opens it, then closes it again. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door is closed. This makes sure each transition works correctly.
+This test is similar to the previous one. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door remains closed. This makes sure each transition works correctly.
 
 Since we'll want to write more of these tests for further examples, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
 
@@ -461,7 +451,7 @@ doorSimpleTransit = reflectType (Proxy @DoorSimpleTransit)
 
 ### State Diagrams
 
-To generate a state diagram, you use `TransitGraphviz.writeToFile` to render a Graphviz `.dot` file:
+To generate a state diagram we'll use the following function:
 
 <!-- PD_START:purs
 inline: true
@@ -476,43 +466,38 @@ split: true
 
 <!-- PD_END -->
 
+It takes the `TransitCore` value which we've created in the previous step and a function that takes the default options and returns the options we want to use.
+
+This is how we use it to generate a state diagram:
+
 <!-- PD_START:purs
 filePath: test/Examples/DoorSimple.purs
 pick:
-  - generateStateDiagram
+  - generateStateDiagramDark
 -->
 
 ```purescript
-generateStateDiagram :: Effect Unit
-generateStateDiagram = do
-  FS.writeTextFile UTF8 "renders/door-simple-light.dot"
-    ( TransitGraphviz.generate doorSimpleTransit _
-        { theme = themeHarmonyLight
-        }
-    )
-
-  FS.writeTextFile UTF8 "renders/door-simple-dark.dot"
-    ( TransitGraphviz.generate doorSimpleTransit _
-        { theme = themeHarmonyDark
-        }
-    )
+generateStateDiagramDark :: Effect Unit
+generateStateDiagramDark =
+  let
+    graph :: String
+    graph = TransitGraphviz.generate doorSimpleTransit _
+      { theme = themeHarmonyDark
+      }
+  in
+    FS.writeTextFile UTF8 "renders/door-simple-dark.dot" graph
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L115-L127">test/Examples/DoorSimple.purs L115-L127</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L124-L132">test/Examples/DoorSimple.purs L124-L132</a>
   </sup>
 </p>
 
 <!-- PD_END -->
 
-The process works in two steps:
-
-1. `reflectType` converts your type-level DSL specification to a term-level equivalent of type `TransitCore`
-2. `TransitGraphviz.writeToFile` uses that to render a Graphviz `.dot` file
-
-The `writeToFile` function accepts an options record that lets you customize the diagram. E.g. the `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](docs/themes.md) for more details.
+The `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](docs/themes.md) for more details.
 
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
@@ -530,8 +515,6 @@ dot -Tpng renders/door-simple.dot -o renders/door-simple.png
 
 In addition to state diagrams, you can also generate transition tables from the same specification. This provides a tabular view of all state transitions, which can be easier to read for some use cases.
 
-The process is identical — you use `reflectType` to convert your DSL specification, but then use `TransitTable.writeToFile` instead:
-
 <!-- PD_START:purs
 filePath: test/Examples/DoorSimple.purs
 pick:
@@ -541,14 +524,19 @@ pick:
 ```purescript
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
-  FS.writeTextFile UTF8 "renders/door-simple.md"
-    (TransitTable.generate doorSimpleTransit _ { outputFormat = TransitTable.Markdown })
+  let
+    table :: String
+    table = TransitTable.generate doorSimpleTransit _
+      { outputFormat = TransitTable.Markdown
+      }
+
+  FS.writeTextFile UTF8 "renders/door-simple.md" table
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L129-L132">test/Examples/DoorSimple.purs L129-L132</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorSimple.purs#L134-L142">test/Examples/DoorSimple.purs L134-L142</a>
   </sup>
 </p>
 
