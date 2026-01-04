@@ -182,63 +182,6 @@ assert1 =
 
 <!-- PD_END -->
 
-## Generating Documentation
-
-To generate a state diagram we'll use the following function:
-
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - generateStateDiagramLight
--->
-
-```purescript
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight = do
-  let
-    graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
-      { theme = themeHarmonyLight
-      , useUndirectedEdges = true
-      }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (Graphviz.toDotStr graph)
-```
-
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L128-L136">test/Examples/BridgesKoenigsberg.purs L128-L136</a>
-  </sup>
-</p>
-
-<!-- PD_END -->
-
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - generateTransitionTable
--->
-
-```purescript
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
-  let
-    table :: Table
-    table = TransitTable.generate bridgesKoenigsbergTransit _
-      { useUndirectedEdges = true
-      }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
-```
-
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L148-L155">test/Examples/BridgesKoenigsberg.purs L148-L155</a>
-  </sup>
-</p>
-
-<!-- PD_END -->
-
 ## Graph Analysis
 
 The real power of **Transit** becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the **Transit** specification into a `StateGraph` — a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
@@ -311,6 +254,63 @@ The key steps are:
 3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
 
 This confirms Euler's original conclusion: it's impossible to walk through Königsberg crossing each bridge exactly once.
+
+## Generating Documentation
+
+To generate a state diagram we'll use the following function:
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - generateStateDiagramLight
+-->
+
+```purescript
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+      { theme = themeHarmonyLight
+      , useUndirectedEdges = true
+      }
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (Graphviz.toDotStr graph)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L128-L136">test/Examples/BridgesKoenigsberg.purs L128-L136</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - generateTransitionTable
+-->
+
+```purescript
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
+  let
+    table :: Table
+    table = TransitTable.generate bridgesKoenigsbergTransit _
+      { useUndirectedEdges = true
+      }
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L148-L155">test/Examples/BridgesKoenigsberg.purs L148-L155</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
 
 ## Conclusion
 

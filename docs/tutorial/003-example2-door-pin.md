@@ -247,42 +247,39 @@ assertWalk
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
 pick:
-  - assert1
+  - spec1
 -->
 
 ```purescript
-assert1 :: Spec Unit
-assert1 =
+spec1 :: Spec Unit
+spec1 =
   it "should follow the walk and visit the expected intermediate states" do
     assertWalk update
-      -- start in the open state
       (v @"DoorOpen")
-      [
-        -- close the door, then expect to transition to closed state
-        v @"Close" ~> v @"DoorClosed"
-      ,
-        -- lock the door, then expect to transition to locked state with the given pin
-        v @"Lock" { newPin: "1234" } ~> v @"DoorLocked" { storedPin: "1234" }
-      ,
-        -- unlock the door (with wrong pin), then expect to stay in locked state
-        v @"Unlock" { enteredPin: "abcd" } ~> v @"DoorLocked" { storedPin: "1234" }
-      ,
-        -- unlock the door (with correct pin), then expect to transition to closed state
-        v @"Unlock" { enteredPin: "1234" } ~> v @"DoorClosed"
-      ,
-        -- open the door, then expect to transition to open state
-        v @"Open" ~> v @"DoorOpen"
+      [ v @"Close" ~> v @"DoorClosed"
+      , v @"Lock" { newPin: "1234" } ~> v @"DoorLocked" { storedPin: "1234" }
+      , v @"Unlock" { enteredPin: "abcd" } ~> v @"DoorLocked" { storedPin: "1234" }
+      , v @"Unlock" { enteredPin: "1234" } ~> v @"DoorClosed"
+      , v @"Open" ~> v @"DoorOpen"
       ]
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L83-L104">test/Examples/DoorPin.purs L83-L104</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L83-L93">test/Examples/DoorPin.purs L83-L93</a>
   </sup>
 </p>
 
 <!-- PD_END -->
+
+This test starts in the `DoorOpen` state and follows a sequence of transitions:
+
+1. Close the door, expect transition to `DoorClosed`
+2. Lock the door with PIN "1234", expect transition to `DoorLocked` with the stored PIN
+3. Attempt to unlock with the wrong PIN "abcd", expect to stay in `DoorLocked` with the original PIN
+4. Unlock with the correct PIN "1234", expect transition to `DoorClosed`
+5. Open the door, expect transition to `DoorOpen`
 
 ## Generating Documentation
 
@@ -292,7 +289,6 @@ To generate a state diagram we'll use the following function:
 filePath: test/Examples/DoorPin.purs
 pick:
   - generateStateDiagramLight
-  - generateTransitionTable
 -->
 
 ```purescript
@@ -307,7 +303,24 @@ generateStateDiagramLight = do
       }
 
   FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)
+```
 
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L103-L113">test/Examples/DoorPin.purs L103-L113</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - generateTransitionTable
+-->
+
+```purescript
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
@@ -320,7 +333,7 @@ generateTransitionTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L114-L144">test/Examples/DoorPin.purs L114-L144</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L127-L133">test/Examples/DoorPin.purs L127-L133</a>
   </sup>
 </p>
 

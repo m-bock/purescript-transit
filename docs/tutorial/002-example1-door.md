@@ -16,7 +16,7 @@ Before diving into the code, let's visualize our simple door state machine. This
 
 The state diagram below shows all possible states and the valid transitions between them:
 
-**Door State Diagram**
+**State Diagram:** _Door_
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="renders/door-dark.svg">
@@ -131,9 +131,7 @@ While this approach works and is straightforward, it has some drawbacks:
 
 ### State and Message Types
 
-**Transit** uses `Variant` types (from `purescript-variant`)[^variant] for both `State` and `Msg` instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like `"DoorOpen"` or `"Close"`).
-
-This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
+**Transit** uses `Variant` types (from `purescript-variant`)[^variant] for both `State` and `Msg` instead of traditional ADTs.
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -163,7 +161,7 @@ type Msg = Variant
 
 <!-- PD_END -->
 
-With the **Transit** library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify against your implementation.
+> This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
 
 ### The Type-Level Specification
 
@@ -234,7 +232,7 @@ Here's how this works:
 
 - `return @"DoorClosed"` specifies which state to transition to. The `return` function is part of **Transit**'s DSL for specifying the target state, and the `@` symbol again indicates a type-level symbol.
 
-- **Important**: The order of match handlers must match the order of transitions in the DSL specification. In this example, the handlers are provided in the same order as they appear in `DoorTransit`: `DoorOpen :@ Close`, then `DoorClosed :@ Open`.
+- **Important**: The order of match handlers must match the order of transitions in the DSL specification.
 
 ## Testing the update function
 
@@ -285,11 +283,11 @@ The simplest way to test the update function is to use `foldl` to apply a sequen
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - tag: value
-    name: spec1
+  - spec1
 -->
 
 ```purescript
+spec1 :: Spec Unit
 spec1 =
   it "follows the walk and ends in expected final state" do
     foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
@@ -300,7 +298,7 @@ spec1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L58">test/Examples/Door.purs L54-L58</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L53-L58">test/Examples/Door.purs L53-L58</a>
   </sup>
 </p>
 
@@ -313,11 +311,11 @@ This test only checks the final result. To be more thorough, we should also veri
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - tag: value
-    name: spec2
+  - spec2
 -->
 
 ```purescript
+spec2 :: Spec Unit
 spec2 =
   it "follows the walk and visits the expected intermediate states" do
     scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
@@ -328,7 +326,7 @@ spec2 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L65">test/Examples/Door.purs L61-L65</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L60-L65">test/Examples/Door.purs L60-L65</a>
   </sup>
 </p>
 
@@ -381,11 +379,11 @@ The function extracts the messages from the pairs, applies them sequentially usi
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - tag: value
-    name: spec3
+  - spec3
 -->
 
 ```purescript
+spec3 :: Spec Unit
 spec3 =
   it "follows the walk and visits the expected intermediate states" do
     assertWalk update
@@ -403,7 +401,7 @@ spec3 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L79">test/Examples/Door.purs L68-L79</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L67-L79">test/Examples/Door.purs L67-L79</a>
   </sup>
 </p>
 
@@ -545,3 +543,7 @@ In this example, we've seen how **Transit** helps you build type-safe state mach
 The key advantage is that your specification, implementation, and documentation all stay in sync because they share the same source of truth. The compiler ensures your code matches your specification, and your documentation is generated directly from it.
 
 While this example was simple, it demonstrates **Transit**'s fundamental approach. In the next example, we'll see how **Transit** handles more complex scenarios with states that contain data and conditional transitions.
+
+[^variant]: The `purescript-variant` library provides row-polymorphic sum types. See the [documentation](https://pursuit.purescript.org/packages/purescript-variant) for more details.
+
+[^type-app]: In PureScript, the `@` symbol is used for explicit type application, allowing you to pass type-level arguments to functions.
