@@ -266,41 +266,103 @@
           m-bock/purescript-transit
         </a>
         <div class="nav-links">
-                    <a href="2.5-generating-documentation.html" rel="prev" title="Generating Documentation"
+                    <a href="4-example-3-bridges-of-königsberg.html" rel="prev" title="Example 3: Bridges of Königsberg"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="3-example-2-door-with-pin.html" rel="next" title="Example 2: Door with Pin"
-            >Next →</a
-          >
+                     <span class="disabled">Next →</span>
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="2.6" id="conclusion">Conclusion</h2>
-<p>In this example, we’ve seen how <strong>Transit</strong> helps you
-build type-safe state machines. We started with a simple door that can
-be open or closed, and learned the core workflow:</p>
-<ol type="1">
-<li><p><strong>Define the state machine</strong> using
-<strong>Transit</strong>’s type-level DSL specification</p></li>
-<li><p><strong>Implement the update function</strong> using
-<code>mkUpdate</code> with <code>match</code> clauses that the compiler
-verifies against the specification</p></li>
-<li><p><strong>Generate documentation</strong> automatically — both
-state diagrams and transition tables — from the same
-specification</p></li>
-</ol>
-<p>The key advantage is that your specification, implementation, and
-documentation all stay in sync because they share the same source of
-truth. The compiler ensures your code matches your specification, and
-your documentation is generated directly from it.</p>
-<p>While this example was simple, it demonstrates
-<strong>Transit</strong>’s fundamental approach. In the next example,
-we’ll see how <strong>Transit</strong> handles more complex scenarios
-with states that contain data and conditional transitions.</p> 
+       <h2 data-number="4.1" id="state-diagram-1">State diagram</h2>
+<p>Even not immediately obvious, the map of the city can be represented
+as a graph:</p>
+<ul>
+<li><strong>Nodes</strong> represent the four land areas</li>
+<li><strong>Edges</strong> represent the seven bridges connecting
+them</li>
+</ul>
+<p><picture>
+<source media="(prefers-color-scheme: dark)" srcset="renders/bridges-koenigsberg-dark.svg">
+<source media="(prefers-color-scheme: light)" srcset="renders/bridges-koenigsberg-light.svg">
+<img alt="Seven Bridges of Königsberg graph" src="renders/bridges-koenigsberg-light.svg">
+</picture></p>
+<p>Note that we drew an undirected graph here. This is due to the fact
+that the bridges are bidirectional. We could also have drawn a directed
+graph with two edges for each bridge, but this would look more
+cluttered.</p>
+<p>The same is true for the transition table. Instead of two rows for
+each bridge, we have one row for each bridge:</p>
+<!-- PD_START:raw
+filePath: renders/bridges-koenigsberg.md
+wrapNl: true
+-->
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th></th>
+<th>Message</th>
+<th></th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LandA</td>
+<td><strong>⟵</strong></td>
+<td>Cross_a</td>
+<td><strong>⟶</strong></td>
+<td>LandB</td>
+</tr>
+<tr>
+<td>LandA</td>
+<td><strong>⟵</strong></td>
+<td>Cross_b</td>
+<td><strong>⟶</strong></td>
+<td>LandB</td>
+</tr>
+<tr>
+<td>LandA</td>
+<td><strong>⟵</strong></td>
+<td>Cross_c</td>
+<td><strong>⟶</strong></td>
+<td>LandC</td>
+</tr>
+<tr>
+<td>LandA</td>
+<td><strong>⟵</strong></td>
+<td>Cross_d</td>
+<td><strong>⟶</strong></td>
+<td>LandC</td>
+</tr>
+<tr>
+<td>LandA</td>
+<td><strong>⟵</strong></td>
+<td>Cross_e</td>
+<td><strong>⟶</strong></td>
+<td>LandD</td>
+</tr>
+<tr>
+<td>LandB</td>
+<td><strong>⟵</strong></td>
+<td>Cross_f</td>
+<td><strong>⟶</strong></td>
+<td>LandD</td>
+</tr>
+<tr>
+<td>LandC</td>
+<td><strong>⟵</strong></td>
+<td>Cross_g</td>
+<td><strong>⟶</strong></td>
+<td>LandD</td>
+</tr>
+</tbody>
+</table>
+<!-- PD_END --> 
       <div class="scroll-to-top">
         <a
           href="#"

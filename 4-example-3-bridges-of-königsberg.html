@@ -266,41 +266,54 @@
           m-bock/purescript-transit
         </a>
         <div class="nav-links">
-                    <a href="2.5-generating-documentation.html" rel="prev" title="Generating Documentation"
+                    <a href="3.4-conclusion-1.html" rel="prev" title="Conclusion"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="3-example-2-door-with-pin.html" rel="next" title="Example 2: Door with Pin"
+                     <a href="4.1-state-diagram-1.html" rel="next" title="State diagram"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="2.6" id="conclusion">Conclusion</h2>
-<p>In this example, we’ve seen how <strong>Transit</strong> helps you
-build type-safe state machines. We started with a simple door that can
-be open or closed, and learned the core workflow:</p>
-<ol type="1">
-<li><p><strong>Define the state machine</strong> using
-<strong>Transit</strong>’s type-level DSL specification</p></li>
-<li><p><strong>Implement the update function</strong> using
-<code>mkUpdate</code> with <code>match</code> clauses that the compiler
-verifies against the specification</p></li>
-<li><p><strong>Generate documentation</strong> automatically — both
-state diagrams and transition tables — from the same
-specification</p></li>
+       <h1 data-number="4" id="example-3-bridges-of-königsberg">Example
+3: Bridges of Königsberg</h1>
+<blockquote>
+<p>Full source code: <em><a
+href="test/Examples/BridgesKoenigsberg.purs">test/Examples/BridgesKoenigsberg.purs</a></em></p>
+</blockquote>
+<p><img src="assets/bridges-koenigsberg.png" width="450" /></p>
+<p>So far, we’ve seen how <strong>Transit</strong> helps you build
+type-safe state machines and generate state diagrams and transition
+tables. But the power of <strong>Transit</strong> extends far beyond
+documentation generation. The reflected data structure — the term-level
+representation of your type-level DSL specification — can be converted
+into a general-purpose graph data structure, enabling sophisticated
+graph analysis.</p>
+<p>This example demonstrates this capability using the famous Seven
+Bridges of Königsberg problem. In 1736, the mathematician Leonhard Euler
+was asked whether it was possible to walk through the city of Königsberg
+crossing each of its seven bridges exactly once.<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>In the picture above you see the topography of the historic city of
+Königsberg. The city is divided into four land areas (A, B, C, and D)
+and seven bridges (a, b, c, d, e, f, and g) connect them.</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The <a
+href="https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg">Seven
+Bridges of Königsberg</a> problem was solved by Leonhard Euler
+(1707–1783), a Swiss mathematician, physicist, and engineer who made
+fundamental contributions to mathematics and physics. His work on this
+problem is considered the foundation of graph theory.<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-<p>The key advantage is that your specification, implementation, and
-documentation all stay in sync because they share the same source of
-truth. The compiler ensures your code matches your specification, and
-your documentation is generated directly from it.</p>
-<p>While this example was simple, it demonstrates
-<strong>Transit</strong>’s fundamental approach. In the next example,
-we’ll see how <strong>Transit</strong> handles more complex scenarios
-with states that contain data and conditional transitions.</p> 
+</section> 
       <div class="scroll-to-top">
         <a
           href="#"

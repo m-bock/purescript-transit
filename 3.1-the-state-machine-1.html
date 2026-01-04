@@ -191,6 +191,9 @@
         transition: all 0.2s ease;
         font-size: 14px;
         display: inline-block;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       }
 
       nav.pager a:hover {
@@ -278,19 +281,23 @@
     <article class="markdown-body">
        <h2 data-number="3.1" id="the-state-machine-1">The State
 Machine</h2>
+<p>We add a new state <code>DoorLocked</code> and the new messages
+<code>Lock</code> and <code>Unlock</code>:</p>
+<p><strong>State Diagram:</strong> <em>Door with Pin</em></p>
 <p><picture>
 <source media="(prefers-color-scheme: dark)" srcset="renders/door-pin-dark.svg">
 <source media="(prefers-color-scheme: light)" srcset="renders/door-pin-light.svg">
-<img alt="Door with Pin state diagram" src="renders/door-pin-light.svg">
+<img alt="Door with Pin state diagram" class="state-diagram" src="renders/door-pin-light.svg">
 </picture></p>
-<p>In this example, the <code>DoorLocked</code> state stores a PIN code,
-and the <code>Unlock</code> message includes the entered PIN. The unlock
-operation can succeed (transitioning to <code>DoorClosed</code>) or fail
-(staying in <code>DoorLocked</code>), depending on whether the entered
-PIN matches the stored one.</p>
 <p>Notice the diamond node in the state diagram — this represents a
-conditional transition where the outcome depends on runtime data.</p>
-<p>The transition table shows both possible outcomes:</p>
+conditional transition where the outcome depends on runtime data: The
+unlock operation can succeed (transitioning to <code>DoorClosed</code>)
+if the condition <code>PinCorrect</code> is met - or fail (staying in
+<code>DoorLocked</code>) when the condition <code>PinIncorrect</code> is
+met.</p>
+<p>In the transition table the conditional transitions are expressed by
+the new “Guard” column. For most transitions however, this column is
+empty — these are unconditional transitions that always succeed.</p>
 <!-- PD_START:raw
 filePath: renders/door-pin.md
 wrapNl: true
@@ -365,18 +372,9 @@ wrapNl: true
 </tbody>
 </table>
 <!-- PD_END -->
-<p>Notice the <strong>Guard</strong> column in the transition table. For
-most transitions, this column is empty — these are unconditional
-transitions that always succeed. However, the <code>Unlock</code>
-message from <code>DoorLocked</code> shows two rows with guards:
-<code>PinIncorrect</code> and <code>PinCorrect</code>. These
-<strong>guards</strong> represent the conditions that determine which
-transition path is taken at runtime. When the <code>Unlock</code>
-message is received, the implementation checks whether the entered PIN
-matches the stored PIN, and the guard label (<code>PinCorrect</code> or
-<code>PinIncorrect</code>) indicates which condition was met. This
-allows a single message type to have multiple possible outcomes based on
-runtime data.</p> 
+<p>Guard labels are not strictly required as you can see in the
+Countdown example. But they can be useful to make the code and the state
+diagram more readable.</p> 
       <div class="scroll-to-top">
         <a
           href="#"

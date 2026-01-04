@@ -191,6 +191,9 @@
         transition: all 0.2s ease;
         font-size: 14px;
         display: inline-block;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       }
 
       nav.pager a:hover {
@@ -269,7 +272,9 @@
            
 
           <a href="index.html">≡ Contents</a>
-                     <span class="disabled">Next →</span>
+                     <a href="4-example-3-bridges-of-königsberg.html" rel="next" title="Example 3: Bridges of Königsberg"
+            >Next →</a
+          >
                   </div>
       </div>
     </nav>
@@ -287,7 +292,7 @@ transitions with multiple possible outcomes using guard labels
 (<code>PinCorrect</code> and <code>PinIncorrect</code>). The type system
 ensures that conditional transitions can only return valid target
 states, and each outcome must be associated with its corresponding guard
-label using <code>RetVia</code></li>
+label.</li>
 </ul>
 <p>By leveraging PureScript’s <code>Variant</code> types to express
 subsets of possible states (which traditional ADTs cannot represent),
