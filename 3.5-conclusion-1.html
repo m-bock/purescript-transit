@@ -266,103 +266,45 @@
           m-bock/purescript-transit
         </a>
         <div class="nav-links">
-                    <a href="4-example-3-bridges-of-königsberg.html" rel="prev" title="Example 3: Bridges of Königsberg"
+                    <a href="3.4-testing-the-update-function-1.html" rel="prev" title="Testing the update function"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <span class="disabled">Next →</span>
+                     <a href="4-example-3-bridges-of-königsberg-unfinished.html" rel="next" title="Example 3: Bridges of Königsberg [unfinished]"
+            >Next →</a
+          >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="4.1" id="state-diagram-1">State diagram</h2>
-<p>Even not immediately obvious, the map of the city can be represented
-as a graph:</p>
+       <h2 data-number="3.5" id="conclusion-1">Conclusion</h2>
+<p>This example demonstrates how <strong>Transit</strong> extends beyond
+simple state machines to handle real-world complexity:</p>
 <ul>
-<li><strong>Nodes</strong> represent the four land areas</li>
-<li><strong>Edges</strong> represent the seven bridges connecting
-them</li>
+<li><strong>States and messages with data</strong>: Both states and
+messages can carry data (like <code>activePin</code> in
+<code>DoorLocked</code> or <code>newPin</code> in <code>Lock</code>),
+and handlers receive this data.</li>
+<li><strong>Conditional transitions</strong>: The DSL supports
+transitions with multiple possible outcomes using guard labels
+(<code>PinCorrect</code> and <code>PinIncorrect</code>). The type system
+ensures that conditional transitions can only return valid target
+states, and each outcome must be associated with its corresponding guard
+label.</li>
 </ul>
-<p><picture>
-<source media="(prefers-color-scheme: dark)" srcset="renders/bridges-koenigsberg-dark.svg">
-<source media="(prefers-color-scheme: light)" srcset="renders/bridges-koenigsberg-light.svg">
-<img alt="Seven Bridges of Königsberg graph" src="renders/bridges-koenigsberg-light.svg">
-</picture></p>
-<p>Note that we drew an undirected graph here. This is due to the fact
-that the bridges are bidirectional. We could also have drawn a directed
-graph with two edges for each bridge, but this would look more
-cluttered.</p>
-<p>The same is true for the transition table. Instead of two rows for
-each bridge, we have one row for each bridge:</p>
-<!-- PD_START:raw
-filePath: renders/bridges-koenigsberg.md
-wrapNl: true
--->
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th></th>
-<th>Message</th>
-<th></th>
-<th>State</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>LandA</td>
-<td><strong>⟵</strong></td>
-<td>Cross_a</td>
-<td><strong>⟶</strong></td>
-<td>LandB</td>
-</tr>
-<tr>
-<td>LandA</td>
-<td><strong>⟵</strong></td>
-<td>Cross_b</td>
-<td><strong>⟶</strong></td>
-<td>LandB</td>
-</tr>
-<tr>
-<td>LandA</td>
-<td><strong>⟵</strong></td>
-<td>Cross_c</td>
-<td><strong>⟶</strong></td>
-<td>LandC</td>
-</tr>
-<tr>
-<td>LandA</td>
-<td><strong>⟵</strong></td>
-<td>Cross_d</td>
-<td><strong>⟶</strong></td>
-<td>LandC</td>
-</tr>
-<tr>
-<td>LandA</td>
-<td><strong>⟵</strong></td>
-<td>Cross_e</td>
-<td><strong>⟶</strong></td>
-<td>LandD</td>
-</tr>
-<tr>
-<td>LandB</td>
-<td><strong>⟵</strong></td>
-<td>Cross_f</td>
-<td><strong>⟶</strong></td>
-<td>LandD</td>
-</tr>
-<tr>
-<td>LandC</td>
-<td><strong>⟵</strong></td>
-<td>Cross_g</td>
-<td><strong>⟶</strong></td>
-<td>LandD</td>
-</tr>
-</tbody>
-</table>
-<!-- PD_END --> 
+<p>By leveraging PureScript’s <code>Variant</code> types to express
+subsets of possible states (which traditional ADTs cannot represent),
+<strong>Transit</strong> provides compile-time guarantees that your
+implementation matches your specification. The type system catches
+errors at compile time, ensuring that:</p>
+<ul>
+<li>You cannot return invalid target states</li>
+<li>You cannot return more cases than specified</li>
+<li>However, the compiler cannot detect if you forget to return a
+possible case (you can return fewer cases than specified)</li>
+</ul> 
       <div class="scroll-to-top">
         <a
           href="#"
