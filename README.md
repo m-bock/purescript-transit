@@ -4,7 +4,7 @@
   <img alt="Transit logo" src="assets/logo-light.svg">
 </picture>
 
-A library for building type-safe state machines.
+A PureScript library for building fast and type-safe state machines.
 
 # purescript-transit
 
@@ -176,7 +176,7 @@ main = do
 
   FS.writeTextFile UTF8
     "renders/count-down.dot"
-    (GraphvizGraph.toDotStr graph)
+    (Graphviz.toDotStr graph)
 ```
 
 <!-- PD_END -->

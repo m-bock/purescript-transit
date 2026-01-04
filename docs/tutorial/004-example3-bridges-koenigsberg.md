@@ -33,20 +33,13 @@ wrapNl: true
 -->
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
-| LandA | **⟶** | Cross_a | **⟶** | LandB |
-| LandB | **⟶** | Cross_a | **⟶** | LandA |
-| LandA | **⟶** | Cross_b | **⟶** | LandB |
-| LandB | **⟶** | Cross_b | **⟶** | LandA |
-| LandA | **⟶** | Cross_c | **⟶** | LandC |
-| LandC | **⟶** | Cross_c | **⟶** | LandA |
-| LandA | **⟶** | Cross_d | **⟶** | LandC |
-| LandC | **⟶** | Cross_d | **⟶** | LandA |
-| LandA | **⟶** | Cross_e | **⟶** | LandD |
-| LandD | **⟶** | Cross_e | **⟶** | LandA |
-| LandB | **⟶** | Cross_f | **⟶** | LandD |
-| LandD | **⟶** | Cross_f | **⟶** | LandB |
-| LandC | **⟶** | Cross_g | **⟶** | LandD |
-| LandD | **⟶** | Cross_g | **⟶** | LandC |
+| LandA | **⟵** | Cross_a | **⟶** | LandB |
+| LandA | **⟵** | Cross_b | **⟶** | LandB |
+| LandA | **⟵** | Cross_c | **⟶** | LandC |
+| LandA | **⟵** | Cross_d | **⟶** | LandC |
+| LandA | **⟵** | Cross_e | **⟶** | LandD |
+| LandB | **⟵** | Cross_f | **⟶** | LandD |
+| LandC | **⟵** | Cross_g | **⟶** | LandD |
 
 <!-- PD_END -->
 
@@ -85,7 +78,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L26-L41">test/Examples/BridgesKoenigsberg.purs L26-L41</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L23-L38">test/Examples/BridgesKoenigsberg.purs L23-L38</a>
   </sup>
 </p>
 
@@ -114,7 +107,7 @@ type BridgesKoenigsbergTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L43-L51">test/Examples/BridgesKoenigsberg.purs L43-L51</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L40-L48">test/Examples/BridgesKoenigsberg.purs L40-L48</a>
   </sup>
 </p>
 
@@ -147,7 +140,7 @@ update = mkUpdate @BridgesKoenigsbergTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L53-L74">test/Examples/BridgesKoenigsberg.purs L53-L74</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L50-L71">test/Examples/BridgesKoenigsberg.purs L50-L71</a>
   </sup>
 </p>
 
@@ -183,7 +176,7 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L83-L96">test/Examples/BridgesKoenigsberg.purs L83-L96</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L80-L93">test/Examples/BridgesKoenigsberg.purs L80-L93</a>
   </sup>
 </p>
 
@@ -208,13 +201,13 @@ generateStateDiagramLight = do
       { theme = themeHarmonyLight
       , useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (GraphvizGraph.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L131-L139">test/Examples/BridgesKoenigsberg.purs L131-L139</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L128-L136">test/Examples/BridgesKoenigsberg.purs L128-L136</a>
   </sup>
 </p>
 
@@ -231,14 +224,16 @@ generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate_ bridgesKoenigsbergTransit
+    table = TransitTable.generate bridgesKoenigsbergTransit _
+      { useUndirectedEdges = true
+      }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L151-L156">test/Examples/BridgesKoenigsberg.purs L151-L156</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L148-L155">test/Examples/BridgesKoenigsberg.purs L148-L155</a>
   </sup>
 </p>
 

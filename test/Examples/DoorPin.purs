@@ -18,9 +18,10 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:?), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return, returnVia)
 import Transit.Data.DotLang (GraphvizGraph)
-import Transit.Data.DotLang as GraphvizGraph
+import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
+import Transit.Render.Graphviz (Orientation(..))
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -117,9 +118,10 @@ generateStateDiagramLight = do
     graph = TransitGraphviz.generate doorPinTransit _
       { theme = themeHarmonyLight
       , entryPoints = [ "DoorOpen" ]
+      , orientation = Landscape
       }
 
-  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (GraphvizGraph.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
@@ -128,9 +130,10 @@ generateStateDiagramDark = do
     graph = TransitGraphviz.generate doorPinTransit _
       { theme = themeHarmonyDark
       , entryPoints = [ "DoorOpen" ]
+      , orientation = Landscape
       }
 
-  FS.writeTextFile UTF8 "renders/door-pin-dark.dot" (GraphvizGraph.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-pin-dark.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do

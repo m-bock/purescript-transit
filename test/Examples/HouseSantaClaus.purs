@@ -14,7 +14,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
 import Transit.Data.DotLang (GraphvizGraph)
-import Transit.Data.DotLang as GraphvizGraph
+import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
@@ -142,7 +142,7 @@ generateStateDiagramLight = do
 
   FS.writeTextFile UTF8
     "renders/house-santa-claus-light.dot"
-    (GraphvizGraph.toDotStr graph)
+    (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
@@ -163,7 +163,7 @@ generateStateDiagramDark = do
 
   FS.writeTextFile UTF8
     "renders/house-santa-claus-dark.dot"
-    (GraphvizGraph.toDotStr graph)
+    (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do

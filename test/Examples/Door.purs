@@ -14,7 +14,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
 import Transit.Data.DotLang (GraphvizGraph)
-import Transit.Data.DotLang as GraphvizGraph
+import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
@@ -97,7 +97,7 @@ generateStateDiagramLight =
       { theme = themeHarmonyLight
       }
   in
-    FS.writeTextFile UTF8 "renders/door-light.dot" (GraphvizGraph.toDotStr graph)
+    FS.writeTextFile UTF8 "renders/door-light.dot" (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
@@ -107,7 +107,7 @@ generateStateDiagramDark =
       { theme = themeHarmonyDark
       }
   in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" (GraphvizGraph.toDotStr graph)
+    FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do

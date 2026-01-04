@@ -137,7 +137,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L30-L41">test/Examples/DoorPin.purs L30-L41</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L31-L42">test/Examples/DoorPin.purs L31-L42</a>
   </sup>
 </p>
 
@@ -167,7 +167,7 @@ type DoorPinTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L43-L52">test/Examples/DoorPin.purs L43-L52</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L44-L53">test/Examples/DoorPin.purs L44-L53</a>
   </sup>
 </p>
 
@@ -209,7 +209,7 @@ update = mkUpdate @DoorPinTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L54-L73">test/Examples/DoorPin.purs L54-L73</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L55-L74">test/Examples/DoorPin.purs L55-L74</a>
   </sup>
 </p>
 
@@ -278,7 +278,7 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L82-L103">test/Examples/DoorPin.purs L82-L103</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L83-L104">test/Examples/DoorPin.purs L83-L104</a>
   </sup>
 </p>
 
@@ -303,9 +303,10 @@ generateStateDiagramLight = do
     graph = TransitGraphviz.generate doorPinTransit _
       { theme = themeHarmonyLight
       , entryPoints = [ "DoorOpen" ]
+      , orientation = Landscape
       }
 
-  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (GraphvizGraph.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
@@ -319,7 +320,7 @@ generateTransitionTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L113-L141">test/Examples/DoorPin.purs L113-L141</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L114-L144">test/Examples/DoorPin.purs L114-L144</a>
   </sup>
 </p>
 

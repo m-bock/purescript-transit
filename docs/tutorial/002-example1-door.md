@@ -473,7 +473,7 @@ generateStateDiagramDark =
       { theme = themeHarmonyDark
       }
   in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" (GraphvizGraph.toDotStr graph)
+    FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">

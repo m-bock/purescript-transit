@@ -34,6 +34,7 @@ module Transit.Data.DotLang
   , margin
   , pad
   , penWidth
+  , rankDirLR
   , rankDirTD
   , shapeBox
   , shapeCircle
@@ -138,6 +139,9 @@ instance ToDotStr Value where
 
 rankDirTD :: Attr
 rankDirTD = Attr "rankdir" (Value "TD")
+
+rankDirLR :: Attr
+rankDirLR = Attr "rankdir" (Value "LR")
 
 fontNameArial :: Attr
 fontNameArial = Attr "fontname" (Value "Arial")

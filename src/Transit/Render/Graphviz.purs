@@ -9,6 +9,7 @@ module Transit.Render.Graphviz
   , generate_
   , Options
   , defaultOptions
+  , Orientation(..)
   ) where
 
 import Prelude
@@ -119,6 +120,9 @@ mkGlobalAttrs options =
     , pure $ D.color options.theme.titleColor
     , pure $ D.fontColor options.theme.titleColor
     , pure $ D.pad 0.2
+    , case options.orientation of
+        Landscape -> pure D.rankDirLR
+        Portrait -> pure D.rankDirTD
     ]
 
 -- | Creates a state node with styling.
@@ -217,7 +221,10 @@ type Options =
   , useDecisionNodes :: Boolean
   , useUndirectedEdges :: Boolean
   , entryPoints :: Array StateName
+  , orientation :: Orientation
   }
+
+data Orientation = Landscape | Portrait
 
 -- | Default options for graph generation.
 defaultOptions :: Options
@@ -229,6 +236,7 @@ defaultOptions =
   , useDecisionNodes: true
   , useUndirectedEdges: false
   , entryPoints: []
+  , orientation: Portrait
   }
 
 -- | Generates a Graphviz graph as a string with customizable options.

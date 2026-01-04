@@ -3,19 +3,16 @@ module Examples.BridgesKoenigsberg (main, spec) where
 import Prelude
 
 import Data.Reflectable (reflectType)
-import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
-import Effect.Aff (Aff)
-import Examples.Common (assertWalk, hasEulerTrail, (~>))
+import Examples.Common (assertWalk, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), type (|<), StateGraph, Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
-import Transit.Data.DotLang (GraphvizGraph(..))
-import Transit.Data.DotLang as GraphvizGraph
-import Transit.Data.Table (Table(..))
+import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkUpdate, return)
+import Transit.Data.DotLang (GraphvizGraph)
+import Transit.Data.DotLang as Graphviz
+import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
@@ -136,7 +133,7 @@ generateStateDiagramLight = do
       { theme = themeHarmonyLight
       , useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (GraphvizGraph.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
@@ -146,13 +143,15 @@ generateStateDiagramDark = do
       { theme = themeHarmonyDark
       , useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-dark.dot" (GraphvizGraph.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-dark.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate_ bridgesKoenigsbergTransit
+    table = TransitTable.generate bridgesKoenigsbergTransit _
+      { useUndirectedEdges = true
+      }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
 
 main :: Effect Unit

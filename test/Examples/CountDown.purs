@@ -12,7 +12,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
 import Transit.Data.DotLang (GraphvizGraph)
-import Transit.Data.DotLang as GraphvizGraph
+import Transit.Data.DotLang as Graphviz
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.VariantUtils (v)
 import Type.Proxy (Proxy(..))
@@ -90,4 +90,4 @@ main = do
 
   FS.writeTextFile UTF8
     "renders/count-down.dot"
-    (GraphvizGraph.toDotStr graph)
+    (Graphviz.toDotStr graph)
