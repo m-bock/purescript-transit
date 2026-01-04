@@ -137,7 +137,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L29-L40">test/Examples/DoorPin.purs L29-L40</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L28-L39">test/Examples/DoorPin.purs L28-L39</a>
   </sup>
 </p>
 
@@ -167,7 +167,7 @@ type DoorPinTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L42-L51">test/Examples/DoorPin.purs L42-L51</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L41-L50">test/Examples/DoorPin.purs L41-L50</a>
   </sup>
 </p>
 
@@ -209,7 +209,7 @@ update = mkUpdate @DoorPinTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L53-L72">test/Examples/DoorPin.purs L53-L72</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L52-L71">test/Examples/DoorPin.purs L52-L71</a>
   </sup>
 </p>
 
@@ -221,6 +221,68 @@ The match handlers receive both the current state and the message, giving you ac
 
 > **Limitation**: The compiler cannot detect if an implementation forgets to return a possible case.
 > For example, if a transition can return either `DoorClosed` or `DoorLocked`, your handler always returns `DoorClosed` then the compiler would not detect this error. Obviously the compiler cannot verify if your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
+
+## Testing the update function
+
+<!-- PD_START:purs
+pick:
+  - tag: signature_or_foreign
+    name: assertWalk
+    filePath: test/Examples/Common.purs
+-->
+
+```purescript
+assertWalk
+  :: forall msg state
+   . Eq state
+  => Show state
+  => (state -> msg -> state)
+  -> state
+  -> Array (msg /\ state)
+  -> Aff Unit
+```
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - assert1
+-->
+
+```purescript
+assert1 :: Spec Unit
+assert1 =
+  it "should follow the walk and visit the expected intermediate states" do
+    assertWalk update
+      -- start in the open state
+      (v @"DoorOpen")
+      [
+        -- close the door, then expect to transition to closed state
+        v @"Close" ~> v @"DoorClosed"
+      ,
+        -- lock the door, then expect to transition to locked state with the given pin
+        v @"Lock" { newPin: "1234" } ~> v @"DoorLocked" { storedPin: "1234" }
+      ,
+        -- unlock the door (with wrong pin), then expect to stay in locked state
+        v @"Unlock" { enteredPin: "abcd" } ~> v @"DoorLocked" { storedPin: "1234" }
+      ,
+        -- unlock the door (with correct pin), then expect to transition to closed state
+        v @"Unlock" { enteredPin: "1234" } ~> v @"DoorClosed"
+      ,
+        -- open the door, then expect to transition to open state
+        v @"Open" ~> v @"DoorOpen"
+      ]
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L77-L98">test/Examples/DoorPin.purs L77-L98</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
 
 ## Conclusion
 

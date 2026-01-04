@@ -14,6 +14,8 @@ In each benchmark the approach of the **Transit** library has been compared to c
 
 For the runtime benchmarks it was measured how long it takes to perform a full round trip through the state machine. Both, the standard JS compiler backend and the optimized [ES backend](https://github.com/aristanetworks/purescript-backend-optimizer) has been tested.
 
+The benchmarking tool used is [m-bock/purescript-benchlib](https://github.com/m-bock/purescript-benchlib).
+
 ### Standard JS Backend
 
 We can clearly see that the **Transit** approach pefroms faster than the classic approach. More importantly, the performance of the **Transit** approach has linear growth with the size of the state machine.
@@ -33,3 +35,5 @@ Since the **Transit** library leverage a lot of compile time code also compilati
 The interpretation of the results is less clear here. However it is evident that up to fairly large state machines (size=200) compilation times of the **Transit** approach are much faster than with the classic approach.
 
 <img src="../bench/compile-time/results.svg" />
+
+Compiler version 0.15.15 was used for the benchmarks.

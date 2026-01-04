@@ -14,7 +14,6 @@ import Data.Reflectable (reflectType)
 import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
-import Effect.Aff (Aff)
 import Examples.Common (assertWalk, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
@@ -75,26 +74,32 @@ update = mkUpdate @DoorPinTransit
 --- Tests
 --------------------------------------------------------------------------------
 
-assert4 :: Aff Unit
-assert4 =
-  assertWalk update
-    (v @"DoorOpen")
-    [ v @"Close" ~> v @"DoorClosed"
-    , v @"Open" ~> v @"DoorOpen"
-    , v @"Close" ~> v @"DoorClosed"
-    , v @"Lock" { newPin: "1234" }
-        ~> v @"DoorLocked" { storedPin: "1234" }
-    , v @"Unlock" { enteredPin: "abcd" }
-        ~> v @"DoorLocked" { storedPin: "1234" }
-    , v @"Unlock" { enteredPin: "1234" }
-        ~> v @"DoorClosed"
-    , v @"Open" ~> v @"DoorOpen"
-    ]
+assert1 :: Spec Unit
+assert1 =
+  it "should follow the walk and visit the expected intermediate states" do
+    assertWalk update
+      -- start in the open state
+      (v @"DoorOpen")
+      [
+        -- close the door, then expect to transition to closed state
+        v @"Close" ~> v @"DoorClosed"
+      ,
+        -- lock the door, then expect to transition to locked state with the given pin
+        v @"Lock" { newPin: "1234" } ~> v @"DoorLocked" { storedPin: "1234" }
+      ,
+        -- unlock the door (with wrong pin), then expect to stay in locked state
+        v @"Unlock" { enteredPin: "abcd" } ~> v @"DoorLocked" { storedPin: "1234" }
+      ,
+        -- unlock the door (with correct pin), then expect to transition to closed state
+        v @"Unlock" { enteredPin: "1234" } ~> v @"DoorClosed"
+      ,
+        -- open the door, then expect to transition to open state
+        v @"Open" ~> v @"DoorOpen"
+      ]
 
 spec :: Spec Unit
 spec = describe "DoorWithPin" do
-  it "should follow the walk" do
-    assert4
+  assert1
 
 --------------------------------------------------------------------------------
 --- State diagram generation

@@ -129,6 +129,40 @@ While this approach works and is straightforward, it has some drawbacks:
 
 ## Transit Approach
 
+### State and Message Types
+
+**Transit** uses `Variant` types (from `purescript-variant`)[^variant] for both `State` and `Msg` instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like `"DoorOpen"` or `"Close"`).
+
+This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
+
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - State
+  - Msg
+-->
+
+```purescript
+type State = Variant
+  ( "DoorOpen" :: {}
+  , "DoorClosed" :: {}
+  )
+
+type Msg = Variant
+  ( "Close" :: {}
+  , "Open" :: {}
+  )
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L22-L30">test/Examples/Door.purs L22-L30</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
 With the **Transit** library, we take a different approach that addresses the drawbacks of the classic method. Instead of writing the update function directly, we first define a type-level specification that describes our state machine. This specification serves as a single source of truth that the compiler can verify against your implementation.
 
 ### The Type-Level Specification
@@ -165,40 +199,6 @@ Breaking down the syntax:
 - The `@` operator connects a state to a message, and `>|` indicates the target state
 
 This type-level specification fully defines the state machine's structure. The compiler can now use this specification to ensure our implementation is correct.
-
-### State and Message Types
-
-**Transit** uses `Variant` types (from `purescript-variant`)[^variant] for both `State` and `Msg` instead of traditional ADTs. Variants are open sum types where each constructor is labeled with a type-level symbol (like `"DoorOpen"` or `"Close"`).
-
-This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
-
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - State
-  - Msg
--->
-
-```purescript
-type State = Variant
-  ( "DoorOpen" :: {}
-  , "DoorClosed" :: {}
-  )
-
-type Msg = Variant
-  ( "Close" :: {}
-  , "Open" :: {}
-  )
-```
-
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L22-L30">test/Examples/Door.purs L22-L30</a>
-  </sup>
-</p>
-
-<!-- PD_END -->
 
 ### The Update Function
 
