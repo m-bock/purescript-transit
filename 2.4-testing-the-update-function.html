@@ -62,6 +62,10 @@
         margin-bottom: 1rem;
       }
 
+      #TOC {
+        border-bottom: 0 !important;
+      }
+
       #TOC > ul {
         padding-left: 0;
       }
@@ -120,13 +124,9 @@
       nav.pager .header-title {
         font-size: 18px;
         font-weight: 600;
-        color: #c9d1d9;
+        color: #8b949e;
         text-decoration: none;
         margin-right: auto;
-      }
-
-      nav.pager .header-title:hover {
-        color: #58a6ff;
       }
 
       nav.pager .nav-links {
@@ -183,6 +183,12 @@
         color: #79c0ff;
       }
 
+      nav.pager {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+
       nav.pager a {
         color: #58a6ff;
         text-decoration: none;
@@ -191,9 +197,6 @@
         transition: all 0.2s ease;
         font-size: 14px;
         display: inline-block;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       }
 
       nav.pager a:hover {
@@ -214,6 +217,67 @@
         color: #30363d;
       }
 
+      /* Mobile responsive styles */
+      @media (max-width: 768px) {
+        nav.pager {
+          padding: 0.75rem 1rem 1rem;
+        }
+
+        nav.pager .pager-inner {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: stretch;
+        }
+
+        nav.pager .github-link {
+          font-size: 12px;
+          justify-content: center;
+        }
+
+        nav.pager .nav-links {
+          gap: 0.75rem;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        nav.pager a {
+          padding: 0.5rem 0.75rem;
+          font-size: 13px;
+        }
+
+        .markdown-body {
+          padding: 40px 20px 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav.pager {
+          padding: 0.5rem 0.75rem 0.75rem;
+        }
+
+        nav.pager .github-link {
+          font-size: 0;
+        }
+
+        nav.pager .github-link img {
+          width: 20px;
+          height: 20px;
+        }
+
+        nav.pager .nav-links {
+          gap: 0.5rem;
+        }
+
+        nav.pager a {
+          padding: 0.4rem 0.6rem;
+          font-size: 12px;
+        }
+
+        .markdown-body {
+          padding: 30px 15px 20px;
+        }
+      }
+
       /* Scroll offset for anchor links to account for sticky header */
       .markdown-body h1,
       .markdown-body h2,
@@ -222,6 +286,28 @@
       .markdown-body h5,
       .markdown-body h6 {
         scroll-margin-top: 200px;
+      }
+
+      @media (max-width: 768px) {
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+          scroll-margin-top: 120px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+          scroll-margin-top: 100px;
+        }
       }
 
       /* Remove zebra striping from tables and use lighter background */
@@ -330,6 +416,9 @@
           <img src="assets/github-mark-white.svg" alt="GitHub" />
           m-bock/purescript-transit
         </a>
+        
+        <div class="header-title">Example 1: A Simple Door</div>
+        
         <div class="nav-links">
                     <a href="2.3-transit-approach.html" rel="prev" title="Transit Approach"
             >← Previous</a
@@ -396,20 +485,20 @@ final state matches what we expect:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - tag: value
-    name: spec1
+  - spec1
 -->
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">=</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and ends in expected final state&quot;</span> <span class="kw">do</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">foldl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        (v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">=</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and ends in expected final state&quot;</span> <span class="kw">do</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">foldl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        (v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L50-L54">test/Examples/Door.purs
-L50-L54</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L53-L58">test/Examples/Door.purs
+L53-L58</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This test starts with the door open, closes it, opens it, then closes
@@ -422,20 +511,20 @@ intermediate states, not just the final one.</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - tag: value
-    name: spec2
+  - spec2
 -->
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">=</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and visits the expected intermediate states&quot;</span> <span class="kw">do</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scanl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        [ v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> ]</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">=</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and visits the expected intermediate states&quot;</span> <span class="kw">do</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scanl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        [ v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> ]</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L57-L61">test/Examples/Door.purs
-L57-L61</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L60-L65">test/Examples/Door.purs
+L60-L65</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This test is similar to the previous one. But instead of just
@@ -487,27 +576,27 @@ states match the expected ones. Here’s how we use it:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - tag: value
-    name: spec3
+  - spec3
 -->
 <div class="sourceCode" id="cb6"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>spec3 <span class="ot">=</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and visits the expected intermediate states&quot;</span> <span class="kw">do</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    assertWalk update</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec3 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>spec3 <span class="ot">=</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and visits the expected intermediate states&quot;</span> <span class="kw">do</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    assertWalk update</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Close&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L64-L75">test/Examples/Door.purs
-L64-L75</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L67-L79">test/Examples/Door.purs
+L67-L79</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>~&gt;</code> operator is an infix alias for

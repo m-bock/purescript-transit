@@ -420,56 +420,116 @@
         <div class="header-title">Example 3: Bridges of Königsberg [unfinished]</div>
         
         <div class="nav-links">
-                    <a href="4.2-transit-approach-1.html" rel="prev" title="Transit Approach"
+                    <a href="4.3-testing-the-update-function-2.html" rel="prev" title="Testing the update function"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="4.4-graph-analysis.html" rel="next" title="Graph Analysis"
+                     <a href="4.5-generating-documentation-2.html" rel="next" title="Generating Documentation"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="4.3" id="testing-the-update-function-2">Testing
-the update function</h2>
-<p><img src="assets/bridges-koenigsberg-walk.svg" width="450" /></p>
-<p>The picture shows one randomly chosen walk through the city of
-Königsberg. Unfortunately, it does not visit all bridges exactly once as
-required by Euler. The red circle indicates where bridge <code>g</code>
-is crossed twice. But let’s test the walk anyway before we move on.</p>
+       <h2 data-number="4.4" id="graph-analysis">Graph Analysis</h2>
+<p>The real power of <strong>Transit</strong> becomes apparent when we
+convert the reflected data structure into a general-purpose graph. Using
+<code>mkStateGraph</code>, we transform the <strong>Transit</strong>
+specification into a <code>StateGraph</code> — a specialized
+<code>Graph</code> type configured with edge and node labels suitable
+for state machine analysis.</p>
+<p>Once we have this graph data structure, we can perform sophisticated
+analysis using standard graph algorithms. For the Seven Bridges problem,
+we want to determine if the graph has an <strong>Eulerian
+circuit</strong> (a path that visits every edge exactly once and returns
+to the starting point) or an <strong>Eulerian trail</strong> (a path
+that visits every edge exactly once but doesn’t necessarily return to
+the start).</p>
+<p>Euler’s theorem states that an undirected graph has an Eulerian trail
+if and only if it <em>is connected</em> and has exactly <em>zero or
+two</em> vertices of odd degree.</p>
+<p>We can check these conditions using helper functions from the
+<code>Examples.Common</code> module:</p>
 <!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
+filePath: test/Examples/Common.purs
 pick:
-  - spec1
+  - nodeDegree
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">=</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should follow the walk and visit the expected intermediate states&quot;</span> <span class="kw">do</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    assertWalk update</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      [ v <span class="op">@</span><span class="st">&quot;a&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;B&quot;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;f&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;D&quot;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;g&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;C&quot;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;c&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;A&quot;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;e&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;D&quot;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;g&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;C&quot;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;d&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;A&quot;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;b&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;B&quot;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">nodeDegree ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">StateNode</span> <span class="ot">-&gt;</span> <span class="dt">Int</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>nodeDegree graph node <span class="ot">=</span> Set.size (Graph.getOutgoingEdges node graph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L82-L95">test/Examples/BridgesKoenigsberg.purs
-L82-L95</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L21-L22">test/Examples/Common.purs
+L21-L22</a> </sup>
 </p>
 <!-- PD_END -->
-<p>We could try many other walks the same way. But - spoiler alert -
-none of them will visit all bridges exactly once. And in the next
-section we’ll see a way to proof this for our state machine.</p> 
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - spec2
+-->
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should each node have the expected degree&quot;</span> <span class="kw">do</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;A&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">5</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;B&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;C&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;D&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106">test/Examples/BridgesKoenigsberg.purs
+L100-L106</a> </sup>
+</p>
+<!-- PD_END -->
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - hasEulerTrail
+-->
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">hasEulerTrail ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">Boolean</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>hasEulerTrail graph <span class="ot">=</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    nodes ::</span> <span class="dt">Array</span> <span class="dt">StateNode</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    nodes <span class="ot">=</span> fromFoldable (Graph.getNodes graph)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ot">    countEdgesByNode ::</span> <span class="dt">Array</span> <span class="dt">Int</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    countEdgesByNode <span class="ot">=</span> <span class="fu">map</span> (nodeDegree graph) nodes</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ot">    sumOddEdges ::</span> <span class="dt">Int</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="ot">=</span> Array.length (Array.filter <span class="dt">Int</span><span class="op">.</span><span class="fu">odd</span> countEdgesByNode)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="op">==</span> <span class="dv">2</span> <span class="op">||</span> sumOddEdges <span class="op">==</span> <span class="dv">0</span></span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L24-L36">test/Examples/Common.purs
+L24-L36</a> </sup>
+</p>
+<!-- PD_END -->
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - spec3
+-->
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec3 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>spec3 <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should not have an Eulerian trail&quot;</span> <span class="kw">do</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    hasEulerTrail bridgesKoenigsbergGraph <span class="ot">`shouldEqual`</span> false</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs
+L108-L111</a> </sup>
+</p>
+<!-- PD_END --> 
       <div class="scroll-to-top">
         <a
           href="#"

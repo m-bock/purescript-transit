@@ -62,6 +62,10 @@
         margin-bottom: 1rem;
       }
 
+      #TOC {
+        border-bottom: 0 !important;
+      }
+
       #TOC > ul {
         padding-left: 0;
       }
@@ -120,13 +124,9 @@
       nav.pager .header-title {
         font-size: 18px;
         font-weight: 600;
-        color: #c9d1d9;
+        color: #8b949e;
         text-decoration: none;
         margin-right: auto;
-      }
-
-      nav.pager .header-title:hover {
-        color: #58a6ff;
       }
 
       nav.pager .nav-links {
@@ -183,6 +183,12 @@
         color: #79c0ff;
       }
 
+      nav.pager {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+
       nav.pager a {
         color: #58a6ff;
         text-decoration: none;
@@ -191,9 +197,6 @@
         transition: all 0.2s ease;
         font-size: 14px;
         display: inline-block;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       }
 
       nav.pager a:hover {
@@ -214,6 +217,67 @@
         color: #30363d;
       }
 
+      /* Mobile responsive styles */
+      @media (max-width: 768px) {
+        nav.pager {
+          padding: 0.75rem 1rem 1rem;
+        }
+
+        nav.pager .pager-inner {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: stretch;
+        }
+
+        nav.pager .github-link {
+          font-size: 12px;
+          justify-content: center;
+        }
+
+        nav.pager .nav-links {
+          gap: 0.75rem;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        nav.pager a {
+          padding: 0.5rem 0.75rem;
+          font-size: 13px;
+        }
+
+        .markdown-body {
+          padding: 40px 20px 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav.pager {
+          padding: 0.5rem 0.75rem 0.75rem;
+        }
+
+        nav.pager .github-link {
+          font-size: 0;
+        }
+
+        nav.pager .github-link img {
+          width: 20px;
+          height: 20px;
+        }
+
+        nav.pager .nav-links {
+          gap: 0.5rem;
+        }
+
+        nav.pager a {
+          padding: 0.4rem 0.6rem;
+          font-size: 12px;
+        }
+
+        .markdown-body {
+          padding: 30px 15px 20px;
+        }
+      }
+
       /* Scroll offset for anchor links to account for sticky header */
       .markdown-body h1,
       .markdown-body h2,
@@ -222,6 +286,28 @@
       .markdown-body h5,
       .markdown-body h6 {
         scroll-margin-top: 200px;
+      }
+
+      @media (max-width: 768px) {
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+          scroll-margin-top: 120px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+          scroll-margin-top: 100px;
+        }
       }
 
       /* Remove zebra striping from tables and use lighter background */
@@ -330,6 +416,9 @@
           <img src="assets/github-mark-white.svg" alt="GitHub" />
           m-bock/purescript-transit
         </a>
+        
+        <div class="header-title">Example 1: A Simple Door</div>
+        
         <div class="nav-links">
                     <a href="2.2-classic-approach.html" rel="prev" title="Classic Approach"
             >← Previous</a
@@ -348,15 +437,9 @@
 <h3 data-number="2.3.1" id="state-and-message-types">State and Message
 Types</h3>
 <p><strong>Transit</strong> uses <code>Variant</code> types (from
-<code>purescript-variant</code>)[^variant] for both <code>State</code>
-and <code>Msg</code> instead of traditional ADTs. Variants are open sum
-types where each constructor is labeled with a type-level symbol (like
-<code>"DoorOpen"</code> or <code>"Close"</code>).</p>
-<p>This design choice is crucial for <strong>Transit</strong>’s
-type-level machinery. The key advantage is that <strong>Transit</strong>
-can filter the possible cases (both input states/messages and output
-states) for each handler function. Variants are perfect for this. There
-is no way to express a subset of cases from a traditional ADT.</p>
+<code>purescript-variant</code>)<a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a> for both
+<code>State</code> and <code>Msg</code> instead of traditional ADTs.</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
@@ -376,16 +459,17 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L22-L30">test/Examples/Door.purs
-L22-L30</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L26-L34">test/Examples/Door.purs
+L26-L34</a> </sup>
 </p>
 <!-- PD_END -->
-<p>With the <strong>Transit</strong> library, we take a different
-approach that addresses the drawbacks of the classic method. Instead of
-writing the update function directly, we first define a type-level
-specification that describes our state machine. This specification
-serves as a single source of truth that the compiler can verify against
-your implementation.</p>
+<blockquote>
+<p>This design choice is crucial for <strong>Transit</strong>’s
+type-level machinery. The key advantage is that <strong>Transit</strong>
+can filter the possible cases (both input states/messages and output
+states) for each handler function. Variants are perfect for this. There
+is no way to express a subset of cases from a traditional ADT.</p>
+</blockquote>
 <h3 data-number="2.3.2" id="the-type-level-specification">The Type-Level
 Specification</h3>
 <p>First, we define the state machine structure using
@@ -403,8 +487,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L32-L35">test/Examples/Door.purs
-L32-L35</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L36-L39">test/Examples/Door.purs
+L36-L39</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Breaking down the syntax:</p>
@@ -438,16 +522,17 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40">test/Examples/Door.purs
-L37-L40</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L41-L44">test/Examples/Door.purs
+L41-L44</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Here’s how this works:</p>
 <ul>
 <li><p><code>mkUpdate @DoorTransit</code> creates an update function
 based on the <code>DoorTransit</code> specification. The <code>@</code>
-symbol is type application[^type-app], passing the specification to the
-function.</p></li>
+symbol is type application<a href="#fn2" class="footnote-ref"
+id="fnref2" role="doc-noteref"><sup>2</sup></a>, passing the
+specification to the function.</p></li>
 <li><p>Each <code>match</code> line handles one transition from the
 specification. The first two arguments (<code>@"DoorOpen"</code> and
 <code>@"Close"</code>) are type-level symbols (type applications) that
@@ -458,11 +543,23 @@ transition to. The <code>return</code> function is part of
 <strong>Transit</strong>’s DSL for specifying the target state, and the
 <code>@</code> symbol again indicates a type-level symbol.</p></li>
 <li><p><strong>Important</strong>: The order of match handlers must
-match the order of transitions in the DSL specification. In this
-example, the handlers are provided in the same order as they appear in
-<code>DoorTransit</code>: <code>DoorOpen :@ Close</code>, then
-<code>DoorClosed :@ Open</code>.</p></li>
-</ul> 
+match the order of transitions in the DSL specification.</p></li>
+</ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The <code>purescript-variant</code> library provides
+row-polymorphic sum types. See the <a
+href="https://pursuit.purescript.org/packages/purescript-variant">documentation</a>
+for more details.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>In PureScript, the <code>@</code> symbol is used for
+explicit type application, allowing you to pass type-level arguments to
+functions.<a href="#fnref2" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section> 
       <div class="scroll-to-top">
         <a
           href="#"

@@ -62,6 +62,10 @@
         margin-bottom: 1rem;
       }
 
+      #TOC {
+        border-bottom: 0 !important;
+      }
+
       #TOC > ul {
         padding-left: 0;
       }
@@ -120,13 +124,9 @@
       nav.pager .header-title {
         font-size: 18px;
         font-weight: 600;
-        color: #c9d1d9;
+        color: #8b949e;
         text-decoration: none;
         margin-right: auto;
-      }
-
-      nav.pager .header-title:hover {
-        color: #58a6ff;
       }
 
       nav.pager .nav-links {
@@ -183,6 +183,12 @@
         color: #79c0ff;
       }
 
+      nav.pager {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+
       nav.pager a {
         color: #58a6ff;
         text-decoration: none;
@@ -191,9 +197,6 @@
         transition: all 0.2s ease;
         font-size: 14px;
         display: inline-block;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       }
 
       nav.pager a:hover {
@@ -214,6 +217,67 @@
         color: #30363d;
       }
 
+      /* Mobile responsive styles */
+      @media (max-width: 768px) {
+        nav.pager {
+          padding: 0.75rem 1rem 1rem;
+        }
+
+        nav.pager .pager-inner {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: stretch;
+        }
+
+        nav.pager .github-link {
+          font-size: 12px;
+          justify-content: center;
+        }
+
+        nav.pager .nav-links {
+          gap: 0.75rem;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        nav.pager a {
+          padding: 0.5rem 0.75rem;
+          font-size: 13px;
+        }
+
+        .markdown-body {
+          padding: 40px 20px 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav.pager {
+          padding: 0.5rem 0.75rem 0.75rem;
+        }
+
+        nav.pager .github-link {
+          font-size: 0;
+        }
+
+        nav.pager .github-link img {
+          width: 20px;
+          height: 20px;
+        }
+
+        nav.pager .nav-links {
+          gap: 0.5rem;
+        }
+
+        nav.pager a {
+          padding: 0.4rem 0.6rem;
+          font-size: 12px;
+        }
+
+        .markdown-body {
+          padding: 30px 15px 20px;
+        }
+      }
+
       /* Scroll offset for anchor links to account for sticky header */
       .markdown-body h1,
       .markdown-body h2,
@@ -222,6 +286,28 @@
       .markdown-body h5,
       .markdown-body h6 {
         scroll-margin-top: 200px;
+      }
+
+      @media (max-width: 768px) {
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+          scroll-margin-top: 120px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
+        .markdown-body h6 {
+          scroll-margin-top: 100px;
+        }
       }
 
       /* Remove zebra striping from tables and use lighter background */
@@ -330,6 +416,9 @@
           <img src="assets/github-mark-white.svg" alt="GitHub" />
           m-bock/purescript-transit
         </a>
+        
+        <div class="header-title">Example 1: A Simple Door</div>
+        
         <div class="nav-links">
                     <a href="2.4-testing-the-update-function.html" rel="prev" title="Testing the update function"
             >← Previous</a
@@ -362,8 +451,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L42-L43">test/Examples/Door.purs
-L42-L43</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L46-L47">test/Examples/Door.purs
+L46-L47</a> </sup>
 </p>
 <!-- PD_END -->
 <h3 data-number="2.5.1" id="state-diagrams">State Diagrams</h3>
@@ -376,7 +465,7 @@ pick:
     filePath: src/Transit/Render/Graphviz.purs
 split: true
 -->
-<p><code>generate :: TransitCore -&gt; (Options -&gt; Options) -&gt; String</code></p>
+<p><code>generate :: TransitCore -&gt; (Options -&gt; Options) -&gt; GraphvizGraph</code></p>
 <!-- PD_END -->
 <p>It takes the <code>TransitCore</code> value which we’ve created in
 the previous step and a function that takes the default options and
@@ -391,17 +480,17 @@ pick:
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">String</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">GraphvizGraph</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate doorTransit _</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyDark</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> graph</span></code></pre></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L97-L105">test/Examples/Door.purs
-L97-L105</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L102-L110">test/Examples/Door.purs
+L102-L110</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>theme</code> option which we’re using above controls the
@@ -428,17 +517,15 @@ pick:
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTransitionTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">String</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate doorTransit _</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      { outputFormat <span class="ot">=</span> <span class="dt">TransitTable.Markdown</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door.md&quot;</span> table</span></code></pre></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate_ doorTransit</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L107-L115">test/Examples/Door.purs
-L107-L115</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L112-L118">test/Examples/Door.purs
+L112-L118</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This generates a Markdown file containing a table with columns for
