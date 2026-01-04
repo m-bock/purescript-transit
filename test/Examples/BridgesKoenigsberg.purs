@@ -5,10 +5,11 @@ import Prelude
 import Data.Reflectable (reflectType)
 import Data.Variant (Variant)
 import Effect (Effect)
-import Examples.Common (assertWalk, (~>))
+import Examples.Common (assertWalk, hasEulerTrail, nodeDegree, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkUpdate, return)
 import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
@@ -17,58 +18,59 @@ import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
+import Transit.StateGraph (StateGraph, mkStateGraph)
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
 
 type State = Variant
-  ( "LandA" :: {}
-  , "LandB" :: {}
-  , "LandC" :: {}
-  , "LandD" :: {}
+  ( "A" :: {}
+  , "B" :: {}
+  , "C" :: {}
+  , "D" :: {}
   )
 
 type Msg = Variant
-  ( "Cross_a" :: {}
-  , "Cross_b" :: {}
-  , "Cross_c" :: {}
-  , "Cross_d" :: {}
-  , "Cross_e" :: {}
-  , "Cross_f" :: {}
-  , "Cross_g" :: {}
+  ( "a" :: {}
+  , "b" :: {}
+  , "c" :: {}
+  , "d" :: {}
+  , "e" :: {}
+  , "f" :: {}
+  , "g" :: {}
   )
 
 type BridgesKoenigsbergTransit =
   Transit
-    :* ("LandA" |< "Cross_a" >| "LandB")
-    :* ("LandA" |< "Cross_b" >| "LandB")
-    :* ("LandA" |< "Cross_c" >| "LandC")
-    :* ("LandA" |< "Cross_d" >| "LandC")
-    :* ("LandA" |< "Cross_e" >| "LandD")
-    :* ("LandB" |< "Cross_f" >| "LandD")
-    :* ("LandC" |< "Cross_g" >| "LandD")
+    :* ("A" |< "a" >| "B")
+    :* ("A" |< "b" >| "B")
+    :* ("A" |< "c" >| "C")
+    :* ("A" |< "d" >| "C")
+    :* ("A" |< "e" >| "D")
+    :* ("B" |< "f" >| "D")
+    :* ("C" |< "g" >| "D")
 
 update :: State -> Msg -> State
 update = mkUpdate @BridgesKoenigsbergTransit
-  (match @"LandA" @"Cross_a" \_ _ -> return @"LandB")
-  (match @"LandB" @"Cross_a" \_ _ -> return @"LandA")
+  (match @"A" @"a" \_ _ -> return @"B")
+  (match @"B" @"a" \_ _ -> return @"A")
 
-  (match @"LandA" @"Cross_b" \_ _ -> return @"LandB")
-  (match @"LandB" @"Cross_b" \_ _ -> return @"LandA")
+  (match @"A" @"b" \_ _ -> return @"B")
+  (match @"B" @"b" \_ _ -> return @"A")
 
-  (match @"LandA" @"Cross_c" \_ _ -> return @"LandC")
-  (match @"LandC" @"Cross_c" \_ _ -> return @"LandA")
+  (match @"A" @"c" \_ _ -> return @"C")
+  (match @"C" @"c" \_ _ -> return @"A")
 
-  (match @"LandA" @"Cross_d" \_ _ -> return @"LandC")
-  (match @"LandC" @"Cross_d" \_ _ -> return @"LandA")
+  (match @"A" @"d" \_ _ -> return @"C")
+  (match @"C" @"d" \_ _ -> return @"A")
 
-  (match @"LandA" @"Cross_e" \_ _ -> return @"LandD")
-  (match @"LandD" @"Cross_e" \_ _ -> return @"LandA")
+  (match @"A" @"e" \_ _ -> return @"D")
+  (match @"D" @"e" \_ _ -> return @"A")
 
-  (match @"LandB" @"Cross_f" \_ _ -> return @"LandD")
-  (match @"LandD" @"Cross_f" \_ _ -> return @"LandB")
+  (match @"B" @"f" \_ _ -> return @"D")
+  (match @"D" @"f" \_ _ -> return @"B")
 
-  (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
-  (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
+  (match @"C" @"g" \_ _ -> return @"D")
+  (match @"D" @"g" \_ _ -> return @"C")
 
 bridgesKoenigsbergTransit :: TransitCore
 bridgesKoenigsbergTransit = reflectType (Proxy @BridgesKoenigsbergTransit)
@@ -77,49 +79,43 @@ bridgesKoenigsbergTransit = reflectType (Proxy @BridgesKoenigsbergTransit)
 --- Tests
 --------------------------------------------------------------------------------
 
-assert1 :: Spec Unit
-assert1 =
+spec1 :: Spec Unit
+spec1 =
   it "should follow the walk and visit the expected intermediate states" do
     assertWalk update
-      (v @"LandA")
-      [ v @"Cross_a" ~> v @"LandB"
-      , v @"Cross_f" ~> v @"LandD"
-      , v @"Cross_g" ~> v @"LandC"
-      , v @"Cross_c" ~> v @"LandA"
-      , v @"Cross_e" ~> v @"LandD"
-      , v @"Cross_g" ~> v @"LandC"
-      , v @"Cross_d" ~> v @"LandA"
-      , v @"Cross_b" ~> v @"LandB"
+      (v @"A")
+      [ v @"a" ~> v @"B"
+      , v @"f" ~> v @"D"
+      , v @"g" ~> v @"C"
+      , v @"c" ~> v @"A"
+      , v @"e" ~> v @"D"
+      , v @"g" ~> v @"C"
+      , v @"d" ~> v @"A"
+      , v @"b" ~> v @"B"
       ]
 
--- graph :: StateGraph
--- graph = mkStateGraph bridgesKoenigsbergTransit
+bridgesKoenigsbergGraph :: StateGraph
+bridgesKoenigsbergGraph = mkStateGraph bridgesKoenigsbergTransit
 
--- assert2 :: Aff Unit
--- assert2 = do
---   hasEulerTrail bridgesKoenigsbergTransit `shouldEqual` false
+spec2 :: Spec Unit
+spec2 = do
+  it "should each node have the expected degree" do
+    nodeDegree bridgesKoenigsbergGraph "A" `shouldEqual` 5
+    nodeDegree bridgesKoenigsbergGraph "B" `shouldEqual` 3
+    nodeDegree bridgesKoenigsbergGraph "C" `shouldEqual` 3
+    nodeDegree bridgesKoenigsbergGraph "D" `shouldEqual` 3
 
--- assert4 :: Aff Unit
--- assert4 = do
---   Array.length (Array.mapMaybe (Classic.update Classic.LandA) (Array.fromFoldable allWalks))
---     `shouldEqual` 0
-
---   Array.length (Array.mapMaybe (Classic.update Classic.LandB) (Array.fromFoldable allWalks))
---     `shouldEqual` 0
-
---   Array.length (Array.mapMaybe (Classic.update Classic.LandC) (Array.fromFoldable allWalks))
---     `shouldEqual` 0
-
---   Array.length (Array.mapMaybe (Classic.update Classic.LandD) (Array.fromFoldable allWalks))
---     `shouldEqual` 0
+spec3 :: Spec Unit
+spec3 = do
+  it "should not have an Eulerian trail" do
+    hasEulerTrail bridgesKoenigsbergGraph `shouldEqual` false
 
 spec :: Spec Unit
 spec = do
   describe "BridgesKoenigsberg" do
-    assert1
-
--- it "should assert1" do
---   assert2
+    spec1
+    spec2
+    spec3
 
 --------------------------------------------------------------------------------
 --- State diagram generation
