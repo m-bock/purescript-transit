@@ -12,9 +12,11 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), Transit, match, mkUpdate, return, mkStateGraph, type (|<))
-import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
+import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
+import Transit.Data.Table (Table)
+import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
@@ -80,6 +82,9 @@ update =
     (match @"N_3" @"E_h" \_ _ -> return @"N_4")
     (match @"N_4" @"E_h" \_ _ -> return @"N_3")
 
+houseSantaClausTransit :: TransitCore
+houseSantaClausTransit = reflectType (Proxy @HouseSantaClausTransit)
+
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
@@ -119,7 +124,6 @@ spec = do
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @HouseSantaClausTransit)
     nodeAttrs = Just \node -> case node of
       "N_1" -> "pos=\"0,0!\""
       "N_2" -> "pos=\"2,0!\""
@@ -130,7 +134,7 @@ main = do
     globalAttrs = Just "layout=neato"
 
   FS.writeTextFile UTF8 "renders/house-santa-claus-light.dot"
-    ( TransitGraphviz.generate transit _
+    ( TransitGraphviz.generate houseSantaClausTransit _
         { useUndirectedEdges = true
         , nodeAttrsRaw = nodeAttrs
         , globalAttrsRaw = globalAttrs
@@ -139,7 +143,7 @@ main = do
     )
 
   FS.writeTextFile UTF8 "renders/house-santa-claus-dark.dot"
-    ( TransitGraphviz.generate transit _
+    ( TransitGraphviz.generate houseSantaClausTransit _
         { useUndirectedEdges = true
         , nodeAttrsRaw = nodeAttrs
         , globalAttrsRaw = globalAttrs
@@ -147,10 +151,13 @@ main = do
         }
     )
 
-  FS.writeTextFile UTF8 "renders/house-santa-claus.md"
-    ( TransitTable.generate transit _
-        { useUndirectedEdges = true
-        , outputFormat = TransitTable.Markdown
-        }
-    )
+  let
+    table :: Table
+    table = TransitTable.generate houseSantaClausTransit _
+      { useUndirectedEdges = true
+      }
+
+  FS.writeTextFile UTF8
+    "renders/house-santa-claus.md"
+    (Table.toMarkdown table)
 

@@ -13,6 +13,8 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
+import Transit.Data.Table (Table(..))
+import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -108,12 +110,10 @@ generateStateDiagramDark =
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
-    table :: String
-    table = TransitTable.generate doorTransit _
-      { outputFormat = TransitTable.Markdown
-      }
+    table :: Table
+    table = TransitTable.generate_ doorTransit
 
-  FS.writeTextFile UTF8 "renders/door.md" table
+  FS.writeTextFile UTF8 "renders/door.md" (Table.toMarkdown table)
 
 main :: Effect Unit
 main = do

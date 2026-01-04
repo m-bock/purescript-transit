@@ -13,6 +13,8 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), StateGraph, Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
+import Transit.Data.Table (Table(..))
+import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -69,6 +71,9 @@ update = mkUpdate @BridgesKoenigsbergTransit
   (match @"LandC" @"Cross_g" \_ _ -> return @"LandD")
   (match @"LandD" @"Cross_g" \_ _ -> return @"LandC")
 
+bridgesKoenigsbergTransit :: TransitCore
+bridgesKoenigsbergTransit = reflectType (Proxy @BridgesKoenigsbergTransit)
+
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
@@ -87,9 +92,6 @@ assert1 =
       , v @"Cross_d" ~> v @"LandA"
       , v @"Cross_b" ~> v @"LandB"
       ]
-
-bridgesKoenigsbergTransit :: TransitCore
-bridgesKoenigsbergTransit = reflectType (Proxy @BridgesKoenigsbergTransit)
 
 graph :: StateGraph
 graph = mkStateGraph bridgesKoenigsbergTransit
@@ -126,8 +128,6 @@ spec = do
 
 main :: Effect Unit
 main = do
-  let
-    transit = reflectType (Proxy @BridgesKoenigsbergTransit)
 
   for_
     [ { theme: themeHarmonyLight, file: "renders/bridges-koenigsberg-light.dot" }
@@ -135,16 +135,19 @@ main = do
     ]
     \opts -> do
       FS.writeTextFile UTF8 opts.file
-        ( TransitGraphviz.generate transit _
+        ( TransitGraphviz.generate bridgesKoenigsbergTransit _
             { useUndirectedEdges = true
             , theme = opts.theme
             }
         )
 
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md"
-    ( TransitTable.generate transit _
-        { useUndirectedEdges = true
-        , outputFormat = TransitTable.Markdown
-        }
-    )
+  let
+    table :: Table
+    table = TransitTable.generate bridgesKoenigsbergTransit _
+      { useUndirectedEdges = true
+      }
+
+  FS.writeTextFile UTF8
+    "renders/bridges-koenigsberg.md"
+    (Table.toMarkdown table)
 

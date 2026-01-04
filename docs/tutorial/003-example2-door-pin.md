@@ -137,7 +137,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L28-L39">test/Examples/DoorPin.purs L28-L39</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L30-L41">test/Examples/DoorPin.purs L30-L41</a>
   </sup>
 </p>
 
@@ -167,7 +167,7 @@ type DoorPinTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L41-L50">test/Examples/DoorPin.purs L41-L50</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L43-L52">test/Examples/DoorPin.purs L43-L52</a>
   </sup>
 </p>
 
@@ -209,7 +209,7 @@ update = mkUpdate @DoorPinTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L52-L71">test/Examples/DoorPin.purs L52-L71</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L54-L73">test/Examples/DoorPin.purs L54-L73</a>
   </sup>
 </p>
 
@@ -278,7 +278,7 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L77-L98">test/Examples/DoorPin.purs L77-L98</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L79-L100">test/Examples/DoorPin.purs L79-L100</a>
   </sup>
 </p>
 

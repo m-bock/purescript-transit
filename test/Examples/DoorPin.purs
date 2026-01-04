@@ -19,8 +19,10 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:?), type (:@), type (>|), Transit, match, mkUpdate, return, returnVia)
-import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
+import Transit.Data.Table (Table)
+import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Proxy (Proxy(..))
@@ -123,5 +125,9 @@ main = do
             }
         )
 
+  let
+    table :: Table
+    table = TransitTable.generate_ transit
+
   FS.writeTextFile UTF8 "renders/door-pin.md"
-    (TransitTable.generate transit _ { outputFormat = TransitTable.Markdown })
+    (Table.toMarkdown table)

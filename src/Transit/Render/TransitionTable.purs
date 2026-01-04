@@ -9,7 +9,6 @@ module Transit.Render.TransitionTable
   , generate_
   , Options
   , defaultOptions
-  , OutputFormat(..)
   ) where
 
 import Prelude
@@ -20,6 +19,7 @@ import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..))
 import Transit.Core (Match(..), MsgName, Return(..), StateName, TransitCore(..))
 import Transit.Data.Html as Html
+import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 
 -- | Generates an HTML table from a transit specification.
@@ -128,14 +128,10 @@ mkHeaders hasGuards = join
   , pure $ Table.TableHeader "State"
   ]
 
--- | Output format for table generation.
-data OutputFormat = Html | Markdown
-
 -- | Configuration options for table generation.
 type Options =
   { title :: Maybe String
   , useUndirectedEdges :: Boolean
-  , outputFormat :: OutputFormat
   }
 
 -- | Default options for table generation.
@@ -143,22 +139,18 @@ defaultOptions :: Options
 defaultOptions =
   { title: Nothing
   , useUndirectedEdges: false
-  , outputFormat: Html
   }
 
--- | Generates a transition table as a string with customizable options.
-generate :: TransitCore -> (Options -> Options) -> String
+-- | Generates a transition table with customizable options.
+generate :: TransitCore -> (Options -> Options) -> Table
 generate transitCore mkOptions =
   let
     options = mkOptions defaultOptions
-    table = toTable options transitCore
   in
-    case options.outputFormat of
-      Html -> Html.nodeToHtml $ toHtml options transitCore
-      Markdown -> Table.toMarkdown table
+    toTable options transitCore
 
--- | Generates a transition table as a string with default options.
-generate_ :: TransitCore -> String
+-- | Generates a transition table with default options.
+generate_ :: TransitCore -> Table
 generate_ transitCore = generate transitCore identity
 
 -- | Checks if there exists a complementary edge (reverse direction with same message)

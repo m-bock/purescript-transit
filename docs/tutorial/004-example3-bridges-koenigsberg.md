@@ -78,7 +78,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L22-L37">test/Examples/BridgesKoenigsberg.purs L22-L37</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L24-L39">test/Examples/BridgesKoenigsberg.purs L24-L39</a>
   </sup>
 </p>
 
@@ -107,7 +107,7 @@ type BridgesKoenigsbergTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L39-L47">test/Examples/BridgesKoenigsberg.purs L39-L47</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L41-L49">test/Examples/BridgesKoenigsberg.purs L41-L49</a>
   </sup>
 </p>
 
@@ -140,7 +140,7 @@ update = mkUpdate @BridgesKoenigsbergTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L49-L70">test/Examples/BridgesKoenigsberg.purs L49-L70</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L51-L72">test/Examples/BridgesKoenigsberg.purs L51-L72</a>
   </sup>
 </p>
 
@@ -176,7 +176,7 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L76-L89">test/Examples/BridgesKoenigsberg.purs L76-L89</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L81-L94">test/Examples/BridgesKoenigsberg.purs L81-L94</a>
   </sup>
 </p>
 
@@ -268,7 +268,7 @@ assert2 = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L99">test/Examples/BridgesKoenigsberg.purs L97-L99</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L99-L101">test/Examples/BridgesKoenigsberg.purs L99-L101</a>
   </sup>
 </p>
 
