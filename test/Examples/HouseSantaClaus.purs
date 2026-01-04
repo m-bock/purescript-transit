@@ -13,6 +13,8 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
+import Transit.Data.DotLang (GraphvizGraph)
+import Transit.Data.DotLang as GraphvizGraph
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
@@ -121,36 +123,50 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-main :: Effect Unit
-main = do
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight = do
   let
-    nodeAttrs = Just \node -> case node of
-      "N_1" -> "pos=\"0,0!\""
-      "N_2" -> "pos=\"2,0!\""
-      "N_3" -> "pos=\"2,2!\""
-      "N_4" -> "pos=\"0,2!\""
-      "N_5" -> "pos=\"1,3!\""
-      _ -> ""
-    globalAttrs = Just "layout=neato"
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate houseSantaClausTransit _
+      { useUndirectedEdges = true
+      , nodeAttrsRaw = Just \node -> case node of
+          "N_1" -> "pos=\"0,0!\""
+          "N_2" -> "pos=\"2,0!\""
+          "N_3" -> "pos=\"2,2!\""
+          "N_4" -> "pos=\"0,2!\""
+          "N_5" -> "pos=\"1,3!\""
+          _ -> ""
+      , globalAttrsRaw = Just "layout=neato"
+      , theme = themeHarmonyLight
+      }
 
-  FS.writeTextFile UTF8 "renders/house-santa-claus-light.dot"
-    ( TransitGraphviz.generate houseSantaClausTransit _
-        { useUndirectedEdges = true
-        , nodeAttrsRaw = nodeAttrs
-        , globalAttrsRaw = globalAttrs
-        , theme = themeHarmonyLight
-        }
-    )
+  FS.writeTextFile UTF8
+    "renders/house-santa-claus-light.dot"
+    (GraphvizGraph.toDotStr graph)
 
-  FS.writeTextFile UTF8 "renders/house-santa-claus-dark.dot"
-    ( TransitGraphviz.generate houseSantaClausTransit _
-        { useUndirectedEdges = true
-        , nodeAttrsRaw = nodeAttrs
-        , globalAttrsRaw = globalAttrs
-        , theme = themeHarmonyDark
-        }
-    )
+generateStateDiagramDark :: Effect Unit
+generateStateDiagramDark = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate houseSantaClausTransit _
+      { useUndirectedEdges = true
+      , nodeAttrsRaw = Just \node -> case node of
+          "N_1" -> "pos=\"0,0!\""
+          "N_2" -> "pos=\"2,0!\""
+          "N_3" -> "pos=\"2,2!\""
+          "N_4" -> "pos=\"0,2!\""
+          "N_5" -> "pos=\"1,3!\""
+          _ -> ""
+      , globalAttrsRaw = Just "layout=neato"
+      , theme = themeHarmonyDark
+      }
 
+  FS.writeTextFile UTF8
+    "renders/house-santa-claus-dark.dot"
+    (GraphvizGraph.toDotStr graph)
+
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
   let
     table :: Table
     table = TransitTable.generate houseSantaClausTransit _
@@ -161,3 +177,8 @@ main = do
     "renders/house-santa-claus.md"
     (Table.toMarkdown table)
 
+main :: Effect Unit
+main = do
+  generateStateDiagramLight
+  generateStateDiagramDark
+  generateTransitionTable

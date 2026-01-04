@@ -18,7 +18,7 @@ import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
 import Data.Maybe (Maybe(..))
 import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
-import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..), toDotStr)
+import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..))
 import Transit.Data.DotLang as D
 import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeHarmonyDark)
 import Transit.StateGraph (StateNode)
@@ -232,11 +232,11 @@ defaultOptions =
   }
 
 -- | Generates a Graphviz graph as a string with customizable options.
-generate :: TransitCore -> (Options -> Options) -> String
+generate :: TransitCore -> (Options -> Options) -> GraphvizGraph
 generate transitCore mkOptions =
-  toDotStr (mkGraphvizGraph (mkOptions defaultOptions) transitCore)
+  mkGraphvizGraph (mkOptions defaultOptions) transitCore
 
 -- | Generates a Graphviz graph as a string with default options.
-generate_ :: TransitCore -> String
+generate_ :: TransitCore -> GraphvizGraph
 generate_ transitCore = generate transitCore identity
 

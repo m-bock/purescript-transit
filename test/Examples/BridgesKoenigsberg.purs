@@ -13,6 +13,8 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (>|), type (|<), StateGraph, Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
+import Transit.Data.DotLang (GraphvizGraph(..))
+import Transit.Data.DotLang as GraphvizGraph
 import Transit.Data.Table (Table(..))
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
@@ -93,12 +95,12 @@ assert1 =
       , v @"Cross_b" ~> v @"LandB"
       ]
 
-graph :: StateGraph
-graph = mkStateGraph bridgesKoenigsbergTransit
+-- graph :: StateGraph
+-- graph = mkStateGraph bridgesKoenigsbergTransit
 
-assert2 :: Aff Unit
-assert2 = do
-  hasEulerTrail graph `shouldEqual` false
+-- assert2 :: Aff Unit
+-- assert2 = do
+--   hasEulerTrail bridgesKoenigsbergTransit `shouldEqual` false
 
 -- assert4 :: Aff Unit
 -- assert4 = do
@@ -126,28 +128,35 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-main :: Effect Unit
-main = do
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+      { theme = themeHarmonyLight
+      , useUndirectedEdges = true
+      }
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (GraphvizGraph.toDotStr graph)
 
-  for_
-    [ { theme: themeHarmonyLight, file: "renders/bridges-koenigsberg-light.dot" }
-    , { theme: themeHarmonyDark, file: "renders/bridges-koenigsberg-dark.dot" }
-    ]
-    \opts -> do
-      FS.writeTextFile UTF8 opts.file
-        ( TransitGraphviz.generate bridgesKoenigsbergTransit _
-            { useUndirectedEdges = true
-            , theme = opts.theme
-            }
-        )
+generateStateDiagramDark :: Effect Unit
+generateStateDiagramDark = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+      { theme = themeHarmonyDark
+      , useUndirectedEdges = true
+      }
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-dark.dot" (GraphvizGraph.toDotStr graph)
 
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate bridgesKoenigsbergTransit _
-      { useUndirectedEdges = true
-      }
+    table = TransitTable.generate_ bridgesKoenigsbergTransit
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
 
-  FS.writeTextFile UTF8
-    "renders/bridges-koenigsberg.md"
-    (Table.toMarkdown table)
-
+main :: Effect Unit
+main = do
+  generateStateDiagramLight
+  generateStateDiagramDark
+  generateTransitionTable

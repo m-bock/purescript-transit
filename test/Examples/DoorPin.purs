@@ -9,16 +9,16 @@ module Examples.DoorPin
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
-import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Examples.Common (assertWalk, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
-import Transit (type (:*), type (:?), type (:@), type (>|), Transit, match, mkUpdate, return, returnVia)
+import Transit (type (:*), type (:?), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return, returnVia)
+import Transit.Data.DotLang (GraphvizGraph)
+import Transit.Data.DotLang as GraphvizGraph
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
@@ -72,6 +72,9 @@ update = mkUpdate @DoorPinTransit
           returnVia @"PinIncorrect" @"DoorLocked" { storedPin: state.storedPin }
   )
 
+doorPinTransit :: TransitCore
+doorPinTransit = reflectType (Proxy @DoorPinTransit)
+
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
@@ -107,27 +110,38 @@ spec = describe "DoorWithPin" do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-main :: Effect Unit
-main = do
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight = do
   let
-    transit = reflectType (Proxy @DoorPinTransit)
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate doorPinTransit _
+      { theme = themeHarmonyLight
+      , entryPoints = [ "DoorOpen" ]
+      }
 
-  for_
-    [ { theme: themeHarmonyLight, file: "renders/door-pin-light.dot" }
-    , { theme: themeHarmonyDark, file: "renders/door-pin-dark.dot" }
-    ]
-    \opts -> do
-      FS.writeTextFile UTF8 opts.file
-        ( TransitGraphviz.generate transit _
-            { title = Just "Door with Pin"
-            , theme = opts.theme
-            , entryPoints = [ "DoorOpen" ]
-            }
-        )
+  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (GraphvizGraph.toDotStr graph)
 
+generateStateDiagramDark :: Effect Unit
+generateStateDiagramDark = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate doorPinTransit _
+      { theme = themeHarmonyDark
+      , entryPoints = [ "DoorOpen" ]
+      }
+
+  FS.writeTextFile UTF8 "renders/door-pin-dark.dot" (GraphvizGraph.toDotStr graph)
+
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate_ transit
+    table = TransitTable.generate_ doorPinTransit
 
-  FS.writeTextFile UTF8 "renders/door-pin.md"
-    (Table.toMarkdown table)
+  FS.writeTextFile UTF8 "renders/door-pin.md" (Table.toMarkdown table)
+
+main :: Effect Unit
+main = do
+  generateStateDiagramLight
+  generateStateDiagramDark
+  generateTransitionTable

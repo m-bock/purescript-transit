@@ -33,13 +33,20 @@ wrapNl: true
 -->
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
-| LandA | **⟵** | Cross_a | **⟶** | LandB |
-| LandA | **⟵** | Cross_b | **⟶** | LandB |
-| LandA | **⟵** | Cross_c | **⟶** | LandC |
-| LandA | **⟵** | Cross_d | **⟶** | LandC |
-| LandA | **⟵** | Cross_e | **⟶** | LandD |
-| LandB | **⟵** | Cross_f | **⟶** | LandD |
-| LandC | **⟵** | Cross_g | **⟶** | LandD |
+| LandA | **⟶** | Cross_a | **⟶** | LandB |
+| LandB | **⟶** | Cross_a | **⟶** | LandA |
+| LandA | **⟶** | Cross_b | **⟶** | LandB |
+| LandB | **⟶** | Cross_b | **⟶** | LandA |
+| LandA | **⟶** | Cross_c | **⟶** | LandC |
+| LandC | **⟶** | Cross_c | **⟶** | LandA |
+| LandA | **⟶** | Cross_d | **⟶** | LandC |
+| LandC | **⟶** | Cross_d | **⟶** | LandA |
+| LandA | **⟶** | Cross_e | **⟶** | LandD |
+| LandD | **⟶** | Cross_e | **⟶** | LandA |
+| LandB | **⟶** | Cross_f | **⟶** | LandD |
+| LandD | **⟶** | Cross_f | **⟶** | LandB |
+| LandC | **⟶** | Cross_g | **⟶** | LandD |
+| LandD | **⟶** | Cross_g | **⟶** | LandC |
 
 <!-- PD_END -->
 
@@ -78,7 +85,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L24-L39">test/Examples/BridgesKoenigsberg.purs L24-L39</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L26-L41">test/Examples/BridgesKoenigsberg.purs L26-L41</a>
   </sup>
 </p>
 
@@ -107,7 +114,7 @@ type BridgesKoenigsbergTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L41-L49">test/Examples/BridgesKoenigsberg.purs L41-L49</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L43-L51">test/Examples/BridgesKoenigsberg.purs L43-L51</a>
   </sup>
 </p>
 
@@ -140,7 +147,7 @@ update = mkUpdate @BridgesKoenigsbergTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L51-L72">test/Examples/BridgesKoenigsberg.purs L51-L72</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L53-L74">test/Examples/BridgesKoenigsberg.purs L53-L74</a>
   </sup>
 </p>
 
@@ -176,7 +183,62 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L81-L94">test/Examples/BridgesKoenigsberg.purs L81-L94</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L83-L96">test/Examples/BridgesKoenigsberg.purs L83-L96</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+## Generating Documentation
+
+To generate a state diagram we'll use the following function:
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - generateStateDiagramLight
+-->
+
+```purescript
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+      { theme = themeHarmonyLight
+      , useUndirectedEdges = true
+      }
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (GraphvizGraph.toDotStr graph)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L131-L139">test/Examples/BridgesKoenigsberg.purs L131-L139</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - generateTransitionTable
+-->
+
+```purescript
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
+  let
+    table :: Table
+    table = TransitTable.generate_ bridgesKoenigsbergTransit
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L151-L156">test/Examples/BridgesKoenigsberg.purs L151-L156</a>
   </sup>
 </p>
 
@@ -252,27 +314,6 @@ The key steps are:
 1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesKoenigsbergTransit)` converts the type-level DSL to a term-level representation
 2. **Convert to a graph**: `mkStateGraph transit` transforms the **Transit** specification into a `StateGraph` — a general-purpose graph data structure
 3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
-
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - assert2
--->
-
-```purescript
-assert2 :: Aff Unit
-assert2 = do
-  hasEulerTrail graph `shouldEqual` false
-```
-
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L99-L101">test/Examples/BridgesKoenigsberg.purs L99-L101</a>
-  </sup>
-</p>
-
-<!-- PD_END -->
 
 This confirms Euler's original conclusion: it's impossible to walk through Königsberg crossing each bridge exactly once.
 

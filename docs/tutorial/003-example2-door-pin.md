@@ -278,7 +278,48 @@ assert1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L79-L100">test/Examples/DoorPin.purs L79-L100</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L82-L103">test/Examples/DoorPin.purs L82-L103</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+## Generating Documentation
+
+To generate a state diagram we'll use the following function:
+
+<!-- PD_START:purs
+filePath: test/Examples/DoorPin.purs
+pick:
+  - generateStateDiagramLight
+  - generateTransitionTable
+-->
+
+```purescript
+generateStateDiagramLight :: Effect Unit
+generateStateDiagramLight = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate doorPinTransit _
+      { theme = themeHarmonyLight
+      , entryPoints = [ "DoorOpen" ]
+      }
+
+  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (GraphvizGraph.toDotStr graph)
+
+generateTransitionTable :: Effect Unit
+generateTransitionTable = do
+  let
+    table :: Table
+    table = TransitTable.generate_ doorPinTransit
+
+  FS.writeTextFile UTF8 "renders/door-pin.md" (Table.toMarkdown table)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L113-L141">test/Examples/DoorPin.purs L113-L141</a>
   </sup>
 </p>
 

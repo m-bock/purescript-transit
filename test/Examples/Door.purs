@@ -13,7 +13,9 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
-import Transit.Data.Table (Table(..))
+import Transit.Data.DotLang (GraphvizGraph)
+import Transit.Data.DotLang as GraphvizGraph
+import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
@@ -90,22 +92,22 @@ spec = do
 generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight =
   let
-    graph :: String
+    graph :: GraphvizGraph
     graph = TransitGraphviz.generate doorTransit _
       { theme = themeHarmonyLight
       }
   in
-    FS.writeTextFile UTF8 "renders/door-light.dot" graph
+    FS.writeTextFile UTF8 "renders/door-light.dot" (GraphvizGraph.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
   let
-    graph :: String
+    graph :: GraphvizGraph
     graph = TransitGraphviz.generate doorTransit _
       { theme = themeHarmonyDark
       }
   in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" graph
+    FS.writeTextFile UTF8 "renders/door-dark.dot" (GraphvizGraph.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do

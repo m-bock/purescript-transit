@@ -171,10 +171,12 @@ pick:
 main :: Effect Unit
 main = do
   let
-    graph :: String
+    graph :: GraphvizGraph
     graph = TransitGraphviz.generate_ countDownTransit
 
-  FS.writeTextFile UTF8 "renders/count-down.dot" graph
+  FS.writeTextFile UTF8
+    "renders/count-down.dot"
+    (GraphvizGraph.toDotStr graph)
 ```
 
 <!-- PD_END -->

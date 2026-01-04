@@ -11,8 +11,9 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec)
 import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
-import Transit.Render.Theme (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
+import Transit.Data.DotLang as GraphvizGraph
 import Transit.Render.Graphviz as TransitGraphviz
+import Transit.Render.Theme (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
 import Type.Prelude (Proxy(..))
 
 type State = Variant
@@ -86,7 +87,7 @@ main = do
     ]
     \opts -> do
       FS.writeTextFile UTF8 opts.file
-        ( TransitGraphviz.generate transit _
+        ( GraphvizGraph.toDotStr $ TransitGraphviz.generate transit _
             { title = Just opts.title
             , globalAttrsRaw = Just globalAttrs
             , theme = opts.theme

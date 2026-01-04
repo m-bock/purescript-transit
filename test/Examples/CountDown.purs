@@ -11,6 +11,8 @@ import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, match, mkUpdate, return)
+import Transit.Data.DotLang (GraphvizGraph)
+import Transit.Data.DotLang as GraphvizGraph
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.VariantUtils (v)
 import Type.Proxy (Proxy(..))
@@ -83,7 +85,9 @@ countDownTransit = reflectType (Proxy @CountDownTransit)
 main :: Effect Unit
 main = do
   let
-    graph :: String
+    graph :: GraphvizGraph
     graph = TransitGraphviz.generate_ countDownTransit
 
-  FS.writeTextFile UTF8 "renders/count-down.dot" graph
+  FS.writeTextFile UTF8
+    "renders/count-down.dot"
+    (GraphvizGraph.toDotStr graph)
