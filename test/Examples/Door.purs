@@ -88,6 +88,7 @@ spec = do
 generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight =
   let
+    graph :: String
     graph = TransitGraphviz.generate doorTransit _
       { theme = themeHarmonyLight
       }

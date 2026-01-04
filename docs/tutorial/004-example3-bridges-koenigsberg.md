@@ -31,7 +31,6 @@ The same is true for the transition table. Instead of two rows for each bridge, 
 filePath: renders/bridges-koenigsberg.md
 wrapNl: true
 -->
-
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
 | LandA | **⟵** | Cross_a | **⟶** | LandB |
@@ -182,3 +181,103 @@ assert1 =
 </p>
 
 <!-- PD_END -->
+
+## Graph Analysis
+
+The real power of **Transit** becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the **Transit** specification into a `StateGraph` — a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
+
+Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
+
+Euler's theorem[^euler-theorem] states that:
+
+- An undirected graph has an Eulerian trail if and only if it is connected and has exactly zero or two vertices of odd degree
+
+We can check these conditions using helper functions from the `Examples.Common` module:
+
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - nodeDegree
+-->
+
+```purescript
+nodeDegree :: StateGraph -> StateNode -> Int
+nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L21-L22">test/Examples/Common.purs L21-L22</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+<!-- PD_START:purs
+filePath: test/Examples/Common.purs
+pick:
+  - hasEulerTrail
+-->
+
+```purescript
+hasEulerTrail :: StateGraph -> Boolean
+hasEulerTrail graph =
+  let
+    nodes :: Array StateNode
+    nodes = fromFoldable (Graph.getNodes graph)
+
+    countEdgesByNode :: Array Int
+    countEdgesByNode = map (nodeDegree graph) nodes
+
+    sumOddEdges :: Int
+    sumOddEdges = Array.length (Array.filter Int.odd countEdgesByNode)
+  in
+    sumOddEdges == 2 || sumOddEdges == 0
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L24-L36">test/Examples/Common.purs L24-L36</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+To perform the analysis, we convert the reflected **Transit** specification into a graph and then check its properties:
+
+The key steps are:
+
+1. **Reflect the type-level specification**: `reflectType (Proxy @BridgesKoenigsbergTransit)` converts the type-level DSL to a term-level representation
+2. **Convert to a graph**: `mkStateGraph transit` transforms the **Transit** specification into a `StateGraph` — a general-purpose graph data structure
+3. **Perform analysis**: Use graph analysis functions like `hasEulerCircle` and `hasEulerTrail` to check properties
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - assert2
+-->
+
+```purescript
+assert2 :: Aff Unit
+assert2 = do
+  hasEulerTrail graph `shouldEqual` false
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L99">test/Examples/BridgesKoenigsberg.purs L97-L99</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+This confirms Euler's original conclusion: it's impossible to walk through Königsberg crossing each bridge exactly once.
+
+## Conclusion
+
+This example demonstrates that **Transit**'s value extends far beyond state machine documentation. By reflecting the type-level specification to a term-level graph data structure, you gain access to a rich ecosystem of third-party graph algorithms and analysis tools.
+
+In the next example, we'll see a graph that **does** have an Eulerian trail.
