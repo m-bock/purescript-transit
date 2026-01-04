@@ -1,19 +1,34 @@
 # Benchmarks
 
-## Circle State Machine as Benchmark
+For the benchmarks state machines of different sizes have been generated.
 
-### Circle State Machine of Size 10
+For instance, a state machine of size 10 has 10 states and 10 transitions connecting the states in a circle.
 
-<img src="../renders/circle.svg" width="300" />
+In each benchmark the approach of the **Transit** library has been compared to classic approaches implementing the same state machine.
 
-### Benchmark Results
+**Circle State Machine of Size=10**
 
+<img src="../renders/circle.svg" width="400" />
+
+## Runtime Benchmarks
+
+For the runtime benchmarks it was measured how long it takes to perform a full round trip through the state machine. Both, the standard JS compiler backend and the optimized [ES backend](https://github.com/aristanetworks/purescript-backend-optimizer) has been tested.
+
+### Standard JS Backend
+
+We can clearly see that the **Transit** approach pefroms faster than the classic approach. More importantly, the performance of the **Transit** approach has linear growth with the size of the state machine.
 <img src="../bench/backend-JS/Update-Functions.svg" />
 
-### Benchmark Results
+### Optimized ES Backend
+
+The optimized ES backend shows similar characteristics as the standard JS backend. However, both the **Transit** approach and the classic approach are roughly 2 times faster than with the standard JS backend.
 
 <img src="../bench/backend-ES/Update-Functions.svg" />
 
-### Benchmark Results
+## Compile Time Benchmarks
+
+Since the **Transit** library leverage a lot of compile time code also compilation times have been measured. The diagrams shows how long it takes to compile a PureScript module containing the whole implementation of a state machine of a given size.
+
+The interpretation of the results is less clear here. However it is evident that up to fairly large state machines (size=200) compilation times of the **Transit** approach are much faster than with the classic approach.
 
 <img src="../bench/compile-time/results.svg" />
