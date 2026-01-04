@@ -17,6 +17,7 @@ For the runtime benchmarks it was measured how long it takes to perform a full r
 ### Standard JS Backend
 
 We can clearly see that the **Transit** approach pefroms faster than the classic approach. More importantly, the performance of the **Transit** approach has linear growth with the size of the state machine.
+
 <img src="../bench/backend-JS/Update-Functions.svg" />
 
 ### Optimized ES Backend
