@@ -5,10 +5,11 @@ node-run MODULE:
     node -e "import { main } from './output/{{MODULE}}/index.js'; main();"
 
 gen-patchdown:
-    PATCHDOWN_FILE_PATH=docs/tutorial.md \
-    PATCHDOWN_BASE_URL=https://github.com/m-bock/purescript-transit/blob/main \
-    just node-run Md.Main \
-    
+    for file in docs/tutorial/*.md; do \
+        PATCHDOWN_FILE_PATH="$file" \
+        PATCHDOWN_BASE_URL=https://github.com/m-bock/purescript-transit/blob/main \
+        just node-run Md.Main; \
+    done && \
     PATCHDOWN_FILE_PATH=README.md \
     just node-run Md.Main
 
@@ -24,7 +25,7 @@ gen-doctoc:
 
 gen-book BASEURL='':
     rm -rf site
-    pandoc docs/tutorial.md -t chunkedhtml \
+    pandoc docs/tutorial/*.md -t chunkedhtml \
       --split-level=2 \
       --toc --toc-depth=2 \
       -o site \

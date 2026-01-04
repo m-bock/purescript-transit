@@ -2,16 +2,12 @@ module Examples.BridgesKoenigsberg (main, spec) where
 
 import Prelude
 
-import Data.Array (foldM)
-import Data.Array as Array
-import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Examples.Classic.BridgesKoenigsberg as Classic
-import Examples.Common (assertWalk, hasEulerTrail, permutations, (~>))
+import Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
@@ -100,12 +96,6 @@ graph = mkStateGraph bridgesKoenigsbergTransit
 assert2 :: Aff Unit
 assert2 = do
   hasEulerTrail graph `shouldEqual` false
-
-x :: Array (Maybe Classic.State)
-x = do
-  init <- [ Classic.LandA, Classic.LandB, Classic.LandC, Classic.LandD ]
-  walk <- Array.fromFoldable $ permutations [ Classic.Cross_a, Classic.Cross_b, Classic.Cross_c, Classic.Cross_d, Classic.Cross_e, Classic.Cross_f, Classic.Cross_g ]
-  pure $ foldM Classic.update init walk
 
 -- assert4 :: Aff Unit
 -- assert4 = do
