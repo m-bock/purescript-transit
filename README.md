@@ -33,8 +33,10 @@ A library for building type-safe state machines.
 
 ## Documentation
 
-- [API Reference](https://pursuit.purescript.org/packages/purescript-transit/docs/Transit)
-- [Tutorial](https://m-bock.github.io/purescript-transit)
+- [API Reference](https://pursuit.purescript.org/packages/purescript-transit/docs/Transit) on Pursuit.
+- The [Tutorial](https://m-bock.github.io/purescript-transit) provides a guided introduction to the library, including motivation, context, and comparison to classic approaches.
+- The [examples](test/Examples) folder demonstrates various use cases.
+- [Benchmark results](bench) show performance characteristics compared to classic approaches.
 
 ## Installation
 
