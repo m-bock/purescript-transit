@@ -10,6 +10,7 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return, TransitCore)
 import Transit.Data.DotLang as Graphviz
+import Transit.Render.Graphviz (Layout(..))
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeGradientDark)
 import Transit.VariantUtils (v)
@@ -78,6 +79,6 @@ main = do
   FS.writeTextFile UTF8 "renders/circle.dot"
     ( Graphviz.toDotStr $ TransitGraphviz.generate circleTransit _
         { theme = themeGradientDark
-        , globalAttrsRaw = Just "layout=circo;"
+        , layout = Circle
         }
     )

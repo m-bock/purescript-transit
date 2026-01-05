@@ -172,7 +172,7 @@ main :: Effect Unit
 main = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate_ countDownTransit
+    graph = TransitGraphviz.generate countDownTransit identity
 
   FS.writeTextFile UTF8
     "renders/count-down.dot"

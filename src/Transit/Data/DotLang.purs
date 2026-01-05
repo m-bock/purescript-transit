@@ -31,9 +31,13 @@ module Transit.Data.DotLang
   , labelHtmlItalic
   , labelLocC
   , labelLocT
+  , layoutCirco
+  , layoutDot
+  , layoutNeato
   , margin
   , pad
   , penWidth
+  , pos
   , rankDirLR
   , rankDirTD
   , shapeBox
@@ -88,6 +92,7 @@ data Value
   | ValueInt Int
   | ValueNumber Number
   | ValueBoolean Boolean
+  | ValuePosition { x :: Number, y :: Number, exact :: Boolean }
   | HtmlLabel String
 
 instance ToDotStr GraphvizGraph where
@@ -132,6 +137,7 @@ instance ToDotStr Value where
   toDotStr (ValueNumber number) = show number
   toDotStr (ValueBoolean boolean) = show boolean
   toDotStr (HtmlLabel html) = "<" <> html <> ">"
+  toDotStr (ValuePosition { x, y, exact }) = "\"" <> show x <> "," <> show y <> (if exact then "!" else "") <> "\""
 
 --------------------------------------------------------------------------------
 -- Helper functions for common attributes
@@ -223,3 +229,18 @@ margin size = Attr "margin" (ValueNumber size)
 
 pad :: Number -> Attr
 pad size = Attr "pad" (ValueNumber size)
+
+pos :: Number -> Number -> Boolean -> Attr
+pos x y exact = Attr "pos" (ValuePosition { x, y, exact })
+
+layout :: String -> Attr
+layout v = Attr "layout" (Value v)
+
+layoutNeato :: Attr
+layoutNeato = layout "neato"
+
+layoutDot :: Attr
+layoutDot = layout "dot"
+
+layoutCirco :: Attr
+layoutCirco = layout "circo"

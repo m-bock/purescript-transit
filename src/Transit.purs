@@ -4,14 +4,17 @@
 -- | functions from type-level specifications.
 -- | ```
 module Transit
-  ( class Return
+  ( class MkAutoHandlers
+  , class Return
   , class ReturnVia
   , match
   , matchM
   , mkUpdate
+  , mkUpdateAuto
+  , mkAutoHandlers
+  , mkUpdateM
   , mkUpdateMaybe
   , mkUpdateMaybeM
-  , mkUpdateM
   , module ExportCore
   , module ExportDSL
   , module ExportStateGraph
@@ -24,6 +27,7 @@ import Prelude
 import Data.Identity (Identity(..))
 import Data.Maybe (Maybe)
 import Data.Symbol (class IsSymbol)
+import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
@@ -38,6 +42,8 @@ import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTra
 import Transit.Data.MaybeChurch (MaybeChurch, fromMaybeChurch)
 import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
 import Type.Prelude (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
+import Prim.RowList as RL
 
 --------------------------------------------------------------------------------
 --- Update Function Builders
@@ -121,9 +127,9 @@ mkUpdateM = curryN @args f
 -- | ```
 mkUpdate
   :: forall @spec tcore msg state args a
-   . (IsTransitSpec spec tcore)
-  => (CurryN args (Variant state -> Variant msg -> Variant state) a)
-  => (U.MkUpdate tcore Identity MaybeChurch args (Variant msg) (Variant state))
+   . IsTransitSpec spec tcore
+  => CurryN args (Variant state -> Variant msg -> Variant state) a
+  => U.MkUpdate tcore Identity MaybeChurch args (Variant msg) (Variant state)
   => a
 mkUpdate = curryN @args f
   where
@@ -133,6 +139,41 @@ mkUpdate = curryN @args f
       f' = U.mkUpdateCore @tcore impl
     in
       \state msg -> fromMaybeChurch state $ Safe.coerce (f' state msg :: Identity (MaybeChurch _))
+
+mkUpdateAuto
+  :: forall @spec tcore msg state args
+   . IsTransitSpec spec tcore
+  => U.MkUpdate tcore Identity MaybeChurch args (Variant msg) (Variant state)
+  => MkAutoHandlers args
+  => Variant state
+  -> Variant msg
+  -> Variant state
+mkUpdateAuto =
+  let
+    f' = U.mkUpdateCore @tcore mkAutoHandlers
+  in
+    \state msg -> fromMaybeChurch state $ Safe.coerce (f' state msg :: Identity (MaybeChurch _))
+
+class MkAutoHandlers args where
+  mkAutoHandlers :: args
+
+instance mkAutoHandlersNil :: MkAutoHandlers Unit where
+  mkAutoHandlers = unit
+
+instance mkAutoHandlersCons ::
+  ( MkAutoHandlers rest2
+  , Row.Cons symStateOut (Ret {}) () rowStateOut
+  , RL.RowToList rowStateOut (RL.Cons symStateOut (Ret {}) RL.Nil)
+  , IsSymbol symStateOut
+  ) =>
+  MkAutoHandlers (MatchImpl symStateIn symMsg stateIn msgIn Identity (Variant rowStateOut) /\ rest2) where
+  mkAutoHandlers = head /\ tail
+    where
+
+    head = MatchImpl (\_ _ -> Identity (V.inj (Proxy @symStateOut) (Ret {})))
+
+    tail :: rest2
+    tail = mkAutoHandlers @rest2
 
 --------------------------------------------------------------------------------
 --- Match Handlers

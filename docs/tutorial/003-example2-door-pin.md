@@ -314,7 +314,7 @@ generateStateDiagramLight = do
     graph = TransitGraphviz.generate doorPinTransit _
       { theme = themeHarmonyLight
       , entryPoints = [ "DoorOpen" ]
-      , orientation = Landscape
+      , layout = Landscape
       }
 
   FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)

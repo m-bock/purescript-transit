@@ -21,7 +21,7 @@ import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
-import Transit.Render.Graphviz (Orientation(..))
+import Transit.Render.Graphviz (Layout(..))
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -107,7 +107,7 @@ generateStateDiagramLight = do
     graph = TransitGraphviz.generate doorPinTransit _
       { theme = themeHarmonyLight
       , entryPoints = [ "DoorOpen" ]
-      , orientation = Landscape
+      , layout = Landscape
       }
 
   FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)
@@ -119,7 +119,7 @@ generateStateDiagramDark = do
     graph = TransitGraphviz.generate doorPinTransit _
       { theme = themeHarmonyDark
       , entryPoints = [ "DoorOpen" ]
-      , orientation = Landscape
+      , layout = Landscape
       }
 
   FS.writeTextFile UTF8 "renders/door-pin-dark.dot" (Graphviz.toDotStr graph)

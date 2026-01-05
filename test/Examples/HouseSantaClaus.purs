@@ -12,7 +12,7 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkStateGraph, mkUpdate, return)
+import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkStateGraph, mkUpdate, mkUpdateAuto, return)
 import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
@@ -28,61 +28,38 @@ import Type.Prelude (Proxy(..))
 --------------------------------------------------------------------------------
 
 type State = Variant
-  ( "N_1" :: {}
-  , "N_2" :: {}
-  , "N_3" :: {}
-  , "N_4" :: {}
-  , "N_5" :: {}
+  ( "1" :: {}
+  , "2" :: {}
+  , "3" :: {}
+  , "4" :: {}
+  , "5" :: {}
   )
 
 type Msg = Variant
-  ( "E_a" :: {}
-  , "E_b" :: {}
-  , "E_c" :: {}
-  , "E_d" :: {}
-  , "E_e" :: {}
-  , "E_f" :: {}
-  , "E_g" :: {}
-  , "E_h" :: {}
+  ( "a" :: {}
+  , "b" :: {}
+  , "c" :: {}
+  , "d" :: {}
+  , "e" :: {}
+  , "f" :: {}
+  , "g" :: {}
+  , "h" :: {}
   )
 
 type HouseSantaClausTransit =
   Transit
-    :* ("N_1" |< "E_a" >| "N_2")
-    :* ("N_2" |< "E_b" >| "N_3")
-    :* ("N_3" |< "E_c" >| "N_5")
-    :* ("N_5" |< "E_d" >| "N_4")
-    :* ("N_4" |< "E_e" >| "N_1")
-    :* ("N_1" |< "E_f" >| "N_3")
-    :* ("N_2" |< "E_g" >| "N_4")
-    :* ("N_3" |< "E_h" >| "N_4")
+    :* ("1" |< "a" >| "2")
+    :* ("2" |< "b" >| "3")
+    :* ("3" |< "c" >| "5")
+    :* ("5" |< "d" >| "4")
+    :* ("4" |< "e" >| "1")
+    :* ("1" |< "f" >| "3")
+    :* ("2" |< "g" >| "4")
+    :* ("3" |< "h" >| "4")
 
 update :: State -> Msg -> State
 update =
-  mkUpdate @HouseSantaClausTransit
-    (match @"N_1" @"E_a" \_ _ -> return @"N_2")
-    (match @"N_2" @"E_a" \_ _ -> return @"N_1")
-
-    (match @"N_2" @"E_b" \_ _ -> return @"N_3")
-    (match @"N_3" @"E_b" \_ _ -> return @"N_2")
-
-    (match @"N_3" @"E_c" \_ _ -> return @"N_5")
-    (match @"N_5" @"E_c" \_ _ -> return @"N_3")
-
-    (match @"N_5" @"E_d" \_ _ -> return @"N_4")
-    (match @"N_4" @"E_d" \_ _ -> return @"N_5")
-
-    (match @"N_4" @"E_e" \_ _ -> return @"N_1")
-    (match @"N_1" @"E_e" \_ _ -> return @"N_4")
-
-    (match @"N_1" @"E_f" \_ _ -> return @"N_3")
-    (match @"N_3" @"E_f" \_ _ -> return @"N_1")
-
-    (match @"N_2" @"E_g" \_ _ -> return @"N_4")
-    (match @"N_4" @"E_g" \_ _ -> return @"N_2")
-
-    (match @"N_3" @"E_h" \_ _ -> return @"N_4")
-    (match @"N_4" @"E_h" \_ _ -> return @"N_3")
+  mkUpdateAuto @HouseSantaClausTransit
 
 houseSantaClausTransit :: TransitCore
 houseSantaClausTransit = reflectType (Proxy @HouseSantaClausTransit)
@@ -94,15 +71,15 @@ houseSantaClausTransit = reflectType (Proxy @HouseSantaClausTransit)
 assert1 :: Aff Unit
 assert1 =
   assertWalk update
-    (v @"N_1")
-    [ v @"E_f" ~> v @"N_3"
-    , v @"E_h" ~> v @"N_4"
-    , v @"E_g" ~> v @"N_2"
-    , v @"E_a" ~> v @"N_1"
-    , v @"E_e" ~> v @"N_4"
-    , v @"E_d" ~> v @"N_5"
-    , v @"E_c" ~> v @"N_3"
-    , v @"E_b" ~> v @"N_2"
+    (v @"1")
+    [ v @"f" ~> v @"3"
+    , v @"h" ~> v @"4"
+    , v @"g" ~> v @"2"
+    , v @"a" ~> v @"1"
+    , v @"e" ~> v @"4"
+    , v @"d" ~> v @"5"
+    , v @"c" ~> v @"3"
+    , v @"b" ~> v @"2"
     ]
 
 assert2 :: Aff Unit
@@ -129,15 +106,14 @@ generateStateDiagramLight = do
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate houseSantaClausTransit _
       { useUndirectedEdges = true
-      , nodeAttrsRaw = Just \node -> case node of
-          "N_1" -> "pos=\"0,0!\""
-          "N_2" -> "pos=\"2,0!\""
-          "N_3" -> "pos=\"2,2!\""
-          "N_4" -> "pos=\"0,2!\""
-          "N_5" -> "pos=\"1,3!\""
-          _ -> ""
-      , globalAttrsRaw = Just "layout=neato"
       , theme = themeHarmonyLight
+      , layout = TransitGraphviz.Manual
+          [ { node: "1", x: 0.0, y: 0.0, exact: true }
+          , { node: "2", x: 2.0, y: 0.0, exact: true }
+          , { node: "3", x: 2.0, y: 2.0, exact: true }
+          , { node: "4", x: 0.0, y: 2.0, exact: true }
+          , { node: "5", x: 1.0, y: 3.0, exact: true }
+          ]
       }
 
   FS.writeTextFile UTF8
@@ -150,15 +126,15 @@ generateStateDiagramDark = do
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate houseSantaClausTransit _
       { useUndirectedEdges = true
-      , nodeAttrsRaw = Just \node -> case node of
-          "N_1" -> "pos=\"0,0!\""
-          "N_2" -> "pos=\"2,0!\""
-          "N_3" -> "pos=\"2,2!\""
-          "N_4" -> "pos=\"0,2!\""
-          "N_5" -> "pos=\"1,3!\""
-          _ -> ""
       , globalAttrsRaw = Just "layout=neato"
       , theme = themeHarmonyDark
+      , layout = TransitGraphviz.Manual
+          [ { node: "1", x: 0.0, y: 0.0, exact: true }
+          , { node: "2", x: 2.0, y: 0.0, exact: true }
+          , { node: "3", x: 2.0, y: 2.0, exact: true }
+          , { node: "4", x: 0.0, y: 2.0, exact: true }
+          , { node: "5", x: 1.0, y: 3.0, exact: true }
+          ]
       }
 
   FS.writeTextFile UTF8

@@ -1,4 +1,7 @@
 gen-examples:
+    rm -rf renders
+    mkdir -p renders
+    mkdir -p renders/themes
     just node-run Docs.Main
 
 node-run MODULE:
@@ -69,9 +72,12 @@ format:
     npx purs-tidy format-in-place 'src/**/*.purs'
     npx purs-tidy format-in-place 'test/**/*.purs'
 
-gen-bench-modules:
+clean-bench-modules:
     rm -rf test/Bench/Generated
     rm -rf output/Bench.Generated.*
+
+gen-bench-modules:
+    just clean-bench-modules && \
     node scripts/generate-bench-modules.js \
       --min 20 --max 200 --step 20 \
       --target-folder test/Bench/Generated --base-namespace Bench.Generated \

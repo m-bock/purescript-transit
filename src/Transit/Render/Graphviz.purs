@@ -4,12 +4,13 @@
 -- | for visualization, supporting various rendering options including
 -- | decision nodes, undirected edges, and customizable themes.
 module Transit.Render.Graphviz
-  ( mkGraphvizGraph
-  , generate
-  , generate_
+  ( NodePosition
   , Options
+  , Layout(..)
   , defaultOptions
-  , Orientation(..)
+  , generate
+  , generateEither
+  , mkGraphvizGraph
   ) where
 
 import Prelude
@@ -17,7 +18,9 @@ import Prelude
 import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
-import Data.Maybe (Maybe(..))
+import Data.Either (Either(..))
+import Data.Foldable (for_)
+import Data.Maybe (Maybe(..), maybe)
 import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..))
 import Transit.Data.DotLang as D
@@ -110,35 +113,47 @@ mkDecisionEdges decisionNode colors = case _ of
 -- | Creates global graph attributes.
 mkGlobalAttrs :: Options -> Array D.Attr
 mkGlobalAttrs options =
-  catMaybes
-    [ pure D.rankDirTD
-    , pure D.fontNameArial
-    , map D.labelHtmlBold options.title
-    , pure D.labelLocT
-    , pure $ D.fontSize 12
-    , pure $ D.bgColor options.theme.bgColor
-    , pure $ D.color options.theme.titleColor
-    , pure $ D.fontColor options.theme.titleColor
-    , pure $ D.pad 0.2
-    , case options.orientation of
-        Landscape -> pure D.rankDirLR
-        Portrait -> pure D.rankDirTD
+  join
+    [ [ D.rankDirTD
+      , D.fontNameArial
+      , D.labelLocT
+      , D.fontSize 12
+      , D.bgColor options.theme.bgColor
+      , D.color options.theme.titleColor
+      , D.fontColor options.theme.titleColor
+      , D.pad 0.2
+      ]
+    , maybe [] (pure <<< D.labelHtmlBold) options.title
+    , case options.layout of
+        Landscape -> [ D.layoutDot, D.rankDirLR ]
+        Portrait -> [ D.layoutDot, D.rankDirTD ]
+        Circle -> [ D.layoutCirco ]
+        Manual _ -> [ D.layoutNeato ]
+        None -> []
     ]
 
 -- | Creates a state node with styling.
 mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
 mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
-  [ D.shapeBox
-  , D.labelHtmlBold node
-  , D.fontSize 12
-  , D.styleFilled
-  , D.fillColor colors.nodeBg
-  , D.fontColor colors.nodeFont
-  , D.color colors.nodeBorder
-  , D.fontNameArial
-  , D.labelLocC
-  , D.penWidth 1.0
-  ]
+  $ join
+      [ [ D.shapeBox
+        , D.labelHtmlBold node
+        , D.fontSize 12
+        , D.styleFilled
+        , D.fillColor colors.nodeBg
+        , D.fontColor colors.nodeFont
+        , D.color colors.nodeBorder
+        , D.fontNameArial
+        , D.labelLocC
+        , D.penWidth 1.0
+        ]
+      , case options.layout of
+          Manual positions ->
+            case positions # Array.find (\position -> position.node == node) of
+              Just position -> [ D.pos position.x position.y position.exact ]
+              Nothing -> []
+          _ -> []
+      ]
 
 -- | Creates an initialization node (entry point marker).
 mkInitNode :: String -> D.Node
@@ -221,10 +236,22 @@ type Options =
   , useDecisionNodes :: Boolean
   , useUndirectedEdges :: Boolean
   , entryPoints :: Array StateName
-  , orientation :: Orientation
+  , layout :: Layout
   }
 
-data Orientation = Landscape | Portrait
+type NodePosition =
+  { node :: String
+  , x :: Number
+  , y :: Number
+  , exact :: Boolean
+  }
+
+data Layout
+  = Landscape
+  | Portrait
+  | Manual (Array NodePosition)
+  | Circle
+  | None
 
 -- | Default options for graph generation.
 defaultOptions :: Options
@@ -236,15 +263,39 @@ defaultOptions =
   , useDecisionNodes: true
   , useUndirectedEdges: false
   , entryPoints: []
-  , orientation: Portrait
+  , layout: Portrait
   }
 
--- | Generates a Graphviz graph as a string with customizable options.
+checkEntryPoints :: Array StateName -> TransitCore -> Either String Unit
+checkEntryPoints entryPoints transitCore = do
+  for_ entryPoints \entryPoint -> do
+    if entryPoint `Array.elem` getStateNames transitCore then
+      pure unit
+    else
+      Left $ "Entry point " <> entryPoint <> " not found in transit core"
+
+checkPositions :: Array NodePosition -> TransitCore -> Either String Unit
+checkPositions positions transitCore = do
+  for_ positions \position -> do
+    if position.node `Array.elem` getStateNames transitCore then
+      pure unit
+    else
+      Left $ "Node " <> position.node <> " not found in transit core"
+
+checkOptions :: Options -> TransitCore -> Either String Unit
+checkOptions options transitCore = do
+  case options.layout of
+    Manual positions -> checkPositions positions transitCore
+    _ -> pure unit
+  checkEntryPoints options.entryPoints transitCore
+
+-- | Generates a Graphviz graph with customizable options. Fails if the options are invalid.
+generateEither :: TransitCore -> (Options -> Options) -> Either String GraphvizGraph
+generateEither transitCore mkOptions = do
+  checkOptions (mkOptions defaultOptions) transitCore
+  pure $ mkGraphvizGraph (mkOptions defaultOptions) transitCore
+
+-- | Generates a Graphviz graph with customizable options.
 generate :: TransitCore -> (Options -> Options) -> GraphvizGraph
 generate transitCore mkOptions =
   mkGraphvizGraph (mkOptions defaultOptions) transitCore
-
--- | Generates a Graphviz graph as a string with default options.
-generate_ :: TransitCore -> GraphvizGraph
-generate_ transitCore = generate transitCore identity
-
