@@ -435,6 +435,8 @@
     <article class="markdown-body">
        <h2 data-number="3.3" id="the-transit-approach">The Transit
 Approach</h2>
+<h3 data-number="3.3.1" id="state-and-message-types-1">State and Message
+Types</h3>
 <p>Also in the <strong>Transit</strong> approach we define
 <code>State</code> and <code>Msg</code> types:</p>
 <!-- PD_START:purs
@@ -463,6 +465,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 L31-L42</a> </sup>
 </p>
 <!-- PD_END -->
+<h3 data-number="3.3.2" id="transit-specification-1">Transit
+Specification</h3>
 <p>In the DSL specification, we express conditional transitions by
 listing multiple possible target states:</p>
 <!-- PD_START:purs
@@ -495,6 +499,8 @@ indicates that the <code>Unlock</code> message from
 runtime conditions. The <code>:?</code> operator associates a condition
 label (like <code>"PinCorrect"</code>) with a target state, and
 <code>&gt;|</code> chains multiple conditional outcomes together.</p>
+<h3 data-number="3.3.3" id="the-update-function-3">The Update
+Function</h3>
 <p>The update function now has access to both the current state and the
 message data, allowing you to implement the conditional logic:</p>
 <!-- PD_START:purs
@@ -580,6 +586,51 @@ possible errors.</p>
 
         // Check on resize (in case window size changes)
         window.addEventListener("resize", checkScrollable);
+
+        // Keyboard navigation
+        function setupKeyboardNavigation() {
+          document.addEventListener("keydown", function (e) {
+            // Don't interfere with input fields or text areas
+            if (
+              e.target.tagName === "INPUT" ||
+              e.target.tagName === "TEXTAREA" ||
+              e.target.isContentEditable
+            ) {
+              return;
+            }
+
+            // Arrow left: previous page
+            if (e.key === "ArrowLeft") {
+              const prevLink = document.querySelector('a[rel="prev"]');
+              if (prevLink && !prevLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = prevLink.href;
+              }
+            }
+
+            // Arrow right: next page
+            if (e.key === "ArrowRight") {
+              const nextLink = document.querySelector('a[rel="next"]');
+              if (nextLink && !nextLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = nextLink.href;
+              }
+            }
+
+            // Backspace: contents/index
+            if (e.key === "Backspace") {
+              const contentsLink = document.querySelector(
+                'a[href="index.html"]',
+              );
+              if (contentsLink) {
+                e.preventDefault();
+                window.location.href = contentsLink.href;
+              }
+            }
+          });
+        }
+
+        setupKeyboardNavigation();
       })();
     </script>
   </body>

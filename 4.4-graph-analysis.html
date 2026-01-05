@@ -440,6 +440,21 @@ convert the reflected data structure into a general-purpose graph. Using
 specification into a <code>StateGraph</code> — a specialized
 <code>Graph</code> type configured with edge and node labels suitable
 for state machine analysis.</p>
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - bridgesGraph
+-->
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">bridgesGraph ::</span> <span class="dt">StateGraph</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>bridgesGraph <span class="ot">=</span> mkStateGraph bridgesTransit</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs
+L97-L98</a> </sup>
+</p>
+<!-- PD_END -->
 <p>Once we have this graph data structure, we can perform sophisticated
 analysis using standard graph algorithms. For the Seven Bridges problem,
 we want to determine if the graph has an <strong>Eulerian
@@ -457,9 +472,9 @@ filePath: test/Examples/Common.purs
 pick:
   - nodeDegree
 -->
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">nodeDegree ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">StateNode</span> <span class="ot">-&gt;</span> <span class="dt">Int</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>nodeDegree graph node <span class="ot">=</span> Set.size (Graph.getOutgoingEdges node graph)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">nodeDegree ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">StateNode</span> <span class="ot">-&gt;</span> <span class="dt">Int</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>nodeDegree graph node <span class="ot">=</span> Set.size (Graph.getOutgoingEdges node graph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
@@ -470,16 +485,16 @@ L21-L22</a> </sup>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - spec2
+  - specNodeDegree
 -->
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should each node have the expected degree&quot;</span> <span class="kw">do</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;A&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">5</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;B&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;C&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesKoenigsbergGraph <span class="st">&quot;D&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specNodeDegree ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>specNodeDegree <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should each node have the expected degree&quot;</span> <span class="kw">do</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;A&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">5</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;B&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;C&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;D&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
@@ -492,20 +507,20 @@ filePath: test/Examples/Common.purs
 pick:
   - hasEulerTrail
 -->
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">hasEulerTrail ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">Boolean</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>hasEulerTrail graph <span class="ot">=</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    nodes ::</span> <span class="dt">Array</span> <span class="dt">StateNode</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    nodes <span class="ot">=</span> fromFoldable (Graph.getNodes graph)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ot">    countEdgesByNode ::</span> <span class="dt">Array</span> <span class="dt">Int</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    countEdgesByNode <span class="ot">=</span> <span class="fu">map</span> (nodeDegree graph) nodes</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ot">    sumOddEdges ::</span> <span class="dt">Int</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="ot">=</span> Array.length (Array.filter <span class="dt">Int</span><span class="op">.</span><span class="fu">odd</span> countEdgesByNode)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="op">==</span> <span class="dv">2</span> <span class="op">||</span> sumOddEdges <span class="op">==</span> <span class="dv">0</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">hasEulerTrail ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">Boolean</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>hasEulerTrail graph <span class="ot">=</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    nodes ::</span> <span class="dt">Array</span> <span class="dt">StateNode</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    nodes <span class="ot">=</span> fromFoldable (Graph.getNodes graph)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ot">    countEdgesByNode ::</span> <span class="dt">Array</span> <span class="dt">Int</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    countEdgesByNode <span class="ot">=</span> <span class="fu">map</span> (nodeDegree graph) nodes</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ot">    sumOddEdges ::</span> <span class="dt">Int</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="ot">=</span> Array.length (Array.filter <span class="dt">Int</span><span class="op">.</span><span class="fu">odd</span> countEdgesByNode)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="op">==</span> <span class="dv">2</span> <span class="op">||</span> sumOddEdges <span class="op">==</span> <span class="dv">0</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
@@ -516,20 +531,25 @@ L24-L36</a> </sup>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - spec3
+  - specEulerTrail
 -->
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec3 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>spec3 <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should not have an Eulerian trail&quot;</span> <span class="kw">do</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    hasEulerTrail bridgesKoenigsbergGraph <span class="ot">`shouldEqual`</span> false</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specEulerTrail ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>specEulerTrail <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should not have an Eulerian trail&quot;</span> <span class="kw">do</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    hasEulerTrail bridgesGraph <span class="ot">`shouldEqual`</span> false</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs
 L108-L111</a> </sup>
 </p>
-<!-- PD_END --> 
+<!-- PD_END -->
+<p>I we wanted to perform similar analysis with the classic state
+machine approach, we would need to generate all possible 5040 walks and
+empirically check if any of them visit all bridges exactly once. This is
+due to the fact that the specification has of state machine transitions
+is burried inside the update function.</p> 
       <div class="scroll-to-top">
         <a
           href="#"
@@ -561,6 +581,51 @@ L108-L111</a> </sup>
 
         // Check on resize (in case window size changes)
         window.addEventListener("resize", checkScrollable);
+
+        // Keyboard navigation
+        function setupKeyboardNavigation() {
+          document.addEventListener("keydown", function (e) {
+            // Don't interfere with input fields or text areas
+            if (
+              e.target.tagName === "INPUT" ||
+              e.target.tagName === "TEXTAREA" ||
+              e.target.isContentEditable
+            ) {
+              return;
+            }
+
+            // Arrow left: previous page
+            if (e.key === "ArrowLeft") {
+              const prevLink = document.querySelector('a[rel="prev"]');
+              if (prevLink && !prevLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = prevLink.href;
+              }
+            }
+
+            // Arrow right: next page
+            if (e.key === "ArrowRight") {
+              const nextLink = document.querySelector('a[rel="next"]');
+              if (nextLink && !nextLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = nextLink.href;
+              }
+            }
+
+            // Backspace: contents/index
+            if (e.key === "Backspace") {
+              const contentsLink = document.querySelector(
+                'a[href="index.html"]',
+              );
+              if (contentsLink) {
+                e.preventDefault();
+                window.location.href = contentsLink.href;
+              }
+            }
+          });
+        }
+
+        setupKeyboardNavigation();
       })();
     </script>
   </body>

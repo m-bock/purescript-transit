@@ -485,11 +485,11 @@ final state matches what we expect:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - spec1
+  - specWalk1
 -->
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>specWalk1 <span class="ot">=</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and ends in expected final state&quot;</span> <span class="kw">do</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">foldl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
@@ -511,11 +511,11 @@ intermediate states, not just the final one.</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - spec2
+  - specWalk2
 -->
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>spec2 <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>specWalk2 <span class="ot">=</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and visits the expected intermediate states&quot;</span> <span class="kw">do</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scanl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
@@ -576,11 +576,11 @@ states match the expected ones. Here’s how we use it:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - spec3
+  - specWalk3
 -->
 <div class="sourceCode" id="cb6"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec3 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>spec3 <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk3 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>specWalk3 <span class="ot">=</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;follows the walk and visits the expected intermediate states&quot;</span> <span class="kw">do</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    assertWalk update</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>)</span>
@@ -638,6 +638,51 @@ And so on.</p>
 
         // Check on resize (in case window size changes)
         window.addEventListener("resize", checkScrollable);
+
+        // Keyboard navigation
+        function setupKeyboardNavigation() {
+          document.addEventListener("keydown", function (e) {
+            // Don't interfere with input fields or text areas
+            if (
+              e.target.tagName === "INPUT" ||
+              e.target.tagName === "TEXTAREA" ||
+              e.target.isContentEditable
+            ) {
+              return;
+            }
+
+            // Arrow left: previous page
+            if (e.key === "ArrowLeft") {
+              const prevLink = document.querySelector('a[rel="prev"]');
+              if (prevLink && !prevLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = prevLink.href;
+              }
+            }
+
+            // Arrow right: next page
+            if (e.key === "ArrowRight") {
+              const nextLink = document.querySelector('a[rel="next"]');
+              if (nextLink && !nextLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = nextLink.href;
+              }
+            }
+
+            // Backspace: contents/index
+            if (e.key === "Backspace") {
+              const contentsLink = document.querySelector(
+                'a[href="index.html"]',
+              );
+              if (contentsLink) {
+                e.preventDefault();
+                window.location.href = contentsLink.href;
+              }
+            }
+          });
+        }
+
+        setupKeyboardNavigation();
       })();
     </script>
   </body>

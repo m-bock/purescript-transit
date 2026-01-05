@@ -443,12 +443,12 @@ is crossed twice. But let’s test the walk anyway before we move on.</p>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - spec1
+  - specSampleWalk
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>spec1 <span class="ot">=</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should follow the walk and visit the expected intermediate states&quot;</span> <span class="kw">do</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specSampleWalk ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>specSampleWalk <span class="ot">=</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should follow the sample walk and visit the expected intermediate states&quot;</span> <span class="kw">do</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    assertWalk update</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      (v <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      [ v <span class="op">@</span><span class="st">&quot;a&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;B&quot;</span></span>
@@ -501,6 +501,51 @@ section we’ll see a way to proof this for our state machine.</p>
 
         // Check on resize (in case window size changes)
         window.addEventListener("resize", checkScrollable);
+
+        // Keyboard navigation
+        function setupKeyboardNavigation() {
+          document.addEventListener("keydown", function (e) {
+            // Don't interfere with input fields or text areas
+            if (
+              e.target.tagName === "INPUT" ||
+              e.target.tagName === "TEXTAREA" ||
+              e.target.isContentEditable
+            ) {
+              return;
+            }
+
+            // Arrow left: previous page
+            if (e.key === "ArrowLeft") {
+              const prevLink = document.querySelector('a[rel="prev"]');
+              if (prevLink && !prevLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = prevLink.href;
+              }
+            }
+
+            // Arrow right: next page
+            if (e.key === "ArrowRight") {
+              const nextLink = document.querySelector('a[rel="next"]');
+              if (nextLink && !nextLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = nextLink.href;
+              }
+            }
+
+            // Backspace: contents/index
+            if (e.key === "Backspace") {
+              const contentsLink = document.querySelector(
+                'a[href="index.html"]',
+              );
+              if (contentsLink) {
+                e.preventDefault();
+                window.location.href = contentsLink.href;
+              }
+            }
+          });
+        }
+
+        setupKeyboardNavigation();
       })();
     </script>
   </body>

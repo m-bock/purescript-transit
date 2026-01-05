@@ -435,7 +435,14 @@
     <article class="markdown-body">
        <h2 data-number="3.5" id="generating-documentation-1">Generating
 Documentation</h2>
-<p>To generate a state diagram we’ll use the following function:</p>
+<p>For generating the state diagram we add now some more options to the
+<code>generateStateDiagramLight</code> function:</p>
+<ul>
+<li><code>entryPoints</code>: The state machine will start in the
+<code>DoorOpen</code> state.</li>
+<li><code>orientation</code>: The state diagram will be displayed in
+landscape mode</li>
+</ul>
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
 pick:
@@ -460,26 +467,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 L103-L113</a> </sup>
 </p>
 <!-- PD_END -->
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - generateTransitionTable
--->
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTransitionTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate_ doorPinTransit</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-pin.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L127-L133">test/Examples/DoorPin.purs
-L127-L133</a> </sup>
-</p>
-<!-- PD_END --> 
+<p>The generation of the transition table works exactly the same as in
+the previous example.</p> 
       <div class="scroll-to-top">
         <a
           href="#"
@@ -511,6 +500,51 @@ L127-L133</a> </sup>
 
         // Check on resize (in case window size changes)
         window.addEventListener("resize", checkScrollable);
+
+        // Keyboard navigation
+        function setupKeyboardNavigation() {
+          document.addEventListener("keydown", function (e) {
+            // Don't interfere with input fields or text areas
+            if (
+              e.target.tagName === "INPUT" ||
+              e.target.tagName === "TEXTAREA" ||
+              e.target.isContentEditable
+            ) {
+              return;
+            }
+
+            // Arrow left: previous page
+            if (e.key === "ArrowLeft") {
+              const prevLink = document.querySelector('a[rel="prev"]');
+              if (prevLink && !prevLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = prevLink.href;
+              }
+            }
+
+            // Arrow right: next page
+            if (e.key === "ArrowRight") {
+              const nextLink = document.querySelector('a[rel="next"]');
+              if (nextLink && !nextLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = nextLink.href;
+              }
+            }
+
+            // Backspace: contents/index
+            if (e.key === "Backspace") {
+              const contentsLink = document.querySelector(
+                'a[href="index.html"]',
+              );
+              if (contentsLink) {
+                e.preventDefault();
+                window.location.href = contentsLink.href;
+              }
+            }
+          });
+        }
+
+        setupKeyboardNavigation();
       })();
     </script>
   </body>

@@ -435,7 +435,7 @@
     <article class="markdown-body">
        <h2 data-number="4.2" id="transit-approach-1">Transit
 Approach</h2>
-<h3 data-number="4.2.1" id="state-and-message-types-1">State and message
+<h3 data-number="4.2.1" id="state-and-message-types-2">State and message
 types</h3>
 <p>The state machine represents the four land areas as states (uppercase
 letters <code>A</code>, <code>B</code>, <code>C</code>, and
@@ -485,10 +485,10 @@ defines two transitions: one from <code>State1</code> to
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - BridgesKoenigsbergTransit
+  - BridgesTransit
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">BridgesKoenigsbergTransit</span> <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">BridgesTransit</span> <span class="ot">=</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;B&quot;</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;B&quot;</span>)</span>
@@ -515,7 +515,7 @@ pick:
 -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">BridgesKoenigsbergTransit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">BridgesTransit</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;A&quot;</span> <span class="op">@</span><span class="st">&quot;a&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;B&quot;</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;B&quot;</span> <span class="op">@</span><span class="st">&quot;a&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
@@ -564,6 +564,51 @@ L52-L73</a> </sup>
 
         // Check on resize (in case window size changes)
         window.addEventListener("resize", checkScrollable);
+
+        // Keyboard navigation
+        function setupKeyboardNavigation() {
+          document.addEventListener("keydown", function (e) {
+            // Don't interfere with input fields or text areas
+            if (
+              e.target.tagName === "INPUT" ||
+              e.target.tagName === "TEXTAREA" ||
+              e.target.isContentEditable
+            ) {
+              return;
+            }
+
+            // Arrow left: previous page
+            if (e.key === "ArrowLeft") {
+              const prevLink = document.querySelector('a[rel="prev"]');
+              if (prevLink && !prevLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = prevLink.href;
+              }
+            }
+
+            // Arrow right: next page
+            if (e.key === "ArrowRight") {
+              const nextLink = document.querySelector('a[rel="next"]');
+              if (nextLink && !nextLink.classList.contains("disabled")) {
+                e.preventDefault();
+                window.location.href = nextLink.href;
+              }
+            }
+
+            // Backspace: contents/index
+            if (e.key === "Backspace") {
+              const contentsLink = document.querySelector(
+                'a[href="index.html"]',
+              );
+              if (contentsLink) {
+                e.preventDefault();
+                window.location.href = contentsLink.href;
+              }
+            }
+          });
+        }
+
+        setupKeyboardNavigation();
       })();
     </script>
   </body>
