@@ -155,7 +155,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L28-L36">test/Examples/Door.purs L28-L36</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L27-L35">test/Examples/Door.purs L27-L35</a>
   </sup>
 </p>
 
@@ -183,7 +183,7 @@ type DoorTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L38-L41">test/Examples/Door.purs L38-L41</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40">test/Examples/Door.purs L37-L40</a>
   </sup>
 </p>
 
@@ -218,7 +218,7 @@ update = mkUpdate @DoorTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L43-L46">test/Examples/Door.purs L43-L46</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L42-L45">test/Examples/Door.purs L42-L45</a>
   </sup>
 </p>
 
@@ -298,7 +298,7 @@ specWalk1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L55-L60">test/Examples/Door.purs L55-L60</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L59">test/Examples/Door.purs L54-L59</a>
   </sup>
 </p>
 
@@ -326,7 +326,7 @@ specWalk2 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L62-L67">test/Examples/Door.purs L62-L67</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L66">test/Examples/Door.purs L61-L66</a>
   </sup>
 </p>
 
@@ -401,7 +401,7 @@ specWalk3 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L69-L81">test/Examples/Door.purs L69-L81</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L80">test/Examples/Door.purs L68-L80</a>
   </sup>
 </p>
 
@@ -429,7 +429,7 @@ doorTransit = reflectType (Proxy @DoorTransit)
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L48-L49">test/Examples/Door.purs L48-L49</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L48">test/Examples/Door.purs L47-L48</a>
   </sup>
 </p>
 
@@ -478,7 +478,7 @@ generateStateDiagramDark =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L105-L114">test/Examples/Door.purs L105-L114</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L104-L113">test/Examples/Door.purs L104-L113</a>
   </sup>
 </p>
 
@@ -521,7 +521,7 @@ generateTransitionTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L116-L122">test/Examples/Door.purs L116-L122</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L115-L121">test/Examples/Door.purs L115-L121</a>
   </sup>
 </p>
 

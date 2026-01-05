@@ -7,14 +7,16 @@ import Data.Reflectable (reflectType)
 import Data.Traversable (for_)
 import Data.Variant (Variant)
 import Effect (Effect)
+import Examples.Common (assertWalk, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
-import Test.Spec (Spec)
-import Transit (type (:*), type (:@), type (>|), Transit, match, mkUpdate, return)
+import Test.Spec (Spec, describe, it)
+import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, mkUpdateAuto)
 import Transit.Data.DotLang as Graphviz
 import Transit.Render.Graphviz (Layout(..))
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeContrastDark, themeContrastLight, themeGradientDark, themeGradientLight, themeHarmonyDark, themeHarmonyLight)
+import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
 
 type State = Variant
@@ -45,7 +47,7 @@ type Msg = Variant
   , "MsgK" :: {}
   )
 
-type ColorsFSM = Transit
+type ColorRingTransit = Transit
   :* ("SpringGreen" :@ "MsgA" >| "LemonYellow")
   :* ("LemonYellow" :@ "MsgB" >| "OceanBlue")
   :* ("OceanBlue" :@ "MsgC" >| "CoralPink")
@@ -59,36 +61,63 @@ type ColorsFSM = Transit
   :* ("SkyCyan" :@ "MsgK" >| "SpringGreen")
 
 update :: State -> Msg -> State
-update = mkUpdate @ColorsFSM
-  (match @"SpringGreen" @"MsgA" \_ _ -> return @"LemonYellow")
-  (match @"LemonYellow" @"MsgB" \_ _ -> return @"OceanBlue")
-  (match @"OceanBlue" @"MsgC" \_ _ -> return @"CoralPink")
-  (match @"CoralPink" @"MsgD" \_ _ -> return @"MintTeal")
-  (match @"MintTeal" @"MsgE" \_ _ -> return @"AquaBlue")
-  (match @"AquaBlue" @"MsgF" \_ _ -> return @"SunsetOrange")
-  (match @"SunsetOrange" @"MsgG" \_ _ -> return @"MagentaGlow")
-  (match @"MagentaGlow" @"MsgH" \_ _ -> return @"OliveGreen")
-  (match @"OliveGreen" @"MsgI" \_ _ -> return @"VividRed")
-  (match @"VividRed" @"MsgJ" \_ _ -> return @"SkyCyan")
-  (match @"SkyCyan" @"MsgK" \_ _ -> return @"SpringGreen")
+update = mkUpdateAuto @ColorRingTransit
+
+spec :: Spec Unit
+spec = do
+  describe "ColorRing" do
+    it "should follow the walk and visit the expected intermediate states" do
+      assertWalk update (v @"SpringGreen")
+        [ v @"MsgA" ~> v @"LemonYellow"
+        , v @"MsgB" ~> v @"OceanBlue"
+        , v @"MsgC" ~> v @"CoralPink"
+        , v @"MsgD" ~> v @"MintTeal"
+        , v @"MsgE" ~> v @"AquaBlue"
+        , v @"MsgF" ~> v @"SunsetOrange"
+        , v @"MsgG" ~> v @"MagentaGlow"
+        , v @"MsgH" ~> v @"OliveGreen"
+        , v @"MsgI" ~> v @"VividRed"
+        , v @"MsgJ" ~> v @"SkyCyan"
+        , v @"MsgK" ~> v @"SpringGreen"
+        ]
+
+colorRingTransit :: TransitCore
+colorRingTransit = reflectType (Proxy @ColorRingTransit)
 
 main :: Effect Unit
 main = do
   let
-    transit = reflectType (Proxy @ColorsFSM)
     globalAttrs = "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
 
   for_
-    [ { file: "renders/themes/harmony-light.dot", title: "Harmony Light", theme: themeHarmonyLight }
-    , { file: "renders/themes/harmony-dark.dot", title: "Harmony Dark", theme: themeHarmonyDark }
-    , { file: "renders/themes/contrast-light.dot", title: "Contrast Light", theme: themeContrastLight }
-    , { file: "renders/themes/contrast-dark.dot", title: "Contrast Dark", theme: themeContrastDark }
-    , { file: "renders/themes/gradient-light.dot", title: "Gradient Light", theme: themeGradientLight }
-    , { file: "renders/themes/gradient-dark.dot", title: "Gradient Dark", theme: themeGradientDark }
+    [ { file: "renders/themes/harmony-light.dot"
+      , title: "Harmony Light"
+      , theme: themeHarmonyLight
+      }
+    , { file: "renders/themes/harmony-dark.dot"
+      , title: "Harmony Dark"
+      , theme: themeHarmonyDark
+      }
+    , { file: "renders/themes/contrast-light.dot"
+      , title: "Contrast Light"
+      , theme: themeContrastLight
+      }
+    , { file: "renders/themes/contrast-dark.dot"
+      , title: "Contrast Dark"
+      , theme: themeContrastDark
+      }
+    , { file: "renders/themes/gradient-light.dot"
+      , title: "Gradient Light"
+      , theme: themeGradientLight
+      }
+    , { file: "renders/themes/gradient-dark.dot"
+      , title: "Gradient Dark"
+      , theme: themeGradientDark
+      }
     ]
     \opts -> do
       FS.writeTextFile UTF8 opts.file
-        ( Graphviz.toDotStr $ TransitGraphviz.generate transit _
+        ( Graphviz.toDotStr $ TransitGraphviz.generate colorRingTransit _
             { title = Just opts.title
             , globalAttrsRaw = Just globalAttrs
             , theme = opts.theme
@@ -96,6 +125,3 @@ main = do
             }
         )
 
-spec :: Spec Unit
-spec = do
-  pure unit

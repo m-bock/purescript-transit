@@ -6,13 +6,12 @@ import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Variant (Variant)
 import Effect (Effect)
-import Effect.Aff (Aff)
 import Examples.Common (assertWalk, hasEulerTrail, (~>))
 import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, match, mkStateGraph, mkUpdate, mkUpdateAuto, return)
+import Transit (type (:*), type (>|), type (|<), Transit, TransitCore, StateGraph, mkStateGraph, mkUpdateAuto)
 import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
@@ -22,10 +21,6 @@ import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
 import Transit.VariantUtils (v)
 import Type.Prelude (Proxy(..))
-
---------------------------------------------------------------------------------
---- transit Approach
---------------------------------------------------------------------------------
 
 type State = Variant
   ( "1" :: {}
@@ -46,7 +41,7 @@ type Msg = Variant
   , "h" :: {}
   )
 
-type HouseSantaClausTransit =
+type SantaTransit =
   Transit
     :* ("1" |< "a" >| "2")
     :* ("2" |< "b" >| "3")
@@ -59,42 +54,44 @@ type HouseSantaClausTransit =
 
 update :: State -> Msg -> State
 update =
-  mkUpdateAuto @HouseSantaClausTransit
+  mkUpdateAuto @SantaTransit
 
-houseSantaClausTransit :: TransitCore
-houseSantaClausTransit = reflectType (Proxy @HouseSantaClausTransit)
+santaTransit :: TransitCore
+santaTransit = reflectType (Proxy @SantaTransit)
 
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
 
-assert1 :: Aff Unit
-assert1 =
-  assertWalk update
-    (v @"1")
-    [ v @"f" ~> v @"3"
-    , v @"h" ~> v @"4"
-    , v @"g" ~> v @"2"
-    , v @"a" ~> v @"1"
-    , v @"e" ~> v @"4"
-    , v @"d" ~> v @"5"
-    , v @"c" ~> v @"3"
-    , v @"b" ~> v @"2"
-    ]
+specWalk :: Spec Unit
+specWalk =
+  it "should follow the walk and visit the expected intermediate states" do
+    assertWalk update
+      (v @"1")
+      [ v @"f" ~> v @"3"
+      , v @"h" ~> v @"4"
+      , v @"g" ~> v @"2"
+      , v @"a" ~> v @"1"
+      , v @"e" ~> v @"4"
+      , v @"d" ~> v @"5"
+      , v @"c" ~> v @"3"
+      , v @"b" ~> v @"2"
+      ]
 
-assert2 :: Aff Unit
-assert2 =
-  let
-    graph = mkStateGraph (reflectType (Proxy @HouseSantaClausTransit))
-  in
+specEulerTrail :: Spec Unit
+specEulerTrail =
+  it "should have an Eulerian trail" do
+    let
+      graph :: StateGraph
+      graph = mkStateGraph santaTransit
+
     hasEulerTrail graph `shouldEqual` true
 
 spec :: Spec Unit
 spec = do
   describe "House of Santa Claus" do
-    it "asserts" do
-      assert1
-      assert2
+    specWalk
+    specEulerTrail
 
 --------------------------------------------------------------------------------
 --- State diagram generation
@@ -104,7 +101,7 @@ generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate houseSantaClausTransit _
+    graph = TransitGraphviz.generate santaTransit _
       { useUndirectedEdges = true
       , theme = themeHarmonyLight
       , layout = TransitGraphviz.Manual
@@ -124,7 +121,7 @@ generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate houseSantaClausTransit _
+    graph = TransitGraphviz.generate santaTransit _
       { useUndirectedEdges = true
       , globalAttrsRaw = Just "layout=neato"
       , theme = themeHarmonyDark
@@ -145,7 +142,7 @@ generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate houseSantaClausTransit _
+    table = TransitTable.generate santaTransit _
       { useUndirectedEdges = true
       }
 

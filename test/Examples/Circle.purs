@@ -2,7 +2,6 @@ module Examples.Circle where
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Variant (Variant)
 import Effect (Effect)

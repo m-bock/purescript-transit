@@ -97,7 +97,7 @@ spec = describe "DoorPin" do
   specWalk
 
 --------------------------------------------------------------------------------
---- State diagram generation
+--- Diagram and Table generation
 --------------------------------------------------------------------------------
 
 generateStateDiagramLight :: Effect Unit

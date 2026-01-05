@@ -4,14 +4,12 @@
 -- | functions from type-level specifications.
 -- | ```
 module Transit
-  ( class MkAutoHandlers
-  , class Return
+  ( class Return
   , class ReturnVia
   , match
   , matchM
   , mkUpdate
   , mkUpdateAuto
-  , mkAutoHandlers
   , mkUpdateM
   , mkUpdateMaybe
   , mkUpdateMaybeM
@@ -27,12 +25,12 @@ import Prelude
 import Data.Identity (Identity(..))
 import Data.Maybe (Maybe)
 import Data.Symbol (class IsSymbol)
-import Data.Tuple.Nested (type (/\), (/\))
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
 import Safe.Coerce as Safe
 import Transit.Class.CurryN (class CurryN, curryN)
+import Transit.Class.MkAutoHandlers (class MkAutoHandlers, mkAutoHandlers)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
 import Transit.Class.MkUpdate as MkUpdate
 import Transit.Class.MkUpdate as U
@@ -42,8 +40,6 @@ import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTra
 import Transit.Data.MaybeChurch (MaybeChurch, fromMaybeChurch)
 import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
 import Type.Prelude (Proxy(..))
-import Unsafe.Coerce (unsafeCoerce)
-import Prim.RowList as RL
 
 --------------------------------------------------------------------------------
 --- Update Function Builders
@@ -153,27 +149,6 @@ mkUpdateAuto =
     f' = U.mkUpdateCore @tcore mkAutoHandlers
   in
     \state msg -> fromMaybeChurch state $ Safe.coerce (f' state msg :: Identity (MaybeChurch _))
-
-class MkAutoHandlers args where
-  mkAutoHandlers :: args
-
-instance mkAutoHandlersNil :: MkAutoHandlers Unit where
-  mkAutoHandlers = unit
-
-instance mkAutoHandlersCons ::
-  ( MkAutoHandlers rest2
-  , Row.Cons symStateOut (Ret {}) () rowStateOut
-  , RL.RowToList rowStateOut (RL.Cons symStateOut (Ret {}) RL.Nil)
-  , IsSymbol symStateOut
-  ) =>
-  MkAutoHandlers (MatchImpl symStateIn symMsg stateIn msgIn Identity (Variant rowStateOut) /\ rest2) where
-  mkAutoHandlers = head /\ tail
-    where
-
-    head = MatchImpl (\_ _ -> Identity (V.inj (Proxy @symStateOut) (Ret {})))
-
-    tail :: rest2
-    tail = mkAutoHandlers @rest2
 
 --------------------------------------------------------------------------------
 --- Match Handlers

@@ -4,7 +4,6 @@ import Prelude
 
 import Data.Identity (Identity(..))
 import Data.Maybe (Maybe(..))
-import Effect.Aff (Aff)
 import Examples.Door (Msg, State, DoorTransit)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (matchM, mkUpdateMaybeM, return)
@@ -20,14 +19,6 @@ update = mkUpdateMaybeM @DoorTransit
   ( matchM @"DoorClosed" @"Open" \_ _ ->
       pure $ return @"DoorOpen"
   )
-
-assert1 :: Aff Unit
-assert1 =
-  update (v @"DoorOpen") (v @"Close") `shouldEqual` Identity (Just (v @"DoorClosed"))
-
-assert2 :: Aff Unit
-assert2 =
-  update (v @"DoorClosed") (v @"Close") `shouldEqual` Identity Nothing
 
 spec :: Spec Unit
 spec = do

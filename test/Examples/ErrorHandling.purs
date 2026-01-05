@@ -3,7 +3,6 @@ module Examples.ErrorHandling where
 import Prelude
 
 import Data.Maybe (Maybe(..))
-import Effect.Aff (Aff)
 import Examples.Door (Msg, State, DoorTransit)
 import Test.Spec.Assertions (shouldEqual)
 import Transit (match, mkUpdateMaybe, return)
@@ -19,14 +18,6 @@ update = mkUpdateMaybe @DoorTransit
   ( match @"DoorClosed" @"Open" \_ _ ->
       return @"DoorOpen"
   )
-
-assert1 :: Aff Unit
-assert1 =
-  update (v @"DoorOpen") (v @"Close") `shouldEqual` Just (v @"DoorClosed")
-
-assert2 :: Aff Unit
-assert2 =
-  update (v @"DoorClosed") (v @"Close") `shouldEqual` Nothing
 
 spec :: Spec Unit
 spec = do

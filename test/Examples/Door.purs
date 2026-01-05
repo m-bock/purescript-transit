@@ -18,7 +18,6 @@ import Transit.Data.DotLang (toDotStr) as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
 import Transit.Render.Graphviz (Layout(..))
-import Transit.Render.Graphviz (Options) as Graphviz
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
