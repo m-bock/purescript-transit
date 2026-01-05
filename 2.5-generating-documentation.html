@@ -470,41 +470,40 @@ split: true
 <p>It takes the <code>TransitCore</code> value which we’ve created in
 the previous step and a function that takes the default options and
 returns the options we want to use.</p>
-<p>This is how we use it to generate a state diagram:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - doorGraph
--->
-<div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">doorGraph ::</span> <span class="dt">GraphvizGraph</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>doorGraph <span class="ot">=</span> TransitGraphviz.generate doorTransit mkGraphvizOptions</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L96-L97">test/Examples/Door.purs
-L96-L97</a> </sup>
-</p>
-<!-- PD_END -->
-<p>[todo]</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
   - mkGraphvizOptions
-  - generateStateDiagramDark
+  - doorGraph
 -->
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">mkGraphvizOptions ::</span> <span class="dt">Graphviz.Options</span> <span class="ot">-&gt;</span> <span class="dt">Graphviz.Options</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mkGraphvizOptions opts <span class="ot">=</span> opts { theme <span class="ot">=</span> themeHarmonyLight }</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> (Graphviz.toDotStr doorGraph)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">mkGraphvizOptions ::</span> <span class="dt">Graphviz.Options</span> <span class="ot">-&gt;</span> <span class="dt">Graphviz.Options</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mkGraphvizOptions opts <span class="ot">=</span> opts { theme <span class="ot">=</span> themeHarmonyLight }</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">doorGraph ::</span> <span class="dt">GraphvizGraph</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>doorGraph <span class="ot">=</span> TransitGraphviz.generate doorTransit mkGraphvizOptions</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L93-L105">test/Examples/Door.purs
-L93-L105</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L93-L97">test/Examples/Door.purs
+L93-L97</a> </sup>
+</p>
+<!-- PD_END -->
+<p>Now we have everything in place to generate the state diagram:</p>
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - generateStateDiagramDark
+-->
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> (Graphviz.toDotStr doorGraph)</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L103-L105">test/Examples/Door.purs
+L103-L105</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>theme</code> option which we’re using above controls the
