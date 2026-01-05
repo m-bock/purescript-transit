@@ -456,7 +456,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate doorPinTransit _</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyLight</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      , entryPoints <span class="ot">=</span> [ <span class="st">&quot;DoorOpen&quot;</span> ]</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      , orientation <span class="ot">=</span> <span class="dt">Landscape</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      , layout <span class="ot">=</span> <span class="dt">Landscape</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-pin-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
