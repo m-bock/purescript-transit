@@ -80,8 +80,8 @@ doorPinTransit = reflectType (Proxy @DoorPinTransit)
 --- Tests
 --------------------------------------------------------------------------------
 
-spec1 :: Spec Unit
-spec1 =
+specWalk :: Spec Unit
+specWalk =
   it "should follow the walk and visit the expected intermediate states" do
     assertWalk update
       (v @"DoorOpen")
@@ -93,8 +93,8 @@ spec1 =
       ]
 
 spec :: Spec Unit
-spec = describe "DoorWithPin" do
-  spec1
+spec = describe "DoorPin" do
+  specWalk
 
 --------------------------------------------------------------------------------
 --- State diagram generation

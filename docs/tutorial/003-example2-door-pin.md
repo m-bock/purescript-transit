@@ -110,6 +110,8 @@ update state msg = case state, msg of
 
 ## The Transit Approach
 
+### State and Message Types
+
 Also in the **Transit** approach we define `State` and `Msg` types:
 
 <!-- PD_START:purs
@@ -143,6 +145,8 @@ type Msg = Variant
 
 <!-- PD_END -->
 
+### Transit Specification
+
 In the DSL specification, we express conditional transitions by listing multiple possible target states:
 
 <!-- PD_START:purs
@@ -174,6 +178,8 @@ type DoorPinTransit =
 <!-- PD_END -->
 
 The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` indicates that the `Unlock` message from `DoorLocked` can transition to either state, depending on runtime conditions. The `:?` operator associates a condition label (like `"PinCorrect"`) with a target state, and `>|` chains multiple conditional outcomes together.
+
+### The Update Function
 
 The update function now has access to both the current state and the message data, allowing you to implement the conditional logic:
 
@@ -224,6 +230,8 @@ The match handlers receive both the current state and the message, giving you ac
 
 ## Testing the update function
 
+We'll use the same test function which we used in the previous example. Let's recap how it works quickly by looking at its type signature:
+
 <!-- PD_START:purs
 pick:
   - tag: signature_or_foreign
@@ -244,15 +252,25 @@ assertWalk
 
 <!-- PD_END -->
 
+We want start the state machine in the `DoorOpen` state and then follow this sequence of transitions:
+
+1. `Close` the door, expect transition to `DoorClosed`
+2. `Lock` the door with PIN "1234", expect transition to `DoorLocked` with the stored PIN
+3. Attempt to `Unlock` with the wrong PIN "abcd", expect to stay in `DoorLocked` with the original PIN
+4. `Unlock` with the correct PIN "1234", expect transition to `DoorClosed`
+5. `Open` the door, expect transition to `DoorOpen`
+
+In code this looks like this:
+
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
 pick:
-  - spec1
+  - specWalk
 -->
 
 ```purescript
-spec1 :: Spec Unit
-spec1 =
+specWalk :: Spec Unit
+specWalk =
   it "should follow the walk and visit the expected intermediate states" do
     assertWalk update
       (v @"DoorOpen")
@@ -273,17 +291,14 @@ spec1 =
 
 <!-- PD_END -->
 
-This test starts in the `DoorOpen` state and follows a sequence of transitions:
-
-1. Close the door, expect transition to `DoorClosed`
-2. Lock the door with PIN "1234", expect transition to `DoorLocked` with the stored PIN
-3. Attempt to unlock with the wrong PIN "abcd", expect to stay in `DoorLocked` with the original PIN
-4. Unlock with the correct PIN "1234", expect transition to `DoorClosed`
-5. Open the door, expect transition to `DoorOpen`
+Since this test passes we can be pretty confident that the update function is correct.
 
 ## Generating Documentation
 
-To generate a state diagram we'll use the following function:
+For generating the state diagram we add now some more options to the `generateStateDiagramLight` function:
+
+- `entryPoints`: The state machine will start in the `DoorOpen` state.
+- `orientation`: The state diagram will be displayed in landscape mode
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
@@ -314,30 +329,7 @@ generateStateDiagramLight = do
 
 <!-- PD_END -->
 
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - generateTransitionTable
--->
-
-```purescript
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
-  let
-    table :: Table
-    table = TransitTable.generate_ doorPinTransit
-
-  FS.writeTextFile UTF8 "renders/door-pin.md" (Table.toMarkdown table)
-```
-
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L127-L133">test/Examples/DoorPin.purs L127-L133</a>
-  </sup>
-</p>
-
-<!-- PD_END -->
+The generation of the transition table works exactly the same as in the previous example.
 
 ## Conclusion
 

@@ -50,22 +50,22 @@ doorTransit = reflectType (Proxy @DoorTransit)
 --- Tests
 --------------------------------------------------------------------------------
 
-spec1 :: Spec Unit
-spec1 =
+specWalk1 :: Spec Unit
+specWalk1 =
   it "follows the walk and ends in expected final state" do
     foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
       `shouldEqual`
         (v @"DoorClosed")
 
-spec2 :: Spec Unit
-spec2 =
+specWalk2 :: Spec Unit
+specWalk2 =
   it "follows the walk and visits the expected intermediate states" do
     scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
       `shouldEqual`
         [ v @"DoorClosed", v @"DoorOpen", v @"DoorClosed" ]
 
-spec3 :: Spec Unit
-spec3 =
+specWalk3 :: Spec Unit
+specWalk3 =
   it "follows the walk and visits the expected intermediate states" do
     assertWalk update
       (v @"DoorOpen")
@@ -80,10 +80,10 @@ spec3 =
 
 spec :: Spec Unit
 spec = do
-  describe "SimpleDoor" do
-    spec1
-    spec2
-    spec3
+  describe "Door" do
+    specWalk1
+    specWalk2
+    specWalk3
 
 --------------------------------------------------------------------------------
 --- Diagram and Table generation

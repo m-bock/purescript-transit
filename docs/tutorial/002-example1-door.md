@@ -163,7 +163,7 @@ type Msg = Variant
 
 > This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
 
-### The Type-Level Specification
+### Transit Specification
 
 First, we define the state machine structure using **Transit**'s type-level DSL:
 
@@ -283,12 +283,12 @@ The simplest way to test the update function is to use `foldl` to apply a sequen
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - spec1
+  - specWalk1
 -->
 
 ```purescript
-spec1 :: Spec Unit
-spec1 =
+specWalk1 :: Spec Unit
+specWalk1 =
   it "follows the walk and ends in expected final state" do
     foldl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
       `shouldEqual`
@@ -311,12 +311,12 @@ This test only checks the final result. To be more thorough, we should also veri
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - spec2
+  - specWalk2
 -->
 
 ```purescript
-spec2 :: Spec Unit
-spec2 =
+specWalk2 :: Spec Unit
+specWalk2 =
   it "follows the walk and visits the expected intermediate states" do
     scanl update (v @"DoorOpen") [ v @"Close", v @"Open", v @"Close" ]
       `shouldEqual`
@@ -379,12 +379,12 @@ The function extracts the messages from the pairs, applies them sequentially usi
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - spec3
+  - specWalk3
 -->
 
 ```purescript
-spec3 :: Spec Unit
-spec3 =
+specWalk3 :: Spec Unit
+specWalk3 =
   it "follows the walk and visits the expected intermediate states" do
     assertWalk update
       (v @"DoorOpen")
