@@ -295,7 +295,7 @@ Since this test passes we can be pretty confident that the update function is co
 
 ## Generating Documentation
 
-For generating the state diagram we add now some more options to the `generateStateDiagramLight` function:
+For generating the state diagram we add now some more options to the `generate` function:
 
 - `entryPoints`: The state machine will start in the `DoorOpen` state.
 - `orientation`: The state diagram will be displayed in landscape mode

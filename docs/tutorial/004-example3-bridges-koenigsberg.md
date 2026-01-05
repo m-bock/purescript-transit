@@ -242,6 +242,8 @@ nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 
 <!-- PD_END -->
 
+[todo]
+
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -266,6 +268,8 @@ specNodeDegree = do
 </p>
 
 <!-- PD_END -->
+
+[todo]
 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
@@ -298,6 +302,8 @@ hasEulerTrail graph =
 
 <!-- PD_END -->
 
+[todo]
+
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -325,7 +331,9 @@ This is due to the fact that the specification has of state machine transitions 
 
 ## Generating Documentation
 
-To generate a state diagram we'll use the following function:
+For generating the state diagram we add some more options to the `generate` function:
+
+- `useUndirectedEdges`: The state diagram will be displayed as an undirected graph.
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -353,6 +361,8 @@ generateStateDiagramLight = do
 </p>
 
 <!-- PD_END -->
+
+[todo]
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs

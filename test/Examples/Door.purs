@@ -17,6 +17,7 @@ import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
+import Transit.Render.Graphviz as Graphviz
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -89,25 +90,19 @@ spec = do
 --- Diagram and Table generation
 --------------------------------------------------------------------------------
 
+mkGraphvizOptions :: Graphviz.Options -> Graphviz.Options
+mkGraphvizOptions opts = opts { theme = themeHarmonyLight }
+
+doorGraph :: GraphvizGraph
+doorGraph = TransitGraphviz.generate doorTransit mkGraphvizOptions
+
 generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight =
-  let
-    graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorTransit _
-      { theme = themeHarmonyLight
-      }
-  in
-    FS.writeTextFile UTF8 "renders/door-light.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-light.dot" (Graphviz.toDotStr doorGraph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
-  let
-    graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorTransit _
-      { theme = themeHarmonyDark
-      }
-  in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr doorGraph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do

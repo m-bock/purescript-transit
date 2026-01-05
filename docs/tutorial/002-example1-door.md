@@ -40,6 +40,7 @@ For a more structured view, here's the corresponding transition table:
 filePath: renders/door.md
 wrapNl: true
 -->
+
 | State      |       | Message |       | State      |
 | ---------- | ----- | ------- | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |
@@ -155,7 +156,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L26-L34">test/Examples/Door.purs L26-L34</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L27-L35">test/Examples/Door.purs L27-L35</a>
   </sup>
 </p>
 
@@ -183,7 +184,7 @@ type DoorTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L36-L39">test/Examples/Door.purs L36-L39</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40">test/Examples/Door.purs L37-L40</a>
   </sup>
 </p>
 
@@ -218,7 +219,7 @@ update = mkUpdate @DoorTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L41-L44">test/Examples/Door.purs L41-L44</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L42-L45">test/Examples/Door.purs L42-L45</a>
   </sup>
 </p>
 
@@ -298,7 +299,7 @@ specWalk1 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L53-L58">test/Examples/Door.purs L53-L58</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L59">test/Examples/Door.purs L54-L59</a>
   </sup>
 </p>
 
@@ -326,7 +327,7 @@ specWalk2 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L60-L65">test/Examples/Door.purs L60-L65</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L66">test/Examples/Door.purs L61-L66</a>
   </sup>
 </p>
 
@@ -401,7 +402,7 @@ specWalk3 =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L67-L79">test/Examples/Door.purs L67-L79</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L80">test/Examples/Door.purs L68-L80</a>
   </sup>
 </p>
 
@@ -429,7 +430,7 @@ doorTransit = reflectType (Proxy @DoorTransit)
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L46-L47">test/Examples/Door.purs L46-L47</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L48">test/Examples/Door.purs L47-L48</a>
   </sup>
 </p>
 
@@ -454,7 +455,31 @@ split: true
 
 It takes the `TransitCore` value which we've created in the previous step and a function that takes the default options and returns the options we want to use.
 
-This is how we use it to generate a state diagram:
+<!-- PD_START:purs
+filePath: test/Examples/Door.purs
+pick:
+  - mkGraphvizOptions
+  - doorGraph
+-->
+
+```purescript
+mkGraphvizOptions :: Graphviz.Options -> Graphviz.Options
+mkGraphvizOptions opts = opts { theme = themeHarmonyLight }
+
+doorGraph :: GraphvizGraph
+doorGraph = TransitGraphviz.generate doorTransit mkGraphvizOptions
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L93-L97">test/Examples/Door.purs L93-L97</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
+
+Now we have everything in place to generate the state diagram:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -465,19 +490,13 @@ pick:
 ```purescript
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
-  let
-    graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorTransit _
-      { theme = themeHarmonyDark
-      }
-  in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr doorGraph)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L102-L110">test/Examples/Door.purs L102-L110</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L103-L105">test/Examples/Door.purs L103-L105</a>
   </sup>
 </p>
 
@@ -520,7 +539,7 @@ generateTransitionTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L112-L118">test/Examples/Door.purs L112-L118</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L107-L113">test/Examples/Door.purs L107-L113</a>
   </sup>
 </p>
 
