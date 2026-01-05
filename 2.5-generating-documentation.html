@@ -475,24 +475,24 @@ returns the options we want to use.</p>
 filePath: test/Examples/Door.purs
 pick:
   - mkGraphvizOptions
+  - doorGraph
   - generateStateDiagramDark
 -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">mkGraphvizOptions ::</span> <span class="dt">Graphviz.Options</span> <span class="ot">-&gt;</span> <span class="dt">Graphviz.Options</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mkGraphvizOptions opts <span class="ot">=</span> opts { theme <span class="ot">=</span> themeHarmonyLight }</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">GraphvizGraph</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate doorTransit mkGraphvizOptions</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">doorGraph ::</span> <span class="dt">GraphvizGraph</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>doorGraph <span class="ot">=</span> TransitGraphviz.generate doorTransit mkGraphvizOptions</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> (Graphviz.toDotStr doorGraph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L93-L110">test/Examples/Door.purs
-L93-L110</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L93-L105">test/Examples/Door.purs
+L93-L105</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The <code>theme</code> option which we’re using above controls the
@@ -527,8 +527,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L112-L118">test/Examples/Door.purs
-L112-L118</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L107-L113">test/Examples/Door.purs
+L107-L113</a> </sup>
 </p>
 <!-- PD_END -->
 <p>This generates a Markdown file containing a table with columns for
