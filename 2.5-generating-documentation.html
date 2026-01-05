@@ -486,7 +486,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      , layout <span class="ot">=</span> <span class="dt">Portrait</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-dark.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door_graph-dark.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
@@ -502,10 +502,10 @@ for more details.</p>
 <p>To convert the <code>.dot</code> file to an SVG (or other formats),
 use the Graphviz[^graphviz] command-line tools:</p>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> renders/door.dot <span class="at">-o</span> renders/door.svg</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> renders/door_graph.dot <span class="at">-o</span> renders/door.svg</span></code></pre></div>
 <p>Or for PNG:</p>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> renders/door.dot <span class="at">-o</span> renders/door.png</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> renders/door_graph.dot <span class="at">-o</span> renders/door.png</span></code></pre></div>
 <h3 data-number="2.5.2" id="transition-tables">Transition Tables</h3>
 <p>In addition to state diagrams, you can also generate transition
 tables from the same specification. This provides a tabular view of all
@@ -522,7 +522,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate_ doorTransit</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎

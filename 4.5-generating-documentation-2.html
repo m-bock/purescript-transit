@@ -455,7 +455,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyLight</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      , useUndirectedEdges <span class="ot">=</span> true</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_graph-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
@@ -477,7 +477,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate bridgesTransit _</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { useUndirectedEdges <span class="ot">=</span> true</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
