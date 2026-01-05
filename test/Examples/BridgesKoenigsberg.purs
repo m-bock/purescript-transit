@@ -39,7 +39,7 @@ type Msg = Variant
   , "g" :: {}
   )
 
-type BridgesKoenigsbergTransit =
+type BridgesTransit =
   Transit
     :* ("A" |< "a" >| "B")
     :* ("A" |< "b" >| "B")
@@ -50,7 +50,7 @@ type BridgesKoenigsbergTransit =
     :* ("C" |< "g" >| "D")
 
 update :: State -> Msg -> State
-update = mkUpdate @BridgesKoenigsbergTransit
+update = mkUpdate @BridgesTransit
   (match @"A" @"a" \_ _ -> return @"B")
   (match @"B" @"a" \_ _ -> return @"A")
 
@@ -72,16 +72,16 @@ update = mkUpdate @BridgesKoenigsbergTransit
   (match @"C" @"g" \_ _ -> return @"D")
   (match @"D" @"g" \_ _ -> return @"C")
 
-bridgesKoenigsbergTransit :: TransitCore
-bridgesKoenigsbergTransit = reflectType (Proxy @BridgesKoenigsbergTransit)
+bridgesTransit :: TransitCore
+bridgesTransit = reflectType (Proxy @BridgesTransit)
 
 --------------------------------------------------------------------------------
 --- Tests
 --------------------------------------------------------------------------------
 
-spec1 :: Spec Unit
-spec1 =
-  it "should follow the walk and visit the expected intermediate states" do
+specSampleWalk :: Spec Unit
+specSampleWalk =
+  it "should follow the sample walk and visit the expected intermediate states" do
     assertWalk update
       (v @"A")
       [ v @"a" ~> v @"B"
@@ -94,28 +94,28 @@ spec1 =
       , v @"b" ~> v @"B"
       ]
 
-bridgesKoenigsbergGraph :: StateGraph
-bridgesKoenigsbergGraph = mkStateGraph bridgesKoenigsbergTransit
+bridgesGraph :: StateGraph
+bridgesGraph = mkStateGraph bridgesTransit
 
-spec2 :: Spec Unit
-spec2 = do
+specNodeDegree :: Spec Unit
+specNodeDegree = do
   it "should each node have the expected degree" do
-    nodeDegree bridgesKoenigsbergGraph "A" `shouldEqual` 5
-    nodeDegree bridgesKoenigsbergGraph "B" `shouldEqual` 3
-    nodeDegree bridgesKoenigsbergGraph "C" `shouldEqual` 3
-    nodeDegree bridgesKoenigsbergGraph "D" `shouldEqual` 3
+    nodeDegree bridgesGraph "A" `shouldEqual` 5
+    nodeDegree bridgesGraph "B" `shouldEqual` 3
+    nodeDegree bridgesGraph "C" `shouldEqual` 3
+    nodeDegree bridgesGraph "D" `shouldEqual` 3
 
-spec3 :: Spec Unit
-spec3 = do
+specEulerTrail :: Spec Unit
+specEulerTrail = do
   it "should not have an Eulerian trail" do
-    hasEulerTrail bridgesKoenigsbergGraph `shouldEqual` false
+    hasEulerTrail bridgesGraph `shouldEqual` false
 
 spec :: Spec Unit
 spec = do
   describe "BridgesKoenigsberg" do
-    spec1
-    spec2
-    spec3
+    specSampleWalk
+    specNodeDegree
+    specEulerTrail
 
 --------------------------------------------------------------------------------
 --- State diagram generation
@@ -125,7 +125,7 @@ generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+    graph = TransitGraphviz.generate bridgesTransit _
       { theme = themeHarmonyLight
       , useUndirectedEdges = true
       }
@@ -135,7 +135,7 @@ generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+    graph = TransitGraphviz.generate bridgesTransit _
       { theme = themeHarmonyDark
       , useUndirectedEdges = true
       }
@@ -145,7 +145,7 @@ generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate bridgesKoenigsbergTransit _
+    table = TransitTable.generate bridgesTransit _
       { useUndirectedEdges = true
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)

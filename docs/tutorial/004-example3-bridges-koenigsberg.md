@@ -93,11 +93,11 @@ Since bridges can be crossed in both directions, each bridge creates a bidirecti
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - BridgesKoenigsbergTransit
+  - BridgesTransit
 -->
 
 ```purescript
-type BridgesKoenigsbergTransit =
+type BridgesTransit =
   Transit
     :* ("A" |< "a" >| "B")
     :* ("A" |< "b" >| "B")
@@ -130,7 +130,7 @@ pick:
 
 ```purescript
 update :: State -> Msg -> State
-update = mkUpdate @BridgesKoenigsbergTransit
+update = mkUpdate @BridgesTransit
   (match @"A" @"a" \_ _ -> return @"B")
   (match @"B" @"a" \_ _ -> return @"A")
 
@@ -161,13 +161,13 @@ The picture shows one randomly chosen walk through the city of Königsberg. Unfo
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - spec1
+  - specSampleWalk
 -->
 
 ```purescript
-spec1 :: Spec Unit
-spec1 =
-  it "should follow the walk and visit the expected intermediate states" do
+specSampleWalk :: Spec Unit
+specSampleWalk =
+  it "should follow the sample walk and visit the expected intermediate states" do
     assertWalk update
       (v @"A")
       [ v @"a" ~> v @"B"
@@ -195,6 +195,26 @@ We could try many other walks the same way. But - spoiler alert - none of them w
 ## Graph Analysis
 
 The real power of **Transit** becomes apparent when we convert the reflected data structure into a general-purpose graph. Using `mkStateGraph`, we transform the **Transit** specification into a `StateGraph` — a specialized `Graph` type configured with edge and node labels suitable for state machine analysis.
+
+<!-- PD_START:purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+pick:
+  - bridgesGraph
+-->
+
+```purescript
+bridgesGraph :: StateGraph
+bridgesGraph = mkStateGraph bridgesTransit
+```
+
+<p align="right">
+  <sup
+    >🗎
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs L97-L98</a>
+  </sup>
+</p>
+
+<!-- PD_END -->
 
 Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
 
@@ -225,17 +245,17 @@ nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - spec2
+  - specNodeDegree
 -->
 
 ```purescript
-spec2 :: Spec Unit
-spec2 = do
+specNodeDegree :: Spec Unit
+specNodeDegree = do
   it "should each node have the expected degree" do
-    nodeDegree bridgesKoenigsbergGraph "A" `shouldEqual` 5
-    nodeDegree bridgesKoenigsbergGraph "B" `shouldEqual` 3
-    nodeDegree bridgesKoenigsbergGraph "C" `shouldEqual` 3
-    nodeDegree bridgesKoenigsbergGraph "D" `shouldEqual` 3
+    nodeDegree bridgesGraph "A" `shouldEqual` 5
+    nodeDegree bridgesGraph "B" `shouldEqual` 3
+    nodeDegree bridgesGraph "C" `shouldEqual` 3
+    nodeDegree bridgesGraph "D" `shouldEqual` 3
 ```
 
 <p align="right">
@@ -281,14 +301,14 @@ hasEulerTrail graph =
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - spec3
+  - specEulerTrail
 -->
 
 ```purescript
-spec3 :: Spec Unit
-spec3 = do
+specEulerTrail :: Spec Unit
+specEulerTrail = do
   it "should not have an Eulerian trail" do
-    hasEulerTrail bridgesKoenigsbergGraph `shouldEqual` false
+    hasEulerTrail bridgesGraph `shouldEqual` false
 ```
 
 <p align="right">
@@ -299,6 +319,9 @@ spec3 = do
 </p>
 
 <!-- PD_END -->
+
+I we wanted to perform similar analysis with the classic state machine approach, we would need to generate all possible 5040 walks and empirically check if any of them visit all bridges exactly once.
+This is due to the fact that the specification has of state machine transitions is burried inside the update function.
 
 ## Generating Documentation
 
@@ -315,7 +338,7 @@ generateStateDiagramLight :: Effect Unit
 generateStateDiagramLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesKoenigsbergTransit _
+    graph = TransitGraphviz.generate bridgesTransit _
       { theme = themeHarmonyLight
       , useUndirectedEdges = true
       }
@@ -342,7 +365,7 @@ generateTransitionTable :: Effect Unit
 generateTransitionTable = do
   let
     table :: Table
-    table = TransitTable.generate bridgesKoenigsbergTransit _
+    table = TransitTable.generate bridgesTransit _
       { useUndirectedEdges = true
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)

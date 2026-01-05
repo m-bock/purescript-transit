@@ -483,7 +483,7 @@ generateStateDiagramDark =
 
 <!-- PD_END -->
 
-The `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](docs/themes.md) for more details.
+The `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
 
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
