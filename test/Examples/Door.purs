@@ -100,7 +100,7 @@ generateStateDiagramLight =
       , layout = Portrait
       }
   in
-    FS.writeTextFile UTF8 "renders/door-light.dot" (Graphviz.toDotStr graph)
+    FS.writeTextFile UTF8 "renders/door_graph-light.dot" (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark =
@@ -111,7 +111,7 @@ generateStateDiagramDark =
       , layout = Portrait
       }
   in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr graph)
+    FS.writeTextFile UTF8 "renders/door_graph-dark.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
@@ -119,7 +119,7 @@ generateTransitionTable = do
     table :: Table
     table = TransitTable.generate_ doorTransit
 
-  FS.writeTextFile UTF8 "renders/door.md" (Table.toMarkdown table)
+  FS.writeTextFile UTF8 "renders/door_table.md" (Table.toMarkdown table)
 
 main :: Effect Unit
 main = do

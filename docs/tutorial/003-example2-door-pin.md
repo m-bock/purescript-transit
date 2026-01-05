@@ -13,9 +13,9 @@ We add a new state `DoorLocked` and the new messages `Lock` and `Unlock`:
 **State Diagram:** _Door with Pin_
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="renders/door-pin-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="renders/door-pin-light.svg">
-  <img alt="Door with Pin state diagram" class="state-diagram" src="renders/door-pin-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door-pin_graph-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door-pin_graph-light.svg">
+  <img alt="Door with Pin state diagram" class="state-diagram" src="renders/door-pin_graph-light.svg">
 </picture>
 
 Notice the diamond node in the state diagram — this represents a conditional transition where the outcome depends on runtime data: The unlock operation can succeed (transitioning to `DoorClosed`) if the condition `PinCorrect` is met - or fail (staying in `DoorLocked`) when the condition `PinIncorrect` is met.
@@ -23,7 +23,7 @@ Notice the diamond node in the state diagram — this represents a conditional t
 In the transition table the conditional transitions are expressed by the new "Guard" column. For most transitions however, this column is empty — these are unconditional transitions that always succeed.
 
 <!-- PD_START:raw
-filePath: renders/door-pin.md
+filePath: renders/door-pin_table.md
 wrapNl: true
 -->
 | State      |       | Message |       | Guard        |       | State      |
@@ -317,7 +317,7 @@ generateStateDiagramLight = do
       , layout = Landscape
       }
 
-  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-pin_graph-light.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">

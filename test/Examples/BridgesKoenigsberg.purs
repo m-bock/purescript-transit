@@ -129,7 +129,7 @@ generateStateDiagramLight = do
       { theme = themeHarmonyLight
       , useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
@@ -139,7 +139,7 @@ generateStateDiagramDark = do
       { theme = themeHarmonyDark
       , useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-dark.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-dark.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
@@ -148,7 +148,7 @@ generateTransitionTable = do
     table = TransitTable.generate bridgesTransit _
       { useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg_table.md" (Table.toMarkdown table)
 
 main :: Effect Unit
 main = do

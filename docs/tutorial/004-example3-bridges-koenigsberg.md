@@ -18,9 +18,9 @@ Even not immediately obvious, the map of the city can be represented as a graph:
 - **Edges** represent the seven bridges connecting them
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="renders/bridges-koenigsberg-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="renders/bridges-koenigsberg-light.svg">
-  <img alt="Seven Bridges of Königsberg graph" src="renders/bridges-koenigsberg-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/bridges-koenigsberg_graph-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/bridges-koenigsberg_graph-light.svg">
+  <img alt="Seven Bridges of Königsberg graph" src="renders/bridges-koenigsberg_graph-light.svg">
 </picture>
 
 Note that we drew an undirected graph here. This is due to the fact that the bridges are bidirectional. We could also have drawn a directed graph with two edges for each bridge, but this would look more cluttered.
@@ -28,7 +28,7 @@ Note that we drew an undirected graph here. This is due to the fact that the bri
 The same is true for the transition table. Instead of two rows for each bridge, we have one row for each bridge:
 
 <!-- PD_START:raw
-filePath: renders/bridges-koenigsberg.md
+filePath: renders/bridges-koenigsberg_table.md
 wrapNl: true
 -->
 | State |       | Message |       | State |
@@ -350,7 +350,7 @@ generateStateDiagramLight = do
       { theme = themeHarmonyLight
       , useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg-light.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">
@@ -378,7 +378,7 @@ generateTransitionTable = do
     table = TransitTable.generate bridgesTransit _
       { useUndirectedEdges = true
       }
-  FS.writeTextFile UTF8 "renders/bridges-koenigsberg.md" (Table.toMarkdown table)
+  FS.writeTextFile UTF8 "renders/bridges-koenigsberg_table.md" (Table.toMarkdown table)
 ```
 
 <p align="right">

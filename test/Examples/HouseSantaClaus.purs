@@ -117,7 +117,7 @@ generateStateDiagramLight = do
       }
 
   FS.writeTextFile UTF8
-    "renders/house-santa-claus-light.dot"
+    "renders/house-santa-claus_graph-light.dot"
     (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
@@ -138,7 +138,7 @@ generateStateDiagramDark = do
       }
 
   FS.writeTextFile UTF8
-    "renders/house-santa-claus-dark.dot"
+    "renders/house-santa-claus_graph-dark.dot"
     (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
@@ -150,7 +150,7 @@ generateTransitionTable = do
       }
 
   FS.writeTextFile UTF8
-    "renders/house-santa-claus.md"
+    "renders/house-santa-claus_table.md"
     (Table.toMarkdown table)
 
 main :: Effect Unit

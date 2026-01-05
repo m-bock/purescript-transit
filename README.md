@@ -175,7 +175,7 @@ main = do
     graph = TransitGraphviz.generate countDownTransit identity
 
   FS.writeTextFile UTF8
-    "renders/count-down.dot"
+    "renders/count-down_graph.dot"
     (Graphviz.toDotStr graph)
 ```
 

@@ -110,7 +110,7 @@ generateStateDiagramLight = do
       , layout = Landscape
       }
 
-  FS.writeTextFile UTF8 "renders/door-pin-light.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-pin_graph-light.dot" (Graphviz.toDotStr graph)
 
 generateStateDiagramDark :: Effect Unit
 generateStateDiagramDark = do
@@ -122,7 +122,7 @@ generateStateDiagramDark = do
       , layout = Landscape
       }
 
-  FS.writeTextFile UTF8 "renders/door-pin-dark.dot" (Graphviz.toDotStr graph)
+  FS.writeTextFile UTF8 "renders/door-pin_graph-dark.dot" (Graphviz.toDotStr graph)
 
 generateTransitionTable :: Effect Unit
 generateTransitionTable = do
@@ -130,7 +130,7 @@ generateTransitionTable = do
     table :: Table
     table = TransitTable.generate_ doorPinTransit
 
-  FS.writeTextFile UTF8 "renders/door-pin.md" (Table.toMarkdown table)
+  FS.writeTextFile UTF8 "renders/door-pin_table.md" (Table.toMarkdown table)
 
 main :: Effect Unit
 main = do

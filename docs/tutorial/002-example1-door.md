@@ -19,9 +19,9 @@ The state diagram below shows all possible states and the valid transitions betw
 **State Diagram:** _Door_
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="renders/door-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="renders/door-light.svg">
-  <img class="state-diagram" alt="Simple Door state diagram" src="renders/door-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="renders/door_graph-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="renders/door_graph-light.svg">
+  <img class="state-diagram" alt="Simple Door state diagram" src="renders/door_graph-light.svg">
 </picture>
 
 In this diagram, you can see:
@@ -37,7 +37,7 @@ In this diagram, you can see:
 For a more structured view, here's the corresponding transition table:
 
 <!-- PD_START:raw
-filePath: renders/door.md
+filePath: renders/door_table.md
 wrapNl: true
 -->
 | State      |       | Message |       | State      |
@@ -472,7 +472,7 @@ generateStateDiagramDark =
       , layout = Portrait
       }
   in
-    FS.writeTextFile UTF8 "renders/door-dark.dot" (Graphviz.toDotStr graph)
+    FS.writeTextFile UTF8 "renders/door_graph-dark.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">
@@ -489,13 +489,13 @@ The `theme` option which we're using above controls the color scheme. **Transit*
 To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
 
 ```bash
-dot -Tsvg renders/door.dot -o renders/door.svg
+dot -Tsvg renders/door_graph.dot -o renders/door.svg
 ```
 
 Or for PNG:
 
 ```bash
-dot -Tpng renders/door.dot -o renders/door.png
+dot -Tpng renders/door_graph.dot -o renders/door.png
 ```
 
 ### Transition Tables
@@ -515,7 +515,7 @@ generateTransitionTable = do
     table :: Table
     table = TransitTable.generate_ doorTransit
 
-  FS.writeTextFile UTF8 "renders/door.md" (Table.toMarkdown table)
+  FS.writeTextFile UTF8 "renders/door_table.md" (Table.toMarkdown table)
 ```
 
 <p align="right">
