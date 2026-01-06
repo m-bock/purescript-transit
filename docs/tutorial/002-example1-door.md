@@ -6,17 +6,15 @@
 
 Let's start with a simple door state machine to demonstrate **Transit**'s core concepts. This example will show you how to define a state machine using **Transit**'s type-level DSL, implement a type-safe update function, and generate documentation automatically. We'll compare the traditional approach with **Transit**'s approach to highlight the benefits of the latter.
 
-## The State Machine
+Think of a door that can be either open or closed. When it's open, you can close it. When it's closed, you can open it. That's it — no other actions make sense. You can't open a door that's already open, and you can't close a door that's already closed. This simple behavior is what we're modeling in this example.
 
-Think of a door that can be either open or closed. When it's open, you can close it. When it's closed, you can open it. That's it — no other actions make sense. You can't open a door that's already open, and you can't close a door that's already closed. This simple behavior is what we're modeling here.
+## The State Machine
 
 Before diving into the code, let's visualize our simple door state machine. This will help you understand the structure we're about to implement.
 
 ### State Diagram
 
 The state diagram below shows all possible states and the valid transitions between them:
-
-**State Diagram:** _Door_
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="renders/door_graph-dark.svg">
@@ -27,10 +25,8 @@ The state diagram below shows all possible states and the valid transitions betw
 In this diagram, you can see:
 
 - **Two states**: `DoorOpen` and `DoorClosed` (shown as rectangles)
-- **Two transitions**: The `Close` transition moves from `DoorOpen` to `DoorClosed`, and the `Open` transition moves from `DoorClosed` to `DoorOpen`
+- **Two transitions**: `Close` and `Open`
 - **Arrows**: The direction of each arrow shows which state changes are valid
-
-**Terminology note**: Throughout this documentation, the terms _message_, _action_, and _transition_ are used interchangeably to refer to the events that trigger state changes[^terminology]. In **Transit**'s type system, these correspond to the message types in your `Msg` variant.
 
 ### Transition Table
 
@@ -53,7 +49,7 @@ Now let's see how we represent this in PureScript code.
 
 ## Classic Approach
 
-Before diving into **Transit**, let's first look at how state machines are typically implemented in PureScript using pattern matching. This classic approach is familiar to most PureScript developers and serves as a baseline for understanding what **Transit** improves upon.
+Before diving into **Transit**, let's first look at how state machines are typically implemented in PureScript using State and Message data types and an update function performing pattern matching on both. This classic approach is familiar to most PureScript developers and serves as a baseline for understanding what **Transit** improves upon.
 
 ### States and Message types
 
@@ -115,9 +111,7 @@ update state msg =
 
 <!-- PD_END -->
 
-We pattern match on both the current state and the message at once. It could also be written as a nested pattern match.
-
-This function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
+We pattern match on both the current state and the message at once. It could also be written as a nested pattern match. The `update` function handles the two valid transitions we saw in the diagram: closing an open door and opening a closed door. The catch-all case `_, _ -> state` handles any invalid combinations (like trying to open an already open door) by returning the current state unchanged.
 
 While this approach works and is straightforward, it has some drawbacks:
 
@@ -125,13 +119,15 @@ While this approach works and is straightforward, it has some drawbacks:
 
 - **Documentation drift**: If you maintain a state diagram for documentation purposes, there's nothing ensuring the code stays in sync — you have to remember to update both manually.
 
-- **Limited analysis capabilities**: There's no way to analyze the state machine's structure or behavior statically — you can only understand it by running the code.
+- **Limited analysis capabilities**: There's no way to analyze the state machine's structure or behavior statically — you can only inspect it's behavior it by running the code.
 
 ## Transit Approach
 
+Now let's see how **Transit** can help us to improve this.
+
 ### State and Message Types
 
-**Transit** uses `Variant` types (from `purescript-variant`)[^variant] for both `State` and `Msg` instead of traditional ADTs.
+**Transit** uses `Variant`[^variant] types for both `State` and `Msg` instead of traditional ADTs. This design choice is crucial for **Transit** but for now let's just focus on the fact that it's just another way to represent a sum types.[^why-variant]
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -161,11 +157,11 @@ type Msg = Variant
 
 <!-- PD_END -->
 
-> This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
+The empty record `{}` is used to represent the absence of any data (payload) associated with the state or message.
 
 ### Transit Specification
 
-First, we define the state machine structure using **Transit**'s type-level DSL:
+Once the types are defined, we can define the state machine structure using **Transit**'s type-level DSL. Let's see how it looks like:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -193,14 +189,15 @@ Breaking down the syntax:
 
 - `Transit` initializes an empty transition list
 - `:*` is an infix operator that appends each transition to the list
-- `"DoorOpen" :@ "Close" >| "DoorClosed"` means: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`
 - The `@` operator connects a state to a message, and `>|` indicates the target state
 
-This type-level specification fully defines the state machine's structure. The compiler can now use this specification to ensure our implementation is correct.
+So for instance we read the first transition as: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`.
+
+This type-level specification fully defines the state machine's structure. The compiler can now use it to ensure our the implementation of the update function is implemented accordingly.
 
 ### The Update Function
 
-Based on this specification, we create an update function using `mkUpdate`:
+Based on the above specification, we create an update function using `mkUpdate`:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -240,20 +237,57 @@ Before we move further, let's actually verify that our implementation of the upd
 
 ### Creating Variant Values
 
-To create values of type `Variant`, **Transit** provides the `v` function from `Transit.VariantUtils`. It's a convenience wrapper around `Variant`'s `inj` function that uses type application (no Proxy needed) and allows omitting empty record arguments:
+For the tests we need to create `Variant` values. To create values of type `Variant`, **Transit** provides the `v` function from `Transit.VariantUtils`. [^v-function]
 
-- Transit record payload (argument can be omitted)
+<!-- PD_START:purs
+pick:
+  - tag: any
+    name: doorOpen
+    filePath: test/Docs/Snippets.purs
+  - tag: any
+    name: doorClosed
+    filePath: test/Docs/Snippets.purs
+  - tag: any
+    name: close
+    filePath: test/Docs/Snippets.purs
+  - tag: any
+    name: open
+    filePath: test/Docs/Snippets.purs
+-->
 
-  ```purescript
-  v @"DoorOpen"
-  ```
+```purescript
+doorOpen :: State
+doorOpen = v @"DoorOpen" {}
 
-- Non-empty payload (must provide the data)
-  ```purescript
-  v @"DoorLocked" { activePin: "1234" }
-  ```
+doorClosed :: State
+doorClosed = v @"DoorClosed" {}
 
-This is more ergonomic than using `V.inj (Proxy :: _ "DoorOpen") {}` directly which is the default way to create a Variant value.
+close :: Msg
+close = v @"Close" {}
+
+open :: Msg
+open = v @"Open" {}
+```
+
+<!-- PD_END -->
+
+Since having no data associated with a case is very common, the `v` function has a shortcut for this: You can just omit the empty record argument:
+
+<!-- PD_START:purs
+pick:
+  - tag: any
+    name: doorOpenShort
+    filePath: test/Docs/Snippets.purs
+-->
+
+```purescript
+doorOpenShort :: State
+doorOpenShort = v @"DoorOpen"
+```
+
+<!-- PD_END -->
+
+Now we are well prepared to start testing the update function that we've implemented previously.
 
 ### Testing State Transitions
 
@@ -333,6 +367,8 @@ specWalk2 =
 <!-- PD_END -->
 
 This test is similar to the previous one. But instead of just checking the final result, it verifies each step along the way: after closing, the door is closed; after opening, the door is open; and after closing again, the door remains closed. This makes sure each transition works correctly.
+
+### More ergonomic testing with `assertWalk` helper function
 
 Since we'll want to write more of these tests for further examples, it's helpful to define a reusable helper function. The `assertWalk` function takes an update function, an initial state, and a list of message/state pairs representing the expected walk through the state machine:
 
@@ -437,7 +473,7 @@ doorTransit = reflectType (Proxy @DoorTransit)
 
 ### State Diagrams
 
-To generate a state diagram we'll use the following function:
+**Transit** can generate state diagrams using Graphviz[^graphviz]. For this we'll use the following function from the `Transit.Render.Graphviz` module:
 
 <!-- PD_START:purs
 inline: true
@@ -452,22 +488,20 @@ split: true
 
 <!-- PD_END -->
 
-It takes the `TransitCore` value which we've created in the previous step and a function that takes the default options and returns the options we want to use.
-
-Now we have everything in place to generate the state diagram:
+It takes the `TransitCore` value which we've created in the previous step and a function that takes the default options and returns the options we want to use. Now we have everything in place to generate the state diagram:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - generateStateDiagramDark
+  - generateGraphDark
 -->
 
 ```purescript
-generateStateDiagramDark :: Effect Unit
-generateStateDiagramDark =
+generateGraphDark :: Effect Unit
+generateGraphDark =
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorTransit \opts -> opts
+    graph = TransitGraphviz.generate doorTransit \def -> def
       { theme = themeHarmonyDark
       , layout = Portrait
       }
@@ -484,18 +518,14 @@ generateStateDiagramDark =
 
 <!-- PD_END -->
 
-The `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
+- The `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
 
-To convert the `.dot` file to an SVG (or other formats), use the Graphviz[^graphviz] command-line tools:
+- The `layout` option controls the layout of the graph. We're using `Portrait` here which is the default layout. But you can also use `Landscape`, `Circular` or `Manual` to position the nodes manually as we'll see later.
+
+Finallyo, to convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
 ```bash
 dot -Tsvg renders/door_graph.dot -o renders/door.svg
-```
-
-Or for PNG:
-
-```bash
-dot -Tpng renders/door_graph.dot -o renders/door.png
 ```
 
 ### Transition Tables
@@ -505,15 +535,15 @@ In addition to state diagrams, you can also generate transition tables from the 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - generateTransitionTable
+  - generateTable
 -->
 
 ```purescript
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
+generateTable :: Effect Unit
+generateTable = do
   let
     table :: Table
-    table = TransitTable.generate_ doorTransit
+    table = TransitTable.generate doorTransit \def -> def
 
   FS.writeTextFile UTF8 "renders/door_table.md" (Table.toMarkdown table)
 ```
@@ -527,13 +557,15 @@ generateTransitionTable = do
 
 <!-- PD_END -->
 
-This generates a Markdown file containing a table with columns for "From State", "Message", and "To State".
+Here we provide no options to the `generate` function, so we use identity function `\def -> def` to pass the default options.
 
-Since both the state diagram and transition table are generated from the same DSL specification, they're guaranteed to be consistent with each other and with your type-level specification.
+This code snippet generates a Markdown file containing a transition table (as you have seen in the beginning of this chapter).
 
 ## Conclusion
 
 In this example, we've seen how **Transit** helps you build type-safe state machines. We started with a simple door that can be open or closed, and learned the core workflow:
+
+0. Use `Variant` types for both `State` and `Msg` instead of traditional ADTs.
 
 1. **Define the state machine** using **Transit**'s type-level DSL specification
 
@@ -547,4 +579,10 @@ While this example was simple, it demonstrates **Transit**'s fundamental approac
 
 [^variant]: The `purescript-variant` library provides row-polymorphic sum types. See the [documentation](https://pursuit.purescript.org/packages/purescript-variant) for more details.
 
+[^why-variant]: This design choice is crucial for **Transit**'s type-level machinery. The key advantage is that **Transit** can filter the possible cases (both input states/messages and output states) for each handler function. Variants are perfect for this. There is no way to express a subset of cases from a traditional ADT.
+
 [^type-app]: In PureScript, the `@` symbol is used for explicit type application, allowing you to pass type-level arguments to functions.
+
+[^graphviz]: [Graphviz](https://graphviz.org/) is a graph visualization software that uses the DOT language. The `.dot` files generated by Transit can be rendered into various formats (SVG, PNG, PDF, etc.) using Graphviz's command-line tools.
+
+[^v-function]: It's a convenience wrapper around `Variant`'s `inj` function that uses type application (no Proxy needed) and allows omitting empty record arguments.

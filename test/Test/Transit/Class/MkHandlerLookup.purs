@@ -16,7 +16,7 @@ import Transit.Class.MkHandlerLookup (mkHandlerLookup)
 import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, Ret(..))
 import Transit.HandlerLookup (HandlerLookupBuilder, build, runI, runImpl)
 import Transit.VariantUtils (v)
-import Type.Data.List (type (:>), List', Nil')
+import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
 
 type StateRow =

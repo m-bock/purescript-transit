@@ -121,8 +121,8 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight = do
+generateGraphLight :: Effect Unit
+generateGraphLight = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate bridgesTransit _
@@ -131,8 +131,8 @@ generateStateDiagramLight = do
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 
-generateStateDiagramDark :: Effect Unit
-generateStateDiagramDark = do
+generateGraphDark :: Effect Unit
+generateGraphDark = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate bridgesTransit _
@@ -141,8 +141,8 @@ generateStateDiagramDark = do
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-dark.dot" (Graphviz.toDotStr graph)
 
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
+generateTable :: Effect Unit
+generateTable = do
   let
     table :: Table
     table = TransitTable.generate bridgesTransit _
@@ -152,6 +152,6 @@ generateTransitionTable = do
 
 main :: Effect Unit
 main = do
-  generateStateDiagramLight
-  generateStateDiagramDark
-  generateTransitionTable
+  generateGraphLight
+  generateGraphDark
+  generateTable

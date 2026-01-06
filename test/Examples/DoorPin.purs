@@ -100,8 +100,8 @@ spec = describe "DoorPin" do
 --- Diagram and Table generation
 --------------------------------------------------------------------------------
 
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight = do
+generateGraphLight :: Effect Unit
+generateGraphLight = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate doorPinTransit _
@@ -112,8 +112,8 @@ generateStateDiagramLight = do
 
   FS.writeTextFile UTF8 "renders/door-pin_graph-light.dot" (Graphviz.toDotStr graph)
 
-generateStateDiagramDark :: Effect Unit
-generateStateDiagramDark = do
+generateGraphDark :: Effect Unit
+generateGraphDark = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate doorPinTransit _
@@ -124,8 +124,8 @@ generateStateDiagramDark = do
 
   FS.writeTextFile UTF8 "renders/door-pin_graph-dark.dot" (Graphviz.toDotStr graph)
 
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
+generateTable :: Effect Unit
+generateTable = do
   let
     table :: Table
     table = TransitTable.generate_ doorPinTransit
@@ -134,6 +134,6 @@ generateTransitionTable = do
 
 main :: Effect Unit
 main = do
-  generateStateDiagramLight
-  generateStateDiagramDark
-  generateTransitionTable
+  generateGraphLight
+  generateGraphDark
+  generateTable

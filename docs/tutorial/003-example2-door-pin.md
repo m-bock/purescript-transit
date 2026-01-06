@@ -10,8 +10,6 @@ Now let's extend our door to support PIN-based locking. In this enhanced version
 
 We add a new state `DoorLocked` and the new messages `Lock` and `Unlock`:
 
-**State Diagram:** _Door with Pin_
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="renders/door-pin_graph-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="renders/door-pin_graph-light.svg">
@@ -26,6 +24,7 @@ In the transition table the conditional transitions are expressed by the new "Gu
 filePath: renders/door-pin_table.md
 wrapNl: true
 -->
+
 | State      |       | Message |       | Guard        |       | State      |
 | ---------- | ----- | ------- | ----- | ------------ | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   |       |              | **⟶** | DoorClosed |
@@ -112,7 +111,7 @@ update state msg = case state, msg of
 
 ### State and Message Types
 
-Also in the **Transit** approach we define `State` and `Msg` types:
+Also in the **Transit** approach we define `State` and `Msg` types. This time some cases of those types have data attached to them:
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
@@ -181,7 +180,7 @@ The syntax `("PinCorrect" :? "DoorClosed") >| ("PinIncorrect" :? "DoorLocked")` 
 
 ### The Update Function
 
-The update function now has access to both the current state and the message data, allowing you to implement the conditional logic:
+The handlers in the update function now have access to both the matching state and message data, allowing you to implement the conditional runtime logic for the transition.
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
@@ -220,8 +219,6 @@ update = mkUpdate @DoorPinTransit
 </p>
 
 <!-- PD_END -->
-
-The match handlers receive both the current state and the message, giving you access to _only_ the data needed to make runtime decisions. The type system still ensures that only valid target states can be returned.
 
 > **Important**: The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification.
 
@@ -298,17 +295,17 @@ Since this test passes we can be pretty confident that the update function is co
 For generating the state diagram we add now some more options to the `generate` function:
 
 - `entryPoints`: The state machine will start in the `DoorOpen` state.
-- `orientation`: The state diagram will be displayed in landscape mode
+- `layout`: The state diagram will be displayed in landscape mode
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
 pick:
-  - generateStateDiagramLight
+  - generateGraphLight
 -->
 
 ```purescript
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight = do
+generateGraphLight :: Effect Unit
+generateGraphLight = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate doorPinTransit _

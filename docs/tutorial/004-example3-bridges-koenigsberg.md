@@ -338,12 +338,12 @@ For generating the state diagram we add some more options to the `generate` func
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - generateStateDiagramLight
+  - generateGraphLight
 -->
 
 ```purescript
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight = do
+generateGraphLight :: Effect Unit
+generateGraphLight = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate bridgesTransit _
@@ -367,12 +367,12 @@ generateStateDiagramLight = do
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - generateTransitionTable
+  - generateTable
 -->
 
 ```purescript
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
+generateTable :: Effect Unit
+generateTable = do
   let
     table :: Table
     table = TransitTable.generate bridgesTransit _

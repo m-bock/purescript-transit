@@ -97,8 +97,8 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight = do
+generateGraphLight :: Effect Unit
+generateGraphLight = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
@@ -117,8 +117,8 @@ generateStateDiagramLight = do
     "renders/house-santa-claus_graph-light.dot"
     (Graphviz.toDotStr graph)
 
-generateStateDiagramDark :: Effect Unit
-generateStateDiagramDark = do
+generateGraphDark :: Effect Unit
+generateGraphDark = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
@@ -138,8 +138,8 @@ generateStateDiagramDark = do
     "renders/house-santa-claus_graph-dark.dot"
     (Graphviz.toDotStr graph)
 
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
+generateTable :: Effect Unit
+generateTable = do
   let
     table :: Table
     table = TransitTable.generate santaTransit _
@@ -152,6 +152,6 @@ generateTransitionTable = do
 
 main :: Effect Unit
 main = do
-  generateStateDiagramLight
-  generateStateDiagramDark
-  generateTransitionTable
+  generateGraphLight
+  generateGraphDark
+  generateTable

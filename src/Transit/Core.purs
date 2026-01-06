@@ -191,6 +191,11 @@ newtype Ret a = Ret a
 
 derive instance Newtype (Ret a) _
 
+derive instance (Eq a) => Eq (Ret a)
+
+instance Show a => Show (Ret a) where
+  show (Ret x) = "(Ret " <> show x <> ")"
+
 --------------------------------------------------------------------------------
 --- Type class for transit specifications
 --------------------------------------------------------------------------------

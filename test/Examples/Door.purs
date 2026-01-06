@@ -90,39 +90,39 @@ spec = do
 --- Diagram and Table generation
 --------------------------------------------------------------------------------
 
-generateStateDiagramLight :: Effect Unit
-generateStateDiagramLight =
+generateGraphLight :: Effect Unit
+generateGraphLight =
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorTransit \opts -> opts
+    graph = TransitGraphviz.generate doorTransit \def -> def
       { theme = themeHarmonyLight
       , layout = Portrait
       }
   in
     FS.writeTextFile UTF8 "renders/door_graph-light.dot" (Graphviz.toDotStr graph)
 
-generateStateDiagramDark :: Effect Unit
-generateStateDiagramDark =
+generateGraphDark :: Effect Unit
+generateGraphDark =
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorTransit \opts -> opts
+    graph = TransitGraphviz.generate doorTransit \def -> def
       { theme = themeHarmonyDark
       , layout = Portrait
       }
   in
     FS.writeTextFile UTF8 "renders/door_graph-dark.dot" (Graphviz.toDotStr graph)
 
-generateTransitionTable :: Effect Unit
-generateTransitionTable = do
+generateTable :: Effect Unit
+generateTable = do
   let
     table :: Table
-    table = TransitTable.generate_ doorTransit
+    table = TransitTable.generate doorTransit \def -> def
 
   FS.writeTextFile UTF8 "renders/door_table.md" (Table.toMarkdown table)
 
 main :: Effect Unit
 main = do
-  generateStateDiagramLight
-  generateStateDiagramDark
-  generateTransitionTable
+  generateGraphLight
+  generateGraphDark
+  generateTable
 
