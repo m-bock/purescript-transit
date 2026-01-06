@@ -375,17 +375,6 @@ transitions with multiple possible outcomes using guard labels
 ensures that conditional transitions can only return valid target
 states, and each outcome must be associated with its corresponding guard
 label.</li>
-</ul>
-<p>By leveraging PureScript’s <code>Variant</code> types to express
-subsets of possible states (which traditional ADTs cannot represent),
-<strong>Transit</strong> provides compile-time guarantees that your
-implementation matches your specification. The type system catches
-errors at compile time, ensuring that:</p>
-<ul>
-<li>You cannot return invalid target states</li>
-<li>You cannot return more cases than specified</li>
-<li>However, the compiler cannot detect if you forget to return a
-possible case (you can return fewer cases than specified)</li>
 </ul> 
       <div class="scroll-to-top">
         <a

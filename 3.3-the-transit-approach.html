@@ -531,21 +531,16 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 L55-L74</a> </sup>
 </p>
 <!-- PD_END -->
-<blockquote>
-<p><strong>Important</strong>: The order of match handlers in
-<code>mkUpdate</code> must match the order of transitions in the DSL
-specification.</p>
-</blockquote>
-<blockquote>
-<p><strong>Limitation</strong>: The compiler cannot detect if an
-implementation forgets to return a possible case. For example, if a
-transition can return either <code>DoorClosed</code> or
-<code>DoorLocked</code>, your handler always returns
-<code>DoorClosed</code> then the compiler would not detect this error.
-Obviously the compiler cannot verify if your handler implements the
-conditional logic correctly, so missing a case is just one of many
-possible errors.</p>
-</blockquote> 
+<p>The order of match handlers in <code>mkUpdate</code> must match the
+order of transitions in the DSL specification. The compiler <em>can</em>
+detect if the returned state of a handler is legal for a given
+transition. However, it <em>cannot</em> detect if an implementation
+forgets to return a possible case. For example, if a transition can
+return either <code>DoorClosed</code> or <code>DoorLocked</code>, your
+handler always returns <code>DoorClosed</code> then the compiler would
+not detect this error. Obviously the compiler cannot verify if your
+handler implements the conditional logic correctly, so missing a case is
+just one of many possible errors.</p> 
       <div class="scroll-to-top">
         <a
           href="#"
