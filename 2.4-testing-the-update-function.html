@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -440,23 +433,54 @@ of the update function works as we expect it to. We’ll do this by
 writing some tests.</p>
 <h3 data-number="2.4.1" id="creating-variant-values">Creating Variant
 Values</h3>
-<p>To create values of type <code>Variant</code>,
-<strong>Transit</strong> provides the <code>v</code> function from
-<code>Transit.VariantUtils</code>. It’s a convenience wrapper around
-<code>Variant</code>’s <code>inj</code> function that uses type
-application (no Proxy needed) and allows omitting empty record
-arguments:</p>
-<ul>
-<li><p>Transit record payload (argument can be omitted)</p>
+<p>For the tests we need to create <code>Variant</code> values. To
+create values of type <code>Variant</code>, <strong>Transit</strong>
+provides the <code>v</code> function from
+<code>Transit.VariantUtils</code>. <a href="#fn1" class="footnote-ref"
+id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<!-- PD_START:purs
+pick:
+  - tag: any
+    name: doorOpen
+    filePath: test/Docs/Snippets.purs
+  - tag: any
+    name: doorClosed
+    filePath: test/Docs/Snippets.purs
+  - tag: any
+    name: close
+    filePath: test/Docs/Snippets.purs
+  - tag: any
+    name: open
+    filePath: test/Docs/Snippets.purs
+-->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span></code></pre></div></li>
-<li><p>Non-empty payload (must provide the data)</p>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">doorOpen ::</span> <span class="dt">State</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>doorOpen <span class="ot">=</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> {}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ot">doorClosed ::</span> <span class="dt">State</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>doorClosed <span class="ot">=</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> {}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ot">close ::</span> <span class="dt">Msg</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>close <span class="ot">=</span> v <span class="op">@</span><span class="st">&quot;Close&quot;</span> {}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ot">open ::</span> <span class="dt">Msg</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>open <span class="ot">=</span> v <span class="op">@</span><span class="st">&quot;Open&quot;</span> {}</span></code></pre></div>
+<!-- PD_END -->
+<p>Since having no data associated with a case is very common, the
+<code>v</code> function has a shortcut for this: You can just omit the
+empty record argument:</p>
+<!-- PD_START:purs
+pick:
+  - tag: any
+    name: doorOpenShort
+    filePath: test/Docs/Snippets.purs
+-->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { activePin<span class="op">:</span> <span class="st">&quot;1234&quot;</span> }</span></code></pre></div></li>
-</ul>
-<p>This is more ergonomic than using
-<code>V.inj (Proxy :: _ "DoorOpen") {}</code> directly which is the
-default way to create a Variant value.</p>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">doorOpenShort ::</span> <span class="dt">State</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>doorOpenShort <span class="ot">=</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span></code></pre></div>
+<!-- PD_END -->
+<p>Now we are well prepared to start testing the update function that
+we’ve implemented previously.</p>
 <h3 data-number="2.4.2" id="testing-state-transitions">Testing State
 Transitions</h3>
 <p>To test our update function, we’ll use two functions from the
@@ -532,6 +556,9 @@ checking the final result, it verifies each step along the way: after
 closing, the door is closed; after opening, the door is open; and after
 closing again, the door remains closed. This makes sure each transition
 works correctly.</p>
+<h3 data-number="2.4.3"
+id="more-ergonomic-testing-with-assertwalk-helper-function">More
+ergonomic testing with <code>assertWalk</code> helper function</h3>
 <p>Since we’ll want to write more of these tests for further examples,
 it’s helpful to define a reusable helper function. The
 <code>assertWalk</code> function takes an update function, an initial
@@ -606,7 +633,17 @@ equivalent to <code>Tuple (v @"Close") (v @"DoorClosed")</code>.</p>
 receiving message <code>Close</code>, we expect the next state to be
 <code>DoorClosed</code>. From there, when receiving message
 <code>Open</code>, we expect the next state to be <code>DoorOpen</code>.
-And so on.</p> 
+And so on.</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>It’s a convenience wrapper around <code>Variant</code>’s
+<code>inj</code> function that uses type application (no Proxy needed)
+and allows omitting empty record arguments.<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section> 
       <div class="scroll-to-top">
         <a
           href="#"

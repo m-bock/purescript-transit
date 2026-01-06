@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -438,7 +431,8 @@ Approach</h2>
 <h3 data-number="3.3.1" id="state-and-message-types-1">State and Message
 Types</h3>
 <p>Also in the <strong>Transit</strong> approach we define
-<code>State</code> and <code>Msg</code> types:</p>
+<code>State</code> and <code>Msg</code> types. This time some cases of
+those types have data attached to them:</p>
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
 pick:
@@ -501,8 +495,9 @@ label (like <code>"PinCorrect"</code>) with a target state, and
 <code>&gt;|</code> chains multiple conditional outcomes together.</p>
 <h3 data-number="3.3.3" id="the-update-function-3">The Update
 Function</h3>
-<p>The update function now has access to both the current state and the
-message data, allowing you to implement the conditional logic:</p>
+<p>The handlers in the update function now have access to both the
+matching state and message data, allowing you to implement the
+conditional runtime logic for the transition.</p>
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs
 pick:
@@ -536,10 +531,6 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 L55-L74</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The match handlers receive both the current state and the message,
-giving you access to <em>only</em> the data needed to make runtime
-decisions. The type system still ensures that only valid target states
-can be returned.</p>
 <blockquote>
 <p><strong>Important</strong>: The order of match handlers in
 <code>mkUpdate</code> must match the order of transitions in the DSL

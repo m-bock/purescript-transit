@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -444,11 +437,11 @@ as an undirected graph.</li>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - generateStateDiagramLight
+  - generateGraphLight
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramLight ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagramLight <span class="ot">=</span> <span class="kw">do</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateGraphLight ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>generateGraphLight <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">GraphvizGraph</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate bridgesTransit _</span>
@@ -467,11 +460,11 @@ L124-L132</a> </sup>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - generateTransitionTable
+  - generateTable
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTransitionTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateTable <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate bridgesTransit _</span>

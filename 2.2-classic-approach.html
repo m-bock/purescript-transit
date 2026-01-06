@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -435,10 +428,11 @@
     <article class="markdown-body">
        <h2 data-number="2.2" id="classic-approach">Classic Approach</h2>
 <p>Before diving into <strong>Transit</strong>, let’s first look at how
-state machines are typically implemented in PureScript using pattern
-matching. This classic approach is familiar to most PureScript
-developers and serves as a baseline for understanding what
-<strong>Transit</strong> improves upon.</p>
+state machines are typically implemented in PureScript using State and
+Message data types and an update function performing pattern matching on
+both. This classic approach is familiar to most PureScript developers
+and serves as a baseline for understanding what <strong>Transit</strong>
+improves upon.</p>
 <h3 data-number="2.2.1" id="states-and-message-types">States and Message
 types</h3>
 <p>To represent our door in code, we need two major types: the states
@@ -496,12 +490,12 @@ L22-L27</a> </sup>
 </p>
 <!-- PD_END -->
 <p>We pattern match on both the current state and the message at once.
-It could also be written as a nested pattern match.</p>
-<p>This function handles the two valid transitions we saw in the
-diagram: closing an open door and opening a closed door. The catch-all
-case <code>_, _ -&gt; state</code> handles any invalid combinations
-(like trying to open an already open door) by returning the current
-state unchanged.</p>
+It could also be written as a nested pattern match. The
+<code>update</code> function handles the two valid transitions we saw in
+the diagram: closing an open door and opening a closed door. The
+catch-all case <code>_, _ -&gt; state</code> handles any invalid
+combinations (like trying to open an already open door) by returning the
+current state unchanged.</p>
 <p>While this approach works and is straightforward, it has some
 drawbacks:</p>
 <ul>
@@ -513,7 +507,7 @@ diagram for documentation purposes, there’s nothing ensuring the code
 stays in sync — you have to remember to update both manually.</p></li>
 <li><p><strong>Limited analysis capabilities</strong>: There’s no way to
 analyze the state machine’s structure or behavior statically — you can
-only understand it by running the code.</p></li>
+only inspect it’s behavior it by running the code.</p></li>
 </ul> 
       <div class="scroll-to-top">
         <a

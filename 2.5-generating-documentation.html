@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -456,7 +449,10 @@ L47-L48</a> </sup>
 </p>
 <!-- PD_END -->
 <h3 data-number="2.5.1" id="state-diagrams">State Diagrams</h3>
-<p>To generate a state diagram we’ll use the following function:</p>
+<p><strong>Transit</strong> can generate state diagrams using Graphviz<a
+href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>. For this we’ll use the following
+function from the <code>Transit.Render.Graphviz</code> module:</p>
 <!-- PD_START:purs
 inline: true
 pick:
@@ -469,19 +465,19 @@ split: true
 <!-- PD_END -->
 <p>It takes the <code>TransitCore</code> value which we’ve created in
 the previous step and a function that takes the default options and
-returns the options we want to use.</p>
-<p>Now we have everything in place to generate the state diagram:</p>
+returns the options we want to use. Now we have everything in place to
+generate the state diagram:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - generateStateDiagramDark
+  - generateGraphDark
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateStateDiagramDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateStateDiagramDark <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateGraphDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateGraphDark <span class="ot">=</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">GraphvizGraph</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate doorTransit \opts <span class="ot">-&gt;</span> opts</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate doorTransit \def <span class="ot">-&gt;</span> def</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyDark</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      , layout <span class="ot">=</span> <span class="dt">Portrait</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      }</span>
@@ -494,18 +490,22 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 L104-L113</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The <code>theme</code> option which we’re using above controls the
-color scheme. <strong>Transit</strong> provides a couple of built-in
+<ul>
+<li><p>The <code>theme</code> option which we’re using above controls
+the color scheme. <strong>Transit</strong> provides a couple of built-in
 themes. But you can also provide your own. See <a
 href="https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md">themes.md</a>
-for more details.</p>
-<p>To convert the <code>.dot</code> file to an SVG (or other formats),
-use the Graphviz[^graphviz] command-line tools:</p>
+for more details.</p></li>
+<li><p>The <code>layout</code> option controls the layout of the graph.
+We’re using <code>Portrait</code> here which is the default layout. But
+you can also use <code>Landscape</code>, <code>Circular</code> or
+<code>Manual</code> to position the nodes manually as we’ll see
+later.</p></li>
+</ul>
+<p>Finallyo, to convert the <code>.dot</code> file to an SVG (or other
+formats), use the Graphviz command-line tools:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tsvg</span> renders/door_graph.dot <span class="at">-o</span> renders/door.svg</span></code></pre></div>
-<p>Or for PNG:</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">dot</span> <span class="at">-Tpng</span> renders/door_graph.dot <span class="at">-o</span> renders/door.png</span></code></pre></div>
 <h3 data-number="2.5.2" id="transition-tables">Transition Tables</h3>
 <p>In addition to state diagrams, you can also generate transition
 tables from the same specification. This provides a tabular view of all
@@ -513,16 +513,16 @@ state transitions, which can be easier to read for some use cases.</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
 pick:
-  - generateTransitionTable
+  - generateTable
 -->
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTransitionTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>generateTransitionTable <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate_ doorTransit</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>generateTable <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate doorTransit \def <span class="ot">-&gt;</span> def</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
@@ -530,11 +530,22 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 L115-L121</a> </sup>
 </p>
 <!-- PD_END -->
-<p>This generates a Markdown file containing a table with columns for
-“From State”, “Message”, and “To State”.</p>
-<p>Since both the state diagram and transition table are generated from
-the same DSL specification, they’re guaranteed to be consistent with
-each other and with your type-level specification.</p> 
+<p>Here we provide no options to the <code>generate</code> function, so
+we use identity function <code>\def -&gt; def</code> to pass the default
+options.</p>
+<p>This code snippet generates a Markdown file containing a transition
+table (as you have seen in the beginning of this chapter).</p>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://graphviz.org/">Graphviz</a> is a graph
+visualization software that uses the DOT language. The <code>.dot</code>
+files generated by Transit can be rendered into various formats (SVG,
+PNG, PDF, etc.) using Graphviz’s command-line tools.<a href="#fnref1"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section> 
       <div class="scroll-to-top">
         <a
           href="#"

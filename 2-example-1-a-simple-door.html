@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -381,7 +374,12 @@ to define a state machine using <strong>Transit</strong>’s type-level
 DSL, implement a type-safe update function, and generate documentation
 automatically. We’ll compare the traditional approach with
 <strong>Transit</strong>’s approach to highlight the benefits of the
-latter.</p> 
+latter.</p>
+<p>Think of a door that can be either open or closed. When it’s open,
+you can close it. When it’s closed, you can open it. That’s it — no
+other actions make sense. You can’t open a door that’s already open, and
+you can’t close a door that’s already closed. This simple behavior is
+what we’re modeling in this example.</p> 
       <div class="scroll-to-top">
         <a
           href="#"

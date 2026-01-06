@@ -323,13 +323,6 @@
         background-color: var(--bgColor-muted);
       }
 
-      .state-diagram {
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        padding: 1rem;
-        background-color: var(--bgColor-muted);
-      }
-
       .footnotes {
         border-top: 0 !important;
       }
@@ -372,7 +365,9 @@
 <p>In this example, we’ve seen how <strong>Transit</strong> helps you
 build type-safe state machines. We started with a simple door that can
 be open or closed, and learned the core workflow:</p>
-<ol type="1">
+<ol start="0" type="1">
+<li><p>Use <code>Variant</code> types for both <code>State</code> and
+<code>Msg</code> instead of traditional ADTs.</p></li>
 <li><p><strong>Define the state machine</strong> using
 <strong>Transit</strong>’s type-level DSL specification</p></li>
 <li><p><strong>Implement the update function</strong> using
