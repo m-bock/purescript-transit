@@ -448,13 +448,12 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 L98-L99</a> </sup>
 </p>
 <!-- PD_END -->
+<h3 data-number="4.4.1" id="eulerian-trail">Eulerian trail</h3>
 <p>Once we have this graph data structure, we can perform sophisticated
 analysis using standard graph algorithms. For the Seven Bridges problem,
 we want to determine if the graph has an <strong>Eulerian
-circuit</strong> (a path that visits every edge exactly once and returns
-to the starting point) or an <strong>Eulerian trail</strong> (a path
-that visits every edge exactly once but doesn’t necessarily return to
-the start).</p>
+trail</strong>: A path that visits every edge exactly once but doesn’t
+necessarily return to the start.</p>
 <p>Let’s assume out trail would start and end at the same node. Is there
 some property that must hold for each node? As we know, that a bridge
 can only be crossed once, we can conclude that whenever we visit a piece
@@ -468,6 +467,7 @@ node, and we never leave the end node.</p>
 <p>This is what Euler formalized in his theorem: An undirected graph has
 an Eulerian trail if and only if it <em>is connected</em> and has
 exactly <em>zero or two</em> vertices of odd degree.</p>
+<h3 data-number="4.4.2" id="degree-of-a-node">Degree of a node</h3>
 <p>For simplicity we’ll assume that our graphs are always connected.
 Degree of a node is the number of edges connected to it. Since our graph
 is undirected, we can obtain the degree of a node by counting the number
@@ -508,11 +508,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 L101-L107</a> </sup>
 </p>
 <!-- PD_END -->
-<p>And this already proves that our graph does not have an Eulerian
-trail. But we want to create a function that can tell this for any state
-graph. Let’s do that now, we’ll use this function in the next section
+<p>And this already shows that our graph does <em>not</em> have an
+Eulerian trail.</p>
+<h3 data-number="4.4.3" id="checking-for-eulerian-trail">Checking for
+Eulerian trail</h3>
+<p>But we want to create a function that can tell this for any state
+graph. Let’s do that now, we’ll use this function in the next example
 again:</p>
-<p>[todo]</p>
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
 pick:
@@ -539,7 +541,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 L24-L36</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The imoplementation is pretty straight forward. We get all nodes,
+<p>The implementation is pretty straight forward. We get all nodes,
 count the number of edges connected to each node, filter the odd ones
 and count them. If the count is 2 or 0, we have an Eulerian trail,
 otherwise we don’t. We can use this function to test our graph:</p>
