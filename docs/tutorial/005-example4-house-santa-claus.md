@@ -4,8 +4,8 @@
 
 <img src="assets/house-santa-claus-solution.webp" />
 
-Do you remember the puzzle where you try to draw the house of Santa Claus in one continuous line - without lifting your pen and without retracing any line?
-And while doing that you where ought to say out loud the 8 syllables "This-Is-The-House-Of-San-Ta-Claus" - one syllable for each line.
+Do you remember the puzzle where you try to draw the house of Santa Claus in one continuous line — without lifting your pen and without retracing any line?
+And while doing that you were supposed to say out loud the 8 syllables "This-Is-The-House-Of-San-Ta-Claus" — one syllable for each line.
 
 ## The State Machine
 
@@ -207,7 +207,7 @@ specEulerTrail =
 
 ## Generating documentation
 
-Until now we always used automatic layouts for the state diagram. This is uper convenient because you don't have to worry about the layout at all. Sometimes you want more control over the layout. Luckily we can also position the nodes manually by using the `Manual` layout. We''l do this here to make our state diagram look exaclty like the drawing of the house of Santa Claus.
+Until now we always used automatic layouts for the state diagram. This is super convenient because you don't have to worry about the layout at all. Sometimes you want more control over the layout. Luckily we can also position the nodes manually by using the `Manual` layout. We'll do this here to make our state diagram look exactly like the drawing of the house of Santa Claus.
 
 Let's do a quick sketch in a 2D grid. The nodes are positioned at the following coordinates:
 
@@ -235,7 +235,7 @@ baseUnit = Inch 0.6
 
 <!-- PD_END -->
 
-Since well need vectors of inches to position the nodes, we define a helper function to create them as multiple of the base unit.
+Since we'll need vectors of inches to position the nodes, we define a helper function to create them as multiples of the base unit.
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
@@ -301,7 +301,7 @@ generateGraphDark = do
 
 <!-- PD_END -->
 
-Note that also the size of the nodes is fixed to a multiple of the base unit. In this way we can better control the position in the grid we draw in the beginning.
+Note that the size of the nodes is also fixed to a multiple of the base unit. In this way we can better control the position in the grid we drew at the beginning.
 
 ## Conclusion
 

@@ -109,7 +109,7 @@ type CountDownTransit =
 
 ### Update Function
 
-Finally, we write the update function that is checked at compile against the state machine specification:
+Finally, we write the update function that is checked at compile time against the state machine specification:
 
 <!-- PD_START:purs
 pick:

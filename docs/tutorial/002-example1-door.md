@@ -119,7 +119,7 @@ While this approach works and is straightforward, it has some drawbacks:
 
 - **Documentation drift**: If you maintain a state diagram for documentation purposes, there's nothing ensuring the code stays in sync — you have to remember to update both manually.
 
-- **Limited analysis capabilities**: There's no way to analyze the state machine's structure or behavior statically — you can only inspect it's behavior it by running the code.
+- **Limited analysis capabilities**: There's no way to analyze the state machine's structure or behavior statically — you can only inspect its behavior by running the code.
 
 ## Transit Approach
 
@@ -193,7 +193,7 @@ Breaking down the syntax:
 
 So for instance we read the first transition as: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`.
 
-This type-level specification fully defines the state machine's structure. The compiler can now use it to ensure our the implementation of the update function is implemented accordingly.
+This type-level specification fully defines the state machine's structure. The compiler can now use it to ensure our implementation of the update function matches the specification.
 
 ### The Update Function
 
@@ -522,7 +522,7 @@ generateGraphDark =
 
 - The `layout` option controls the layout of the graph. We're using `Portrait` here which is the default layout. But you can also use `Landscape`, `Circular` or `Manual` to position the nodes manually as we'll see later.
 
-Finallyo, to convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
+Finally, to convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 
 ```bash
 dot -Tsvg renders/door_graph.dot -o renders/door.svg
@@ -557,9 +557,9 @@ generateTable = do
 
 <!-- PD_END -->
 
-Here we provide no options to the `generate` function, so we use identity function `\def -> def` to pass the default options.
+Here we provide no options to the `generate` function, so we use the identity function `\def -> def` to pass the default options.
 
-This code snippet generates a Markdown file containing a transition table (as you have seen in the beginning of this chapter).
+This code snippet generates a Markdown file containing a transition table (as you saw at the beginning of this chapter).
 
 ## Conclusion
 

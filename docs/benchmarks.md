@@ -18,7 +18,7 @@ The benchmarking tool used is [m-bock/purescript-benchlib](https://github.com/m-
 
 ### Standard JS Backend
 
-We can clearly see that the **Transit** approach pefroms faster than the classic approach. More importantly, the performance of the **Transit** approach has linear growth with the size of the state machine.
+We can clearly see that the **Transit** approach performs faster than the classic approach. More importantly, the performance of the **Transit** approach has linear growth with the size of the state machine.
 
 <img src="../bench/backend-JS/Update-Functions.svg" />
 
@@ -30,9 +30,9 @@ The optimized ES backend shows similar characteristics as the standard JS backen
 
 ## Compile Time Benchmarks
 
-Since the **Transit** library leverage a lot of compile time code also compilation times have been measured. The diagrams shows how long it takes to compile a PureScript module containing the whole implementation of a state machine of a given size.
+Since the **Transit** library leverages a lot of compile-time code, compilation times have also been measured. The diagram shows how long it takes to compile a PureScript module containing the whole implementation of a state machine of a given size.
 
-The interpretation of the results is less clear here. However it is evident that up to fairly large state machines (size=200) compilation times of the **Transit** approach are much faster than with the classic approach.
+The interpretation of the results is less clear here. However, it is evident that up to fairly large state machines (size=200), compilation times of the **Transit** approach are much faster than with the classic approach.
 
 <img src="../bench/compile-time/results.svg" />
 

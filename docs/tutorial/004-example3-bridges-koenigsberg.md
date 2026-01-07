@@ -12,7 +12,7 @@ In the picture above you see the topography of the historic city of Königsberg.
 
 ## The State Machine
 
-Even not immediately obvious, the map of the city can be represented as a graph:
+While not immediately obvious, the map of the city can be represented as a graph:
 
 - **Nodes** represent the four land areas
 - **Edges** represent the seven bridges connecting them
@@ -190,7 +190,7 @@ specSampleWalk =
 
 <!-- PD_END -->
 
-We could try many other walks the same way. But - spoiler alert - none of them will visit all bridges exactly once. And in the next section we'll see a way to proof this for our state machine.
+We could try many other walks the same way. But — spoiler alert — none of them will visit all bridges exactly once. And in the next section we'll see a way to prove this for our state machine.
 
 ## Graph Analysis
 
@@ -220,9 +220,9 @@ bridgesGraph = mkStateGraph bridgesTransit
 
 Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian trail**: A path that visits every edge exactly once but doesn't necessarily return to the start.
 
-Let's assume out trail would start and end at the same node. Is there some property that must hold for each node? As we know, that a bridge can only be crossed once, we can conclude that whenever we visit a piece of land via a bridge we must leave it via a _different_ bridge again. That means that the number of bridges connected to each land must be 2, or 4, or 6, or 2000, ... in other words, an even number.
+Let's assume our trail would start and end at the same node. Is there some property that must hold for each node? As we know, a bridge can only be crossed once, so we can conclude that whenever we visit a piece of land via a bridge we must leave it via a _different_ bridge again. That means that the number of bridges connected to each land must be 2, or 4, or 6, or 2000, ... in other words, an even number.
 
-However our trail does not have to start and end at the same piece of land. If this is the case, the start and end nodes can have odd number of bridges connected to them. This is because we never enter the start node, and we never leave the end node.
+However, our trail does not have to start and end at the same piece of land. If this is the case, the start and end nodes can have an odd number of bridges connected to them. This is because we never enter the start node, and we never leave the end node.
 
 This is what Euler formalized in his theorem: An undirected graph has an Eulerian trail if and only if it _is connected_ and has exactly _zero or two_ vertices of odd degree.
 
@@ -314,7 +314,7 @@ hasEulerTrail graph =
 
 <!-- PD_END -->
 
-The implementation is pretty straight forward. We get all nodes, count the number of edges connected to each node, filter the odd ones and count them. If the count is 2 or 0, we have an Eulerian trail, otherwise we don't. We can use this function to test our graph:
+The implementation is pretty straightforward. We get all nodes, count the number of edges connected to each node, filter the odd ones and count them. If the count is 2 or 0, we have an Eulerian trail, otherwise we don't. We can use this function to test our graph:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -341,7 +341,7 @@ specEulerTrail = do
 ### Graph analysis with the classic state machine approach
 
 If we wanted to perform similar analysis with the classic state machine approach, we would need to generate all possible 5040 walks and empirically check if any of them visit all bridges exactly once.
-This is due to the fact that the specification has of state machine transitions is burried inside the update function.
+This is due to the fact that the specification of state machine transitions is buried inside the update function.
 
 ## Generating Documentation
 

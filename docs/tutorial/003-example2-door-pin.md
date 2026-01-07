@@ -245,7 +245,7 @@ assertWalk
 
 <!-- PD_END -->
 
-We want start the state machine in the `DoorOpen` state and then follow this sequence of transitions:
+We want to start the state machine in the `DoorOpen` state and then follow this sequence of transitions:
 
 1. `Close` the door, expect transition to `DoorClosed`
 2. `Lock` the door with PIN "1234", expect transition to `DoorLocked` with the stored PIN
@@ -328,5 +328,5 @@ The generation of the transition table works exactly the same as in the previous
 
 This example demonstrates how **Transit** extends beyond simple state machines to handle real-world complexity:
 
-- **States and messages with data**: Both states and messages can carry data (like `activePin` in `DoorLocked` or `newPin` in `Lock`), and handlers receive this data.
+- **States and messages with data**: Both states and messages can carry data (like `storedPin` in `DoorLocked` or `newPin` in `Lock`), and handlers receive this data.
 - **Conditional transitions**: The DSL supports transitions with multiple possible outcomes using guard labels (`PinCorrect` and `PinIncorrect`). The type system ensures that conditional transitions can only return valid target states, and each outcome must be associated with its corresponding guard label.
