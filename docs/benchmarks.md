@@ -12,7 +12,7 @@ In each benchmark the approach of the **Transit** library has been compared to c
 
 ## Runtime Benchmarks
 
-For the runtime benchmarks it was measured how long it takes to perform a full round trip through the state machine. Both, the standard JS compiler backend and the optimized [ES backend](https://github.com/aristanetworks/purescript-backend-optimizer) has been tested.
+For the runtime benchmarks, it was measured how long it takes to perform a full round trip through the state machine. Both the standard JS compiler backend and the optimized [ES backend](https://github.com/aristanetworks/purescript-backend-optimizer) have been tested.
 
 The benchmarking tool used is [m-bock/purescript-benchlib](https://github.com/m-bock/purescript-benchlib).
 

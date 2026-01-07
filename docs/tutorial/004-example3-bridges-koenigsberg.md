@@ -31,6 +31,7 @@ The same is true for the transition table. Instead of two rows for each bridge, 
 filePath: renders/bridges-koenigsberg_table.md
 wrapNl: true
 -->
+
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
 | A     | **⟵** | a       | **⟶** | B     |
@@ -86,7 +87,7 @@ type Msg = Variant
 
 <!-- PD_END -->
 
-### Type level specification
+### Type-level specification
 
 Since bridges can be crossed in both directions, each bridge creates a bidirectional connection between two land areas. In the type-level specification, we define transitions using the syntax `"State1" |< "Message" >| "State2"`, which effectively defines two transitions: one from `State1` to `State2` and one from `State2` to `State1`.
 
@@ -117,7 +118,7 @@ type BridgesTransit =
 
 <!-- PD_END -->
 
-### Update function
+### The Update Function
 
 However, in the update function we need to explicitly handle both directions of each bridge as shown below.
 
@@ -156,7 +157,7 @@ update = mkUpdate @BridgesTransit
 
 <img src="assets/bridges-koenigsberg-walk.svg" width="450" />
 
-The picture shows one randomly chosen walk through the city of Königsberg. Unfortunately, it does not visit all bridges exactly once as required by Euler. The red circle indicates where bridge `g` is crossed twice. But let's test the walk anyway before we move on.
+The picture shows one randomly chosen walk through the city of Königsberg. Unfortunately, it does not visit all bridges exactly once as required by Euler. The red circle indicates where bridge `g` is crossed twice. Let's test the walk anyway before we move on.
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -228,7 +229,7 @@ This is what Euler formalized in his theorem: An undirected graph has an Euleria
 
 ### Degree of a node
 
-For simplicity we'll assume that our graphs are always connected. Degree of a node is the number of edges connected to it. Since our graph is undirected, we can obtain the degree of a node by counting the number of outgoing edges:
+For simplicity we'll assume that our graphs are always connected. The degree of a node is the number of edges connected to it. Since our graph is undirected, we can obtain the degree of a node by counting the number of outgoing edges:
 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs

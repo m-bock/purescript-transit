@@ -25,8 +25,8 @@ A PureScript library for building fast and type-safe state machines.
 
 ## Features
 
-- State Transitions are specified with **type level DSL**.
-- **Compile time guarantees** that state update functions are complete and valid.
+- State transitions are specified with a **type-level DSL**.
+- **Compile-time guarantees** that state update functions are complete and valid.
 - Automatic **state diagram generation**
 - State machine **graph analysis**
 - Optimized for **speed**
@@ -56,7 +56,7 @@ Let's consider a simple count down state machine which is described by the follo
 
 ### Types
 
-To implement this state machine with **Transit** first we need to define the state and message types as Variants:
+To implement this state machine with **Transit**, first we need to define the state and message types as Variants:
 
 <!-- PD_START:purs
 pick:
@@ -142,7 +142,7 @@ update = mkUpdate @CountDownTransit
 
 ### Generate State Diagram
 
-Reflect type level state machine specification to a term level representation:
+Reflect type-level state machine specification to a term-level representation:
 
 <!-- PD_START:purs
 pick:

@@ -24,6 +24,7 @@ In the transition table the conditional transitions are expressed by the new "Gu
 filePath: renders/door-pin_table.md
 wrapNl: true
 -->
+
 | State      |       | Message |       | Guard        |       | State      |
 | ---------- | ----- | ------- | ----- | ------------ | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   |       |              | **⟶** | DoorClosed |
@@ -34,7 +35,7 @@ wrapNl: true
 
 <!-- PD_END -->
 
-Guard labels are not strictly required as you can see in the Countdown example. But they can be useful to make the code and the state diagram more readable.
+Guard labels are not strictly required. Transitions can have multiple target states without explicit labels - like in the Countdown example. But the labels can be very useful to make the code and the state diagram more readable.
 
 ## The Classic Approach
 
@@ -219,7 +220,7 @@ update = mkUpdate @DoorPinTransit
 
 <!-- PD_END -->
 
-The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification. The compiler _can_ detect if the returned state of a handler is legal for a given transition. However, it _cannot_ detect if an implementation forgets to return a possible case. For example, if a transition can return either `DoorClosed` or `DoorLocked`, your handler always returns `DoorClosed` then the compiler would not detect this error. Obviously the compiler cannot verify if your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
+The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification. The compiler _can_ detect if the returned state of a handler is legal for a given transition. However, it _cannot_ detect if an implementation forgets to return a possible case. For example, if a transition can return either `DoorClosed` or `DoorLocked`, but your handler always returns `DoorClosed`, the compiler would not detect this error. The compiler cannot verify whether your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
 
 ## Testing the update function
 
@@ -284,14 +285,14 @@ specWalk =
 
 <!-- PD_END -->
 
-Since this test passes we can be pretty confident that the update function is correct.
+Since this test passes, we can be pretty confident that the update function is correct.
 
 ## Generating Documentation
 
-For generating the state diagram we add now some more options to the `generate` function:
+For generating the state diagram, we now add some more options to the `generate` function:
 
 - `entryPoints`: The state machine will start in the `DoorOpen` state.
-- `layout`: The state diagram will be displayed in landscape mode
+- `layout`: The state diagram will be displayed in landscape mode.
 
 <!-- PD_START:purs
 filePath: test/Examples/DoorPin.purs

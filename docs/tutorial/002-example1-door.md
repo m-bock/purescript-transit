@@ -36,6 +36,7 @@ For a more structured view, here's the corresponding transition table:
 filePath: renders/door_table.md
 wrapNl: true
 -->
+
 | State      |       | Message |       | State      |
 | ---------- | ----- | ------- | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |
@@ -127,7 +128,7 @@ Now let's see how **Transit** can help us to improve this.
 
 ### State and Message Types
 
-**Transit** uses `Variant`[^variant] types for both `State` and `Msg` instead of traditional ADTs. This design choice is crucial for **Transit** but for now let's just focus on the fact that it's just another way to represent a sum types.[^why-variant]
+**Transit** uses `Variant`[^variant] types for both `State` and `Msg` instead of traditional ADTs. This design choice is crucial for **Transit**, but for now let's just focus on the fact that it's another way to represent sum types.[^why-variant]
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -161,7 +162,7 @@ The empty record `{}` is used to represent the absence of any data (payload) ass
 
 ### Transit Specification
 
-Once the types are defined, we can define the state machine structure using **Transit**'s type-level DSL. Let's see how it looks like:
+Once the types are defined, we can define the state machine structure using **Transit**'s type-level DSL. Let's see what it looks like:
 
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -189,9 +190,9 @@ Breaking down the syntax:
 
 - `Transit` initializes an empty transition list
 - `:*` is an infix operator that appends each transition to the list
-- The `@` operator connects a state to a message, and `>|` indicates the target state
+- The `:@` operator connects a state to a message, and `>|` indicates the target state
 
-So for instance we read the first transition as: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`.
+For instance, we read the first transition as: in state `DoorOpen`, when receiving message `Close`, transition to state `DoorClosed`.
 
 This type-level specification fully defines the state machine's structure. The compiler can now use it to ensure our implementation of the update function matches the specification.
 
@@ -233,7 +234,7 @@ Here's how this works:
 
 ## Testing the update function
 
-Before we move further, let's actually verify that our implementation of the update function works as we expect it to. We'll do this by writing some tests.
+Before we proceed, let's verify that our implementation of the update function works as we expect it to. We'll do this by writing some tests.
 
 ### Creating Variant Values
 
@@ -518,9 +519,9 @@ generateGraphDark =
 
 <!-- PD_END -->
 
-- The `theme` option which we're using above controls the color scheme. **Transit** provides a couple of built-in themes. But you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
+- The `theme` option we're using above controls the color scheme. **Transit** provides a couple of built-in themes, but you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
 
-- The `layout` option controls the layout of the graph. We're using `Portrait` here which is the default layout. But you can also use `Landscape`, `Circular` or `Manual` to position the nodes manually as we'll see later.
+- The `layout` option controls the layout of the graph. We're using `Portrait` here, which is the default layout. But you can also use `Landscape`, `Circular`, or `Manual` to position the nodes manually, as we'll see later.
 
 Finally, to convert the `.dot` file to an SVG (or other formats), use the Graphviz command-line tools:
 

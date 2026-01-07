@@ -23,6 +23,7 @@ Accordingly, the transition table looks like this:
 filePath: renders/house-santa-claus_table.md
 wrapNl: true
 -->
+
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
 | 1     | **⟵** | a       | **⟶** | 2     |
@@ -40,7 +41,7 @@ wrapNl: true
 
 ### State and message types
 
-Nothing special here. We define the state and message types like we did in the previous examples. By using Variants we have no constraint on how the labels are named, we can use any type level string we want: numbers, lower case letters, etc. Traditional ADT wouldn't give us this flexibility.
+Nothing special here. We define the state and message types like we did in the previous examples. By using Variants, we have no constraint on how the labels are named; we can use any type-level string we want: numbers, lowercase letters, etc. Traditional ADTs wouldn't give us this flexibility.
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
@@ -79,7 +80,7 @@ type Msg = Variant
 
 <!-- PD_END -->
 
-### Type level specification
+### Type-level specification
 
 The transit specification follows the same pattern as in the previous example.
 
@@ -111,14 +112,14 @@ type SantaTransit =
 
 <!-- PD_END -->
 
-### Update function
+### The Update Function
 
-Until now we always manually defined the update function. In most cases this will be the way to go. But you may have noticed that in some cases this is sheer boilerplate. We can let the compiler generate the update function for us by using the `mkUpdateAuto` function. This works if the following conditions are met:
+Until now, we have always manually defined the update function. In most cases this will be the way to go. But you may have noticed that in some cases this is sheer boilerplate. We can let the compiler generate the update function for us by using the `mkUpdateAuto` function. This works if the following conditions are met:
 
 - There are no conditional transitions in the state machine.
 - State transitions don't change the type of the state payload.
 
-Both conditions are met in our case, so we can use `mkUpdateAuto` to generate the update function for us. We could have used it in the Door example and the Bridges of Konigsberg example as well.
+Both conditions are met in our case, so we can use `mkUpdateAuto` to generate the update function for us. We could have used it in the Door example and the Bridges of Königsberg example as well.
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
@@ -143,7 +144,7 @@ update =
 
 ## Testing the state machine
 
-In the beginning of the chapter we've already seen an image of one possible solution to the puzzle. Let's write a test to verify that the update function follows this solution:
+At the beginning of this chapter, we saw an image of one possible solution to the puzzle. Let's write a test to verify that the update function follows this solution:
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
@@ -213,7 +214,7 @@ Let's do a quick sketch in a 2D grid. The nodes are positioned at the following 
 
 <img src="assets/house-santa-claus_layout-positions.svg" />
 
-For historical reasons the Graphviz renderer want positions being defined in inches. We want to use 0.6 inches as the base unit and have all positions be a multiple of that. This number is an arbitrary choice and you can adjust it to increase or decrease the size of the graph.
+For historical reasons, the Graphviz renderer wants positions to be defined in inches. We want to use 0.6 inches as the base unit and have all positions be a multiple of that. This number is an arbitrary choice and you can adjust it to increase or decrease the size of the graph.
 
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
