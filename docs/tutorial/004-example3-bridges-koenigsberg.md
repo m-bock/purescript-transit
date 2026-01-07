@@ -338,6 +338,8 @@ specEulerTrail = do
 
 <!-- PD_END -->
 
+### Graph analysis with the classic state machine approach
+
 If we wanted to perform similar analysis with the classic state machine approach, we would need to generate all possible 5040 walks and empirically check if any of them visit all bridges exactly once.
 This is due to the fact that the specification has of state machine transitions is burried inside the update function.
 

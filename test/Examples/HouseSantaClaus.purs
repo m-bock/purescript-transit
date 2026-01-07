@@ -2,7 +2,6 @@ module Examples.HouseSantaClaus (main, spec) where
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
 import Data.Reflectable (reflectType)
 import Data.Variant (Variant)
 import Effect (Effect)
@@ -16,6 +15,7 @@ import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
+import Transit.Render.Graphviz (exact, nodeSize, pos)
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -104,13 +104,15 @@ generateGraphLight = do
     graph = TransitGraphviz.generate santaTransit _
       { useUndirectedEdges = true
       , theme = themeHarmonyLight
-      -- , layout = TransitGraphviz.Manual
-      --     [ { node: "1", x: 0, y: 0, exact: true }
-      --     , { node: "2", x: 2, y: 0, exact: true }
-      --     , { node: "3", x: 2, y: 2, exact: true }
-      --     , { node: "4", x: 0, y: 2, exact: true }
-      --     , { node: "5", x: 1, y: 3, exact: true }
-      --     ]
+      , layout = TransitGraphviz.Manual
+          [ pos 0 0 "1" # exact
+          , pos 2 0 "2" # exact
+          , pos 2 2 "3" # exact
+          , pos 0 2 "4" # exact
+          , pos 1 3 "5" # exact
+          ]
+      , fixedNodeSize = pure $ nodeSize 1 1
+      , fontSize = 16.0
       }
 
   FS.writeTextFile UTF8
@@ -123,15 +125,16 @@ generateGraphDark = do
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
       { useUndirectedEdges = true
-      , globalAttrsRaw = Just "layout=neato"
       , theme = themeHarmonyDark
-      -- , layout = TransitGraphviz.Manual
-      --     [ { node: "1", x: 0, y: 0, exact: true }
-      --     , { node: "2", x: 2, y: 0, exact: true }
-      --     , { node: "3", x: 2, y: 2, exact: true }
-      --     , { node: "4", x: 0, y: 2, exact: true }
-      --     , { node: "5", x: 1, y: 3, exact: true }
-      --     ]
+      , layout = TransitGraphviz.Manual
+          [ pos 0 0 "1" # exact
+          , pos 2 0 "2" # exact
+          , pos 2 2 "3" # exact
+          , pos 0 2 "4" # exact
+          , pos 1 4 "5" # exact
+          ]
+      , fixedNodeSize = pure $ nodeSize 1 1
+      , fontSize = 16.0
       }
 
   FS.writeTextFile UTF8
