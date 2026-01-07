@@ -19,14 +19,21 @@ update = mkUpdateMaybe @DoorTransit
       return @"DoorOpen"
   )
 
+specSuccess :: Spec Unit
+specSuccess = do
+  it "should return the correct state" do
+    update (v @"DoorOpen") (v @"Close") `shouldEqual` Just (v @"DoorClosed")
+
+specFailure :: Spec Unit
+specFailure = do
+  it "should return the correct state" do
+    update (v @"DoorOpen") (v @"Open") `shouldEqual` Nothing
+
 spec :: Spec Unit
 spec = do
   describe "ErrorHandling" do
-    describe "update" do
-      it "should return the correct state" do
-        update (v @"DoorOpen") (v @"Close") `shouldEqual` Just (v @"DoorClosed")
-      it "should return the correct state" do
-        update (v @"DoorClosed") (v @"Close") `shouldEqual` Nothing
+    specSuccess
+    specFailure
 
 main :: Effect Unit
 main = do
