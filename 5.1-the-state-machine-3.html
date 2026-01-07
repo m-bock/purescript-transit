@@ -345,30 +345,107 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title">Example 3: Bridges of Königsberg</div>
+        <div class="header-title">Example 4: House of Santa Claus</div>
         
         <div class="nav-links">
-                    <a href="4.5-generating-documentation-2.html" rel="prev" title="Generating Documentation"
+                    <a href="5-example-4-house-of-santa-claus.html" rel="prev" title="Example 4: House of Santa Claus"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="5-example-4-house-of-santa-claus.html" rel="next" title="Example 4: House of Santa Claus"
+                     <a href="5.2-transit-approach-2.html" rel="next" title="Transit Approach"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="4.6" id="conclusion-2">Conclusion</h2>
-<p>This example demonstrates that <strong>Transit</strong>’s value
-extends far beyond state machine documentation. By reflecting the
-type-level specification to a term-level graph data structure, you gain
-access to a rich ecosystem of third-party graph algorithms and analysis
-tools.</p>
-<p>In the next example, we’ll see a graph that <strong>does</strong>
-have an Eulerian trail.</p> 
+       <h2 data-number="5.1" id="the-state-machine-3">The State
+Machine</h2>
+<p>Of course we can model this puzzle as a state machine. We have states
+(1 through 5) and 8 transitions (a through h). Again, this is an
+undirected graph:</p>
+<p><picture>
+<source media="(prefers-color-scheme: dark)" srcset="renders/house-santa-claus_graph-dark.svg">
+<source media="(prefers-color-scheme: light)" srcset="renders/house-santa-claus_graph-light.svg">
+<img class="state-diagram" alt="House of Santa Claus graph" src="renders/house-santa-claus_graph-light.svg">
+</picture></p>
+<p>Accordingly, the transition table looks like this:</p>
+<!-- PD_START:raw
+filePath: renders/house-santa-claus_table.md
+wrapNl: true
+-->
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th></th>
+<th>Message</th>
+<th></th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>⟵</strong></td>
+<td>a</td>
+<td><strong>⟶</strong></td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>⟵</strong></td>
+<td>b</td>
+<td><strong>⟶</strong></td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>⟵</strong></td>
+<td>c</td>
+<td><strong>⟶</strong></td>
+<td>5</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>⟵</strong></td>
+<td>d</td>
+<td><strong>⟶</strong></td>
+<td>4</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>⟵</strong></td>
+<td>e</td>
+<td><strong>⟶</strong></td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>⟵</strong></td>
+<td>f</td>
+<td><strong>⟶</strong></td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>⟵</strong></td>
+<td>g</td>
+<td><strong>⟶</strong></td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>⟵</strong></td>
+<td>h</td>
+<td><strong>⟶</strong></td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<!-- PD_END --> 
       <div class="scroll-to-top">
         <a
           href="#"

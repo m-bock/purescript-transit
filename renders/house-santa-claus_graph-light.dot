@@ -1,17 +1,17 @@
 digraph 
 {
-rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12.0;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000";layout = "dot";rankdir = "TD"
-1 [shape = "box", label = <<b>1</b>>, fontsize = 12.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
-2 [shape = "box", label = <<b>2</b>>, fontsize = 12.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
-2 -> 1 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>a</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-3 [shape = "box", label = <<b>3</b>>, fontsize = 12.0, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
-3 -> 2 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>b</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-3 -> 1 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>f</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-5 [shape = "box", label = <<b>5</b>>, fontsize = 12.0, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
-5 -> 3 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>c</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-5 -> 4 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>d</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-4 [shape = "box", label = <<b>4</b>>, fontsize = 12.0, style = "filled", fillcolor = "#2dc472", fontcolor = "#1a7142", color = "#2dc472", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
-4 -> 1 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>e</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-4 -> 2 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>g</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-4 -> 3 [color = "#000000", fontcolor = "#000000", fontsize = 12.0, label = <<b>h</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 16.0;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000";layout = "neato"
+1 [shape = "box", label = <<b>1</b>>, fontsize = 16.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4, pos = "0.0,0.0!", width = 0.6, height = 0.6, fixedsize = true]
+2 [shape = "box", label = <<b>2</b>>, fontsize = 16.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4, pos = "1.2,0.0!", width = 0.6, height = 0.6, fixedsize = true]
+2 -> 1 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>a</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+3 [shape = "box", label = <<b>3</b>>, fontsize = 16.0, style = "filled", fillcolor = "#2f80ed", fontcolor = "#0c4590", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4, pos = "1.2,1.2!", width = 0.6, height = 0.6, fixedsize = true]
+3 -> 2 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>b</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+3 -> 1 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>f</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+5 [shape = "box", label = <<b>5</b>>, fontsize = 16.0, style = "filled", fillcolor = "#ff527c", fontcolor = "#b8002c", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4, pos = "0.6,2.4!", width = 0.6, height = 0.6, fixedsize = true]
+5 -> 3 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>c</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+5 -> 4 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>d</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+4 [shape = "box", label = <<b>4</b>>, fontsize = 16.0, style = "filled", fillcolor = "#2dc472", fontcolor = "#1a7142", color = "#2dc472", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4, pos = "0.0,1.2!", width = 0.6, height = 0.6, fixedsize = true]
+4 -> 1 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>e</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+4 -> 2 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>g</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
+4 -> 3 [color = "#000000", fontcolor = "#000000", fontsize = 16.0, label = <<b>h</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
 }

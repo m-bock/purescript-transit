@@ -345,30 +345,44 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title">Example 3: Bridges of Königsberg</div>
+        <div class="header-title">Example 4: House of Santa Claus</div>
         
         <div class="nav-links">
-                    <a href="4.5-generating-documentation-2.html" rel="prev" title="Generating Documentation"
+                    <a href="5.4-generating-documentation-3.html" rel="prev" title="Generating documentation"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="5-example-4-house-of-santa-claus.html" rel="next" title="Example 4: House of Santa Claus"
-            >Next →</a
-          >
+                     <span class="disabled">Next →</span>
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="4.6" id="conclusion-2">Conclusion</h2>
-<p>This example demonstrates that <strong>Transit</strong>’s value
-extends far beyond state machine documentation. By reflecting the
-type-level specification to a term-level graph data structure, you gain
-access to a rich ecosystem of third-party graph algorithms and analysis
-tools.</p>
-<p>In the next example, we’ll see a graph that <strong>does</strong>
-have an Eulerian trail.</p> 
+       <h2 data-number="5.5" id="conclusion-3">Conclusion</h2>
+<p>This example demonstrated several advanced features of
+<strong>Transit</strong>:</p>
+<ul>
+<li><p><strong>Automatic update function generation</strong>: When your
+state machine has no conditional transitions and preserves state payload
+types, you can use <code>mkUpdateAuto</code> to let the compiler
+generate the update function for you, eliminating boilerplate
+code.</p></li>
+<li><p><strong>Manual layout control</strong>: Unlike the previous
+examples that used automatic layouts, we showed how to precisely
+position nodes using the <code>Manual</code> layout option, giving you
+complete control over the visual representation of your state
+machine.</p></li>
+<li><p><strong>Graph analysis verification</strong>: We verified that
+this graph has an Eulerian trail using the same
+<code>hasEulerTrail</code> function from the previous example,
+demonstrating how <strong>Transit</strong>’s graph analysis capabilities
+work consistently across different state machines.</p></li>
+</ul>
+<p>Together with the previous examples, we’ve seen how
+<strong>Transit</strong> provides a comprehensive solution for building
+type-safe state machines, generating documentation, and performing graph
+analysis — all from a single type-level specification.</p> 
       <div class="scroll-to-top">
         <a
           href="#"
