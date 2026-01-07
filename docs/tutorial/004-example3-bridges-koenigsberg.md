@@ -216,13 +216,17 @@ bridgesGraph = mkStateGraph bridgesTransit
 
 <!-- PD_END -->
 
-Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
+### Eulerian trail
+
+Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian trail**: A path that visits every edge exactly once but doesn't necessarily return to the start.
 
 Let's assume out trail would start and end at the same node. Is there some property that must hold for each node? As we know, that a bridge can only be crossed once, we can conclude that whenever we visit a piece of land via a bridge we must leave it via a _different_ bridge again. That means that the number of bridges connected to each land must be 2, or 4, or 6, or 2000, ... in other words, an even number.
 
 However our trail does not have to start and end at the same piece of land. If this is the case, the start and end nodes can have odd number of bridges connected to them. This is because we never enter the start node, and we never leave the end node.
 
 This is what Euler formalized in his theorem: An undirected graph has an Eulerian trail if and only if it _is connected_ and has exactly _zero or two_ vertices of odd degree.
+
+### Degree of a node
 
 For simplicity we'll assume that our graphs are always connected. Degree of a node is the number of edges connected to it. Since our graph is undirected, we can obtain the degree of a node by counting the number of outgoing edges:
 
@@ -273,9 +277,11 @@ specNodeDegree = do
 
 <!-- PD_END -->
 
-And this already proves that our graph does not have an Eulerian trail. But we want to create a function that can tell this for any state graph. Let's do that now, we'll use this function in the next section again:
+And this already shows that our graph does _not_ have an Eulerian trail.
 
-[todo]
+### Checking for Eulerian trail
+
+But we want to create a function that can tell this for any state graph. Let's do that now, we'll use this function in the next example again:
 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
@@ -308,7 +314,7 @@ hasEulerTrail graph =
 
 <!-- PD_END -->
 
-The imoplementation is pretty straight forward. We get all nodes, count the number of edges connected to each node, filter the odd ones and count them. If the count is 2 or 0, we have an Eulerian trail, otherwise we don't. We can use this function to test our graph:
+The implementation is pretty straight forward. We get all nodes, count the number of edges connected to each node, filter the odd ones and count them. If the count is 2 or 0, we have an Eulerian trail, otherwise we don't. We can use this function to test our graph:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
