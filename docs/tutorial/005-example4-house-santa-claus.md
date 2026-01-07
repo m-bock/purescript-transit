@@ -23,7 +23,6 @@ Accordingly, the transition table looks like this:
 filePath: renders/house-santa-claus_table.md
 wrapNl: true
 -->
-
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
 | 1     | **⟵** | a       | **⟶** | 2     |
@@ -230,7 +229,7 @@ baseUnit = Inch 0.6
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L126-L127">test/Examples/HouseSantaClaus.purs L126-L127</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L102-L103">test/Examples/HouseSantaClaus.purs L102-L103</a>
   </sup>
 </p>
 
@@ -245,8 +244,8 @@ pick:
 -->
 
 ```purescript
-units2D :: Int -> Int -> Vec2D Inch
-units2D x y = Vec2D
+units2D :: Int -> Int -> { x :: Inch, y :: Inch }
+units2D x y =
   { x: Inch (Int.toNumber x * unwrap baseUnit)
   , y: Inch (Int.toNumber y * unwrap baseUnit)
   }
@@ -255,7 +254,7 @@ units2D x y = Vec2D
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L129-L133">test/Examples/HouseSantaClaus.purs L129-L133</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L105-L109">test/Examples/HouseSantaClaus.purs L105-L109</a>
   </sup>
 </p>
 
@@ -275,14 +274,14 @@ generateGraphDark = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
-      { useUndirectedEdges = true
+      { undirectedEdges = true
       , theme = themeHarmonyDark
-      , layout = TransitGraphviz.Manual
-          [ { position: units2D 0 0, node: "1", exact: true }
-          , { position: units2D 2 0, node: "2", exact: true }
-          , { position: units2D 2 2, node: "3", exact: true }
-          , { position: units2D 0 2, node: "4", exact: true }
-          , { position: units2D 1 4, node: "5", exact: true }
+      , layout = Manual
+          [ { node: "1", pos: units2D 0 0, exact: true }
+          , { node: "2", pos: units2D 2 0, exact: true }
+          , { node: "3", pos: units2D 2 2, exact: true }
+          , { node: "4", pos: units2D 0 2, exact: true }
+          , { node: "5", pos: units2D 1 4, exact: true }
           ]
       , fixedNodeSize = pure $ units2D 1 1
       , fontSize = 16.0
@@ -296,7 +295,7 @@ generateGraphDark = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L135-L155">test/Examples/HouseSantaClaus.purs L135-L155</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L133-L153">test/Examples/HouseSantaClaus.purs L133-L153</a>
   </sup>
 </p>
 

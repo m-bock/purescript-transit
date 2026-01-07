@@ -3,12 +3,9 @@ module Examples.ErrorHandlingMonadic where
 import Prelude
 
 import Control.Monad.Maybe.Trans (MaybeT(..), runMaybeT)
-import Control.Monad.Writer (Writer, execWriter, runWriter)
-import Control.Monad.Writer (class MonadWriter, tell)
-import Data.Identity (Identity(..))
-import Data.Maybe (Maybe(..))
+import Control.Monad.Writer (class MonadWriter, Writer, execWriter, tell)
+import Data.Maybe (Maybe)
 import Effect (Effect)
-import Effect.Class (class MonadEffect)
 import Examples.Door (Msg, State, DoorTransit)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)

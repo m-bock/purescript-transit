@@ -56,13 +56,13 @@ spec = do
               _ -> false `shouldEqual` true
           _ -> false `shouldEqual` true
 
-      it "generates undirected row when useUndirectedEdges is true and complementary edge exists" do
+      it "generates undirected row when undirectedEdges is true and complementary edge exists" do
         let
           transitCore = TransitCore
             [ Match "State1" "Msg1" [ Return "State2" ]
             , Match "State2" "Msg1" [ Return "State1" ]
             ]
-          options = defaultOptions { useUndirectedEdges = true }
+          options = defaultOptions { undirectedEdges = true }
           html = toHtml options transitCore
         case html of
           Node "table" _ children ->

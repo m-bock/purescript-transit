@@ -17,7 +17,7 @@ import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
-import Transit.Render.Graphviz (Inch(..), Vec2D(..), exact, nodeSize, pos)
+import Transit.Render.Graphviz (Inch(..), Layout(..))
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -99,23 +99,30 @@ spec = do
 --- State diagram generation
 --------------------------------------------------------------------------------
 
+baseUnit :: Inch
+baseUnit = Inch 0.6
+
+units2D :: Int -> Int -> { x :: Inch, y :: Inch }
+units2D x y =
+  { x: Inch (Int.toNumber x * unwrap baseUnit)
+  , y: Inch (Int.toNumber y * unwrap baseUnit)
+  }
+
 generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
-    b n = Int.toNumber n * 0.6
-
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
-      { useUndirectedEdges = true
+      { undirectedEdges = true
       , theme = themeHarmonyLight
-      , layout = TransitGraphviz.Manual
-          [ pos (b 0) (b 0) "1" # exact
-          , pos (b 2) (b 0) "2" # exact
-          , pos (b 2) (b 2) "3" # exact
-          , pos (b 0) (b 2) "4" # exact
-          , pos (b 1) (b 4) "5" # exact
+      , layout = Manual
+          [ { node: "1", pos: units2D 0 0, exact: true }
+          , { node: "2", pos: units2D 2 0, exact: true }
+          , { node: "3", pos: units2D 2 2, exact: true }
+          , { node: "4", pos: units2D 0 2, exact: true }
+          , { node: "5", pos: units2D 1 4, exact: true }
           ]
-      , fixedNodeSize = pure $ nodeSize (b 1) (b 1)
+      , fixedNodeSize = pure $ units2D 1 1
       , fontSize = 16.0
       }
 
@@ -123,28 +130,19 @@ generateGraphLight = do
     "renders/house-santa-claus_graph-light.dot"
     (Graphviz.toDotStr graph)
 
-baseUnit :: Inch
-baseUnit = Inch 0.6
-
-units2D :: Int -> Int -> Vec2D Inch
-units2D x y = Vec2D
-  { x: Inch (Int.toNumber x * unwrap baseUnit)
-  , y: Inch (Int.toNumber y * unwrap baseUnit)
-  }
-
 generateGraphDark :: Effect Unit
 generateGraphDark = do
   let
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
-      { useUndirectedEdges = true
+      { undirectedEdges = true
       , theme = themeHarmonyDark
-      , layout = TransitGraphviz.Manual
-          [ { position: units2D 0 0, node: "1", exact: true }
-          , { position: units2D 2 0, node: "2", exact: true }
-          , { position: units2D 2 2, node: "3", exact: true }
-          , { position: units2D 0 2, node: "4", exact: true }
-          , { position: units2D 1 4, node: "5", exact: true }
+      , layout = Manual
+          [ { node: "1", pos: units2D 0 0, exact: true }
+          , { node: "2", pos: units2D 2 0, exact: true }
+          , { node: "3", pos: units2D 2 2, exact: true }
+          , { node: "4", pos: units2D 0 2, exact: true }
+          , { node: "5", pos: units2D 1 4, exact: true }
           ]
       , fixedNodeSize = pure $ units2D 1 1
       , fontSize = 16.0
@@ -159,7 +157,7 @@ generateTable = do
   let
     table :: Table
     table = TransitTable.generate santaTransit _
-      { useUndirectedEdges = true
+      { undirectedEdges = true
       }
 
   FS.writeTextFile UTF8

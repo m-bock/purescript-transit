@@ -24,7 +24,6 @@ In the transition table the conditional transitions are expressed by the new "Gu
 filePath: renders/door-pin_table.md
 wrapNl: true
 -->
-
 | State      |       | Message |       | Guard        |       | State      |
 | ---------- | ----- | ------- | ----- | ------------ | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   |       |              | **⟶** | DoorClosed |

@@ -31,7 +31,6 @@ The same is true for the transition table. Instead of two rows for each bridge, 
 filePath: renders/bridges-koenigsberg_table.md
 wrapNl: true
 -->
-
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
 | A     | **⟵** | a       | **⟶** | B     |
@@ -81,7 +80,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L26-L41">test/Examples/BridgesKoenigsberg.purs L26-L41</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L25-L40">test/Examples/BridgesKoenigsberg.purs L25-L40</a>
   </sup>
 </p>
 
@@ -112,7 +111,7 @@ type BridgesTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L43-L51">test/Examples/BridgesKoenigsberg.purs L43-L51</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L42-L50">test/Examples/BridgesKoenigsberg.purs L42-L50</a>
   </sup>
 </p>
 
@@ -147,7 +146,7 @@ update = mkUpdate @BridgesTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L53-L74">test/Examples/BridgesKoenigsberg.purs L53-L74</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L52-L73">test/Examples/BridgesKoenigsberg.purs L52-L73</a>
   </sup>
 </p>
 
@@ -185,7 +184,7 @@ specSampleWalk =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L83-L96">test/Examples/BridgesKoenigsberg.purs L83-L96</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L82-L95">test/Examples/BridgesKoenigsberg.purs L82-L95</a>
   </sup>
 </p>
 
@@ -211,7 +210,7 @@ bridgesGraph = mkStateGraph bridgesTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L98-L99">test/Examples/BridgesKoenigsberg.purs L98-L99</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs L97-L98</a>
   </sup>
 </p>
 
@@ -272,7 +271,7 @@ specNodeDegree = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L101-L107">test/Examples/BridgesKoenigsberg.purs L101-L107</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106">test/Examples/BridgesKoenigsberg.purs L100-L106</a>
   </sup>
 </p>
 
@@ -333,7 +332,7 @@ specEulerTrail = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L109-L112">test/Examples/BridgesKoenigsberg.purs L109-L112</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs L108-L111</a>
   </sup>
 </p>
 
@@ -348,7 +347,7 @@ This is due to the fact that the specification of state machine transitions is b
 
 For generating the state diagram we add some more options to the `generate` function:
 
-- `useUndirectedEdges`: The state diagram will be displayed as an undirected graph.
+- `undirectedEdges`: The state diagram will be displayed as an undirected graph.
 - `fontSize`: Since our edges and labels consist of only single characters, we can make their font size a bit larger.
 
 <!-- PD_START:purs
@@ -362,26 +361,24 @@ generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesTransit
-      ( \cfg -> scaleOptions 0.5 cfg
-          { theme = themeHarmonyLight
-          , useUndirectedEdges = true
-          , fontSize = 15.0
-          }
-      )
+    graph = TransitGraphviz.generate bridgesTransit _
+      { theme = themeHarmonyLight
+      , undirectedEdges = true
+      , fontSize = 15.0
+      }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L125-L136">test/Examples/BridgesKoenigsberg.purs L125-L136</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L124-L133">test/Examples/BridgesKoenigsberg.purs L124-L133</a>
   </sup>
 </p>
 
 <!-- PD_END -->
 
-The transition table is generated the same way as before, but we also add the `useUndirectedEdges` option to the options:
+The transition table is generated the same way as before, but we also add the `undirectedEdges` option to the options:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -395,7 +392,7 @@ generateTable = do
   let
     table :: Table
     table = TransitTable.generate bridgesTransit _
-      { useUndirectedEdges = true
+      { undirectedEdges = true
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_table.md" (Table.toMarkdown table)
 ```
@@ -403,7 +400,7 @@ generateTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L152-L159">test/Examples/BridgesKoenigsberg.purs L152-L159</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L146-L153">test/Examples/BridgesKoenigsberg.purs L146-L153</a>
   </sup>
 </p>
 

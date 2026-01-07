@@ -36,7 +36,6 @@ For a more structured view, here's the corresponding transition table:
 filePath: renders/door_table.md
 wrapNl: true
 -->
-
 | State      |       | Message |       | State      |
 | ---------- | ----- | ------- | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   | **⟶** | DoorClosed |

@@ -65,7 +65,7 @@ mkMatchRows :: Options -> TransitCore -> Boolean -> Int -> Match -> Array Table.
 mkMatchRows options transit hasGuards index (Match from msg returns) =
   case returns of
     [ Return to ] ->
-      if options.useUndirectedEdges then
+      if options.undirectedEdges then
         case hasComplementaryEdge from to msg transit of
           Just i | i > index -> [ mkUndirectedRow from msg to ]
           _ -> []
@@ -131,14 +131,14 @@ mkHeaders hasGuards = join
 -- | Configuration options for table generation.
 type Options =
   { title :: Maybe String
-  , useUndirectedEdges :: Boolean
+  , undirectedEdges :: Boolean
   }
 
 -- | Default options for table generation.
 defaultOptions :: Options
 defaultOptions =
   { title: Nothing
-  , useUndirectedEdges: false
+  , undirectedEdges: false
   }
 
 -- | Generates a transition table with customizable options.

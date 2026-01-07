@@ -53,37 +53,37 @@ spec = do
             -- (global attrs + state node + init node + init edge + transition edge = at least 5)
             (Array.length sections >= 5) `shouldEqual` true
 
-      it "generates decision nodes when useDecisionNodes is true" do
+      it "generates decision nodes when decisionNodes is true" do
         let
           transitCore = TransitCore
             [ Match "State1" "Msg1" [ Return "State2", Return "State3" ]
             ]
-          options = defaultOptions { useDecisionNodes = true }
+          options = defaultOptions { decisionNodes = true }
           graph = mkGraphvizGraph options transitCore
         case graph of
           GraphvizGraph sections ->
             -- Should have decision node + edges from decision node
             (Array.length sections >= 5) `shouldEqual` true
 
-      it "generates direct edges when useDecisionNodes is false" do
+      it "generates direct edges when decisionNodes is false" do
         let
           transitCore = TransitCore
             [ Match "State1" "Msg1" [ Return "State2", Return "State3" ]
             ]
-          options = defaultOptions { useDecisionNodes = false }
+          options = defaultOptions { decisionNodes = false }
           graph = mkGraphvizGraph options transitCore
         case graph of
           GraphvizGraph sections ->
             -- Should have 2 direct edges (no decision node)
             (Array.length sections >= 4) `shouldEqual` true
 
-      it "generates undirected edges when useUndirectedEdges is true and complementary edge exists" do
+      it "generates undirected edges when undirectedEdges is true and complementary edge exists" do
         let
           transitCore = TransitCore
             [ Match "State1" "Msg1" [ Return "State2" ]
             , Match "State2" "Msg1" [ Return "State1" ]
             ]
-          options = defaultOptions { useUndirectedEdges = true }
+          options = defaultOptions { undirectedEdges = true }
           graph = mkGraphvizGraph options transitCore
         case graph of
           GraphvizGraph sections ->
