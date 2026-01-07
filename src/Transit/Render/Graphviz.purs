@@ -29,6 +29,75 @@ import Transit.Data.DotLang as D
 import Transit.Render.Theme (ColorHarmony, Theme, getColorHarmony, themeHarmonyDark)
 import Transit.StateGraph (StateNode)
 
+type Vec = { x :: Inch, y :: Inch }
+
+type NodePositioning =
+  { node :: String
+  , pos :: Vec
+  , exact :: Boolean
+  }
+
+data Layout
+  = Landscape
+  | Portrait
+  | Manual (Array NodePositioning)
+  | Circle
+  | None
+
+newtype Inch = Inch Number
+
+derive instance Newtype Inch _
+
+-- | Configuration options for graph generation.
+type Options =
+  { title :: Maybe String
+  , theme :: Theme
+  , decisionNodes :: Boolean
+  , undirectedEdges :: Boolean
+  , entryPoints :: Array StateName
+  , layout :: Layout
+  , fixedNodeSize :: Maybe Vec
+  , fontSize :: Number
+  , rawGlobalAttrs :: Maybe String
+  , rawNodeAttrs :: Maybe (StateName -> String)
+  }
+
+-- | Default options for graph generation.
+defaultOptions :: Options
+defaultOptions =
+  { title: Nothing
+  , theme: themeHarmonyDark
+  , decisionNodes: true
+  , undirectedEdges: false
+  , entryPoints: []
+  , layout: Portrait
+  , fixedNodeSize: Nothing
+  , fontSize: 12.0
+  , rawGlobalAttrs: Nothing
+  , rawNodeAttrs: Nothing
+  }
+
+type Constants =
+  { arrowSize :: Number
+  , edgePenWidth :: Number
+  , nodePenWidth :: Number
+  , nodeDefaultHeight :: Number
+  , initNodeSize :: Number
+  , initNodeName :: String
+  , decisionNodePrefix :: String
+  }
+
+constants :: Constants
+constants =
+  { arrowSize: 0.7
+  , edgePenWidth: 1.8
+  , nodePenWidth: 0.0
+  , nodeDefaultHeight: 0.4
+  , initNodeSize: 0.15
+  , initNodeName: "__Start__"
+  , decisionNodePrefix: "decision_"
+  }
+
 -- | Generates a Graphviz graph from a transit specification.
 mkGraphvizGraph :: Options -> TransitCore -> GraphvizGraph
 mkGraphvizGraph options transit =
@@ -233,75 +302,6 @@ mkDecisionNode options name colors = D.Node name Nothing
   , D.fillColor colors.nodeBg
   , D.penWidth constants.nodePenWidth
   ]
-
--- | Configuration options for graph generation.
-type Options =
-  { title :: Maybe String
-  , theme :: Theme
-  , decisionNodes :: Boolean
-  , undirectedEdges :: Boolean
-  , entryPoints :: Array StateName
-  , layout :: Layout
-  , fixedNodeSize :: Maybe Vec
-  , fontSize :: Number
-  , rawGlobalAttrs :: Maybe String
-  , rawNodeAttrs :: Maybe (StateName -> String)
-  }
-
-type Constants =
-  { arrowSize :: Number
-  , edgePenWidth :: Number
-  , nodePenWidth :: Number
-  , nodeDefaultHeight :: Number
-  , initNodeSize :: Number
-  , initNodeName :: String
-  , decisionNodePrefix :: String
-  }
-
-constants :: Constants
-constants =
-  { arrowSize: 0.7
-  , edgePenWidth: 1.8
-  , nodePenWidth: 0.0
-  , nodeDefaultHeight: 0.4
-  , initNodeSize: 0.15
-  , initNodeName: "__Start__"
-  , decisionNodePrefix: "decision_"
-  }
-
-type Vec = { x :: Inch, y :: Inch }
-
-type NodePositioning =
-  { node :: String
-  , pos :: Vec
-  , exact :: Boolean
-  }
-
-data Layout
-  = Landscape
-  | Portrait
-  | Manual (Array NodePositioning)
-  | Circle
-  | None
-
--- | Default options for graph generation.
-defaultOptions :: Options
-defaultOptions =
-  { title: Nothing
-  , theme: themeHarmonyDark
-  , decisionNodes: true
-  , undirectedEdges: false
-  , entryPoints: []
-  , layout: Portrait
-  , fixedNodeSize: Nothing
-  , fontSize: 12.0
-  , rawGlobalAttrs: Nothing
-  , rawNodeAttrs: Nothing
-  }
-
-newtype Inch = Inch Number
-
-derive instance Newtype Inch _
 
 checkEntryPoints :: Array StateName -> TransitCore -> Either String Unit
 checkEntryPoints entryPoints transitCore = do
