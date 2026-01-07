@@ -104,13 +104,13 @@ generateGraphLight = do
     graph = TransitGraphviz.generate santaTransit _
       { useUndirectedEdges = true
       , theme = themeHarmonyLight
-      , layout = TransitGraphviz.Manual
-          [ { node: "1", x: 0.0, y: 0.0, exact: true }
-          , { node: "2", x: 2.0, y: 0.0, exact: true }
-          , { node: "3", x: 2.0, y: 2.0, exact: true }
-          , { node: "4", x: 0.0, y: 2.0, exact: true }
-          , { node: "5", x: 1.0, y: 3.0, exact: true }
-          ]
+      -- , layout = TransitGraphviz.Manual
+      --     [ { node: "1", x: 0, y: 0, exact: true }
+      --     , { node: "2", x: 2, y: 0, exact: true }
+      --     , { node: "3", x: 2, y: 2, exact: true }
+      --     , { node: "4", x: 0, y: 2, exact: true }
+      --     , { node: "5", x: 1, y: 3, exact: true }
+      --     ]
       }
 
   FS.writeTextFile UTF8
@@ -125,13 +125,13 @@ generateGraphDark = do
       { useUndirectedEdges = true
       , globalAttrsRaw = Just "layout=neato"
       , theme = themeHarmonyDark
-      , layout = TransitGraphviz.Manual
-          [ { node: "1", x: 0.0, y: 0.0, exact: true }
-          , { node: "2", x: 2.0, y: 0.0, exact: true }
-          , { node: "3", x: 2.0, y: 2.0, exact: true }
-          , { node: "4", x: 0.0, y: 2.0, exact: true }
-          , { node: "5", x: 1.0, y: 3.0, exact: true }
-          ]
+      -- , layout = TransitGraphviz.Manual
+      --     [ { node: "1", x: 0, y: 0, exact: true }
+      --     , { node: "2", x: 2, y: 0, exact: true }
+      --     , { node: "3", x: 2, y: 2, exact: true }
+      --     , { node: "4", x: 0, y: 2, exact: true }
+      --     , { node: "5", x: 1, y: 3, exact: true }
+      --     ]
       }
 
   FS.writeTextFile UTF8

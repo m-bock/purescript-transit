@@ -104,7 +104,7 @@ generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorPinTransit _
+    graph = TransitGraphviz.generate doorPinTransit \cfg -> cfg
       { theme = themeHarmonyLight
       , entryPoints = [ "DoorOpen" ]
       , layout = Landscape
@@ -116,7 +116,7 @@ generateGraphDark :: Effect Unit
 generateGraphDark = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorPinTransit _
+    graph = TransitGraphviz.generate doorPinTransit \cfg -> cfg
       { theme = themeHarmonyDark
       , entryPoints = [ "DoorOpen" ]
       , layout = Landscape

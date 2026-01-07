@@ -15,6 +15,7 @@ import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
+import Transit.Render.Graphviz (scaleOptions)
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -125,20 +126,27 @@ generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesTransit _
-      { theme = themeHarmonyLight
-      , useUndirectedEdges = true
-      }
+    graph = TransitGraphviz.generate bridgesTransit
+      ( \cfg -> scaleOptions 0.5 cfg
+          { theme = themeHarmonyLight
+          , useUndirectedEdges = true
+          , fontSize = 15.0
+          }
+      )
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 
 generateGraphDark :: Effect Unit
 generateGraphDark = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesTransit _
-      { theme = themeHarmonyDark
-      , useUndirectedEdges = true
-      }
+    graph = TransitGraphviz.generate bridgesTransit
+      ( \cfg -> scaleOptions 0.5 $
+          cfg
+            { theme = themeHarmonyDark
+            , useUndirectedEdges = true
+            , fontSize = 15.0
+            }
+      )
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-dark.dot" (Graphviz.toDotStr graph)
 
 generateTable :: Effect Unit

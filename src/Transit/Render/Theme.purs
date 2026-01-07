@@ -289,8 +289,8 @@ themeHarmonyDark =
   { bgColor: Color.rgba 0 0 0 0.0
   , titleColor: Color.rgb 200 200 200
   , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
-  , undirectedEdgeColor: Color.rgb 255 255 255
-  , undirectedEdgeFontColor: Color.rgb 255 255 255
+  , undirectedEdgeColor: Color.rgb 110 110 110
+  , undirectedEdgeFontColor: Color.rgb 160 160 160
   }
 
 -- | Light theme with high contrast (black and white).

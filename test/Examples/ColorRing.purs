@@ -117,7 +117,7 @@ main = do
     ]
     \opts -> do
       FS.writeTextFile UTF8 opts.file
-        ( Graphviz.toDotStr $ TransitGraphviz.generate colorRingTransit _
+        ( Graphviz.toDotStr $ TransitGraphviz.generate colorRingTransit \def -> def
             { title = Just opts.title
             , globalAttrsRaw = Just globalAttrs
             , theme = opts.theme

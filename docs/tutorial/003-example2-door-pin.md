@@ -24,7 +24,6 @@ In the transition table the conditional transitions are expressed by the new "Gu
 filePath: renders/door-pin_table.md
 wrapNl: true
 -->
-
 | State      |       | Message |       | Guard        |       | State      |
 | ---------- | ----- | ------- | ----- | ------------ | ----- | ---------- |
 | DoorOpen   | **⟶** | Close   |       |              | **⟶** | DoorClosed |
@@ -220,10 +219,7 @@ update = mkUpdate @DoorPinTransit
 
 <!-- PD_END -->
 
-> **Important**: The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification.
-
-> **Limitation**: The compiler cannot detect if an implementation forgets to return a possible case.
-> For example, if a transition can return either `DoorClosed` or `DoorLocked`, your handler always returns `DoorClosed` then the compiler would not detect this error. Obviously the compiler cannot verify if your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
+The order of match handlers in `mkUpdate` must match the order of transitions in the DSL specification. The compiler _can_ detect if the returned state of a handler is legal for a given transition. However, it _cannot_ detect if an implementation forgets to return a possible case. For example, if a transition can return either `DoorClosed` or `DoorLocked`, your handler always returns `DoorClosed` then the compiler would not detect this error. Obviously the compiler cannot verify if your handler implements the conditional logic correctly, so missing a case is just one of many possible errors.
 
 ## Testing the update function
 
@@ -308,7 +304,7 @@ generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate doorPinTransit _
+    graph = TransitGraphviz.generate doorPinTransit \cfg -> cfg
       { theme = themeHarmonyLight
       , entryPoints = [ "DoorOpen" ]
       , layout = Landscape
@@ -334,9 +330,3 @@ This example demonstrates how **Transit** extends beyond simple state machines t
 
 - **States and messages with data**: Both states and messages can carry data (like `activePin` in `DoorLocked` or `newPin` in `Lock`), and handlers receive this data.
 - **Conditional transitions**: The DSL supports transitions with multiple possible outcomes using guard labels (`PinCorrect` and `PinIncorrect`). The type system ensures that conditional transitions can only return valid target states, and each outcome must be associated with its corresponding guard label.
-
-By leveraging PureScript's `Variant` types to express subsets of possible states (which traditional ADTs cannot represent), **Transit** provides compile-time guarantees that your implementation matches your specification. The type system catches errors at compile time, ensuring that:
-
-- You cannot return invalid target states
-- You cannot return more cases than specified
-- However, the compiler cannot detect if you forget to return a possible case (you can return fewer cases than specified)

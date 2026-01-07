@@ -76,7 +76,7 @@ update = mkUpdate @CircleTransit
 main :: Effect Unit
 main = do
   FS.writeTextFile UTF8 "renders/circle_graph.dot"
-    ( Graphviz.toDotStr $ TransitGraphviz.generate circleTransit _
+    ( Graphviz.toDotStr $ TransitGraphviz.generate circleTransit \def -> def
         { theme = themeGradientDark
         , layout = Circle
         }

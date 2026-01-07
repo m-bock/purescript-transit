@@ -1,4 +1,4 @@
-# Example 3: Bridges of Königsberg [unfinished]
+# Example 3: Bridges of Königsberg
 
 > Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
 
@@ -80,7 +80,7 @@ type Msg = Variant
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L25-L40">test/Examples/BridgesKoenigsberg.purs L25-L40</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L26-L41">test/Examples/BridgesKoenigsberg.purs L26-L41</a>
   </sup>
 </p>
 
@@ -111,7 +111,7 @@ type BridgesTransit =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L42-L50">test/Examples/BridgesKoenigsberg.purs L42-L50</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L43-L51">test/Examples/BridgesKoenigsberg.purs L43-L51</a>
   </sup>
 </p>
 
@@ -146,7 +146,7 @@ update = mkUpdate @BridgesTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L52-L73">test/Examples/BridgesKoenigsberg.purs L52-L73</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L53-L74">test/Examples/BridgesKoenigsberg.purs L53-L74</a>
   </sup>
 </p>
 
@@ -184,7 +184,7 @@ specSampleWalk =
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L82-L95">test/Examples/BridgesKoenigsberg.purs L82-L95</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L83-L96">test/Examples/BridgesKoenigsberg.purs L83-L96</a>
   </sup>
 </p>
 
@@ -210,7 +210,7 @@ bridgesGraph = mkStateGraph bridgesTransit
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs L97-L98</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L98-L99">test/Examples/BridgesKoenigsberg.purs L98-L99</a>
   </sup>
 </p>
 
@@ -218,9 +218,13 @@ bridgesGraph = mkStateGraph bridgesTransit
 
 Once we have this graph data structure, we can perform sophisticated analysis using standard graph algorithms. For the Seven Bridges problem, we want to determine if the graph has an **Eulerian circuit** (a path that visits every edge exactly once and returns to the starting point) or an **Eulerian trail** (a path that visits every edge exactly once but doesn't necessarily return to the start).
 
-Euler's theorem states that an undirected graph has an Eulerian trail if and only if it _is connected_ and has exactly _zero or two_ vertices of odd degree.
+Let's assume out trail would start and end at the same node. Is there some property that must hold for each node? As we know, that a bridge can only be crossed once, we can conclude that whenever we visit a piece of land via a bridge we must leave it via a _different_ bridge again. That means that the number of bridges connected to each land must be 2, or 4, or 6, or 2000, ... in other words, an even number.
 
-We can check these conditions using helper functions from the `Examples.Common` module:
+However our trail does not have to start and end at the same piece of land. If this is the case, the start and end nodes can have odd number of bridges connected to them. This is because we never enter the start node, and we never leave the end node.
+
+This is what Euler formalized in his theorem: An undirected graph has an Eulerian trail if and only if it _is connected_ and has exactly _zero or two_ vertices of odd degree.
+
+For simplicity we'll assume that our graphs are always connected. Degree of a node is the number of edges connected to it. Since our graph is undirected, we can obtain the degree of a node by counting the number of outgoing edges:
 
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
@@ -242,7 +246,7 @@ nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 
 <!-- PD_END -->
 
-[todo]
+And we can easily see that all of our nodes have odd degree:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -263,11 +267,13 @@ specNodeDegree = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106">test/Examples/BridgesKoenigsberg.purs L100-L106</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L101-L107">test/Examples/BridgesKoenigsberg.purs L101-L107</a>
   </sup>
 </p>
 
 <!-- PD_END -->
+
+And this already proves that our graph does not have an Eulerian trail. But we want to create a function that can tell this for any state graph. Let's do that now, we'll use this function in the next section again:
 
 [todo]
 
@@ -302,7 +308,7 @@ hasEulerTrail graph =
 
 <!-- PD_END -->
 
-[todo]
+The imoplementation is pretty straight forward. We get all nodes, count the number of edges connected to each node, filter the odd ones and count them. If the count is 2 or 0, we have an Eulerian trail, otherwise we don't. We can use this function to test our graph:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -320,13 +326,13 @@ specEulerTrail = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs L108-L111</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L109-L112">test/Examples/BridgesKoenigsberg.purs L109-L112</a>
   </sup>
 </p>
 
 <!-- PD_END -->
 
-I we wanted to perform similar analysis with the classic state machine approach, we would need to generate all possible 5040 walks and empirically check if any of them visit all bridges exactly once.
+If we wanted to perform similar analysis with the classic state machine approach, we would need to generate all possible 5040 walks and empirically check if any of them visit all bridges exactly once.
 This is due to the fact that the specification has of state machine transitions is burried inside the update function.
 
 ## Generating Documentation
@@ -334,6 +340,7 @@ This is due to the fact that the specification has of state machine transitions 
 For generating the state diagram we add some more options to the `generate` function:
 
 - `useUndirectedEdges`: The state diagram will be displayed as an undirected graph.
+- `fontSize`: Since our edges and labels consist of only single characters, we can make their font size a bit larger.
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -346,23 +353,26 @@ generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
     graph :: GraphvizGraph
-    graph = TransitGraphviz.generate bridgesTransit _
-      { theme = themeHarmonyLight
-      , useUndirectedEdges = true
-      }
+    graph = TransitGraphviz.generate bridgesTransit
+      ( \cfg -> scaleOptions 0.5 cfg
+          { theme = themeHarmonyLight
+          , useUndirectedEdges = true
+          , fontSize = 15.0
+          }
+      )
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L124-L132">test/Examples/BridgesKoenigsberg.purs L124-L132</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L125-L136">test/Examples/BridgesKoenigsberg.purs L125-L136</a>
   </sup>
 </p>
 
 <!-- PD_END -->
 
-[todo]
+The transition table is generated the same way as before, but we also add the `useUndirectedEdges` option to the options:
 
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
@@ -384,7 +394,7 @@ generateTable = do
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L144-L151">test/Examples/BridgesKoenigsberg.purs L144-L151</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L152-L159">test/Examples/BridgesKoenigsberg.purs L152-L159</a>
   </sup>
 </p>
 

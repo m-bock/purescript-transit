@@ -4,13 +4,21 @@
 -- | for visualization, supporting various rendering options including
 -- | decision nodes, undirected edges, and customizable themes.
 module Transit.Render.Graphviz
-  ( NodePosition
-  , Options
+  ( Inch(..)
   , Layout(..)
+  , NodePositioning
+  , Options
+  , Vec2D(..)
+  , class IsInch
   , defaultOptions
+  , exact
   , generate
   , generateEither
   , mkGraphvizGraph
+  , nodeSize
+  , pos
+  , scaleOptions
+  , toInch
   ) where
 
 import Prelude
@@ -20,7 +28,9 @@ import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Foldable (for_)
+import Data.Int as Int
 import Data.Maybe (Maybe(..), maybe)
+import Data.Newtype (class Newtype, unwrap)
 import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
 import Transit.Data.DotLang (GlobalAttrs(..), GraphvizGraph(..), Section(..))
 import Transit.Data.DotLang as D
@@ -44,7 +54,7 @@ mkStateSections transit options i stateName = join
   [ pure $ SecNode $ mkStateNode options colors stateName
   , if Array.elem stateName options.entryPoints then
       [ SecNode $ mkInitNode "__Start__"
-      , SecEdge $ mkInitEdge "__Start__" stateName
+      , SecEdge $ mkInitEdge options "__Start__" stateName
       ]
     else []
   , Array.concatMap (mkMatchSections colors transit options) $ getMatchesForState stateName transit
@@ -58,16 +68,16 @@ mkMatchSections colors transit options (Match from msg returns) = case returns o
   [ Return to ] ->
     if options.useUndirectedEdges && hasComplementaryEdge from to msg transit then
       if isCanonicalFirst from to then
-        [ SecEdge $ mkUndirectedEdge from to msg ]
+        [ SecEdge $ mkUndirectedEdge options from to msg ]
       else
         []
     else
-      [ SecEdge $ mkEdgeMsg from to colors msg ]
+      [ SecEdge $ mkEdgeMsg options from to colors msg ]
   manyReturns ->
     if options.useDecisionNodes then
-      mkDecisionNodeSections from msg colors manyReturns
+      mkDecisionNodeSections options from msg colors manyReturns
     else
-      mkDirectEdges from msg colors manyReturns
+      mkDirectEdges options from msg colors manyReturns
 
 -- | Checks if the first state name is lexicographically greater than the second.
 -- | Used to determine canonical ordering for undirected edges.
@@ -84,31 +94,31 @@ hasComplementaryEdge from to msg (TransitCore matches) =
     matches
 
 -- | Creates direct edges from a state to multiple target states.
-mkDirectEdges :: StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
-mkDirectEdges from msg colors returns = Array.concatMap
+mkDirectEdges :: Options -> StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
+mkDirectEdges options from msg colors returns = Array.concatMap
   ( case _ of
-      Return to -> [ SecEdge $ mkEdgeMsg from to colors msg ]
-      ReturnVia guard to -> [ SecEdge $ mkEdgeMsg from to colors (msg <> " ? " <> guard) ]
+      Return to -> [ SecEdge $ mkEdgeMsg options from to colors msg ]
+      ReturnVia guard to -> [ SecEdge $ mkEdgeMsg options from to colors (msg <> " ? " <> guard) ]
   )
   returns
 
 -- | Creates a decision node structure for multiple returns from a single match.
-mkDecisionNodeSections :: StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
-mkDecisionNodeSections from msg colors manyReturns =
+mkDecisionNodeSections :: Options -> StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
+mkDecisionNodeSections options from msg colors manyReturns =
   let
     decisionNode = "decision_" <> from <> "_" <> msg
   in
     join
-      [ pure $ SecNode $ mkDecisionNode decisionNode colors
-      , pure $ SecEdge $ mkEdgeMsg from decisionNode colors msg
-      , concatMap (mkDecisionEdges decisionNode colors) manyReturns
+      [ pure $ SecNode $ mkDecisionNode options decisionNode colors
+      , pure $ SecEdge $ mkEdgeMsg options from decisionNode colors msg
+      , concatMap (mkDecisionEdges options decisionNode colors) manyReturns
       ]
 
 -- | Creates edges from a decision node to target states.
-mkDecisionEdges :: StateName -> ColorHarmony -> Return -> Array D.Section
-mkDecisionEdges decisionNode colors = case _ of
-  Return to -> [ SecEdge $ mkEdgeGuard decisionNode to colors Nothing ]
-  ReturnVia guard to -> [ SecEdge $ mkEdgeGuard decisionNode to colors (Just guard) ]
+mkDecisionEdges :: Options -> StateName -> ColorHarmony -> Return -> Array D.Section
+mkDecisionEdges options decisionNode colors = case _ of
+  Return to -> [ SecEdge $ mkEdgeGuard options decisionNode to colors Nothing ]
+  ReturnVia guard to -> [ SecEdge $ mkEdgeGuard options decisionNode to colors (Just guard) ]
 
 -- | Creates global graph attributes.
 mkGlobalAttrs :: Options -> Array D.Attr
@@ -117,11 +127,10 @@ mkGlobalAttrs options =
     [ [ D.rankDirTD
       , D.fontNameArial
       , D.labelLocT
-      , D.fontSize 12
+      , D.fontSize options.fontSize
       , D.bgColor options.theme.bgColor
       , D.color options.theme.titleColor
       , D.fontColor options.theme.titleColor
-      , D.pad 0.2
       ]
     , maybe [] (pure <<< D.labelHtmlBold) options.title
     , case options.layout of
@@ -138,7 +147,7 @@ mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f ->
   $ join
       [ [ D.shapeBox
         , D.labelHtmlBold node
-        , D.fontSize 12
+        , D.fontSize options.fontSize
         , D.styleFilled
         , D.fillColor colors.nodeBg
         , D.fontColor colors.nodeFont
@@ -146,13 +155,21 @@ mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f ->
         , D.fontNameArial
         , D.labelLocC
         , D.penWidth 1.0
+        , D.height 0.4
         ]
       , case options.layout of
           Manual positions ->
             case positions # Array.find (\position -> position.node == node) of
-              Just position -> [ D.pos position.x position.y position.exact ]
+              Just { position: Vec2D { x: Inch x, y: Inch y }, exact: isExact } -> [ D.pos x y isExact ]
               Nothing -> []
           _ -> []
+      , case options.fixedNodeSize of
+          Just (Vec2D { x, y }) ->
+            [ D.width (unwrap x)
+            , D.height (unwrap y)
+            , D.fixedSize true
+            ]
+          Nothing -> []
       ]
 
 -- | Creates an initialization node (entry point marker).
@@ -169,62 +186,59 @@ mkInitNode name = D.Node name Nothing
   ]
 
 -- | Creates an edge from the initialization node to an entry point state.
-mkInitEdge :: StateName -> StateName -> D.Edge
-mkInitEdge from to = D.Edge from to
+mkInitEdge :: Options -> StateName -> StateName -> D.Edge
+mkInitEdge options from to = D.Edge from to
   [ D.color (Color.rgb 140 140 140)
-  , D.fontSize 12
+  , D.fontSize options.fontSize
   , D.arrowSize 0.7
   , D.penWidth 1.8
   ]
 
 -- | Creates an undirected edge (bidirectional) between two states.
-mkUndirectedEdge :: StateName -> StateName -> MsgName -> D.Edge
-mkUndirectedEdge from to label = D.Edge from to
-  [ D.color (Color.rgb 140 140 140)
-  , D.fontColor (Color.rgb 140 140 140)
-  , D.fontSize 12
+mkUndirectedEdge :: Options -> StateName -> StateName -> MsgName -> D.Edge
+mkUndirectedEdge options from to label = D.Edge from to
+  [ D.color options.theme.undirectedEdgeColor
+  , D.fontColor options.theme.undirectedEdgeFontColor
+  , D.fontSize options.fontSize
   , D.labelHtmlBold label
   , D.arrowSize 0.7
-  , D.penWidth 2.0
+  , D.penWidth 1.8
   , D.dirBoth
   ]
 
 -- | Creates a directed edge with a message label.
-mkEdgeMsg :: StateName -> StateName -> ColorHarmony -> MsgName -> D.Edge
-mkEdgeMsg from to colors label = D.Edge from to
+mkEdgeMsg :: Options -> StateName -> StateName -> ColorHarmony -> MsgName -> D.Edge
+mkEdgeMsg options from to colors label = D.Edge from to
   [ D.color colors.edgeColor
   , D.fontColor colors.edgeFont
-  , D.fontSize 12
+  , D.fontSize options.fontSize
   , D.arrowSize 0.7
   , D.labelHtmlBold label
   , D.penWidth 1.8
   ]
 
 -- | Creates an edge from a decision node to a target state, optionally with a guard label.
-mkEdgeGuard :: StateName -> StateName -> ColorHarmony -> Maybe GuardName -> D.Edge
-mkEdgeGuard from to colors mayLabel = D.Edge from to
+mkEdgeGuard :: Options -> StateName -> StateName -> ColorHarmony -> Maybe GuardName -> D.Edge
+mkEdgeGuard options from to colors mayLabel = D.Edge from to
   $ catMaybes
       [ pure $ D.color colors.edgeColor
       , pure $ D.fontColor colors.edgeFont
-      , pure $ D.fontSize 10
+      , pure $ D.fontSize options.fontSize
       , pure $ D.arrowSize 0.5
       , map D.labelHtmlItalic mayLabel
       , pure $ D.penWidth 1.0
       ]
 
 -- | Creates a decision node (diamond shape) for branching transitions.
-mkDecisionNode :: String -> ColorHarmony -> D.Node
-mkDecisionNode name colors = D.Node name Nothing
+mkDecisionNode :: Options -> String -> ColorHarmony -> D.Node
+mkDecisionNode options name colors = D.Node name Nothing
   [ D.shapeDiamond
   , D.label "?"
-  , D.fontSize 12
+  , D.fontSize options.fontSize
   , D.fontColor colors.nodeFont
   , D.styleFilled
   , D.fillColor colors.nodeBg
   , D.penWidth 0.0
-  , D.fixedSize true
-  , D.width 0.3
-  , D.height 0.3
   ]
 
 -- | Configuration options for graph generation.
@@ -237,21 +251,55 @@ type Options =
   , useUndirectedEdges :: Boolean
   , entryPoints :: Array StateName
   , layout :: Layout
+  , fixedNodeSize :: Maybe (Vec2D Inch)
+  , fontSize :: Number
   }
 
-type NodePosition =
+newtype Vec2D u = Vec2D { x :: u, y :: u }
+
+derive instance Functor Vec2D
+
+type NodePositioning =
   { node :: String
-  , x :: Number
-  , y :: Number
+  , position :: Vec2D Inch
   , exact :: Boolean
   }
+
+pos :: forall u. IsInch u => u -> u -> String -> NodePositioning
+pos x y node = { node, position: Vec2D { x: toInch x, y: toInch y }, exact: false }
+
+nodeSize :: forall u. IsInch u => u -> u -> Vec2D Inch
+nodeSize x y = Vec2D { x: toInch x, y: toInch y }
+
+class IsInch a where
+  toInch :: a -> Inch
+
+instance IsInch Inch where
+  toInch = identity
+
+instance IsInch Number where
+  toInch = Inch
+
+instance IsInch Int where
+  toInch = Inch <<< Int.toNumber
+
+exact :: NodePositioning -> NodePositioning
+exact position = position { exact = true }
 
 data Layout
   = Landscape
   | Portrait
-  | Manual (Array NodePosition)
+  | Manual (Array NodePositioning)
   | Circle
   | None
+
+layoutMapInch :: (Inch -> Inch) -> Layout -> Layout
+layoutMapInch f = case _ of
+  Landscape -> Landscape
+  Portrait -> Portrait
+  Manual positions -> Manual (map (\position -> position { position = map f position.position }) positions)
+  Circle -> Circle
+  None -> None
 
 -- | Default options for graph generation.
 defaultOptions :: Options
@@ -264,7 +312,22 @@ defaultOptions =
   , useUndirectedEdges: false
   , entryPoints: []
   , layout: Portrait
+  , fixedNodeSize: Nothing
+  , fontSize: 12.0
   }
+
+newtype Inch = Inch Number
+
+derive instance Newtype Inch _
+
+scaleOptions :: Number -> Options -> Options
+scaleOptions fac cfg = cfg
+  { fixedNodeSize = map (map convert) cfg.fixedNodeSize
+  , layout = layoutMapInch convert cfg.layout
+  }
+  where
+  convert :: Inch -> Inch
+  convert (Inch n) = Inch (n * fac)
 
 checkEntryPoints :: Array StateName -> TransitCore -> Either String Unit
 checkEntryPoints entryPoints transitCore = do
@@ -274,7 +337,7 @@ checkEntryPoints entryPoints transitCore = do
     else
       Left $ "Entry point " <> entryPoint <> " not found in transit core"
 
-checkPositions :: Array NodePosition -> TransitCore -> Either String Unit
+checkPositions :: Array NodePositioning -> TransitCore -> Either String Unit
 checkPositions positions transitCore = do
   for_ positions \position -> do
     if position.node `Array.elem` getStateNames transitCore then
@@ -292,8 +355,10 @@ checkOptions options transitCore = do
 -- | Generates a Graphviz graph with customizable options. Fails if the options are invalid.
 generateEither :: TransitCore -> (Options -> Options) -> Either String GraphvizGraph
 generateEither transitCore mkOptions = do
-  checkOptions (mkOptions defaultOptions) transitCore
-  pure $ mkGraphvizGraph (mkOptions defaultOptions) transitCore
+  let
+    options = mkOptions defaultOptions
+  checkOptions options transitCore
+  pure $ generate transitCore (\_ -> options)
 
 -- | Generates a Graphviz graph with customizable options.
 generate :: TransitCore -> (Options -> Options) -> GraphvizGraph

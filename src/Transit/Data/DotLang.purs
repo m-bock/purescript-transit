@@ -167,8 +167,8 @@ shapeBox = Attr "shape" (Value "box")
 shapeDiamond :: Attr
 shapeDiamond = Attr "shape" (Value "diamond")
 
-fontSize :: Int -> Attr
-fontSize size = Attr "fontsize" (ValueInt size)
+fontSize :: Number -> Attr
+fontSize size = Attr "fontsize" (ValueNumber size)
 
 styleFilled :: Attr
 styleFilled = Attr "style" (Value "filled")
