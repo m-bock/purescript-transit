@@ -410,7 +410,7 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title">Example 3: Bridges of Königsberg [unfinished]</div>
+        <div class="header-title">Example 3: Bridges of Königsberg</div>
         
         <div class="nav-links">
                     <a href="4.3-testing-the-update-function-2.html" rel="prev" title="Testing the update function"
@@ -444,8 +444,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs
-L97-L98</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L98-L99">test/Examples/BridgesKoenigsberg.purs
+L98-L99</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Once we have this graph data structure, we can perform sophisticated
@@ -455,11 +455,23 @@ circuit</strong> (a path that visits every edge exactly once and returns
 to the starting point) or an <strong>Eulerian trail</strong> (a path
 that visits every edge exactly once but doesn’t necessarily return to
 the start).</p>
-<p>Euler’s theorem states that an undirected graph has an Eulerian trail
-if and only if it <em>is connected</em> and has exactly <em>zero or
-two</em> vertices of odd degree.</p>
-<p>We can check these conditions using helper functions from the
-<code>Examples.Common</code> module:</p>
+<p>Let’s assume out trail would start and end at the same node. Is there
+some property that must hold for each node? As we know, that a bridge
+can only be crossed once, we can conclude that whenever we visit a piece
+of land via a bridge we must leave it via a <em>different</em> bridge
+again. That means that the number of bridges connected to each land must
+be 2, or 4, or 6, or 2000, … in other words, an even number.</p>
+<p>However our trail does not have to start and end at the same piece of
+land. If this is the case, the start and end nodes can have odd number
+of bridges connected to them. This is because we never enter the start
+node, and we never leave the end node.</p>
+<p>This is what Euler formalized in his theorem: An undirected graph has
+an Eulerian trail if and only if it <em>is connected</em> and has
+exactly <em>zero or two</em> vertices of odd degree.</p>
+<p>For simplicity we’ll assume that our graphs are always connected.
+Degree of a node is the number of edges connected to it. Since our graph
+is undirected, we can obtain the degree of a node by counting the number
+of outgoing edges:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
 pick:
@@ -475,7 +487,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 L21-L22</a> </sup>
 </p>
 <!-- PD_END -->
-<p>[todo]</p>
+<p>And we can easily see that all of our nodes have odd degree:</p>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -492,10 +504,14 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106">test/Examples/BridgesKoenigsberg.purs
-L100-L106</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L101-L107">test/Examples/BridgesKoenigsberg.purs
+L101-L107</a> </sup>
 </p>
 <!-- PD_END -->
+<p>And this already proves that our graph does not have an Eulerian
+trail. But we want to create a function that can tell this for any state
+graph. Let’s do that now, we’ll use this function in the next section
+again:</p>
 <p>[todo]</p>
 <!-- PD_START:purs
 filePath: test/Examples/Common.purs
@@ -523,7 +539,10 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 L24-L36</a> </sup>
 </p>
 <!-- PD_END -->
-<p>[todo]</p>
+<p>The imoplementation is pretty straight forward. We get all nodes,
+count the number of edges connected to each node, filter the odd ones
+and count them. If the count is 2 or 0, we have an Eulerian trail,
+otherwise we don’t. We can use this function to test our graph:</p>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -537,11 +556,11 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs
-L108-L111</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L109-L112">test/Examples/BridgesKoenigsberg.purs
+L109-L112</a> </sup>
 </p>
 <!-- PD_END -->
-<p>I we wanted to perform similar analysis with the classic state
+<p>If we wanted to perform similar analysis with the classic state
 machine approach, we would need to generate all possible 5040 walks and
 empirically check if any of them visit all bridges exactly once. This is
 due to the fact that the specification has of state machine transitions
