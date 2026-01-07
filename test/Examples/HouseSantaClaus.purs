@@ -2,6 +2,8 @@ module Examples.HouseSantaClaus (main, spec) where
 
 import Prelude
 
+import Data.Int as Int
+import Data.Newtype (unwrap)
 import Data.Reflectable (reflectType)
 import Data.Variant (Variant)
 import Effect (Effect)
@@ -15,7 +17,7 @@ import Transit.Data.DotLang (GraphvizGraph)
 import Transit.Data.DotLang as Graphviz
 import Transit.Data.Table (Table)
 import Transit.Data.Table as Table
-import Transit.Render.Graphviz (exact, nodeSize, pos)
+import Transit.Render.Graphviz (Inch(..), Vec2D(..), exact, nodeSize, pos)
 import Transit.Render.Graphviz as TransitGraphviz
 import Transit.Render.Theme (themeHarmonyDark, themeHarmonyLight)
 import Transit.Render.TransitionTable as TransitTable
@@ -100,24 +102,35 @@ spec = do
 generateGraphLight :: Effect Unit
 generateGraphLight = do
   let
+    b n = Int.toNumber n * 0.6
+
     graph :: GraphvizGraph
     graph = TransitGraphviz.generate santaTransit _
       { useUndirectedEdges = true
       , theme = themeHarmonyLight
       , layout = TransitGraphviz.Manual
-          [ pos 0 0 "1" # exact
-          , pos 2 0 "2" # exact
-          , pos 2 2 "3" # exact
-          , pos 0 2 "4" # exact
-          , pos 1 3 "5" # exact
+          [ pos (b 0) (b 0) "1" # exact
+          , pos (b 2) (b 0) "2" # exact
+          , pos (b 2) (b 2) "3" # exact
+          , pos (b 0) (b 2) "4" # exact
+          , pos (b 1) (b 4) "5" # exact
           ]
-      , fixedNodeSize = pure $ nodeSize 1 1
+      , fixedNodeSize = pure $ nodeSize (b 1) (b 1)
       , fontSize = 16.0
       }
 
   FS.writeTextFile UTF8
     "renders/house-santa-claus_graph-light.dot"
     (Graphviz.toDotStr graph)
+
+baseUnit :: Inch
+baseUnit = Inch 0.6
+
+units2D :: Int -> Int -> Vec2D Inch
+units2D x y = Vec2D
+  { x: Inch (Int.toNumber x * unwrap baseUnit)
+  , y: Inch (Int.toNumber y * unwrap baseUnit)
+  }
 
 generateGraphDark :: Effect Unit
 generateGraphDark = do
@@ -127,13 +140,13 @@ generateGraphDark = do
       { useUndirectedEdges = true
       , theme = themeHarmonyDark
       , layout = TransitGraphviz.Manual
-          [ pos 0 0 "1" # exact
-          , pos 2 0 "2" # exact
-          , pos 2 2 "3" # exact
-          , pos 0 2 "4" # exact
-          , pos 1 4 "5" # exact
+          [ { position: units2D 0 0, node: "1", exact: true }
+          , { position: units2D 2 0, node: "2", exact: true }
+          , { position: units2D 2 2, node: "3", exact: true }
+          , { position: units2D 0 2, node: "4", exact: true }
+          , { position: units2D 1 4, node: "5", exact: true }
           ]
-      , fixedNodeSize = pure $ nodeSize 1 1
+      , fixedNodeSize = pure $ units2D 1 1
       , fontSize = 16.0
       }
 
