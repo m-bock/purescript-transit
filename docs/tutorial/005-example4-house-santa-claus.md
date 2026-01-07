@@ -1,4 +1,4 @@
-# Example 4: House of Santa Claus [unfinished]
+# Example 4: House of Santa Claus
 
 > Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
 
@@ -23,7 +23,6 @@ Accordingly, the transition table looks like this:
 filePath: renders/house-santa-claus_table.md
 wrapNl: true
 -->
-
 | State |       | Message |       | State |
 | ----- | ----- | ------- | ----- | ----- |
 | 1     | **⟵** | a       | **⟶** | 2     |
@@ -270,24 +269,48 @@ pick:
 -->
 
 ```purescript
-units2D :: Int -> Int -> Vec2D Inch
-units2D x y = Vec2D
-  { x: Inch (Int.toNumber x * unwrap baseUnit)
-  , y: Inch (Int.toNumber y * unwrap baseUnit)
-  }
+generateGraphDark :: Effect Unit
+generateGraphDark = do
+  let
+    graph :: GraphvizGraph
+    graph = TransitGraphviz.generate santaTransit _
+      { useUndirectedEdges = true
+      , theme = themeHarmonyDark
+      , layout = TransitGraphviz.Manual
+          [ { position: units2D 0 0, node: "1", exact: true }
+          , { position: units2D 2 0, node: "2", exact: true }
+          , { position: units2D 2 2, node: "3", exact: true }
+          , { position: units2D 0 2, node: "4", exact: true }
+          , { position: units2D 1 4, node: "5", exact: true }
+          ]
+      , fixedNodeSize = pure $ units2D 1 1
+      , fontSize = 16.0
+      }
+
+  FS.writeTextFile UTF8
+    "renders/house-santa-claus_graph-dark.dot"
+    (Graphviz.toDotStr graph)
 ```
 
 <p align="right">
   <sup
     >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L129-L133">test/Examples/HouseSantaClaus.purs L129-L133</a>
+    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L135-L155">test/Examples/HouseSantaClaus.purs L135-L155</a>
   </sup>
 </p>
 
 <!-- PD_END -->
 
-Not that also the size of the nodes is fixed to a multiple of the base unit. In this way we can better control the position in the grid we draw in the beginning.
+Note that also the size of the nodes is fixed to a multiple of the base unit. In this way we can better control the position in the grid we draw in the beginning.
 
 ## Conclusion
 
-[todo]
+This example demonstrated several advanced features of **Transit**:
+
+- **Automatic update function generation**: When your state machine has no conditional transitions and preserves state payload types, you can use `mkUpdateAuto` to let the compiler generate the update function for you, eliminating boilerplate code.
+
+- **Manual layout control**: Unlike the previous examples that used automatic layouts, we showed how to precisely position nodes using the `Manual` layout option, giving you complete control over the visual representation of your state machine.
+
+- **Graph analysis verification**: We verified that this graph has an Eulerian trail using the same `hasEulerTrail` function from the previous example, demonstrating how **Transit**'s graph analysis capabilities work consistently across different state machines.
+
+Together with the previous examples, we've seen how **Transit** provides a comprehensive solution for building type-safe state machines, generating documentation, and performing graph analysis — all from a single type-level specification.
