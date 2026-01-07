@@ -8,17 +8,11 @@ module Transit.Render.Graphviz
   , Layout(..)
   , NodePositioning
   , Options
-  , Vec2D(..)
-  , class IsInch
+  , Vec
   , defaultOptions
-  , exact
   , generate
   , generateEither
   , mkGraphvizGraph
-  , nodeSize
-  , pos
-  , scaleOptions
-  , toInch
   ) where
 
 import Prelude
@@ -28,7 +22,6 @@ import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Foldable (for_)
-import Data.Int as Int
 import Data.Maybe (Maybe(..), maybe)
 import Data.Newtype (class Newtype, unwrap)
 import Transit.Core (GuardName, Match(..), MsgName, Return(..), StateName, TransitCore(..), getMatchesForState, getStateNames)
@@ -42,7 +35,7 @@ mkGraphvizGraph :: Options -> TransitCore -> GraphvizGraph
 mkGraphvizGraph options transit =
   GraphvizGraph $ join
     [ pure $ SecGlobal $ GlobalAttrs $ mkGlobalAttrs options
-    , case options.globalAttrsRaw of
+    , case options.rawGlobalAttrs of
         Just raw -> [ SecGlobalRaw raw ]
         Nothing -> []
     , join $ mapWithIndex (mkStateSections transit options) $ getStateNames transit
@@ -53,8 +46,8 @@ mkStateSections :: TransitCore -> Options -> Int -> StateName -> Array D.Section
 mkStateSections transit options i stateName = join
   [ pure $ SecNode $ mkStateNode options colors stateName
   , if Array.elem stateName options.entryPoints then
-      [ SecNode $ mkInitNode "__Start__"
-      , SecEdge $ mkInitEdge options "__Start__" stateName
+      [ SecNode $ mkInitNode "__Start__" -- TODO: take from global constant
+      , SecEdge $ mkInitEdge options "__Start__" stateName -- TODO: take from global constant
       ]
     else []
   , Array.concatMap (mkMatchSections colors transit options) $ getMatchesForState stateName transit
@@ -66,7 +59,7 @@ mkStateSections transit options i stateName = join
 mkMatchSections :: ColorHarmony -> TransitCore -> Options -> Match -> Array D.Section
 mkMatchSections colors transit options (Match from msg returns) = case returns of
   [ Return to ] ->
-    if options.useUndirectedEdges && hasComplementaryEdge from to msg transit then
+    if options.undirectedEdges && hasComplementaryEdge from to msg transit then
       if isCanonicalFirst from to then
         [ SecEdge $ mkUndirectedEdge options from to msg ]
       else
@@ -74,7 +67,7 @@ mkMatchSections colors transit options (Match from msg returns) = case returns o
     else
       [ SecEdge $ mkEdgeMsg options from to colors msg ]
   manyReturns ->
-    if options.useDecisionNodes then
+    if options.decisionNodes then
       mkDecisionNodeSections options from msg colors manyReturns
     else
       mkDirectEdges options from msg colors manyReturns
@@ -106,7 +99,7 @@ mkDirectEdges options from msg colors returns = Array.concatMap
 mkDecisionNodeSections :: Options -> StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
 mkDecisionNodeSections options from msg colors manyReturns =
   let
-    decisionNode = "decision_" <> from <> "_" <> msg
+    decisionNode = "decision_" <> from <> "_" <> msg -- TODO: take from global constant
   in
     join
       [ pure $ SecNode $ mkDecisionNode options decisionNode colors
@@ -143,7 +136,7 @@ mkGlobalAttrs options =
 
 -- | Creates a state node with styling.
 mkStateNode :: Options -> ColorHarmony -> StateNode -> D.Node
-mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f -> f node))
+mkStateNode options colors node = D.Node node (options.rawNodeAttrs # map (\f -> f node))
   $ join
       [ [ D.shapeBox
         , D.labelHtmlBold node
@@ -154,17 +147,17 @@ mkStateNode options colors node = D.Node node (options.nodeAttrsRaw # map (\f ->
         , D.color colors.nodeBorder
         , D.fontNameArial
         , D.labelLocC
-        , D.penWidth 1.0
-        , D.height 0.4
+        , D.penWidth 1.0 -- TODO: take from global constant
+        , D.height 0.4 -- TODO: check
         ]
       , case options.layout of
           Manual positions ->
             case positions # Array.find (\position -> position.node == node) of
-              Just { position: Vec2D { x: Inch x, y: Inch y }, exact: isExact } -> [ D.pos x y isExact ]
+              Just { pos: { x: Inch x, y: Inch y }, exact: isExact } -> [ D.pos x y isExact ]
               Nothing -> []
           _ -> []
       , case options.fixedNodeSize of
-          Just (Vec2D { x, y }) ->
+          Just { x, y } ->
             [ D.width (unwrap x)
             , D.height (unwrap y)
             , D.fixedSize true
@@ -177,21 +170,21 @@ mkInitNode :: String -> D.Node
 mkInitNode name = D.Node name Nothing
   [ D.shapeCircle
   , D.label ""
-  , D.width 0.15
-  , D.height 0.15
+  , D.width 0.15 -- TODO: take from global constant
+  , D.height 0.15 -- TODO: take from global constant
   , D.fixedSize true
   , D.styleFilled
-  , D.fillColor (Color.rgb 140 140 140)
-  , D.penWidth 0.0
+  , D.fillColor (Color.rgb 140 140 140) -- TODO: make configurable via theme
+  , D.penWidth 0.0 -- TODO: take from global constant
   ]
 
 -- | Creates an edge from the initialization node to an entry point state.
 mkInitEdge :: Options -> StateName -> StateName -> D.Edge
 mkInitEdge options from to = D.Edge from to
-  [ D.color (Color.rgb 140 140 140)
+  [ D.color (Color.rgb 140 140 140) -- TODO: make configurable via theme
   , D.fontSize options.fontSize
-  , D.arrowSize 0.7
-  , D.penWidth 1.8
+  , D.arrowSize 0.7 -- TODO: take from global constant
+  , D.penWidth 1.8 -- TODO: take from global constant
   ]
 
 -- | Creates an undirected edge (bidirectional) between two states.
@@ -201,8 +194,8 @@ mkUndirectedEdge options from to label = D.Edge from to
   , D.fontColor options.theme.undirectedEdgeFontColor
   , D.fontSize options.fontSize
   , D.labelHtmlBold label
-  , D.arrowSize 0.7
-  , D.penWidth 1.8
+  , D.arrowSize 0.7 -- TODO: take from global constant
+  , D.penWidth 1.8 -- TODO: take from global constant
   , D.dirBoth
   ]
 
@@ -212,9 +205,9 @@ mkEdgeMsg options from to colors label = D.Edge from to
   [ D.color colors.edgeColor
   , D.fontColor colors.edgeFont
   , D.fontSize options.fontSize
-  , D.arrowSize 0.7
+  , D.arrowSize 0.7 -- TODO: take from global constant
   , D.labelHtmlBold label
-  , D.penWidth 1.8
+  , D.penWidth 1.8 -- TODO: take from global constant
   ]
 
 -- | Creates an edge from a decision node to a target state, optionally with a guard label.
@@ -224,9 +217,9 @@ mkEdgeGuard options from to colors mayLabel = D.Edge from to
       [ pure $ D.color colors.edgeColor
       , pure $ D.fontColor colors.edgeFont
       , pure $ D.fontSize options.fontSize
-      , pure $ D.arrowSize 0.5
+      , pure $ D.arrowSize 0.5 -- TODO: take from global constant
       , map D.labelHtmlItalic mayLabel
-      , pure $ D.penWidth 1.0
+      , pure $ D.penWidth 1.0 -- TODO: take from global constant
       ]
 
 -- | Creates a decision node (diamond shape) for branching transitions.
@@ -245,46 +238,23 @@ mkDecisionNode options name colors = D.Node name Nothing
 type Options =
   { title :: Maybe String
   , theme :: Theme
-  , globalAttrsRaw :: Maybe String
-  , nodeAttrsRaw :: Maybe (StateName -> String)
-  , useDecisionNodes :: Boolean
-  , useUndirectedEdges :: Boolean
+  , decisionNodes :: Boolean
+  , undirectedEdges :: Boolean
   , entryPoints :: Array StateName
   , layout :: Layout
-  , fixedNodeSize :: Maybe (Vec2D Inch)
+  , fixedNodeSize :: Maybe Vec
   , fontSize :: Number
+  , rawGlobalAttrs :: Maybe String
+  , rawNodeAttrs :: Maybe (StateName -> String)
   }
 
-newtype Vec2D u = Vec2D { x :: u, y :: u }
-
-derive instance Functor Vec2D
+type Vec = { x :: Inch, y :: Inch }
 
 type NodePositioning =
   { node :: String
-  , position :: Vec2D Inch
+  , pos :: Vec
   , exact :: Boolean
   }
-
-pos :: forall u. IsInch u => u -> u -> String -> NodePositioning
-pos x y node = { node, position: Vec2D { x: toInch x, y: toInch y }, exact: false }
-
-nodeSize :: forall u. IsInch u => u -> u -> Vec2D Inch
-nodeSize x y = Vec2D { x: toInch x, y: toInch y }
-
-class IsInch a where
-  toInch :: a -> Inch
-
-instance IsInch Inch where
-  toInch = identity
-
-instance IsInch Number where
-  toInch = Inch
-
-instance IsInch Int where
-  toInch = Inch <<< Int.toNumber
-
-exact :: NodePositioning -> NodePositioning
-exact position = position { exact = true }
 
 data Layout
   = Landscape
@@ -293,41 +263,24 @@ data Layout
   | Circle
   | None
 
-layoutMapInch :: (Inch -> Inch) -> Layout -> Layout
-layoutMapInch f = case _ of
-  Landscape -> Landscape
-  Portrait -> Portrait
-  Manual positions -> Manual (map (\position -> position { position = map f position.position }) positions)
-  Circle -> Circle
-  None -> None
-
 -- | Default options for graph generation.
 defaultOptions :: Options
 defaultOptions =
   { title: Nothing
   , theme: themeHarmonyDark
-  , globalAttrsRaw: Nothing
-  , nodeAttrsRaw: Nothing
-  , useDecisionNodes: true
-  , useUndirectedEdges: false
+  , decisionNodes: true
+  , undirectedEdges: false
   , entryPoints: []
   , layout: Portrait
   , fixedNodeSize: Nothing
   , fontSize: 12.0
+  , rawGlobalAttrs: Nothing
+  , rawNodeAttrs: Nothing
   }
 
 newtype Inch = Inch Number
 
 derive instance Newtype Inch _
-
-scaleOptions :: Number -> Options -> Options
-scaleOptions fac cfg = cfg
-  { fixedNodeSize = map (map convert) cfg.fixedNodeSize
-  , layout = layoutMapInch convert cfg.layout
-  }
-  where
-  convert :: Inch -> Inch
-  convert (Inch n) = Inch (n * fac)
 
 checkEntryPoints :: Array StateName -> TransitCore -> Either String Unit
 checkEntryPoints entryPoints transitCore = do
