@@ -11,13 +11,13 @@
 <!-- 1 -->
 <g id="node1" class="node">
 <title>1</title>
-<polygon fill="#a3e635" stroke="#a3e635" points="43,-43 0,-43 0,0 43,0 43,-43"/>
+<polygon fill="#a3e635" stroke="#a3e635" stroke-width="0" points="43,-43 0,-43 0,0 43,0 43,-43"/>
 <text text-anchor="start" x="16.5" y="-18.7" font-family="Arial" font-weight="bold" font-size="16.00" fill="#6ca114">1</text>
 </g>
 <!-- 2 -->
 <g id="node2" class="node">
 <title>2</title>
-<polygon fill="#ffc700" stroke="#ffc700" points="129.4,-43 86.4,-43 86.4,0 129.4,0 129.4,-43"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="0" points="129.4,-43 86.4,-43 86.4,0 129.4,0 129.4,-43"/>
 <text text-anchor="start" x="102.9" y="-18.7" font-family="Arial" font-weight="bold" font-size="16.00" fill="#b38b00">2</text>
 </g>
 <!-- 2&#45;&gt;1 -->
@@ -31,7 +31,7 @@
 <!-- 3 -->
 <g id="node3" class="node">
 <title>3</title>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="129.4,-129.4 86.4,-129.4 86.4,-86.4 129.4,-86.4 129.4,-129.4"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="0" points="129.4,-129.4 86.4,-129.4 86.4,-86.4 129.4,-86.4 129.4,-129.4"/>
 <text text-anchor="start" x="102.9" y="-105.1" font-family="Arial" font-weight="bold" font-size="16.00" fill="#0c4590">3</text>
 </g>
 <!-- 3&#45;&gt;1 -->
@@ -53,7 +53,7 @@
 <!-- 5 -->
 <g id="node4" class="node">
 <title>5</title>
-<polygon fill="#ff527c" stroke="#ff527c" points="86.2,-215.8 43.2,-215.8 43.2,-172.8 86.2,-172.8 86.2,-215.8"/>
+<polygon fill="#ff527c" stroke="#ff527c" stroke-width="0" points="86.2,-215.8 43.2,-215.8 43.2,-172.8 86.2,-172.8 86.2,-215.8"/>
 <text text-anchor="start" x="59.7" y="-191.5" font-family="Arial" font-weight="bold" font-size="16.00" fill="#b8002c">5</text>
 </g>
 <!-- 5&#45;&gt;3 -->
@@ -67,7 +67,7 @@
 <!-- 4 -->
 <g id="node5" class="node">
 <title>4</title>
-<polygon fill="#2dc472" stroke="#2dc472" points="43,-129.4 0,-129.4 0,-86.4 43,-86.4 43,-129.4"/>
+<polygon fill="#2dc472" stroke="#2dc472" stroke-width="0" points="43,-129.4 0,-129.4 0,-86.4 43,-86.4 43,-129.4"/>
 <text text-anchor="start" x="16.5" y="-105.1" font-family="Arial" font-weight="bold" font-size="16.00" fill="#1a7142">4</text>
 </g>
 <!-- 5&#45;&gt;4 -->

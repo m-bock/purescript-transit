@@ -11,13 +11,13 @@
 <!-- A -->
 <g id="node1" class="node">
 <title>A</title>
-<polygon fill="#a3e635" stroke="#a3e635" points="86.75,-29 32.75,-29 32.75,0 86.75,0 86.75,-29"/>
+<polygon fill="#a3e635" stroke="#a3e635" stroke-width="0" points="86.75,-29 32.75,-29 32.75,0 86.75,0 86.75,-29"/>
 <text text-anchor="start" x="54.25" y="-12" font-family="Arial" font-weight="bold" font-size="15.00" fill="#4d740e">A</text>
 </g>
 <!-- B -->
 <g id="node2" class="node">
 <title>B</title>
-<polygon fill="#ffc700" stroke="#ffc700" points="75.75,-111 21.75,-111 21.75,-82 75.75,-82 75.75,-111"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="0" points="75.75,-111 21.75,-111 21.75,-82 75.75,-82 75.75,-111"/>
 <text text-anchor="start" x="43.25" y="-94" font-family="Arial" font-weight="bold" font-size="15.00" fill="#806300">B</text>
 </g>
 <!-- B&#45;&gt;A -->
@@ -39,7 +39,7 @@
 <!-- C -->
 <g id="node3" class="node">
 <title>C</title>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="147.75,-111 93.75,-111 93.75,-82 147.75,-82 147.75,-111"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="0" points="147.75,-111 93.75,-111 93.75,-82 147.75,-82 147.75,-111"/>
 <text text-anchor="start" x="115.25" y="-94" font-family="Arial" font-weight="bold" font-size="15.00" fill="#082e61">C</text>
 </g>
 <!-- C&#45;&gt;A -->
@@ -61,7 +61,7 @@
 <!-- D -->
 <g id="node4" class="node">
 <title>D</title>
-<polygon fill="#ff527c" stroke="#ff527c" points="75.75,-193 21.75,-193 21.75,-164 75.75,-164 75.75,-193"/>
+<polygon fill="#ff527c" stroke="#ff527c" stroke-width="0" points="75.75,-193 21.75,-193 21.75,-164 75.75,-164 75.75,-193"/>
 <text text-anchor="start" x="43.25" y="-176" font-family="Arial" font-weight="bold" font-size="15.00" fill="#850020">D</text>
 </g>
 <!-- D&#45;&gt;A -->

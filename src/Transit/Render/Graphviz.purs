@@ -17,7 +17,6 @@ module Transit.Render.Graphviz
 
 import Prelude
 
-import Color as Color
 import Data.Array (catMaybes, concatMap, mapWithIndex)
 import Data.Array as Array
 import Data.Either (Either(..))
@@ -46,8 +45,8 @@ mkStateSections :: TransitCore -> Options -> Int -> StateName -> Array D.Section
 mkStateSections transit options i stateName = join
   [ pure $ SecNode $ mkStateNode options colors stateName
   , if Array.elem stateName options.entryPoints then
-      [ SecNode $ mkInitNode "__Start__" -- TODO: take from global constant
-      , SecEdge $ mkInitEdge options "__Start__" stateName -- TODO: take from global constant
+      [ SecNode $ mkInitNode options constants.initNodeName
+      , SecEdge $ mkInitEdge options constants.initNodeName stateName
       ]
     else []
   , Array.concatMap (mkMatchSections colors transit options) $ getMatchesForState stateName transit
@@ -99,7 +98,7 @@ mkDirectEdges options from msg colors returns = Array.concatMap
 mkDecisionNodeSections :: Options -> StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Section
 mkDecisionNodeSections options from msg colors manyReturns =
   let
-    decisionNode = "decision_" <> from <> "_" <> msg -- TODO: take from global constant
+    decisionNode = constants.decisionNodePrefix <> from <> "_" <> msg
   in
     join
       [ pure $ SecNode $ mkDecisionNode options decisionNode colors
@@ -147,8 +146,7 @@ mkStateNode options colors node = D.Node node (options.rawNodeAttrs # map (\f ->
         , D.color colors.nodeBorder
         , D.fontNameArial
         , D.labelLocC
-        , D.penWidth 1.0 -- TODO: take from global constant
-        , D.height 0.4 -- TODO: check
+        , D.penWidth constants.nodePenWidth
         ]
       , case options.layout of
           Manual positions ->
@@ -162,29 +160,31 @@ mkStateNode options colors node = D.Node node (options.rawNodeAttrs # map (\f ->
             , D.height (unwrap y)
             , D.fixedSize true
             ]
-          Nothing -> []
+          Nothing ->
+            [ D.height constants.nodeDefaultHeight
+            ]
       ]
 
 -- | Creates an initialization node (entry point marker).
-mkInitNode :: String -> D.Node
-mkInitNode name = D.Node name Nothing
+mkInitNode :: Options -> String -> D.Node
+mkInitNode options name = D.Node name Nothing
   [ D.shapeCircle
   , D.label ""
-  , D.width 0.15 -- TODO: take from global constant
-  , D.height 0.15 -- TODO: take from global constant
+  , D.width constants.initNodeSize
+  , D.height constants.initNodeSize
   , D.fixedSize true
   , D.styleFilled
-  , D.fillColor (Color.rgb 140 140 140) -- TODO: make configurable via theme
-  , D.penWidth 0.0 -- TODO: take from global constant
+  , D.fillColor options.theme.initNodeColor
+  , D.penWidth constants.nodePenWidth
   ]
 
 -- | Creates an edge from the initialization node to an entry point state.
 mkInitEdge :: Options -> StateName -> StateName -> D.Edge
 mkInitEdge options from to = D.Edge from to
-  [ D.color (Color.rgb 140 140 140) -- TODO: make configurable via theme
+  [ D.color options.theme.initNodeColor
   , D.fontSize options.fontSize
-  , D.arrowSize 0.7 -- TODO: take from global constant
-  , D.penWidth 1.8 -- TODO: take from global constant
+  , D.arrowSize constants.arrowSize
+  , D.penWidth constants.edgePenWidth
   ]
 
 -- | Creates an undirected edge (bidirectional) between two states.
@@ -194,8 +194,8 @@ mkUndirectedEdge options from to label = D.Edge from to
   , D.fontColor options.theme.undirectedEdgeFontColor
   , D.fontSize options.fontSize
   , D.labelHtmlBold label
-  , D.arrowSize 0.7 -- TODO: take from global constant
-  , D.penWidth 1.8 -- TODO: take from global constant
+  , D.arrowSize constants.arrowSize
+  , D.penWidth constants.edgePenWidth
   , D.dirBoth
   ]
 
@@ -205,9 +205,9 @@ mkEdgeMsg options from to colors label = D.Edge from to
   [ D.color colors.edgeColor
   , D.fontColor colors.edgeFont
   , D.fontSize options.fontSize
-  , D.arrowSize 0.7 -- TODO: take from global constant
+  , D.arrowSize constants.arrowSize
   , D.labelHtmlBold label
-  , D.penWidth 1.8 -- TODO: take from global constant
+  , D.penWidth constants.edgePenWidth
   ]
 
 -- | Creates an edge from a decision node to a target state, optionally with a guard label.
@@ -217,9 +217,9 @@ mkEdgeGuard options from to colors mayLabel = D.Edge from to
       [ pure $ D.color colors.edgeColor
       , pure $ D.fontColor colors.edgeFont
       , pure $ D.fontSize options.fontSize
-      , pure $ D.arrowSize 0.5 -- TODO: take from global constant
+      , pure $ D.arrowSize constants.arrowSize
       , map D.labelHtmlItalic mayLabel
-      , pure $ D.penWidth 1.0 -- TODO: take from global constant
+      , pure $ D.penWidth constants.edgePenWidth
       ]
 
 -- | Creates a decision node (diamond shape) for branching transitions.
@@ -231,7 +231,7 @@ mkDecisionNode options name colors = D.Node name Nothing
   , D.fontColor colors.nodeFont
   , D.styleFilled
   , D.fillColor colors.nodeBg
-  , D.penWidth 0.0
+  , D.penWidth constants.nodePenWidth
   ]
 
 -- | Configuration options for graph generation.
@@ -246,6 +246,27 @@ type Options =
   , fontSize :: Number
   , rawGlobalAttrs :: Maybe String
   , rawNodeAttrs :: Maybe (StateName -> String)
+  }
+
+type Constants =
+  { arrowSize :: Number
+  , edgePenWidth :: Number
+  , nodePenWidth :: Number
+  , nodeDefaultHeight :: Number
+  , initNodeSize :: Number
+  , initNodeName :: String
+  , decisionNodePrefix :: String
+  }
+
+constants :: Constants
+constants =
+  { arrowSize: 0.7
+  , edgePenWidth: 1.8
+  , nodePenWidth: 0.0
+  , nodeDefaultHeight: 0.4
+  , initNodeSize: 0.15
+  , initNodeName: "__Start__"
+  , decisionNodePrefix: "decision_"
   }
 
 type Vec = { x :: Inch, y :: Inch }

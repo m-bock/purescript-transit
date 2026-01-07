@@ -11,13 +11,13 @@
 <!-- DoorOpen -->
 <g id="node1" class="node">
 <title>DoorOpen</title>
-<polygon fill="#a3e635" stroke="#a3e635" points="124,-33.29 48,-33.29 48,-4.29 124,-4.29 124,-33.29"/>
+<polygon fill="#a3e635" stroke="#a3e635" stroke-width="0" points="124,-33.29 48,-33.29 48,-4.29 124,-4.29 124,-33.29"/>
 <text text-anchor="start" x="56" y="-16.69" font-family="Arial" font-weight="bold" font-size="12.00" fill="#4d740e">DoorOpen</text>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
 <title>DoorClosed</title>
-<polygon fill="#ffc700" stroke="#ffc700" points="283,-33.29 197,-33.29 197,-4.29 283,-4.29 283,-33.29"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="0" points="283,-33.29 197,-33.29 197,-4.29 283,-4.29 283,-33.29"/>
 <text text-anchor="start" x="205" y="-16.69" font-family="Arial" font-weight="bold" font-size="12.00" fill="#806300">DoorClosed</text>
 </g>
 <!-- DoorOpen&#45;&gt;DoorClosed -->
@@ -48,7 +48,7 @@
 <!-- DoorLocked -->
 <g id="node4" class="node">
 <title>DoorLocked</title>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="440,-63.29 352,-63.29 352,-34.29 440,-34.29 440,-63.29"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="0" points="440,-63.29 352,-63.29 352,-34.29 440,-34.29 440,-63.29"/>
 <text text-anchor="start" x="360" y="-46.69" font-family="Arial" font-weight="bold" font-size="12.00" fill="#082e61">DoorLocked</text>
 </g>
 <!-- DoorClosed&#45;&gt;DoorLocked -->
@@ -74,15 +74,15 @@
 <!-- decision_DoorLocked_Unlock&#45;&gt;DoorClosed -->
 <g id="edge7" class="edge">
 <title>decision_DoorLocked_Unlock&#45;&gt;DoorClosed</title>
-<path fill="none" stroke="#2f80ed" d="M558.32,-31.58C550.74,-30 541.98,-28.25 534,-26.79 492.38,-19.22 482.17,-15.14 440,-11.79 401.01,-8.7 391.09,-10.56 352,-11.79 331.09,-12.45 308.01,-13.81 288.33,-15.15"/>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="288,-13.42 283.14,-15.51 288.25,-16.91 288,-13.42"/>
+<path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M558.32,-31.58C550.74,-30 541.98,-28.25 534,-26.79 492.38,-19.22 482.17,-15.14 440,-11.79 401.01,-8.7 391.09,-10.56 352,-11.79 331.81,-12.43 309.58,-13.72 290.35,-15.01"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="289.95,-12.58 283.14,-15.51 290.29,-17.47 289.95,-12.58"/>
 <text text-anchor="start" x="362.5" y="-16.19" font-family="Times,serif" font-style="italic" font-size="12.00" fill="#8db9f5">PinCorrect</text>
 </g>
 <!-- decision_DoorLocked_Unlock&#45;&gt;DoorLocked -->
 <g id="edge6" class="edge">
 <title>decision_DoorLocked_Unlock&#45;&gt;DoorLocked</title>
-<path fill="none" stroke="#2f80ed" d="M554.72,-33.91C548.04,-33.45 540.73,-33.02 534,-32.79 500.24,-31.64 491.5,-28.47 458,-32.79 453.79,-33.34 449.45,-34.08 445.12,-34.96"/>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="444.57,-33.29 440.05,-36.04 445.31,-36.71 444.57,-33.29"/>
+<path fill="none" stroke="#2f80ed" stroke-width="1.8" d="M554.72,-33.91C548.04,-33.45 540.73,-33.02 534,-32.79 500.24,-31.64 491.5,-28.47 458,-32.79 454.43,-33.25 450.76,-33.86 447.09,-34.57"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="1.8" points="446.4,-32.21 440.05,-36.04 447.4,-37.01 446.4,-32.21"/>
 <text text-anchor="start" x="458" y="-37.19" font-family="Times,serif" font-style="italic" font-size="12.00" fill="#8db9f5">PinIncorrect</text>
 </g>
 </g>

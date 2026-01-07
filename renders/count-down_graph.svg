@@ -11,13 +11,13 @@
 <!-- Idle -->
 <g id="node1" class="node">
 <title>Idle</title>
-<polygon fill="#a3e635" stroke="#a3e635" points="93,-258 39,-258 39,-229 93,-229 93,-258"/>
+<polygon fill="#a3e635" stroke="#a3e635" stroke-width="0" points="93,-258 39,-258 39,-229 93,-229 93,-258"/>
 <text text-anchor="start" x="55.5" y="-241.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#4d740e">Idle</text>
 </g>
 <!-- Counting -->
 <g id="node2" class="node">
 <title>Counting</title>
-<polygon fill="#ffc700" stroke="#ffc700" points="70,-180 0,-180 0,-151 70,-151 70,-180"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="0" points="70,-180 0,-180 0,-151 70,-151 70,-180"/>
 <text text-anchor="start" x="8" y="-163.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#806300">Counting</text>
 </g>
 <!-- Idle&#45;&gt;Counting -->
@@ -43,20 +43,20 @@
 <!-- decision_Counting_Tick&#45;&gt;Counting -->
 <g id="edge4" class="edge">
 <title>decision_Counting_Tick&#45;&gt;Counting</title>
-<path fill="none" stroke="#ffc700" d="M42.34,-101.92C41.88,-111.13 41.14,-122.71 40,-133 39.55,-137.1 38.93,-141.49 38.29,-145.64"/>
-<polygon fill="#ffc700" stroke="#ffc700" points="36.54,-145.52 37.48,-150.74 39.99,-146.08 36.54,-145.52"/>
+<path fill="none" stroke="#ffc700" stroke-width="1.8" d="M42.34,-101.92C41.88,-111.13 41.14,-122.71 40,-133 39.62,-136.46 39.12,-140.13 38.59,-143.69"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="36.15,-143.44 37.48,-150.74 40.99,-144.21 36.15,-143.44"/>
 </g>
 <!-- Done -->
 <g id="node4" class="node">
 <title>Done</title>
-<polygon fill="#2f80ed" stroke="#2f80ed" points="97,-29 43,-29 43,0 97,0 97,-29"/>
+<polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="0" points="97,-29 43,-29 43,0 97,0 97,-29"/>
 <text text-anchor="start" x="54.5" y="-12.4" font-family="Arial" font-weight="bold" font-size="12.00" fill="#082e61">Done</text>
 </g>
 <!-- decision_Counting_Tick&#45;&gt;Done -->
 <g id="edge3" class="edge">
 <title>decision_Counting_Tick&#45;&gt;Done</title>
-<path fill="none" stroke="#ffc700" d="M48.46,-69.34C52.53,-59.18 58.11,-45.21 62.58,-34.05"/>
-<polygon fill="#ffc700" stroke="#ffc700" points="64.31,-34.43 64.54,-29.14 61.06,-33.13 64.31,-34.43"/>
+<path fill="none" stroke="#ffc700" stroke-width="1.8" d="M48.46,-69.34C52.31,-59.73 57.51,-46.71 61.85,-35.88"/>
+<polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="64.22,-36.55 64.54,-29.14 59.67,-34.73 64.22,-36.55"/>
 </g>
 <!-- Done&#45;&gt;Idle -->
 <g id="edge5" class="edge">

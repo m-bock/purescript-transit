@@ -256,6 +256,7 @@ type Theme =
   , colorHarmonies :: NonEmptyArray ColorHarmony
   , undirectedEdgeColor :: Color
   , undirectedEdgeFontColor :: Color
+  , initNodeColor :: Color
   }
 
 -- | Gets a color harmony from a theme by index (cycles through available harmonies).
@@ -281,6 +282,7 @@ themeHarmonyLight =
   , colorHarmonies: map (\bc -> mkLightColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 0 0 0
   , undirectedEdgeFontColor: Color.rgb 0 0 0
+  , initNodeColor: Color.rgb 140 140 140
   }
 
 -- | Dark theme with colorful harmonies.
@@ -291,6 +293,7 @@ themeHarmonyDark =
   , colorHarmonies: map (\bc -> mkDarkColorHarmony bc (baseColorToColor bc)) allBaseColors
   , undirectedEdgeColor: Color.rgb 110 110 110
   , undirectedEdgeFontColor: Color.rgb 160 160 160
+  , initNodeColor: Color.rgb 140 140 140
   }
 
 -- | Light theme with high contrast (black and white).
@@ -307,6 +310,7 @@ themeContrastLight =
       }
   , undirectedEdgeColor: Color.black
   , undirectedEdgeFontColor: Color.black
+  , initNodeColor: Color.rgb 80 80 80
   }
 
 -- | Dark theme with high contrast (white and black).
@@ -323,6 +327,7 @@ themeContrastDark =
       }
   , undirectedEdgeColor: Color.white
   , undirectedEdgeFontColor: Color.white
+  , initNodeColor: Color.rgb 180 180 180
   }
 
 -- | Light theme with gradient-style colors.
@@ -339,6 +344,7 @@ themeGradientLight =
       }
   , undirectedEdgeColor: Color.rgb 0 0 0
   , undirectedEdgeFontColor: Color.rgb 0 0 0
+  , initNodeColor: Color.rgb 140 140 140
   }
 
 -- | Dark theme with gradient-style colors.
@@ -355,5 +361,6 @@ themeGradientDark =
       }
   , undirectedEdgeColor: Color.rgb 0 0 0
   , undirectedEdgeFontColor: Color.rgb 0 0 0
+  , initNodeColor: Color.rgb 140 140 140
   }
 
