@@ -435,8 +435,8 @@ Types</h3>
 class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
 types for both <code>State</code> and <code>Msg</code> instead of
 traditional ADTs. This design choice is crucial for
-<strong>Transit</strong> but for now let’s just focus on the fact that
-it’s just another way to represent a sum types.<a href="#fn2"
+<strong>Transit</strong>, but for now let’s just focus on the fact that
+it’s another way to represent sum types.<a href="#fn2"
 class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -466,7 +466,7 @@ any data (payload) associated with the state or message.</p>
 <h3 data-number="2.3.2" id="transit-specification">Transit
 Specification</h3>
 <p>Once the types are defined, we can define the state machine structure
-using <strong>Transit</strong>’s type-level DSL. Let’s see how it looks
+using <strong>Transit</strong>’s type-level DSL. Let’s see what it looks
 like:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Door.purs
@@ -490,10 +490,10 @@ L37-L40</a> </sup>
 <li><code>Transit</code> initializes an empty transition list</li>
 <li><code>:*</code> is an infix operator that appends each transition to
 the list</li>
-<li>The <code>@</code> operator connects a state to a message, and
+<li>The <code>:@</code> operator connects a state to a message, and
 <code>&gt;|</code> indicates the target state</li>
 </ul>
-<p>So for instance we read the first transition as: in state
+<p>For instance, we read the first transition as: in state
 <code>DoorOpen</code>, when receiving message <code>Close</code>,
 transition to state <code>DoorClosed</code>.</p>
 <p>This type-level specification fully defines the state machine’s

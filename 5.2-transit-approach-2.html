@@ -431,9 +431,9 @@ Approach</h2>
 <h3 data-number="5.2.1" id="state-and-message-types-3">State and message
 types</h3>
 <p>Nothing special here. We define the state and message types like we
-did in the previous examples. By using Variants we have no constraint on
-how the labels are named, we can use any type level string we want:
-numbers, lower case letters, etc. Traditional ADT wouldn’t give us this
+did in the previous examples. By using Variants, we have no constraint
+on how the labels are named; we can use any type-level string we want:
+numbers, lowercase letters, etc. Traditional ADTs wouldn’t give us this
 flexibility.</p>
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
@@ -467,7 +467,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 L27-L44</a> </sup>
 </p>
 <!-- PD_END -->
-<h3 data-number="5.2.2" id="type-level-specification-1">Type level
+<h3 data-number="5.2.2" id="type-level-specification-1">Type-level
 specification</h3>
 <p>The transit specification follows the same pattern as in the previous
 example.</p>
@@ -494,19 +494,20 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 L46-L55</a> </sup>
 </p>
 <!-- PD_END -->
-<h3 data-number="5.2.3" id="update-function-1">Update function</h3>
-<p>Until now we always manually defined the update function. In most
-cases this will be the way to go. But you may have noticed that in some
-cases this is sheer boilerplate. We can let the compiler generate the
-update function for us by using the <code>mkUpdateAuto</code> function.
-This works if the following conditions are met:</p>
+<h3 data-number="5.2.3" id="the-update-function-5">The Update
+Function</h3>
+<p>Until now, we have always manually defined the update function. In
+most cases this will be the way to go. But you may have noticed that in
+some cases this is sheer boilerplate. We can let the compiler generate
+the update function for us by using the <code>mkUpdateAuto</code>
+function. This works if the following conditions are met:</p>
 <ul>
 <li>There are no conditional transitions in the state machine.</li>
 <li>State transitions don’t change the type of the state payload.</li>
 </ul>
 <p>Both conditions are met in our case, so we can use
 <code>mkUpdateAuto</code> to generate the update function for us. We
-could have used it in the Door example and the Bridges of Konigsberg
+could have used it in the Door example and the Bridges of Königsberg
 example as well.</p>
 <!-- PD_START:purs
 filePath: test/Examples/HouseSantaClaus.purs
