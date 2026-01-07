@@ -454,16 +454,16 @@ analysis using standard graph algorithms. For the Seven Bridges problem,
 we want to determine if the graph has an <strong>Eulerian
 trail</strong>: A path that visits every edge exactly once but doesn’t
 necessarily return to the start.</p>
-<p>Let’s assume out trail would start and end at the same node. Is there
-some property that must hold for each node? As we know, that a bridge
-can only be crossed once, we can conclude that whenever we visit a piece
+<p>Let’s assume our trail would start and end at the same node. Is there
+some property that must hold for each node? As we know, a bridge can
+only be crossed once, so we can conclude that whenever we visit a piece
 of land via a bridge we must leave it via a <em>different</em> bridge
 again. That means that the number of bridges connected to each land must
 be 2, or 4, or 6, or 2000, … in other words, an even number.</p>
-<p>However our trail does not have to start and end at the same piece of
-land. If this is the case, the start and end nodes can have odd number
-of bridges connected to them. This is because we never enter the start
-node, and we never leave the end node.</p>
+<p>However, our trail does not have to start and end at the same piece
+of land. If this is the case, the start and end nodes can have an odd
+number of bridges connected to them. This is because we never enter the
+start node, and we never leave the end node.</p>
 <p>This is what Euler formalized in his theorem: An undirected graph has
 an Eulerian trail if and only if it <em>is connected</em> and has
 exactly <em>zero or two</em> vertices of odd degree.</p>
@@ -541,10 +541,10 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 L24-L36</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The implementation is pretty straight forward. We get all nodes,
-count the number of edges connected to each node, filter the odd ones
-and count them. If the count is 2 or 0, we have an Eulerian trail,
-otherwise we don’t. We can use this function to test our graph:</p>
+<p>The implementation is pretty straightforward. We get all nodes, count
+the number of edges connected to each node, filter the odd ones and
+count them. If the count is 2 or 0, we have an Eulerian trail, otherwise
+we don’t. We can use this function to test our graph:</p>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -568,8 +568,8 @@ analysis with the classic state machine approach</h3>
 <p>If we wanted to perform similar analysis with the classic state
 machine approach, we would need to generate all possible 5040 walks and
 empirically check if any of them visit all bridges exactly once. This is
-due to the fact that the specification has of state machine transitions
-is burried inside the update function.</p> 
+due to the fact that the specification of state machine transitions is
+buried inside the update function.</p> 
       <div class="scroll-to-top">
         <a
           href="#"
