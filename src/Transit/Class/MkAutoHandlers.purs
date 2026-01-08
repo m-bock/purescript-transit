@@ -27,7 +27,7 @@ instance mkAutoHandlersCons ::
   MkAutoHandlers (MatchImpl symStateIn symMsg stateInOut msgIn m (Variant rowStateOut) /\ rest) where
   mkAutoHandlers = head /\ tail
     where
-
+    head :: MatchImpl symStateIn symMsg stateInOut msgIn m (Variant rowStateOut)
     head = MatchImpl (\st _ -> pure (V.inj (Proxy @symStateOut) (Ret st)))
 
     tail :: rest

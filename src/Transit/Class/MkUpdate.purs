@@ -9,10 +9,16 @@ import Data.Function.Uncurried (runFn4)
 import Data.Variant (Variant)
 import Transit.Class.MkHandlerLookup (class MkHandlerLookup, mkHandlerLookup)
 import Transit.Core (MkTransitCoreTL, TransitCoreTL)
-import Transit.HandlerLookup (build, runI, runImpl)
+import Transit.HandlerLookup (HandlerLookup, runI, runImpl)
 
 class
-  MkUpdate (spec :: TransitCoreTL) (m :: Type -> Type) (may :: Type -> Type) matches msg state
+  MkUpdate
+    (spec :: TransitCoreTL)
+    (m :: Type -> Type)
+    (may :: Type -> Type)
+    matches
+    msg
+    state
   | spec msg state m -> matches
   where
   mkUpdateCore :: matches -> state -> msg -> m (may state)
@@ -22,10 +28,18 @@ instance mkUpdateInst ::
   , Applicative m
   , Alternative may
   ) =>
-  MkUpdate (MkTransitCoreTL spec) m may matches (Variant rowMsg) (Variant rowState) where
+  MkUpdate
+    (MkTransitCoreTL spec)
+    m
+    may
+    matches
+    (Variant rowMsg)
+    (Variant rowState)
+  where
   mkUpdateCore matches =
     let
-      handerLookupBuilder = mkHandlerLookup @m @spec matches
-      handlerLookup = build handerLookupBuilder
+      handlerLookup :: HandlerLookup m rowState rowMsg
+      handlerLookup = mkHandlerLookup @m @spec matches
     in
-      \state msg -> runFn4 runImpl runI handlerLookup state msg
+      (\state msg -> runFn4 runImpl runI handlerLookup state msg)
+        :: Variant rowState -> Variant rowMsg -> m (may (Variant rowState))

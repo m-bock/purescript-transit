@@ -67,8 +67,6 @@ function generateTransitSizeModule(size, baseNamespace) {
 
   return `module ${baseNamespace}.Transit.Size${formatNum(size)} where
 
-import Prelude
-
 import Data.Tuple.Nested (type (/\\), (/\\))
 import Data.Variant (Variant)
 import Data.Variant.Internal (VariantRep(..))

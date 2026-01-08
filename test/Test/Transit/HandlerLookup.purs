@@ -8,12 +8,10 @@ import Data.Identity (Identity(..))
 import Data.Maybe (Maybe(..))
 import Data.Function.Uncurried (runFn4)
 import Data.Variant (Variant)
-import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
-import Transit.HandlerLookup (HandlerLookup(..), HandlerLookupBuilder(..), addHandler, build, initBuilder, runI, runImpl)
+import Transit.HandlerLookup (HandlerLookupBuilder, addHandler, build, initBuilder, runI, runImpl)
 import Transit.VariantUtils (v)
-import Type.Proxy (Proxy(..))
 
 type StateRow =
   ( "State1" :: Int

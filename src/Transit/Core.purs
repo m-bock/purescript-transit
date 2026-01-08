@@ -134,7 +134,6 @@ instance
   , Reflectable transition Match
   ) =>
   Reflectable (MkTransitCoreTL (transition :> transitions)) TransitCore where
-
   reflectType _ = TransitCore (Array.cons head tail)
     where
     head = reflectType (Proxy @transition)

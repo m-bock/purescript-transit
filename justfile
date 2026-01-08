@@ -1,18 +1,24 @@
+node-run MODULE:
+    node -e "import { main } from './output/{{MODULE}}/index.js'; main();"
+
 gen-examples:
     rm -rf renders
     mkdir -p renders
     mkdir -p renders/themes
     just node-run Docs.Main
 
-node-run MODULE:
-    node -e "import { main } from './output/{{MODULE}}/index.js'; main();"
+t:
+    echo 1
+
+    echo 2
 
 gen-patchdown:
     for file in docs/tutorial/*.md; do \
         PATCHDOWN_FILE_PATH="$file" \
         PATCHDOWN_BASE_URL=https://github.com/m-bock/purescript-transit/blob/main \
         just node-run Md.Main; \
-    done && \
+    done
+    
     PATCHDOWN_FILE_PATH=README.md \
     just node-run Md.Main
 
@@ -21,10 +27,6 @@ gen-svgs:
 
 gen-md-prettier:
     npx prettier --write "renders/*.md"
-
-gen-doctoc:
-    npx doctoc --maxlevel 3 README.md
-    npx doctoc --maxlevel 3 docs/tutorial.md
 
 gen-book BASEURL='':
     rm -rf site
@@ -35,9 +37,8 @@ gen-book BASEURL='':
       --highlight-style=zenburn \
       --template=assets/gh-template.html \
       --variable=baseurl:{{BASEURL}}
-    cp -r assets site/assets
-    cp -r renders site/renders
-    cp -r bench site/bench
+    
+    cp -r assets renders bench - site
 
 build:
     npx spago build
@@ -77,7 +78,7 @@ clean-bench-modules:
     rm -rf output/Bench.Generated.*
 
 gen-bench-modules:
-    just clean-bench-modules && \
+    just clean-bench-modules
     node scripts/generate-bench-modules.js \
       --min 20 --max 200 --step 20 \
       --target-folder test/Bench/Generated --base-namespace Bench.Generated \
@@ -89,32 +90,36 @@ clean:
 compile-time-bench:
     node scripts/compile-time-bench.js
 
-gen-bench:
-    just clean && \
-    \
-    just gen-bench-modules && \
-    \
-    just compile-time-bench && \
-    \
-    just build-es && \
-    just bench-run && \
-    \
+bench:
+    just clean
+    just gen-bench-modules
+    just compile-time-bench
+    just build-es
+    just bench-run
     just gen-vega
 
 gen:
-    just build && \
-    just gen-examples && \
-    just gen-md-prettier && \
-    just gen-svgs && \
+    just build
+    just gen-examples
+    just gen-md-prettier
+    just gen-svgs
     just gen-patchdown
 
-watch:
-    just gen && \
-    npx concurrently "npx browser-sync start --server --files 'renders/**/*.md' 'renders/**/*.html' --port 5000 --no-open --reload-delay 100" "while true; do sleep 30; just gen; done"
-
 deploy:
-    cp -r assets renders -t site && \
-    just test && \
-    just gen && \
-    just gen-book 'https://m-bock.github.io/purescript-transit/' && \
+    just clean
+    just test
+    just gen
+    just gen-book 'https://m-bock.github.io/purescript-transit/'
     npx gh-pages -d site
+
+
+bench-compare:
+    git archive HEAD:bench | tar -x -C tmp/bench-old
+
+    firefox \
+      tmp/bench-old/backend-JS/Update-Functions.svg \
+              bench/backend-JS/Update-Functions.svg \
+      tmp/bench-old/backend-ES/Update-Functions.svg \
+              bench/backend-ES/Update-Functions.svg \
+      tmp/bench-old/compile-time/results.svg \
+              bench/compile-time/results.svg

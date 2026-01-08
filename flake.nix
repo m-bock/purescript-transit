@@ -19,7 +19,6 @@
             nodePackages.vega-lite
             nodePackages.vega-cli
             pandoc
-            entr
           ];
         };
       });

@@ -784,7 +784,8 @@
     },
     "extra_packages": {
       "benchlib": {
-        "path": "../purescript-benchlib"
+        "git": "https://github.com/m-bock/purescript-benchlib.git",
+        "ref": "eb3ac31eced916cf3c434b74582efe9257771ada"
       },
       "codec-argonaut": {
         "git": "https://github.com/garyb/purescript-codec-argonaut.git",
@@ -799,7 +800,8 @@
         ]
       },
       "patchdown": {
-        "path": "../purescript-patchdown"
+        "git": "https://github.com/m-bock/purescript-patchdown.git",
+        "ref": "b1387f3b67448dca38b2358677361ee3c7f61570"
       }
     }
   },
@@ -934,8 +936,9 @@
       ]
     },
     "benchlib": {
-      "type": "local",
-      "path": "../purescript-benchlib",
+      "type": "git",
+      "url": "https://github.com/m-bock/purescript-benchlib.git",
+      "rev": "eb3ac31eced916cf3c434b74582efe9257771ada",
       "dependencies": [
         "aff",
         "argonaut",
@@ -1691,8 +1694,9 @@
       "dependencies": []
     },
     "patchdown": {
-      "type": "local",
-      "path": "../purescript-patchdown",
+      "type": "git",
+      "url": "https://github.com/m-bock/purescript-patchdown.git",
+      "rev": "b1387f3b67448dca38b2358677361ee3c7f61570",
       "dependencies": [
         "argonaut",
         "argonaut-core",

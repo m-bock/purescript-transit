@@ -34,7 +34,7 @@ import Transit.Class.MkAutoHandlers (class MkAutoHandlers, mkAutoHandlers)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
 import Transit.Class.MkUpdate as MkUpdate
 import Transit.Class.MkUpdate as U
-import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames) as ExportCore
+import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames, Ret, RetVia) as ExportCore
 import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
 import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), Transit) as ExportDSL
 import Transit.Data.MaybeChurch (MaybeChurch, fromMaybeChurch)
@@ -108,7 +108,8 @@ mkUpdateM = curryN @args f
   where
   f :: args -> Variant state -> Variant msg -> m (Variant state)
   f impl state msg =
-    map (fromMaybeChurch state)
+    map
+      (fromMaybeChurch state)
       (mkUpdateCore @tcore impl state msg)
 
 -- | Creates a pure update function.
@@ -132,9 +133,9 @@ mkUpdate = curryN @args f
   f :: args -> Variant state -> Variant msg -> Variant state
   f impl =
     let
-      f' = U.mkUpdateCore @tcore impl
+      handler = U.mkUpdateCore @tcore impl
     in
-      \state msg -> fromMaybeChurch state $ Safe.coerce (f' state msg :: Identity (MaybeChurch _))
+      \state msg -> fromMaybeChurch state $ Safe.coerce (handler state msg :: Identity (MaybeChurch _))
 
 mkUpdateAuto
   :: forall @spec tcore msg state args
@@ -146,9 +147,9 @@ mkUpdateAuto
   -> Variant state
 mkUpdateAuto =
   let
-    f' = U.mkUpdateCore @tcore mkAutoHandlers
+    handler = U.mkUpdateCore @tcore mkAutoHandlers
   in
-    \state msg -> fromMaybeChurch state $ Safe.coerce (f' state msg :: Identity (MaybeChurch _))
+    \state msg -> fromMaybeChurch state $ Safe.coerce (handler state msg :: Identity (MaybeChurch _))
 
 --------------------------------------------------------------------------------
 --- Match Handlers
@@ -167,7 +168,7 @@ match
   :: forall @symStateIn @symMsgIn stateIn msgIn stateOut
    . (stateIn -> msgIn -> stateOut)
   -> MatchImpl symStateIn symMsgIn stateIn msgIn Identity stateOut
-match f = MatchImpl (\state msg -> pure $ f state msg)
+match handler = MatchImpl (\state msg -> pure $ handler state msg)
 
 -- | Creates a monadic match handler for a state transition.
 -- |
@@ -184,7 +185,7 @@ matchM
   :: forall @symStateIn @symMsgIn m stateIn msgIn stateOut
    . (stateIn -> msgIn -> m stateOut)
   -> MatchImpl symStateIn symMsgIn stateIn msgIn m stateOut
-matchM f = MatchImpl (\state msg -> f state msg)
+matchM handler = MatchImpl (\state msg -> handler state msg)
 
 --------------------------------------------------------------------------------
 --- Return Functions
@@ -207,10 +208,18 @@ class Return (sym :: Symbol) a where
   -- | ```
   return :: a
 
-instance (Row.Cons sym (Ret a) r1 r2, IsSymbol sym) => Return sym (a -> Variant r2) where
+instance returnWithPayload ::
+  ( Row.Cons sym (Ret a) r1 r2
+  , IsSymbol sym
+  ) =>
+  Return sym (a -> Variant r2) where
   return v = V.inj (Proxy :: _ sym) (Ret v)
 
-instance (Row.Cons sym (Ret {}) r1 r2, IsSymbol sym) => Return sym (Variant r2) where
+instance returnWithEmptyRecordPayload ::
+  ( Row.Cons sym (Ret {}) r1 r2
+  , IsSymbol sym
+  ) =>
+  Return sym (Variant r2) where
   return = V.inj (Proxy :: _ sym) (Ret {})
 
 -- | Type class for returning to a state via a guard condition.
@@ -231,8 +240,16 @@ class ReturnVia (symGuard :: Symbol) (sym :: Symbol) a where
   -- | ```
   returnVia :: a
 
-instance (Row.Cons sym (RetVia symGuard a) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (a -> Variant r2) where
+instance returnViaWithPayload ::
+  ( Row.Cons sym (RetVia symGuard a) r1 r2
+  , IsSymbol sym
+  ) =>
+  ReturnVia symGuard sym (a -> Variant r2) where
   returnVia v = V.inj (Proxy :: _ sym) (RetVia @symGuard v)
 
-instance (Row.Cons sym (RetVia symGuard {}) r1 r2, IsSymbol sym) => ReturnVia symGuard sym (Variant r2) where
+instance returnViaWithEmptyRecordPayload ::
+  ( Row.Cons sym (RetVia symGuard {}) r1 r2
+  , IsSymbol sym
+  ) =>
+  ReturnVia symGuard sym (Variant r2) where
   returnVia = V.inj (Proxy :: _ sym) (RetVia @symGuard {})
