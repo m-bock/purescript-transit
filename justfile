@@ -112,7 +112,6 @@ deploy:
     just gen-book 'https://m-bock.github.io/purescript-transit/'
     npx gh-pages -d site
 
-
 bench-compare:
     git archive HEAD:bench | tar -x -C tmp/bench-old
 
