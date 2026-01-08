@@ -106,9 +106,9 @@ gen:
     just gen-patchdown
 
 check-git-clean:
-    if ! git diff --quiet; then
-        echo "Git is not clean"
-        exit 1
+    if ! git diff --quiet; then \
+        echo "Git is not clean"; \
+        exit 1; \
     fi
 
 deploy:
