@@ -107,7 +107,8 @@ gen:
 
 check-git-clean:
     if ! git diff --quiet; then \
-        echo "Git is not clean"; \
+        echo "Git is not clean. The following files have changes:"; \
+        git status --short; \
         exit 1; \
     fi
 
