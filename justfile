@@ -38,7 +38,7 @@ gen-book BASEURL='':
       --template=assets/gh-template.html \
       --variable=baseurl:{{BASEURL}}
     
-    cp -r assets renders bench - site
+    cp -r assets renders bench -t site
 
 build:
     npx spago build
