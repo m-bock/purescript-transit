@@ -16,10 +16,12 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
+            nodejs_20
             nodePackages.vega-lite
             nodePackages.vega-cli
             pandoc
             graphviz
+            just
           ];
         };
       });

@@ -105,11 +105,19 @@ gen:
     just gen-svgs
     just gen-patchdown
 
+check-git-clean:
+    if ! git diff --quiet; then
+        echo "Git is not clean"
+        exit 1
+    fi
+
 deploy:
     just clean
     just test
     just gen
     just gen-book 'https://m-bock.github.io/purescript-transit/'
+    just format
+    just check-git-clean
     npx gh-pages -d site
 
 bench-compare:
