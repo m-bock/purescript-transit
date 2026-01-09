@@ -28,7 +28,7 @@ package:
     strict: true
     pedanticPackages: false
   publish:
-    version: 0.0.1
+    version: 0.1.0
     license: BSD-3-Clause
     location:
       githubOwner: m-bock
