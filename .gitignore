@@ -12,8 +12,6 @@ generated-docs/
 .spago
 .spec-results
 /tmp
-docs/gh-preview.html
 /site
-/readme
 test/Bench/Generated
 todo.md
