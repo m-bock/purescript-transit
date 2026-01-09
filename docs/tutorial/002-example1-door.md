@@ -121,7 +121,7 @@ While this approach works and is straightforward, it has some drawbacks:
 
 - **Limited analysis capabilities**: There's no way to analyze the state machine's structure or behavior statically — you can only inspect its behavior by running the code.
 
-## Transit Approach
+## Implementation using Transit
 
 Now let's see how **Transit** can help us to improve this.
 

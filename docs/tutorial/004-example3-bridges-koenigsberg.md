@@ -45,7 +45,7 @@ wrapNl: true
 
 [^koenigsberg]: The [Seven Bridges of Königsberg](https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg) problem was solved by Leonhard Euler (1707–1783), a Swiss mathematician, physicist, and engineer who made fundamental contributions to mathematics and physics. His work on this problem is considered the foundation of graph theory.
 
-## Transit Approach
+## Implementation using Transit
 
 ### State and message types
 

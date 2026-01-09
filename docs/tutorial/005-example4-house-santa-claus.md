@@ -36,7 +36,7 @@ wrapNl: true
 
 <!-- PD_END -->
 
-## Transit Approach
+## Implementation using Transit
 
 ### State and message types
 

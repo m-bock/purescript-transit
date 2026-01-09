@@ -106,7 +106,7 @@ update state msg = case state, msg of
 
 <!-- PD_END -->
 
-## The Transit Approach
+## Implementation using Transit
 
 ### State and Message Types
 
