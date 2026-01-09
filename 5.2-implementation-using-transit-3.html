@@ -410,114 +410,121 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title"></div>
+        <div class="header-title">Example 4: House of Santa Claus</div>
         
         <div class="nav-links">
-                    <a href="7-error-handling.html" rel="prev" title="Error handling"
+                    <a href="5.1-the-state-machine-3.html" rel="prev" title="The State Machine"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <span class="disabled">Next →</span>
+                     <a href="5.3-testing-the-state-machine.html" rel="next" title="Testing the state machine"
+            >Next →</a
+          >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h1 data-number="8" id="monadic-error-handling">Monadic Error
-handling</h1>
-<p>For more advanced scenarios, you can combine error handling with
-monadic effects using <code>mkUpdateMaybeM</code>.</p>
-<p>Here’s an update function that logs transitions AND returns
-<code>Maybe</code>. Again we use the <code>Writer</code> as example, but
-you can use any monad you want.</p>
+       <h2 data-number="5.2"
+id="implementation-using-transit-3">Implementation using Transit</h2>
+<h3 data-number="5.2.1" id="state-and-message-types-3">State and message
+types</h3>
+<p>Nothing special here. We define the state and message types like we
+did in the previous examples. By using Variants, we have no constraint
+on how the labels are named; we can use any type-level string we want:
+numbers, lowercase letters, etc. Traditional ADTs wouldn’t give us this
+flexibility.</p>
 <!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
+filePath: test/Examples/HouseSantaClaus.purs
 pick:
-  - Accum
-  - update
+  - State
+  - Msg
 -->
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Accum</span> <span class="ot">=</span> <span class="dt">Array</span> <span class="dt">String</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="kw">forall</span> m<span class="op">.</span> <span class="dt">MonadWriter</span> <span class="dt">Accum</span> m <span class="ot">=&gt;</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> m (<span class="dt">Maybe</span> <span class="dt">State</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateMaybeM <span class="op">@</span><span class="dt">DoorTransit</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  ( matchM <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="kw">do</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      tell [ <span class="st">&quot;Closing door&quot;</span> ]</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ( matchM <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="kw">do</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      tell [ <span class="st">&quot;Opening door&quot;</span> ]</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;1&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;2&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;3&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;4&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;5&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;a&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;b&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;c&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;d&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;e&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;f&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;g&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;h&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L15-L26">test/Examples/ErrorHandlingMonadic.purs
-L15-L26</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L27-L44">test/Examples/HouseSantaClaus.purs
+L27-L44</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The return type is <code>m (Maybe State)</code> - combining the monad
-<code>m</code> (for effects) with <code>Maybe</code> (for error
-handling). Inside each handler, we can perform monadic operations like
-<code>tell</code> to log transitions.</p>
-<p>Now let’s use this in a scenario where we attempt an invalid
-transition in the middle of a sequence:</p>
+<h3 data-number="5.2.2" id="type-level-specification-1">Type-level
+specification</h3>
+<p>The transit specification follows the same pattern as in the previous
+example.</p>
 <!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
+filePath: test/Examples/HouseSantaClaus.purs
 pick:
-  - walk
+  - SantaTransit
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">walk ::</span> <span class="dt">MaybeT</span> (<span class="dt">Writer</span> <span class="dt">Accum</span>) <span class="dt">State</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>walk <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> s0 <span class="ot">=</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  s1 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s0 (v <span class="op">@</span><span class="st">&quot;Close&quot;</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  s2 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s1 (v <span class="op">@</span><span class="st">&quot;Open&quot;</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  s3 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s2 (v <span class="op">@</span><span class="st">&quot;Close&quot;</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  s4 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s3 (v <span class="op">@</span><span class="st">&quot;Close&quot;</span>) <span class="co">-- here we request illegal transition</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  s5 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s4 (v <span class="op">@</span><span class="st">&quot;Open&quot;</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pure</span> s5</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">SantaTransit</span> <span class="ot">=</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;1&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;2&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;2&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;3&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;3&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;5&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;5&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;4&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;1&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;1&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;3&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;2&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;3&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;h&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L28-L36">test/Examples/ErrorHandlingMonadic.purs
-L28-L36</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L46-L55">test/Examples/HouseSantaClaus.purs
+L46-L55</a> </sup>
 </p>
 <!-- PD_END -->
-<p>Here we use the <code>MaybeT</code> transformer to work with the
-<code>Writer</code> monad while handling potential failures. Notice that
-somewhere along the way, we attempt an invalid transition (closing an
-already closed door). This will cause the computation to short-circuit -
-the subsequent transitions won’t be executed.</p>
-<p>Let’s verify that the logs only contain the transitions that actually
-occurred:</p>
+<h3 data-number="5.2.3" id="the-update-function-5">The Update
+Function</h3>
+<p>Until now, we have always manually defined the update function. In
+most cases this will be the way to go. But you may have noticed that in
+some cases this is sheer boilerplate. We can let the compiler generate
+the update function for us by using the <code>mkUpdateAuto</code>
+function. This works if the following conditions are met:</p>
+<ul>
+<li>There are no conditional transitions in the state machine.</li>
+<li>State transitions don’t change the type of the state payload.</li>
+</ul>
+<p>Both conditions are met in our case, so we can use
+<code>mkUpdateAuto</code> to generate the update function for us. We
+could have used it in the Door example and the Bridges of Königsberg
+example as well.</p>
 <!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
+filePath: test/Examples/HouseSantaClaus.purs
 pick:
-  - spec
+  - update
 -->
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="kw">do</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  describe <span class="st">&quot;ErrorHandlingMonadic&quot;</span> <span class="kw">do</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    it <span class="st">&quot;should return the correct state&quot;</span> <span class="kw">do</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="kw">let</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ot">        logs ::</span> <span class="dt">Array</span> <span class="dt">String</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        logs <span class="ot">=</span> execWriter (runMaybeT walk)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      logs <span class="ot">`shouldEqual`</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        [ <span class="st">&quot;Closing door&quot;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        , <span class="st">&quot;Opening door&quot;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        , <span class="st">&quot;Closing door&quot;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        ]</span></code></pre></div>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  mkUpdateAuto <span class="op">@</span><span class="dt">SantaTransit</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L38-L49">test/Examples/ErrorHandlingMonadic.purs
-L38-L49</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L57-L59">test/Examples/HouseSantaClaus.purs
+L57-L59</a> </sup>
 </p>
-<!-- PD_END -->
-<p>Indeed, the logs stop after the invalid transition.</p> 
+<!-- PD_END --> 
       <div class="scroll-to-top">
         <a
           href="#"

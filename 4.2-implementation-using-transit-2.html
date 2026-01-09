@@ -410,119 +410,121 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title">Example 4: House of Santa Claus</div>
+        <div class="header-title">Example 3: Bridges of Königsberg</div>
         
         <div class="nav-links">
-                    <a href="5.1-the-state-machine-3.html" rel="prev" title="The State Machine"
+                    <a href="4.1-the-state-machine-2.html" rel="prev" title="The State Machine"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="5.3-testing-the-state-machine.html" rel="next" title="Testing the state machine"
+                     <a href="4.3-testing-the-update-function-2.html" rel="next" title="Testing the update function"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h2 data-number="5.2" id="transit-approach-2">Transit
-Approach</h2>
-<h3 data-number="5.2.1" id="state-and-message-types-3">State and message
+       <h2 data-number="4.2"
+id="implementation-using-transit-2">Implementation using Transit</h2>
+<h3 data-number="4.2.1" id="state-and-message-types-2">State and message
 types</h3>
-<p>Nothing special here. We define the state and message types like we
-did in the previous examples. By using Variants, we have no constraint
-on how the labels are named; we can use any type-level string we want:
-numbers, lowercase letters, etc. Traditional ADTs wouldn’t give us this
-flexibility.</p>
+<p>The state machine represents the four land areas as states (uppercase
+letters <code>A</code>, <code>B</code>, <code>C</code>, and
+<code>D</code>) and the seven bridges as messages (lowercase letters
+<code>a</code> through <code>g</code>). Each message represents crossing
+a specific bridge, which transitions between the corresponding land
+areas.</p>
 <!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
+filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
   - State
   - Msg
 -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;1&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;2&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;3&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;4&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;5&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;a&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;b&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;c&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;d&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;e&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;f&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;g&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;h&quot;</span><span class="ot"> ::</span> {}</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;A&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;B&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;C&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;D&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Msg</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;a&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;b&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;c&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;d&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;e&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;f&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;g&quot;</span><span class="ot"> ::</span> {}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L27-L44">test/Examples/HouseSantaClaus.purs
-L27-L44</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L25-L40">test/Examples/BridgesKoenigsberg.purs
+L25-L40</a> </sup>
 </p>
 <!-- PD_END -->
-<h3 data-number="5.2.2" id="type-level-specification-1">Type-level
+<h3 data-number="4.2.2" id="type-level-specification">Type-level
 specification</h3>
-<p>The transit specification follows the same pattern as in the previous
-example.</p>
+<p>Since bridges can be crossed in both directions, each bridge creates
+a bidirectional connection between two land areas. In the type-level
+specification, we define transitions using the syntax
+<code>"State1" |&lt; "Message" &gt;| "State2"</code>, which effectively
+defines two transitions: one from <code>State1</code> to
+<code>State2</code> and one from <code>State2</code> to
+<code>State1</code>.</p>
 <!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
+filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
-  - SantaTransit
+  - BridgesTransit
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">SantaTransit</span> <span class="ot">=</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">BridgesTransit</span> <span class="ot">=</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;1&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;2&quot;</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;2&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;3&quot;</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;3&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;5&quot;</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;5&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;4&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;1&quot;</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;1&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;3&quot;</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;2&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;3&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;h&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;a&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;b&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;B&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;c&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;C&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;d&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;C&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;D&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;B&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;D&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;C&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;D&quot;</span>)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L46-L55">test/Examples/HouseSantaClaus.purs
-L46-L55</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L42-L50">test/Examples/BridgesKoenigsberg.purs
+L42-L50</a> </sup>
 </p>
 <!-- PD_END -->
-<h3 data-number="5.2.3" id="the-update-function-5">The Update
+<h3 data-number="4.2.3" id="the-update-function-4">The Update
 Function</h3>
-<p>Until now, we have always manually defined the update function. In
-most cases this will be the way to go. But you may have noticed that in
-some cases this is sheer boilerplate. We can let the compiler generate
-the update function for us by using the <code>mkUpdateAuto</code>
-function. This works if the following conditions are met:</p>
-<ul>
-<li>There are no conditional transitions in the state machine.</li>
-<li>State transitions don’t change the type of the state payload.</li>
-</ul>
-<p>Both conditions are met in our case, so we can use
-<code>mkUpdateAuto</code> to generate the update function for us. We
-could have used it in the Door example and the Bridges of Königsberg
-example as well.</p>
+<p>However, in the update function we need to explicitly handle both
+directions of each bridge as shown below.</p>
 <!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
+filePath: test/Examples/BridgesKoenigsberg.purs
+maxLines: 10
 pick:
   - update
 -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  mkUpdateAuto <span class="op">@</span><span class="dt">SantaTransit</span></span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">BridgesTransit</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;A&quot;</span> <span class="op">@</span><span class="st">&quot;a&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;B&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;B&quot;</span> <span class="op">@</span><span class="st">&quot;a&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;A&quot;</span> <span class="op">@</span><span class="st">&quot;b&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;B&quot;</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;B&quot;</span> <span class="op">@</span><span class="st">&quot;b&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;A&quot;</span> <span class="op">@</span><span class="st">&quot;c&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;C&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;C&quot;</span> <span class="op">@</span><span class="st">&quot;c&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- And so on ... (13 lines omitted)</span></span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L57-L59">test/Examples/HouseSantaClaus.purs
-L57-L59</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L52-L73">test/Examples/BridgesKoenigsberg.purs
+L52-L73</a> </sup>
 </p>
 <!-- PD_END --> 
       <div class="scroll-to-top">

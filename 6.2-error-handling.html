@@ -329,6 +329,71 @@
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
+        <style type="text/css">
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+    </style>
       </head>
 
   <body>
@@ -345,119 +410,101 @@
           m-bock/purescript-transit
         </a>
         
+        <div class="header-title">Advanced Update Patterns</div>
+        
         <div class="nav-links">
-                        <a href="1-introduction.html" rel="next" title="Introduction"
-            >Start reading →</a
+                    <a href="6.1-monadic-updates.html" rel="prev" title="Monadic Updates"
+            >← Previous</a
+          >
+           
+
+          <a href="index.html">≡ Contents</a>
+                     <a href="6.3-combining-monads-and-error-handling.html" rel="next" title="Combining Monads and Error Handling"
+            >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-            <h1>Transit</h1>
-      <p class="page-subtitle">
-        A PureScript library for building fast and type-safe state machines.
-      </p>
-      <nav id="TOC" class="toc"><ul>
-<li><a href="1-introduction.html#introduction"
-id="toc-introduction">Introduction</a></li>
-<li><a href="2-example-1-a-simple-door.html#example-1-a-simple-door"
-id="toc-example-1-a-simple-door">Example 1: A Simple Door</a>
-<ul>
-<li><a href="2.1-the-state-machine.html#the-state-machine"
-id="toc-the-state-machine">The State Machine</a></li>
-<li><a href="2.2-classic-approach.html#classic-approach"
-id="toc-classic-approach">Classic Approach</a></li>
-<li><a
-href="2.3-implementation-using-transit.html#implementation-using-transit"
-id="toc-implementation-using-transit">Implementation using
-Transit</a></li>
-<li><a
-href="2.4-testing-the-update-function.html#testing-the-update-function"
-id="toc-testing-the-update-function">Testing the update
-function</a></li>
-<li><a href="2.5-generating-documentation.html#generating-documentation"
-id="toc-generating-documentation">Generating Documentation</a></li>
-<li><a href="2.6-conclusion.html#conclusion"
-id="toc-conclusion">Conclusion</a></li>
-</ul></li>
-<li><a href="3-example-2-door-with-pin.html#example-2-door-with-pin"
-id="toc-example-2-door-with-pin">Example 2: Door with Pin</a>
-<ul>
-<li><a href="3.1-the-state-machine-1.html#the-state-machine-1"
-id="toc-the-state-machine-1">The State Machine</a></li>
-<li><a href="3.2-the-classic-approach.html#the-classic-approach"
-id="toc-the-classic-approach">The Classic Approach</a></li>
-<li><a
-href="3.3-implementation-using-transit-1.html#implementation-using-transit-1"
-id="toc-implementation-using-transit-1">Implementation using
-Transit</a></li>
-<li><a
-href="3.4-testing-the-update-function-1.html#testing-the-update-function-1"
-id="toc-testing-the-update-function-1">Testing the update
-function</a></li>
-<li><a
-href="3.5-generating-documentation-1.html#generating-documentation-1"
-id="toc-generating-documentation-1">Generating Documentation</a></li>
-<li><a href="3.6-conclusion-1.html#conclusion-1"
-id="toc-conclusion-1">Conclusion</a></li>
-</ul></li>
-<li><a
-href="4-example-3-bridges-of-königsberg.html#example-3-bridges-of-königsberg"
-id="toc-example-3-bridges-of-königsberg">Example 3: Bridges of
-Königsberg</a>
-<ul>
-<li><a href="4.1-the-state-machine-2.html#the-state-machine-2"
-id="toc-the-state-machine-2">The State Machine</a></li>
-<li><a
-href="4.2-implementation-using-transit-2.html#implementation-using-transit-2"
-id="toc-implementation-using-transit-2">Implementation using
-Transit</a></li>
-<li><a
-href="4.3-testing-the-update-function-2.html#testing-the-update-function-2"
-id="toc-testing-the-update-function-2">Testing the update
-function</a></li>
-<li><a href="4.4-graph-analysis.html#graph-analysis"
-id="toc-graph-analysis">Graph Analysis</a></li>
-<li><a
-href="4.5-generating-documentation-2.html#generating-documentation-2"
-id="toc-generating-documentation-2">Generating Documentation</a></li>
-<li><a href="4.6-conclusion-2.html#conclusion-2"
-id="toc-conclusion-2">Conclusion</a></li>
-</ul></li>
-<li><a
-href="5-example-4-house-of-santa-claus.html#example-4-house-of-santa-claus"
-id="toc-example-4-house-of-santa-claus">Example 4: House of Santa
-Claus</a>
-<ul>
-<li><a href="5.1-the-state-machine-3.html#the-state-machine-3"
-id="toc-the-state-machine-3">The State Machine</a></li>
-<li><a
-href="5.2-implementation-using-transit-3.html#implementation-using-transit-3"
-id="toc-implementation-using-transit-3">Implementation using
-Transit</a></li>
-<li><a
-href="5.3-testing-the-state-machine.html#testing-the-state-machine"
-id="toc-testing-the-state-machine">Testing the state machine</a></li>
-<li><a
-href="5.4-generating-documentation-3.html#generating-documentation-3"
-id="toc-generating-documentation-3">Generating documentation</a></li>
-<li><a href="5.5-conclusion-3.html#conclusion-3"
-id="toc-conclusion-3">Conclusion</a></li>
-</ul></li>
-<li><a href="6-advanced-update-patterns.html#advanced-update-patterns"
-id="toc-advanced-update-patterns">Advanced Update Patterns</a>
-<ul>
-<li><a href="6.1-monadic-updates.html#monadic-updates"
-id="toc-monadic-updates">Monadic Updates</a></li>
-<li><a href="6.2-error-handling.html#error-handling"
-id="toc-error-handling">Error Handling</a></li>
-<li><a
-href="6.3-combining-monads-and-error-handling.html#combining-monads-and-error-handling"
-id="toc-combining-monads-and-error-handling">Combining Monads and Error
-Handling</a></li>
-</ul></li>
-</ul></nav>
-      
+       <h2 data-number="6.2" id="error-handling">Error Handling</h2>
+<p>With <strong>Transit</strong>’s <code>mkUpdate</code> function, you
+define valid transitions in your type-level specification, and the
+compiler ensures you implement handlers for each one. When an invalid
+state-message combination (one not in your specification) is encountered
+at runtime, <code>mkUpdate</code> silently returns the unchanged state.
+This is sometimes exactly what you want - the state machine simply
+ignores invalid messages and stays in its current state.</p>
+<p>However, sometimes you need to explicitly know whether a transition
+was valid or not. For these cases, <strong>Transit</strong> provides
+<code>mkUpdateMaybe</code>, which wraps the result in a
+<code>Maybe</code> type. Valid transitions return
+<code>Just state</code>, while invalid transitions return
+<code>Nothing</code>, allowing you to handle the error explicitly.</p>
+<p>Here’s an update function that only handles valid transitions:</p>
+<!-- PD_START:purs
+filePath: test/Examples/ErrorHandling.purs
+pick:
+  - update
+-->
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">State</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdateMaybe <span class="op">@</span><span class="dt">DoorTransit</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span> <span class="op">@</span><span class="st">&quot;Close&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  ( match <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> <span class="op">@</span><span class="st">&quot;Open&quot;</span> \_ _ <span class="ot">-&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L13-L20">test/Examples/ErrorHandling.purs
+L13-L20</a> </sup>
+</p>
+<!-- PD_END -->
+<p>The key difference is the return type:
+<code>State -&gt; Msg -&gt; Maybe State</code> instead of
+<code>State -&gt; Msg -&gt; State</code>. The function uses
+<code>mkUpdateMaybe</code> instead of <code>mkUpdate</code>, but the
+match handlers remain the same.</p>
+<p>When you call this update function with a valid state-message
+combination, it returns <code>Just</code> with the new state:</p>
+<!-- PD_START:purs
+filePath: test/Examples/ErrorHandling.purs
+pick:
+  - specSuccess
+-->
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specSuccess ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>specSuccess <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should return the correct state&quot;</span> <span class="kw">do</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) (v <span class="op">@</span><span class="st">&quot;Close&quot;</span>) <span class="ot">`shouldEqual`</span> <span class="dt">Just</span> (v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L22-L25">test/Examples/ErrorHandling.purs
+L22-L25</a> </sup>
+</p>
+<!-- PD_END -->
+<p>But when you call it with an invalid combination (like trying to open
+a door that’s already open), it returns <code>Nothing</code>:</p>
+<!-- PD_START:purs
+filePath: test/Examples/ErrorHandling.purs
+pick:
+  - specFailure
+-->
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specFailure ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>specFailure <span class="ot">=</span> <span class="kw">do</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should return the correct state&quot;</span> <span class="kw">do</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) (v <span class="op">@</span><span class="st">&quot;Open&quot;</span>) <span class="ot">`shouldEqual`</span> <span class="dt">Nothing</span></span></code></pre></div>
+<p align="right">
+<sup
+    >🗎
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L27-L30">test/Examples/ErrorHandling.purs
+L27-L30</a> </sup>
+</p>
+<!-- PD_END --> 
       <div class="scroll-to-top">
         <a
           href="#"

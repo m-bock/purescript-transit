@@ -410,23 +410,23 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title"></div>
+        <div class="header-title">Advanced Update Patterns</div>
         
         <div class="nav-links">
-                    <a href="5.5-conclusion-3.html" rel="prev" title="Conclusion"
+                    <a href="6-advanced-update-patterns.html" rel="prev" title="Advanced Update Patterns"
             >← Previous</a
           >
            
 
           <a href="index.html">≡ Contents</a>
-                     <a href="7-error-handling.html" rel="next" title="Error handling"
+                     <a href="6.2-error-handling.html" rel="next" title="Error Handling"
             >Next →</a
           >
                   </div>
       </div>
     </nav>
     <article class="markdown-body">
-       <h1 data-number="6" id="monadic-updates">Monadic updates</h1>
+       <h2 data-number="6.1" id="monadic-updates">Monadic Updates</h2>
 <p>In some cases, you may want your update function to perform effects
 or collect information during state transitions.
 <strong>Transit</strong> supports monadic update functions through
@@ -500,10 +500,10 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 L26-L32</a> </sup>
 </p>
 <!-- PD_END -->
-<p>The <code>monadicWalk</code> function chains multiple state updates
-in a do-notation, just like any other monadic computation. Each call to
-<code>update</code> not only returns the next state, but also
-accumulates logs in the Writer monad.</p>
+<p>Here we chain multiple state updates in a do-notation, just like any
+other monadic computation. Each call to <code>update</code> not only
+returns the next state, but also accumulates logs in the Writer
+monad.</p>
 <p>Let’s verify that the logs are collected correctly:</p>
 <!-- PD_START:purs
 filePath: test/Examples/Monadic.purs
