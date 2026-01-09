@@ -52,7 +52,7 @@ spago install transit
 
 Let's consider a simple count down state machine which is described by the following state diagram:
 
-<img alt="Count Down state diagram" src="renders/count-down.svg">
+<img alt="Count Down state diagram" src="renders/count-down_graph.svg">
 
 ### Types
 
