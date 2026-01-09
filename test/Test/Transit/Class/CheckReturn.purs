@@ -9,7 +9,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.CheckReturn (checkReturn)
-import Transit.Core (MkReturnTL, MkReturnViaTL, RetVia(..), ReturnTL)
+import Transit.Core (MkReturnTL, MkReturnViaTL, ViaGuard(..), ReturnTL)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
@@ -17,8 +17,8 @@ import Type.Proxy (Proxy(..))
 type ReturnsRet :: List' ReturnTL
 type ReturnsRet = MkReturnTL "State1" :> MkReturnTL "State2" :> Nil'
 
-type ReturnsRetVia :: List' ReturnTL
-type ReturnsRetVia = MkReturnViaTL "Guard1" "State1" :> MkReturnViaTL "Guard2" "State2" :> Nil'
+type ReturnsViaGuard :: List' ReturnTL
+type ReturnsViaGuard = MkReturnViaTL "Guard1" "State1" :> MkReturnViaTL "Guard2" "State2" :> Nil'
 
 type ReturnsMixed :: List' ReturnTL
 type ReturnsMixed = MkReturnTL "State1" :> MkReturnViaTL "Guard1" "State2" :> Nil'
@@ -33,19 +33,19 @@ type StateOutRet = Variant
   , "State2" :: String
   )
 
-type StateInRetVia = Variant
-  ( "State1" :: RetVia "Guard1" Int
-  , "State2" :: RetVia "Guard2" String
+type StateInViaGuard = Variant
+  ( "State1" :: ViaGuard "Guard1" Int
+  , "State2" :: ViaGuard "Guard2" String
   )
 
-type StateOutRetVia = Variant
+type StateOutViaGuard = Variant
   ( "State1" :: Int
   , "State2" :: String
   )
 
 type StateInMixed = Variant
   ( "State1" :: Int
-  , "State2" :: RetVia "Guard1" String
+  , "State2" :: ViaGuard "Guard1" String
   )
 
 type StateOutMixed = Variant
@@ -63,18 +63,18 @@ spec = do
         input = V.inj (Proxy @"State1") 42
       checkRet input `shouldEqual` (v @"State1" 42)
 
-    it "unwraps RetVia wrappers" do
+    it "unwraps ViaGuard wrappers" do
       let
-        checkRetVia :: StateInRetVia -> StateOutRetVia
-        checkRetVia = checkReturn @ReturnsRetVia
-        input = V.inj (Proxy @"State1") (RetVia @"Guard1" 42)
-      checkRetVia input `shouldEqual` (v @"State1" 42)
+        checkViaGuard :: StateInViaGuard -> StateOutViaGuard
+        checkViaGuard = checkReturn @ReturnsViaGuard
+        input = V.inj (Proxy @"State1") (ViaGuard @"Guard1" 42)
+      checkViaGuard input `shouldEqual` (v @"State1" 42)
 
-    it "unwraps mixed Ret and RetVia wrappers" do
+    it "unwraps mixed Ret and ViaGuard wrappers" do
       let
         checkMixed :: StateInMixed -> StateOutMixed
         checkMixed = checkReturn @ReturnsMixed
         input1 = V.inj (Proxy @"State1") 42
-        input2 = V.inj (Proxy @"State2") (RetVia @"Guard1" "hello")
+        input2 = V.inj (Proxy @"State2") (ViaGuard @"Guard1" "hello")
       checkMixed input1 `shouldEqual` (v @"State1" 42)
       checkMixed input2 `shouldEqual` (v @"State2" "hello")

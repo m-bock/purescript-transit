@@ -34,8 +34,8 @@ import Transit.Class.MkAutoHandlers (class MkAutoHandlers, mkAutoHandlers)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
 import Transit.Class.MkUpdate as MkUpdate
 import Transit.Class.MkUpdate as U
-import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames, RetVia) as ExportCore
-import Transit.Core (class IsTransitSpec, MatchImpl(..), RetVia(..))
+import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames, ViaGuard) as ExportCore
+import Transit.Core (class IsTransitSpec, MatchImpl(..), ViaGuard(..))
 import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), Transit) as ExportDSL
 import Transit.Data.MaybeChurch (MaybeChurch, fromMaybeChurch)
 import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
@@ -241,15 +241,15 @@ class ReturnVia (symGuard :: Symbol) (sym :: Symbol) a where
   returnVia :: a
 
 instance returnViaWithPayload ::
-  ( Row.Cons sym (RetVia symGuard a) r1 r2
+  ( Row.Cons sym (ViaGuard symGuard a) r1 r2
   , IsSymbol sym
   ) =>
   ReturnVia symGuard sym (a -> Variant r2) where
-  returnVia v = V.inj (Proxy :: _ sym) (RetVia @symGuard v)
+  returnVia v = V.inj (Proxy :: _ sym) (ViaGuard @symGuard v)
 
 instance returnViaWithEmptyRecordPayload ::
-  ( Row.Cons sym (RetVia symGuard {}) r1 r2
+  ( Row.Cons sym (ViaGuard symGuard {}) r1 r2
   , IsSymbol sym
   ) =>
   ReturnVia symGuard sym (Variant r2) where
-  returnVia = V.inj (Proxy :: _ sym) (RetVia @symGuard {})
+  returnVia = V.inj (Proxy :: _ sym) (ViaGuard @symGuard {})

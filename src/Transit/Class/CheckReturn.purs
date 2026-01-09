@@ -12,7 +12,7 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, RetVia(..))
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, ViaGuard(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
@@ -27,7 +27,7 @@ checkReturnFast
   -> (state -> msg -> m (Variant rowOut))
 checkReturnFast = unsafeCoerce
 
--- | Checks and expands return types by removing `Ret` and `RetVia` wrappers from variant types.
+-- | Checks and expands return types by removing `Ret` and `ViaGuard` wrappers from variant types.
 -- |
 -- | The functional dependency `returns -> rowIn rowOut` ensures that given the
 -- | return list, both input and output row types are uniquely determined.
@@ -66,7 +66,7 @@ instance checkReturnConsReturn ::
 
 instance checkReturnConsReturnVia ::
   ( Row.Cons symState payload rowOut' rowOut
-  , Row.Cons symState (RetVia symGuard payload) rowIn' rowIn
+  , Row.Cons symState (ViaGuard symGuard payload) rowIn' rowIn
   , CheckReturn rest rowIn' rowOut'
   , IsSymbol symState
   , Row.Union rowOut' rowExtra rowOut
@@ -78,8 +78,8 @@ instance checkReturnConsReturnVia ::
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v
 
-    handleHead :: RetVia symGuard payload -> Variant rowOut
-    handleHead (RetVia value) = V.inj (Proxy @symState) value
+    handleHead :: ViaGuard symGuard payload -> Variant rowOut
+    handleHead (ViaGuard value) = V.inj (Proxy @symState) value
 
     handleRest :: Variant rowIn' -> Variant rowOut
     handleRest = checkReturn @rest @rowIn' >>> V.expand

@@ -18,7 +18,7 @@ module Transit.Core
   , MkTransitCoreTL
   , MsgName
   , Return(..)
-  , RetVia(..)
+  , ViaGuard(..)
   , ReturnTL
   , StateName
   , TransitCore(..)
@@ -180,9 +180,9 @@ newtype MatchImpl (symStateIn :: Symbol) (symMsgIn :: Symbol) stateIn msgIn (m :
 derive instance Newtype (MatchImpl symStateIn symMsgIn stateIn msgIn m stateOut) _
 
 -- | Wrapper for return values via a guard condition.
-newtype RetVia (symGuard :: Symbol) a = RetVia a
+newtype ViaGuard (symGuard :: Symbol) a = ViaGuard a
 
-derive instance Newtype (RetVia symGuard a) _
+derive instance Newtype (ViaGuard symGuard a) _
 
 --------------------------------------------------------------------------------
 --- Type class for transit specifications
