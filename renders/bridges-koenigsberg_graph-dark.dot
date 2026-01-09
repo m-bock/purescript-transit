@@ -1,14 +1,14 @@
 digraph 
 {
 rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 15.0;bgcolor = "#00000000";color = "#c8c8c8";fontcolor = "#c8c8c8";layout = "dot";rankdir = "TD"
-A [shape = "box", label = <<b>A</b>>, fontsize = 15.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
-B [shape = "box", label = <<b>B</b>>, fontsize = 15.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
+A [shape = "box", label = <<b>A</b>>, fontsize = 15.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
+B [shape = "box", label = <<b>B</b>>, fontsize = 15.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
 B -> A [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>a</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
 B -> A [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>b</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-C [shape = "box", label = <<b>C</b>>, fontsize = 15.0, style = "filled", fillcolor = "#2f80ed", fontcolor = "#082e61", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
+C [shape = "box", label = <<b>C</b>>, fontsize = 15.0, style = "filled", fillcolor = "#2f80ed", fontcolor = "#082e61", color = "#2f80ed", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
 C -> A [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>c</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
 C -> A [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>d</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
-D [shape = "box", label = <<b>D</b>>, fontsize = 15.0, style = "filled", fillcolor = "#ff527c", fontcolor = "#850020", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
+D [shape = "box", label = <<b>D</b>>, fontsize = 15.0, style = "filled", fillcolor = "#ff527c", fontcolor = "#850020", color = "#ff527c", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
 D -> A [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>e</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
 D -> B [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>f</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]
 D -> C [color = "#6e6e6e", fontcolor = "#a0a0a0", fontsize = 15.0, label = <<b>g</b>>, arrowsize = "0.7", penwidth = 1.8, dir = "both"]

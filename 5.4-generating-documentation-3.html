@@ -452,8 +452,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L126-L127">test/Examples/HouseSantaClaus.purs
-L126-L127</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L102-L103">test/Examples/HouseSantaClaus.purs
+L102-L103</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Since we’ll need vectors of inches to position the nodes, we define a
@@ -464,16 +464,16 @@ pick:
   - units2D
 -->
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">units2D ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Vec2D</span> <span class="dt">Inch</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>units2D x y <span class="ot">=</span> <span class="dt">Vec2D</span></span>
+class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">units2D ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> {<span class="ot"> x ::</span> <span class="dt">Inch</span>,<span class="ot"> y ::</span> <span class="dt">Inch</span> }</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>units2D x y <span class="ot">=</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  { x<span class="op">:</span> <span class="dt">Inch</span> (<span class="dt">Int</span><span class="op">.</span>toNumber x <span class="op">*</span> unwrap baseUnit)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  , y<span class="op">:</span> <span class="dt">Inch</span> (<span class="dt">Int</span><span class="op">.</span>toNumber y <span class="op">*</span> unwrap baseUnit)</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L129-L133">test/Examples/HouseSantaClaus.purs
-L129-L133</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L105-L109">test/Examples/HouseSantaClaus.purs
+L105-L109</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Finally we can generate the graph with the
@@ -492,14 +492,14 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">GraphvizGraph</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate santaTransit _</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      { useUndirectedEdges <span class="ot">=</span> true</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      { undirectedEdges <span class="ot">=</span> true</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      , theme <span class="ot">=</span> themeHarmonyDark</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      , layout <span class="ot">=</span> <span class="dt">TransitGraphviz.Manual</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          [ { position<span class="op">:</span> units2D <span class="dv">0</span> <span class="dv">0</span>, node<span class="op">:</span> <span class="st">&quot;1&quot;</span>, exact<span class="op">:</span> true }</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>          , { position<span class="op">:</span> units2D <span class="dv">2</span> <span class="dv">0</span>, node<span class="op">:</span> <span class="st">&quot;2&quot;</span>, exact<span class="op">:</span> true }</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>          , { position<span class="op">:</span> units2D <span class="dv">2</span> <span class="dv">2</span>, node<span class="op">:</span> <span class="st">&quot;3&quot;</span>, exact<span class="op">:</span> true }</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>          , { position<span class="op">:</span> units2D <span class="dv">0</span> <span class="dv">2</span>, node<span class="op">:</span> <span class="st">&quot;4&quot;</span>, exact<span class="op">:</span> true }</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>          , { position<span class="op">:</span> units2D <span class="dv">1</span> <span class="dv">4</span>, node<span class="op">:</span> <span class="st">&quot;5&quot;</span>, exact<span class="op">:</span> true }</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      , layout <span class="ot">=</span> <span class="dt">Manual</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          [ { node<span class="op">:</span> <span class="st">&quot;1&quot;</span>, pos<span class="op">:</span> units2D <span class="dv">0</span> <span class="dv">0</span>, exact<span class="op">:</span> true }</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>          , { node<span class="op">:</span> <span class="st">&quot;2&quot;</span>, pos<span class="op">:</span> units2D <span class="dv">2</span> <span class="dv">0</span>, exact<span class="op">:</span> true }</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>          , { node<span class="op">:</span> <span class="st">&quot;3&quot;</span>, pos<span class="op">:</span> units2D <span class="dv">2</span> <span class="dv">2</span>, exact<span class="op">:</span> true }</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>          , { node<span class="op">:</span> <span class="st">&quot;4&quot;</span>, pos<span class="op">:</span> units2D <span class="dv">0</span> <span class="dv">2</span>, exact<span class="op">:</span> true }</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>          , { node<span class="op">:</span> <span class="st">&quot;5&quot;</span>, pos<span class="op">:</span> units2D <span class="dv">1</span> <span class="dv">4</span>, exact<span class="op">:</span> true }</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>          ]</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      , fixedNodeSize <span class="ot">=</span> <span class="fu">pure</span> <span class="op">$</span> units2D <span class="dv">1</span> <span class="dv">1</span></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      , fontSize <span class="ot">=</span> <span class="fl">16.0</span></span>
@@ -511,8 +511,8 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L135-L155">test/Examples/HouseSantaClaus.purs
-L135-L155</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L133-L153">test/Examples/HouseSantaClaus.purs
+L133-L153</a> </sup>
 </p>
 <!-- PD_END -->
 <p>Note that the size of the nodes is also fixed to a multiple of the

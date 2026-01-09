@@ -431,8 +431,8 @@ Documentation</h2>
 <p>For generating the state diagram we add some more options to the
 <code>generate</code> function:</p>
 <ul>
-<li><code>useUndirectedEdges</code>: The state diagram will be displayed
-as an undirected graph.</li>
+<li><code>undirectedEdges</code>: The state diagram will be displayed as
+an undirected graph.</li>
 <li><code>fontSize</code>: Since our edges and labels consist of only
 single characters, we can make their font size a bit larger.</li>
 </ul>
@@ -446,23 +446,21 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>generateGraphLight <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    graph ::</span> <span class="dt">GraphvizGraph</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate bridgesTransit</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      ( \cfg <span class="ot">-&gt;</span> scaleOptions <span class="fl">0.5</span> cfg</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>          { theme <span class="ot">=</span> themeHarmonyLight</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>          , useUndirectedEdges <span class="ot">=</span> true</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          , fontSize <span class="ot">=</span> <span class="fl">15.0</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>          }</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_graph-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate bridgesTransit _</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyLight</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      , undirectedEdges <span class="ot">=</span> true</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      , fontSize <span class="ot">=</span> <span class="fl">15.0</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_graph-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L125-L136">test/Examples/BridgesKoenigsberg.purs
-L125-L136</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L124-L133">test/Examples/BridgesKoenigsberg.purs
+L124-L133</a> </sup>
 </p>
 <!-- PD_END -->
 <p>The transition table is generated the same way as before, but we also
-add the <code>useUndirectedEdges</code> option to the options:</p>
+add the <code>undirectedEdges</code> option to the options:</p>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 pick:
@@ -474,14 +472,14 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ot">    table ::</span> <span class="dt">Table</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate bridgesTransit _</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { useUndirectedEdges <span class="ot">=</span> true</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { undirectedEdges <span class="ot">=</span> true</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
 <p align="right">
 <sup
     >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L152-L159">test/Examples/BridgesKoenigsberg.purs
-L152-L159</a> </sup>
+<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L146-L153">test/Examples/BridgesKoenigsberg.purs
+L146-L153</a> </sup>
 </p>
 <!-- PD_END --> 
       <div class="scroll-to-top">

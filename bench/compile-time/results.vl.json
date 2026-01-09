@@ -3,102 +3,102 @@
   "data": {
     "values": [
       {
-        "ms": 2154,
+        "ms": 2137,
         "series": "update",
         "size": 20
       },
       {
-        "ms": 2593,
+        "ms": 2616,
         "series": "update",
         "size": 40
       },
       {
-        "ms": 4131,
+        "ms": 3471,
         "series": "update",
         "size": 60
       },
       {
-        "ms": 5419,
+        "ms": 4680,
         "series": "update",
         "size": 80
       },
       {
-        "ms": 6207,
+        "ms": 6222,
         "series": "update",
         "size": 100
       },
       {
-        "ms": 7867,
+        "ms": 7929,
         "series": "update",
         "size": 120
       },
       {
-        "ms": 10489,
+        "ms": 10289,
         "series": "update",
         "size": 140
       },
       {
-        "ms": 13513,
+        "ms": 13621,
         "series": "update",
         "size": 160
       },
       {
-        "ms": 17381,
+        "ms": 17289,
         "series": "update",
         "size": 180
       },
       {
-        "ms": 21543,
+        "ms": 21323,
         "series": "update",
         "size": 200
       },
       {
-        "ms": 2078,
+        "ms": 2063,
         "series": "updateClassic",
         "size": 20
       },
       {
-        "ms": 2886,
+        "ms": 2905,
         "series": "updateClassic",
         "size": 40
       },
       {
-        "ms": 5598,
+        "ms": 5438,
         "series": "updateClassic",
         "size": 60
       },
       {
-        "ms": 10718,
+        "ms": 10806,
         "series": "updateClassic",
         "size": 80
       },
       {
-        "ms": 17425,
+        "ms": 17364,
         "series": "updateClassic",
         "size": 100
       },
       {
-        "ms": 20604,
+        "ms": 20323,
         "series": "updateClassic",
         "size": 120
       },
       {
-        "ms": 24916,
+        "ms": 23722,
         "series": "updateClassic",
         "size": 140
       },
       {
-        "ms": 29327,
+        "ms": 26791,
         "series": "updateClassic",
         "size": 160
       },
       {
-        "ms": 31624,
+        "ms": 30050,
         "series": "updateClassic",
         "size": 180
       },
       {
-        "ms": 35208,
+        "ms": 33595,
         "series": "updateClassic",
         "size": 200
       }

@@ -1,8 +1,8 @@
 digraph 
 {
 rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12.0;bgcolor = "#ffffff";color = "#000000";fontcolor = "#000000";layout = "dot";rankdir = "TD"
-DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
+DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#6ca114", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
 DoorOpen -> DoorClosed [color = "#a3e635", fontcolor = "#6ca114", fontsize = 12.0, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
-DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 1.0, height = 0.4]
+DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#b38b00", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
 DoorClosed -> DoorOpen [color = "#ffc700", fontcolor = "#cc9f00", fontsize = 12.0, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
 }
