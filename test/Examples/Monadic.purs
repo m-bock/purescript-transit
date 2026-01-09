@@ -2,7 +2,7 @@ module Examples.Monadic where
 
 import Prelude
 
-import Control.Monad.Writer (class MonadWriter, execWriter, tell)
+import Control.Monad.Writer (class MonadWriter, Writer, execWriter, tell)
 import Effect (Effect)
 import Examples.Door (Msg, State, DoorTransit)
 import Test.Spec (Spec, describe, it)
@@ -23,8 +23,8 @@ update = mkUpdateM @DoorTransit
       pure $ return @"DoorOpen"
   )
 
-monadicWalk :: forall m. MonadWriter Accum m => m State
-monadicWalk = do
+walk :: Writer Accum State
+walk = do
   let s0 = v @"DoorOpen"
   s1 <- update s0 (v @"Close")
   s2 <- update s1 (v @"Open")
@@ -36,7 +36,7 @@ specLogs = do
   it "should return the correct state" do
     let
       logs :: Accum
-      logs = execWriter monadicWalk
+      logs = execWriter walk
 
     logs `shouldEqual`
       [ "You just closed the door"

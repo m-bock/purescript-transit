@@ -44,10 +44,6 @@ runExamples = do
   Examples.BridgesKoenigsberg.main
   Examples.HouseSantaClaus.main
   Examples.ColorRing.main
-  Examples.ErrorHandling.main
-  Examples.ErrorHandlingMonadic.main
-  Examples.Monadic.main
-  Examples.Common.main
   Examples.CountDown.main
   Examples.Circle.main
 
