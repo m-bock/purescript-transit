@@ -6,6 +6,11 @@
 
 A PureScript library for building fast and type-safe state machines.
 
+[![CI](https://github.com/m-bock/purescript-transit/actions/workflows/ci.yml/badge.svg)](https://github.com/m-bock/purescript-transit/actions/workflows/ci.yml)
+[![Pursuit](https://pursuit.purescript.org/packages/purescript-transit/badge)](https://pursuit.purescript.org/packages/purescript-transit)
+[![Tutorial](https://img.shields.io/badge/docs-tutorial-blue)](https://m-bock.github.io/purescript-transit)
+[![Benchmarks](https://img.shields.io/badge/docs-benchmarks-green)](docs/benchmarks.md)
+
 # purescript-transit
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -39,8 +44,6 @@ A PureScript library for building fast and type-safe state machines.
 - [Benchmark results](docs/benchmarks.md) show performance characteristics compared to classic approaches.
 
 ## Installation
-
-(once published to package set:)
 
 ```bash
 spago install transit
