@@ -9,7 +9,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.CheckReturn (checkReturn)
-import Transit.Core (MkReturnTL, MkReturnViaTL, Ret(..), RetVia(..), ReturnTL)
+import Transit.Core (MkReturnTL, MkReturnViaTL, RetVia(..), ReturnTL)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
@@ -24,8 +24,8 @@ type ReturnsMixed :: List' ReturnTL
 type ReturnsMixed = MkReturnTL "State1" :> MkReturnViaTL "Guard1" "State2" :> Nil'
 
 type StateInRet = Variant
-  ( "State1" :: Ret Int
-  , "State2" :: Ret String
+  ( "State1" :: Int
+  , "State2" :: String
   )
 
 type StateOutRet = Variant
@@ -44,7 +44,7 @@ type StateOutRetVia = Variant
   )
 
 type StateInMixed = Variant
-  ( "State1" :: Ret Int
+  ( "State1" :: Int
   , "State2" :: RetVia "Guard1" String
   )
 
@@ -60,7 +60,7 @@ spec = do
       let
         checkRet :: StateInRet -> StateOutRet
         checkRet = checkReturn @ReturnsRet
-        input = V.inj (Proxy @"State1") (Ret 42)
+        input = V.inj (Proxy @"State1") 42
       checkRet input `shouldEqual` (v @"State1" 42)
 
     it "unwraps RetVia wrappers" do
@@ -74,7 +74,7 @@ spec = do
       let
         checkMixed :: StateInMixed -> StateOutMixed
         checkMixed = checkReturn @ReturnsMixed
-        input1 = V.inj (Proxy @"State1") (Ret 42)
+        input1 = V.inj (Proxy @"State1") 42
         input2 = V.inj (Proxy @"State2") (RetVia @"Guard1" "hello")
       checkMixed input1 `shouldEqual` (v @"State1" 42)
       checkMixed input2 `shouldEqual` (v @"State2" "hello")

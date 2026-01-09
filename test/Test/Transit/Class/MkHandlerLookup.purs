@@ -13,7 +13,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkHandlerLookup (mkHandlerLookupBuilder)
-import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, Ret(..))
+import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL)
 import Transit.HandlerLookup (HandlerLookupBuilder, build, runI, runImpl)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Nil')
@@ -45,7 +45,7 @@ spec = do
     describe "mkHandlerLookup" do
       it "builds lookup from single match" do
         let
-          handler = MatchImpl @"State1" @"Msg1" \_ _ -> Identity $ V.inj (Proxy @"State2") (Ret "result")
+          handler = MatchImpl @"State1" @"Msg1" \_ _ -> Identity $ V.inj (Proxy @"State2") "result"
 
           builder :: HandlerLookupBuilder Identity StateRow MsgRow
           builder = mkHandlerLookupBuilder @Identity @SingleMatchSpec (handler /\ unit)
@@ -55,8 +55,8 @@ spec = do
 
       it "builds lookup from multiple matches" do
         let
-          handler1 = MatchImpl @"State1" @"Msg1" \_ _ -> Identity $ V.inj (Proxy @"State2") (Ret "from-state1")
-          handler2 = MatchImpl @"State2" @"Msg2" \_ _ -> Identity $ V.inj (Proxy @"State1") (Ret 99)
+          handler1 = MatchImpl @"State1" @"Msg1" \_ _ -> Identity $ V.inj (Proxy @"State2") "from-state1"
+          handler2 = MatchImpl @"State2" @"Msg2" \_ _ -> Identity $ V.inj (Proxy @"State1") 99
 
           builder :: HandlerLookupBuilder Identity StateRow MsgRow
           builder = mkHandlerLookupBuilder @Identity @MultipleMatchSpec (handler1 /\ handler2 /\ unit)

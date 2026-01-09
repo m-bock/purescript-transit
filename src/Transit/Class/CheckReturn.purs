@@ -12,7 +12,7 @@ import Data.Symbol (class IsSymbol)
 import Data.Variant (Variant)
 import Data.Variant as V
 import Prim.Row as Row
-import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, Ret(..), RetVia(..))
+import Transit.Core (MkReturnTL, MkReturnViaTL, ReturnTL, RetVia(..))
 import Type.Data.List (type (:>), List', Nil')
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
@@ -46,7 +46,7 @@ instance checkReturnNil :: CheckReturn Nil' () ()
 
 instance checkReturnConsReturn ::
   ( Row.Cons symState payload rowOut' rowOut
-  , Row.Cons symState (Ret payload) rowIn' rowIn
+  , Row.Cons symState payload rowIn' rowIn
   , CheckReturn rest rowIn' rowOut'
   , IsSymbol symState
   , Row.Union rowOut' rowExtra rowOut
@@ -58,8 +58,8 @@ instance checkReturnConsReturn ::
     out :: Variant rowOut
     out = V.on (Proxy @symState) handleHead handleRest v
 
-    handleHead :: Ret payload -> Variant rowOut
-    handleHead (Ret value) = V.inj (Proxy @symState) value
+    handleHead :: payload -> Variant rowOut
+    handleHead value = V.inj (Proxy @symState) value
 
     handleRest :: Variant rowIn' -> Variant rowOut
     handleRest = checkReturn @rest @rowIn' >>> V.expand

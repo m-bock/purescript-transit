@@ -18,7 +18,6 @@ module Transit.Core
   , MkTransitCoreTL
   , MsgName
   , Return(..)
-  , Ret(..)
   , RetVia(..)
   , ReturnTL
   , StateName
@@ -184,16 +183,6 @@ derive instance Newtype (MatchImpl symStateIn symMsgIn stateIn msgIn m stateOut)
 newtype RetVia (symGuard :: Symbol) a = RetVia a
 
 derive instance Newtype (RetVia symGuard a) _
-
--- | Wrapper for direct return values.
-newtype Ret a = Ret a
-
-derive instance Newtype (Ret a) _
-
-derive instance (Eq a) => Eq (Ret a)
-
-instance Show a => Show (Ret a) where
-  show (Ret x) = "(Ret " <> show x <> ")"
 
 --------------------------------------------------------------------------------
 --- Type class for transit specifications

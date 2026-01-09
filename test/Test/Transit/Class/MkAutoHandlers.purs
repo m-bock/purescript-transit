@@ -9,7 +9,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkAutoHandlers (mkAutoHandlers)
-import Transit.Core (MatchImpl(..), Ret(..))
+import Transit.Core (MatchImpl(..))
 import Type.Proxy (Proxy(..))
 
 data A = A
@@ -36,7 +36,7 @@ type T1 =
     A
     B
     Identity
-    (Variant ("State2" :: Ret A))
+    (Variant ("State2" :: A))
 
 type T2 =
   MatchImpl
@@ -45,7 +45,7 @@ type T2 =
     C
     A
     Identity
-    (Variant ("StateB" :: Ret C))
+    (Variant ("StateB" :: C))
 
 spec :: Spec Unit
 spec = do
@@ -61,6 +61,6 @@ spec = do
           result1 = fn1 A B
           result2 = fn2 C A
 
-        result1 `shouldEqual` Identity (V.inj (Proxy @"State2") (Ret A))
-        result2 `shouldEqual` Identity (V.inj (Proxy @"StateB") (Ret C))
+        result1 `shouldEqual` Identity (V.inj (Proxy @"State2") A)
+        result2 `shouldEqual` Identity (V.inj (Proxy @"StateB") C)
         end `shouldEqual` unit

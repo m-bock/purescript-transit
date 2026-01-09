@@ -34,8 +34,8 @@ import Transit.Class.MkAutoHandlers (class MkAutoHandlers, mkAutoHandlers)
 import Transit.Class.MkUpdate (class MkUpdate, mkUpdateCore)
 import Transit.Class.MkUpdate as MkUpdate
 import Transit.Class.MkUpdate as U
-import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames, Ret, RetVia) as ExportCore
-import Transit.Core (class IsTransitSpec, MatchImpl(..), Ret(..), RetVia(..))
+import Transit.Core (GuardName, Match(..), MsgName, StateName, TransitCore(..), getMatchesForState, getStateNames, RetVia) as ExportCore
+import Transit.Core (class IsTransitSpec, MatchImpl(..), RetVia(..))
 import Transit.DSL (type (|<), AddIn, class ToMatch, class ToReturn, class ToTransitCore, type (:*), type (:?), type (:@), type (>|), Transit) as ExportDSL
 import Transit.Data.MaybeChurch (MaybeChurch, fromMaybeChurch)
 import Transit.StateGraph (mkStateGraph, StateGraph) as ExportStateGraph
@@ -209,18 +209,18 @@ class Return (sym :: Symbol) a where
   return :: a
 
 instance returnWithPayload ::
-  ( Row.Cons sym (Ret a) r1 r2
+  ( Row.Cons sym a r1 r2
   , IsSymbol sym
   ) =>
   Return sym (a -> Variant r2) where
-  return v = V.inj (Proxy :: _ sym) (Ret v)
+  return v = V.inj (Proxy :: _ sym) v
 
 instance returnWithEmptyRecordPayload ::
-  ( Row.Cons sym (Ret {}) r1 r2
+  ( Row.Cons sym {} r1 r2
   , IsSymbol sym
   ) =>
   Return sym (Variant r2) where
-  return = V.inj (Proxy :: _ sym) (Ret {})
+  return = V.inj (Proxy :: _ sym) {}
 
 -- | Type class for returning to a state via a guard condition.
 -- |

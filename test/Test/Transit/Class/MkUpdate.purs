@@ -12,7 +12,7 @@ import Data.Variant as V
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Transit.Class.MkUpdate (mkUpdateCore)
-import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, Ret(..), TransitCoreTL)
+import Transit.Core (MatchImpl(..), MkMatchTL, MkReturnTL, MkTransitCoreTL, TransitCoreTL)
 import Transit.VariantUtils (v)
 import Type.Data.List (type (:>), Nil')
 import Type.Proxy (Proxy(..))
@@ -43,8 +43,8 @@ spec = do
       let
         update :: State -> Msg -> Identity (Maybe State)
         update = mkUpdateCore @TestStateGraph @Identity
-          ( (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") (Ret "42"))
-              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") (Ret 99))
+          ( (MatchImpl @"State1" @"Msg1" \_ _ -> pure $ V.inj (Proxy @"State2") "42")
+              /\ (MatchImpl @"State2" @"Msg2" \_ _ -> pure $ V.inj (Proxy @"State1") 99)
               /\ unit
           )
 
