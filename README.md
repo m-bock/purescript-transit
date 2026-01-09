@@ -9,7 +9,7 @@ A PureScript library for building fast and type-safe state machines.
 [![CI](https://github.com/m-bock/purescript-transit/actions/workflows/ci.yml/badge.svg)](https://github.com/m-bock/purescript-transit/actions/workflows/ci.yml)
 [![Pursuit](https://pursuit.purescript.org/packages/purescript-transit/badge)](https://pursuit.purescript.org/packages/purescript-transit)
 [![Tutorial](https://img.shields.io/badge/docs-tutorial-blue)](https://m-bock.github.io/purescript-transit)
-[![Benchmarks](https://img.shields.io/badge/docs-benchmarks-green)](docs/benchmarks.md)
+[![Benchmarks](https://img.shields.io/badge/docs-benchmarks-blue)](docs/benchmarks.md)
 
 # purescript-transit
 

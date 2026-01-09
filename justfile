@@ -132,3 +132,13 @@ bench-compare:
               bench/backend-ES/Update-Functions.svg \
       tmp/bench-old/compile-time/results.svg \
               bench/compile-time/results.svg
+
+check-install:
+    DIR=`mktemp -d` && \
+    cd $DIR && \
+    npm init -y && \
+    npm install purescript spago && \
+    npx spago init && \
+    npx spago install transit && \
+    npx spago run && \
+    npx spago ls deps | grep transit
