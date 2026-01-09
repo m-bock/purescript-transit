@@ -109,7 +109,7 @@ check-git-clean:
     if ! git diff --quiet; then \
         echo "Git is not clean. The following files have changes:"; \
         git status --short; \
-        git diff; \
+        git diff | head -n 200; \
         exit 1; \
     fi
 
