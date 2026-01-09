@@ -8,7 +8,7 @@ In each benchmark the approach of the **Transit** library has been compared to c
 
 **Circle State Machine of Size=10**
 
-<img src="../renders/circle.svg" width="400" />
+<img src="../renders/circle_graph.svg" width="400" />
 
 ## Runtime Benchmarks
 
