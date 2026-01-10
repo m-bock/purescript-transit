@@ -518,8 +518,10 @@ generateGraphDark =
 
 <!-- PD_END -->
 
-> **Generated Output**: This code produces the diagram we examined at the beginning of this tutorial.  
+> **Generated Output**: This code produces the diagram we examined at the beginning of this example.  
 > 🔗 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/door_graph-dark.dot" target="_blank">View diagram on GraphvizOnline</a>
+
+The options we're using above are:
 
 - The `theme` option we're using above controls the color scheme. **Transit** provides a couple of built-in themes, but you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
 

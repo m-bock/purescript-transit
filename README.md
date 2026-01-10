@@ -189,3 +189,13 @@ main = do
 ```
 
 <!-- PD_END -->
+
+## Contributing
+
+Contributions are welcome! Please [open an issue](https://github.com/m-bock/purescript-transit/issues/new) to report bugs, suggest improvements, or propose new examples to be added.
+
+If you find this project useful, consider buying me a coffee! ☕
+
+<a href="https://ko-fi.com/mbock">
+  <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy Me a Coffee at ko-fi.com" />
+</a>

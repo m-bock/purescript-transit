@@ -378,7 +378,7 @@ generateGraphLight = do
 
 <!-- PD_END -->
 
-> **Generated Output**: This produces the graph visualization we examined earlier.  
+> **Generated Output**: This produces the graph visualization we examined earlier in this example.  
 > 🔗 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/bridges-koenigsberg_graph-light.dot" target="_blank">View diagram on GraphvizOnline</a>
 
 The transition table is generated the same way as before, but we also add the `undirectedEdges` option to the options:

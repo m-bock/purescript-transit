@@ -322,7 +322,7 @@ generateGraphLight = do
 
 <!-- PD_END -->
 
-> **Generated Output**: This creates the state diagram we saw earlier.  
+> **Generated Output**: This creates the state diagram we saw earlier in this example.  
 > 🔗 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/door-pin_graph-light.dot" target="_blank">View diagram on GraphvizOnline</a>
 
 The generation of the transition table works exactly the same as in the previous example.

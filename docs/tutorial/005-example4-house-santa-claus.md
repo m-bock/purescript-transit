@@ -301,7 +301,7 @@ generateGraphDark = do
 
 <!-- PD_END -->
 
-> **Generated Output**: This generates the diagram we saw at the beginning.  
+> **Generated Output**: This generates the diagram we saw at the beginning of this example.  
 > 🔗 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/house-santa-claus_graph-dark.dot" target="_blank">View diagram on GraphvizOnline</a>
 
 Note that the size of the nodes is also fixed to a multiple of the base unit. In this way we can better control the position in the grid we drew at the beginning.
