@@ -5,153 +5,132 @@ module Test.Transit.Data.DotLang
 import Prelude
 
 import Color (rgb)
-import Data.Maybe (Maybe(..))
+import Data.Array (zip, length)
+import Data.Foldable (for_)
+import Data.String as Str
+import Data.Tuple.Nested ((/\))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
+import Transit.Data.DotLang (Attr(..), GraphvizGraph(..), Section(..), Value(..))
 import Transit.Data.DotLang as DL
+
+assertLinesEqual :: Array String -> Array String -> Spec Unit
+assertLinesEqual actualLines expectedLines =
+  it "asserts lines are equal" do
+    for_ (zip actualLines expectedLines) \(actualLine /\ expectedLine) ->
+      actualLine `shouldEqual` expectedLine
+
+    length actualLines `shouldEqual` length expectedLines
 
 spec :: Spec Unit
 spec = do
   describe "Transit.Data.DotLang" do
-    describe "ToDotStr Value" do
-      it "converts Value String to quoted string" do
-        DL.toDotStr (DL.Value "test") `shouldEqual` "\"test\""
-
-      it "converts ValueInt to unquoted number" do
-        DL.toDotStr (DL.ValueInt 42) `shouldEqual` "42"
-
-      it "converts ValueNumber to unquoted number" do
-        DL.toDotStr (DL.ValueNumber 3.14) `shouldEqual` "3.14"
-
-      it "converts ValueBoolean true" do
-        DL.toDotStr (DL.ValueBoolean true) `shouldEqual` "true"
-
-      it "converts ValueBoolean false" do
-        DL.toDotStr (DL.ValueBoolean false) `shouldEqual` "false"
-
-      it "converts HtmlLabel to angle bracket format" do
-        DL.toDotStr (DL.HtmlLabel "<b>bold</b>") `shouldEqual` "<<b>bold</b>>"
-
-      it "converts ValueColors with single color to quoted hex" do
-        let red = rgb 255 0 0
-        DL.toDotStr (DL.ValueColors [ red ]) `shouldEqual` "\"#ff0000\""
-
-      it "converts ValueColors with multiple colors to colon-separated hex" do
-        let
-          red = rgb 255 0 0
-          blue = rgb 0 0 255
-        DL.toDotStr (DL.ValueColors [ red, blue ]) `shouldEqual` "\"#ff0000:#0000ff\""
-
-    describe "ToDotStr Attr" do
-      it "converts Attr to name = value format" do
-        DL.toDotStr (DL.Attr "label" (DL.Value "test")) `shouldEqual` "label = \"test\""
-
-      it "converts Attr with ValueInt" do
-        DL.toDotStr (DL.Attr "size" (DL.ValueInt 10)) `shouldEqual` "size = 10"
-
-    describe "ToDotStr Array Attr" do
-      it "converts empty array to empty string" do
-        DL.toDotStr ([] :: Array DL.Attr) `shouldEqual` ""
-
-      it "converts single attribute" do
-        DL.toDotStr [ DL.Attr "label" (DL.Value "test") ] `shouldEqual` "label = \"test\""
-
-      it "converts multiple attributes with comma separation" do
-        DL.toDotStr
-          [ DL.Attr "label" (DL.Value "test")
-          , DL.Attr "shape" (DL.Value "box")
+    describe "formats global graph attributes" do
+      let
+        graph = GraphvizGraph
+          [ SecGlobalGraph [ DL.rankDirLR, DL.bgColor (rgb 255 255 255) ]
           ]
-          `shouldEqual` "label = \"test\", shape = \"box\""
 
-    describe "ToDotStr Node" do
-      it "converts Node with no attributes" do
-        DL.toDotStr (DL.Node "State1" Nothing []) `shouldEqual` "State1 []"
+        expectedLines =
+          [ "digraph {"
+          , "  graph ["
+          , "    rankdir = LR"
+          , "    bgcolor = \"#ffffff\""
+          , "  ]"
+          , "}"
+          ]
 
-      it "converts Node with single attribute" do
-        DL.toDotStr (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])
-          `shouldEqual` "State1 [label = \"State 1\"]"
+        actualLines = Str.split (Str.Pattern "\n") (DL.toDotStr graph)
 
-      it "converts Node with multiple attributes" do
-        DL.toDotStr
-          ( DL.Node "State1"
-              Nothing
-              [ DL.Attr "label" (DL.Value "State 1")
-              , DL.Attr "shape" (DL.Value "box")
+      assertLinesEqual actualLines expectedLines
+
+    describe "formats global node attributes" do
+      let
+        red = rgb 255 0 0
+        graph = GraphvizGraph
+          [ SecGlobalNode
+              [ DL.shapeCircle
+              , DL.width 0.5
+              , DL.fixedSize true
+              , DL.fillColor red
               ]
-          )
-          `shouldEqual` "State1 [label = \"State 1\", shape = \"box\"]"
+          ]
 
-    describe "ToDotStr Edge" do
-      it "converts Edge with no attributes" do
-        DL.toDotStr (DL.Edge "State1" "State2" []) `shouldEqual` "State1 -> State2 []"
+        expectedLines =
+          [ "digraph {"
+          , "  node ["
+          , "    shape = circle"
+          , "    width = 0.5"
+          , "    fixedsize = true"
+          , "    fillcolor = \"#ff0000\""
+          , "  ]"
+          , "}"
+          ]
 
-      it "converts Edge with single attribute" do
-        DL.toDotStr (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ])
-          `shouldEqual` "State1 -> State2 [label = \"Msg1\"]"
+        actualLines = Str.split (Str.Pattern "\n") (DL.toDotStr graph)
 
-      it "converts Edge with multiple attributes" do
-        DL.toDotStr
-          ( DL.Edge "State1" "State2"
-              [ DL.Attr "label" (DL.Value "Msg1")
-              , DL.Attr "color" (DL.Value "red")
-              ]
-          )
-          `shouldEqual` "State1 -> State2 [label = \"Msg1\", color = \"red\"]"
+      assertLinesEqual actualLines expectedLines
 
-    describe "ToDotStr GlobalAttrs" do
-      it "converts GlobalAttrs with no attributes to empty string" do
-        DL.toDotStr (DL.GlobalAttrs []) `shouldEqual` ""
+    describe "formats global edge attributes" do
+      let
+        blue = rgb 0 0 255
+        graph = GraphvizGraph
+          [ SecGlobalEdge [ DL.color blue ]
+          ]
 
-      it "converts GlobalAttrs with single attribute" do
-        DL.toDotStr (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ])
-          `shouldEqual` "rankdir = \"TD\""
+        expectedLines =
+          [ "digraph {"
+          , "  edge ["
+          , "    color = \"#0000ff\""
+          , "  ]"
+          , "}"
+          ]
 
-      it "converts GlobalAttrs with multiple attributes using semicolon separation" do
-        DL.toDotStr
-          ( DL.GlobalAttrs
-              [ DL.Attr "rankdir" (DL.Value "TD")
-              , DL.Attr "fontname" (DL.Value "Arial")
-              ]
-          )
-          `shouldEqual` "rankdir = \"TD\";fontname = \"Arial\""
+        actualLines = Str.split (Str.Pattern "\n") (DL.toDotStr graph)
 
-    describe "ToDotStr Section" do
-      it "converts SecNode" do
-        DL.toDotStr (DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ]))
-          `shouldEqual` "State1 [label = \"State 1\"]"
+      assertLinesEqual actualLines expectedLines
 
-      it "converts SecEdge" do
-        DL.toDotStr (DL.SecEdge (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ]))
-          `shouldEqual` "State1 -> State2 [label = \"Msg1\"]"
+    describe "formats nodes with inline attributes" do
+      let
+        red = rgb 255 0 0
+        blue = rgb 0 0 255
+        graph = GraphvizGraph
+          [ DL.SecNode
+              (DL.Node "Start" [ DL.shapeCircle, DL.width 0.5, DL.fixedSize true, DL.fillColor red ])
+          , DL.SecNode
+              (DL.Node "Active" [ DL.labelHtmlBold "Active", DL.shapeBox, Attr "fillcolor" (ValueColors [ red, blue ]) ])
+          , DL.SecNode
+              (DL.Node "End" [ Attr "peripheries" (ValueInt 2) ])
+          ]
 
-      it "converts SecGlobal" do
-        DL.toDotStr (DL.SecGlobal (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ]))
-          `shouldEqual` "rankdir = \"TD\""
+        expectedLines =
+          [ "digraph {"
+          , "  Start [shape = circle, width = 0.5, fixedsize = true, fillcolor = \"#ff0000\"]"
+          , "  Active [label = <<b>Active</b>>, shape = box, fillcolor = \"#ff0000:#0000ff\"]"
+          , "  End [peripheries = 2]"
+          , "}"
+          ]
 
-      it "converts SecGlobalRaw" do
-        DL.toDotStr (DL.SecGlobalRaw "graph [layout=sfdp];")
-          `shouldEqual` "graph [layout=sfdp];"
+        actualLines = Str.split (Str.Pattern "\n") (DL.toDotStr graph)
 
-    describe "ToDotStr GraphvizGraph" do
-      it "converts empty graph" do
-        DL.toDotStr (DL.GraphvizGraph [])
-          `shouldEqual` "digraph \n{\n}"
+      assertLinesEqual actualLines expectedLines
 
-      it "converts graph with single node" do
-        DL.toDotStr
-          ( DL.GraphvizGraph
-              [ DL.SecNode (DL.Node "State1" Nothing [])
-              ]
-          )
-          `shouldEqual` "digraph \n{\nState1 []\n}"
+    describe "formats edges with inline attributes" do
+      let
+        blue = rgb 0 0 255
+        graph = GraphvizGraph
+          [ DL.SecEdge (DL.Edge "Start" "Active" [ DL.label "Begin" ])
+          , DL.SecEdge (DL.Edge "Active" "End" [ DL.label "Finish", DL.color blue ])
+          ]
 
-      it "converts graph with multiple sections" do
-        DL.toDotStr
-          ( DL.GraphvizGraph
-              [ DL.SecGlobal (DL.GlobalAttrs [ DL.Attr "rankdir" (DL.Value "TD") ])
-              , DL.SecNode (DL.Node "State1" Nothing [ DL.Attr "label" (DL.Value "State 1") ])
-              , DL.SecEdge (DL.Edge "State1" "State2" [ DL.Attr "label" (DL.Value "Msg1") ])
-              ]
-          )
-          `shouldEqual` "digraph \n{\nrankdir = \"TD\"\nState1 [label = \"State 1\"]\nState1 -> State2 [label = \"Msg1\"]\n}"
+        expectedLines =
+          [ "digraph {"
+          , "  Start -> Active [label = \"Begin\"]"
+          , "  Active -> End [label = \"Finish\", color = \"#0000ff\"]"
+          , "}"
+          ]
+
+        actualLines = Str.split (Str.Pattern "\n") (DL.toDotStr graph)
+
+      assertLinesEqual actualLines expectedLines
 

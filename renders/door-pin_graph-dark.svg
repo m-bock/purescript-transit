@@ -8,11 +8,22 @@
  viewBox="0.00 0.00 610.05 80.15" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 76.15)">
 <polygon fill="none" stroke="none" points="-4,4 -4,-76.15 606.05,-76.15 606.05,4 -4,4"/>
-<!-- DoorOpen -->
+<!-- __Start__ -->
 <g id="node1" class="node">
+<title>__Start__</title>
+<ellipse fill="#8c8c8c" stroke="black" stroke-width="0" cx="5.4" cy="-20.99" rx="5.4" ry="5.4"/>
+</g>
+<!-- DoorOpen -->
+<g id="node2" class="node">
 <title>DoorOpen</title>
 <polygon fill="#a3e635" stroke="#a3e635" stroke-width="0" points="123.05,-35.39 47.8,-35.39 47.8,-6.59 123.05,-6.59 123.05,-35.39"/>
 <text text-anchor="start" x="55.8" y="-17.71" font-family="Arial" font-weight="bold" font-size="12.00" fill="#4d740e">DoorOpen</text>
+</g>
+<!-- __Start__&#45;&gt;DoorOpen -->
+<g id="edge1" class="edge">
+<title>__Start__&#45;&gt;DoorOpen</title>
+<path fill="none" stroke="#8c8c8c" stroke-width="1.8" d="M10.59,-20.99C16.29,-20.99 27.1,-20.99 38.72,-20.99"/>
+<polygon fill="#8c8c8c" stroke="#8c8c8c" stroke-width="1.8" points="38.41,-23.44 45.41,-20.99 38.41,-18.54 38.41,-23.44"/>
 </g>
 <!-- DoorClosed -->
 <g id="node3" class="node">
@@ -26,17 +37,6 @@
 <path fill="none" stroke="#a3e635" stroke-width="1.8" d="M122.95,-20.99C142,-20.99 165.6,-20.99 186.41,-20.99"/>
 <polygon fill="#a3e635" stroke="#a3e635" stroke-width="1.8" points="186.33,-23.44 193.33,-20.99 186.33,-18.54 186.33,-23.44"/>
 <text text-anchor="start" x="141.05" y="-25.59" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#ccf190">Close</text>
-</g>
-<!-- __Start__ -->
-<g id="node2" class="node">
-<title>__Start__</title>
-<ellipse fill="#8c8c8c" stroke="black" stroke-width="0" cx="5.4" cy="-20.99" rx="5.4" ry="5.4"/>
-</g>
-<!-- __Start__&#45;&gt;DoorOpen -->
-<g id="edge1" class="edge">
-<title>__Start__&#45;&gt;DoorOpen</title>
-<path fill="none" stroke="#8c8c8c" stroke-width="1.8" d="M10.59,-20.99C16.29,-20.99 27.1,-20.99 38.72,-20.99"/>
-<polygon fill="#8c8c8c" stroke="#8c8c8c" stroke-width="1.8" points="38.41,-23.44 45.41,-20.99 38.41,-18.54 38.41,-23.44"/>
 </g>
 <!-- DoorClosed&#45;&gt;DoorOpen -->
 <g id="edge3" class="edge">

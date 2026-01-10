@@ -518,6 +518,9 @@ generateGraphDark =
 
 <!-- PD_END -->
 
+> **Generated Output**: This code produces the diagram we examined at the beginning of this tutorial.  
+> 🔗 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/door_graph-dark.dot" target="_blank">View diagram on GraphvizOnline</a>
+
 - The `theme` option we're using above controls the color scheme. **Transit** provides a couple of built-in themes, but you can also provide your own. See [themes.md](https://github.com/m-bock/purescript-transit/blob/main/docs/themes.md) for more details.
 
 - The `layout` option controls the layout of the graph. We're using `Portrait` here, which is the default layout. But you can also use `Landscape`, `Circular`, or `Manual` to position the nodes manually, as we'll see later.
@@ -559,7 +562,7 @@ generateTable = do
 
 Here we provide no options to the `generate` function, so we use the identity function `\def -> def` to pass the default options.
 
-This code snippet generates a Markdown file containing a transition table (as you saw at the beginning of this chapter).
+> **Generated Output**: This generates the transition table shown earlier, with rows for each valid state transition.
 
 ## Conclusion
 

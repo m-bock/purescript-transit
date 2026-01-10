@@ -378,6 +378,9 @@ generateGraphLight = do
 
 <!-- PD_END -->
 
+> **Generated Output**: This produces the graph visualization we examined earlier.  
+> 🔗 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/bridges-koenigsberg_graph-light.dot" target="_blank">View diagram on GraphvizOnline</a>
+
 The transition table is generated the same way as before, but we also add the `undirectedEdges` option to the options:
 
 <!-- PD_START:purs
@@ -405,6 +408,8 @@ generateTable = do
 </p>
 
 <!-- PD_END -->
+
+> **Generated Output**: This creates the transition table in the undirected format, showing all possible bridge crossings between the land areas.
 
 ## Conclusion
 

@@ -12,6 +12,7 @@ import Node.Encoding (Encoding(..))
 import Node.FS.Sync as FS
 import Test.Spec (Spec, describe, it)
 import Transit (type (:*), type (:@), type (>|), Transit, TransitCore, mkUpdateAuto)
+import Transit.Data.DotLang (Attr(..), Value(..))
 import Transit.Data.DotLang as Graphviz
 import Transit.Render.Graphviz (Layout(..))
 import Transit.Render.Graphviz as TransitGraphviz
@@ -85,10 +86,7 @@ colorRingTransit :: TransitCore
 colorRingTransit = reflectType (Proxy @ColorRingTransit)
 
 main :: Effect Unit
-main = do
-  let
-    globalAttrs = "graph [layout=sfdp;overlap=false, K=2.5, repulsiveforce=4, splines=true];"
-
+main =
   for_
     [ { file: "renders/themes/harmony-light.dot"
       , title: "Harmony Light"
@@ -119,7 +117,13 @@ main = do
       FS.writeTextFile UTF8 opts.file
         ( Graphviz.toDotStr $ TransitGraphviz.generate colorRingTransit \def -> def
             { title = Just opts.title
-            , rawGlobalAttrs = Just globalAttrs
+            , extraGraphAttrs =
+                [ Attr "layout" (Value "sfdp")
+                , Attr "overlap" (ValueBoolean false)
+                , Attr "K" (ValueNumber 2.5)
+                , Attr "repulsiveforce" (ValueInt 4)
+                , Attr "splines" (ValueBoolean true)
+                ]
             , theme = opts.theme
             , layout = None
             }
