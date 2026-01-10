@@ -27,22 +27,22 @@
 <polygon fill="#a3e635" stroke="#a3e635" stroke-width="1.8" points="43.98,-189.86 39.48,-183.97 39.33,-191.39 43.98,-189.86"/>
 <text text-anchor="start" x="50.62" y="-204.2" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#ccf190">Start</text>
 </g>
-<!-- decision_Counting_Tick -->
+<!-- __DECISION__Counting__Tick -->
 <g id="node3" class="node">
-<title>decision_Counting_Tick</title>
+<title>__DECISION__Counting__Tick</title>
 <polygon fill="#ffc700" stroke="black" stroke-width="0" points="42.62,-101.8 15.63,-83.8 42.62,-65.8 69.62,-83.8 42.62,-101.8"/>
-<text text-anchor="middle" x="42.62" y="-79.52" font-family="Times,serif" font-size="12.00" fill="#806300">?</text>
+<text text-anchor="middle" x="42.62" y="-79.52" font-family="Arial" font-size="12.00" fill="#806300">?</text>
 </g>
-<!-- Counting&#45;&gt;decision_Counting_Tick -->
+<!-- Counting&#45;&gt;__DECISION__Counting__Tick -->
 <g id="edge2" class="edge">
-<title>Counting&#45;&gt;decision_Counting_Tick</title>
+<title>Counting&#45;&gt;__DECISION__Counting__Tick</title>
 <path fill="none" stroke="#ffc700" stroke-width="1.8" d="M21.01,-153.16C13.22,-144.05 5.81,-131.48 10.38,-119.8 13.25,-112.44 18.48,-105.7 23.9,-100.13"/>
 <polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="25.28,-102.2 28.71,-95.62 21.93,-98.62 25.28,-102.2"/>
 <text text-anchor="start" x="10.38" y="-124.4" font-family="Times,serif" font-weight="bold" font-size="12.00" fill="#ffdd66">Tick</text>
 </g>
-<!-- decision_Counting_Tick&#45;&gt;Counting -->
+<!-- __DECISION__Counting__Tick&#45;&gt;Counting -->
 <g id="edge4" class="edge">
-<title>decision_Counting_Tick&#45;&gt;Counting</title>
+<title>__DECISION__Counting__Tick&#45;&gt;Counting</title>
 <path fill="none" stroke="#ffc700" stroke-width="1.8" d="M42.05,-101.05C41.61,-110.84 40.85,-123.56 39.62,-134.8 39.32,-137.63 38.93,-140.59 38.51,-143.52"/>
 <polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="36.09,-143.11 37.43,-150.41 40.93,-143.87 36.09,-143.11"/>
 </g>
@@ -52,9 +52,9 @@
 <polygon fill="#2f80ed" stroke="#2f80ed" stroke-width="0" points="96.62,-28.8 42.62,-28.8 42.62,0 96.62,0 96.62,-28.8"/>
 <text text-anchor="start" x="54.25" y="-11.12" font-family="Arial" font-weight="bold" font-size="12.00" fill="#082e61">Done</text>
 </g>
-<!-- decision_Counting_Tick&#45;&gt;Done -->
+<!-- __DECISION__Counting__Tick&#45;&gt;Done -->
 <g id="edge3" class="edge">
-<title>decision_Counting_Tick&#45;&gt;Done</title>
+<title>__DECISION__Counting__Tick&#45;&gt;Done</title>
 <path fill="none" stroke="#ffc700" stroke-width="1.8" d="M47.96,-69.48C51.62,-60.34 56.56,-48 60.81,-37.42"/>
 <polygon fill="#ffc700" stroke="#ffc700" stroke-width="1.8" points="62.96,-38.63 63.29,-31.22 58.41,-36.8 62.96,-38.63"/>
 </g>

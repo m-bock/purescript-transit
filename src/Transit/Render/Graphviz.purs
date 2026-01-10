@@ -17,7 +17,7 @@ module Transit.Render.Graphviz
 
 import Prelude
 
-import Data.Array (catMaybes, concatMap, mapWithIndex)
+import Data.Array (catMaybes, concatMap, filter, mapWithIndex)
 import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Foldable (fold, for_)
@@ -41,11 +41,11 @@ type NodePositioning =
 
 -- | Graph layout algorithm to use for arranging nodes.
 data Layout
-  = Landscape -- ^ Left-to-right horizontal layout
-  | Portrait -- ^ Top-to-bottom vertical layout
-  | Manual (Array NodePositioning) -- ^ Manual positioning with explicit coordinates
-  | Circle -- ^ Circular layout
-  | None -- ^ No automatic layout
+  = Landscape -- Left-to-right horizontal layout
+  | Portrait -- Top-to-bottom vertical layout
+  | Manual (Array NodePositioning) -- Manual positioning with explicit coordinates
+  | Circle -- Circular layout
+  | None -- No automatic layout
 
 -- | Measurement unit for node positions and sizes (inches).
 newtype Inch = Inch Number
@@ -90,8 +90,6 @@ type Constants =
   , nodePenWidth :: Number
   , nodeDefaultHeight :: Number
   , initNodeSize :: Number
-  , initNodeName :: String
-  , decisionNodePrefix :: String
   }
 
 -- | Default rendering constants used throughout the graph generation.
@@ -102,25 +100,36 @@ constants =
   , nodePenWidth: 0.0
   , nodeDefaultHeight: 0.4
   , initNodeSize: 0.15
-  , initNodeName: "__Start__"
-  , decisionNodePrefix: "decision_"
   }
+
+mkInitNodeName :: StateName -> String
+mkInitNodeName name = "__ENTRY__" <> name
+
+mkDecisionNodeName :: StateName -> MsgName -> String
+mkDecisionNodeName name msg = "__DECISION__" <> name <> "__" <> msg
 
 -- | Generates a Graphviz graph from a transit specification.
 mkGraphvizGraph :: Options -> TransitCore -> GraphvizGraph
 mkGraphvizGraph options transit =
-  GraphvizGraph $ join
-    [ [ SecGlobalGraph $ mkGlobalGraphAttrs options
-      , SecGlobalNode $ mkGlobalNodeAttrs options
-      , SecGlobalEdge $ mkGlobalEdgeAttrs options
-      ]
-    , initNodeSections
-    , concatMap (\section -> map SecNode section.nodes) sections
-    , concatMap (\section -> map SecEdge section.edges) sections
+  GraphvizGraph $ join $ Array.intersperse [ SecNewline ] $ filter (not <<< Array.null)
+    [ mkGroup "Global attributes"
+        [ SecGlobalGraph $ mkGlobalGraphAttrs options
+        , SecGlobalNode $ mkGlobalNodeAttrs options
+        , SecGlobalEdge $ mkGlobalEdgeAttrs options
+        ]
+    , mkGroup "Entry points" initNodeSections
+    , mkGroup "Nodes" (concatMap (\section -> map SecNode section.nodes) sections)
+    , mkGroup "Edges" (concatMap (\section -> map SecEdge section.edges) sections)
     ]
+
   where
+  mkGroup :: String -> Array D.Section -> Array D.Section
+  mkGroup name items = case items of
+    [] -> []
+    someItems -> [ SecCommentLine name ] <> someItems
+
   sections = mapWithIndex (mkStateSections transit options) $ getStateNames transit
-  initNodeSections = if Array.null options.entryPoints then [] else [ SecNode $ mkInitNode options constants.initNodeName ]
+  initNodeSections = map SecNode $ map (mkInitNode options) options.entryPoints
 
 -- | Creates sections for a single state (node and transition edges).
 mkStateSections :: TransitCore -> Options -> Int -> StateName -> { nodes :: Array D.Node, edges :: Array D.Edge }
@@ -128,7 +137,7 @@ mkStateSections transit options i stateName =
   fold
     ( [ { nodes: [ mkStateNode options colors stateName ]
         , edges:
-            if stateName `Array.elem` options.entryPoints then [ mkInitEdge options constants.initNodeName stateName ]
+            if stateName `Array.elem` options.entryPoints then [ mkInitEdge options (mkInitNodeName stateName) stateName ]
             else []
         }
       ] <> (map (mkMatchSections colors transit options) $ getMatchesForState stateName transit)
@@ -146,12 +155,12 @@ mkMatchSections colors transit options (Match from msg returns) = case returns o
       else
         { nodes: [], edges: [] }
     else
-      { nodes: [], edges: [ mkEdgeMsg options from to colors msg ] }
+      { nodes: [], edges: [ mkEdgeMsg from to colors msg ] }
   manyReturns ->
     if options.decisionNodes then
-      mkDecisionNodeSections options from msg colors manyReturns
+      mkDecisionNodeSections from msg colors manyReturns
     else
-      { nodes: [], edges: mkDirectEdges options from msg colors manyReturns }
+      { nodes: [], edges: mkDirectEdges from msg colors manyReturns }
 
 -- | Checks if the first state name is lexicographically greater than the second.
 -- | Used to determine canonical ordering for undirected edges.
@@ -168,37 +177,41 @@ hasComplementaryEdge from to msg (TransitCore matches) =
     matches
 
 -- | Creates direct edges from a state to multiple target states.
-mkDirectEdges :: Options -> StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Edge
-mkDirectEdges options from msg colors returns = map
+mkDirectEdges :: StateName -> MsgName -> ColorHarmony -> Array Return -> Array D.Edge
+mkDirectEdges from msg colors returns = map
   ( case _ of
-      Return to -> mkEdgeMsg options from to colors msg
-      ReturnVia guard to -> mkEdgeMsg options from to colors (msg <> " ? " <> guard)
+      Return to -> mkEdgeMsg from to colors msg
+      ReturnVia guard to -> mkEdgeMsg from to colors (msg <> " ? " <> guard)
   )
   returns
 
 -- | Creates a decision node structure for multiple returns from a single match.
-mkDecisionNodeSections :: Options -> StateName -> MsgName -> ColorHarmony -> Array Return -> { nodes :: Array D.Node, edges :: Array D.Edge }
-mkDecisionNodeSections options from msg colors manyReturns =
+mkDecisionNodeSections :: StateName -> MsgName -> ColorHarmony -> Array Return -> { nodes :: Array D.Node, edges :: Array D.Edge }
+mkDecisionNodeSections from msg colors manyReturns =
   let
-    decisionNode = constants.decisionNodePrefix <> from <> "_" <> msg
+    decisionNode = mkDecisionNodeName from msg
   in
-    { nodes: [ mkDecisionNode options decisionNode colors ]
-    , edges: [ mkEdgeMsg options from decisionNode colors msg ]
-        <> map (mkDecisionEdge options decisionNode colors) manyReturns
+    { nodes: [ mkDecisionNode decisionNode colors ]
+    , edges: [ mkEdgeMsg from decisionNode colors msg ]
+        <> map (mkDecisionEdge decisionNode colors) manyReturns
     }
 
 -- | Creates edges from a decision node to target states.
-mkDecisionEdge :: Options -> StateName -> ColorHarmony -> Return -> D.Edge
-mkDecisionEdge options decisionNode colors = case _ of
-  Return to -> mkEdgeGuard options decisionNode to colors Nothing
-  ReturnVia guard to -> mkEdgeGuard options decisionNode to colors (Just guard)
+mkDecisionEdge :: StateName -> ColorHarmony -> Return -> D.Edge
+mkDecisionEdge decisionNode colors = case _ of
+  Return to -> mkEdgeGuard decisionNode to colors Nothing
+  ReturnVia guard to -> mkEdgeGuard decisionNode to colors (Just guard)
 
 -- | Creates global node attributes (default styling for all nodes).
 mkGlobalNodeAttrs :: Options -> Array D.Attr
 mkGlobalNodeAttrs options =
   join
     [ options.extraNodeAttrs
-    , [
+    , [ D.styleFilled
+      , D.fontSize options.fontSize
+      , D.fontNameArial
+      , D.penWidth constants.nodePenWidth
+      , D.labelLocC
       ]
     ]
 
@@ -207,7 +220,10 @@ mkGlobalEdgeAttrs :: Options -> Array D.Attr
 mkGlobalEdgeAttrs options =
   join
     [ options.extraEdgeAttrs
-    , []
+    , [ D.arrowSize constants.arrowSize
+      , D.penWidth constants.edgePenWidth
+      , D.fontSize options.fontSize
+      ]
     ]
 
 -- | Creates global graph attributes.
@@ -216,7 +232,6 @@ mkGlobalGraphAttrs options =
   join
     [ options.extraGraphAttrs
     , [ D.rankDirTD
-      , D.fontNameArial
       , D.labelLocT
       , D.fontSize options.fontSize
       , D.bgColor options.theme.bgColor
@@ -238,14 +253,6 @@ mkStateNode options colors node = D.Node node
   $ join
       [ [ D.shapeBox
         , D.labelHtmlBold node
-        , D.fontSize options.fontSize
-        , D.styleFilled
-        , D.fillColor colors.nodeBg
-        , D.fontColor colors.nodeFont
-        , D.color colors.nodeBorder
-        , D.fontNameArial
-        , D.labelLocC
-        , D.penWidth constants.nodePenWidth
         ]
       , case options.layout of
           Manual positions ->
@@ -262,75 +269,62 @@ mkStateNode options colors node = D.Node node
           Nothing ->
             [ D.height constants.nodeDefaultHeight
             ]
+      , [ D.fontColor colors.nodeFont
+        , D.fillColor colors.nodeBg
+        , D.color colors.nodeBorder
+        ]
       ]
 
 -- | Creates an initialization node (entry point marker).
 mkInitNode :: Options -> String -> D.Node
-mkInitNode options name = D.Node name
+mkInitNode options name = D.Node (mkInitNodeName name)
   [ D.shapeCircle
   , D.label ""
   , D.width constants.initNodeSize
   , D.height constants.initNodeSize
   , D.fixedSize true
-  , D.styleFilled
   , D.fillColor options.theme.initNodeColor
-  , D.penWidth constants.nodePenWidth
   ]
 
 -- | Creates an edge from the initialization node to an entry point state.
 mkInitEdge :: Options -> StateName -> StateName -> D.Edge
 mkInitEdge options from to = D.Edge from to
   [ D.color options.theme.initNodeColor
-  , D.fontSize options.fontSize
-  , D.arrowSize constants.arrowSize
-  , D.penWidth constants.edgePenWidth
   ]
 
 -- | Creates an undirected edge (bidirectional) between two states.
 mkUndirectedEdge :: Options -> StateName -> StateName -> MsgName -> D.Edge
 mkUndirectedEdge options from to label = D.Edge from to
-  [ D.color options.theme.undirectedEdgeColor
-  , D.fontColor options.theme.undirectedEdgeFontColor
-  , D.fontSize options.fontSize
-  , D.labelHtmlBold label
-  , D.arrowSize constants.arrowSize
-  , D.penWidth constants.edgePenWidth
+  [ D.labelHtmlBold label
   , D.dirBoth
+  , D.color options.theme.undirectedEdgeColor
+  , D.fontColor options.theme.undirectedEdgeFontColor
   ]
 
 -- | Creates a directed edge with a message label.
-mkEdgeMsg :: Options -> StateName -> StateName -> ColorHarmony -> MsgName -> D.Edge
-mkEdgeMsg options from to colors label = D.Edge from to
-  [ D.color colors.edgeColor
+mkEdgeMsg :: StateName -> StateName -> ColorHarmony -> MsgName -> D.Edge
+mkEdgeMsg from to colors label = D.Edge from to
+  [ D.labelHtmlBold label
+  , D.color colors.edgeColor
   , D.fontColor colors.edgeFont
-  , D.fontSize options.fontSize
-  , D.arrowSize constants.arrowSize
-  , D.labelHtmlBold label
-  , D.penWidth constants.edgePenWidth
   ]
 
 -- | Creates an edge from a decision node to a target state, optionally with a guard label.
-mkEdgeGuard :: Options -> StateName -> StateName -> ColorHarmony -> Maybe GuardName -> D.Edge
-mkEdgeGuard options from to colors mayLabel = D.Edge from to
+mkEdgeGuard :: StateName -> StateName -> ColorHarmony -> Maybe GuardName -> D.Edge
+mkEdgeGuard from to colors mayLabel = D.Edge from to
   $ catMaybes
-      [ pure $ D.color colors.edgeColor
+      [ map D.labelHtmlItalic mayLabel
+      , pure $ D.color colors.edgeColor
       , pure $ D.fontColor colors.edgeFont
-      , pure $ D.fontSize options.fontSize
-      , pure $ D.arrowSize constants.arrowSize
-      , map D.labelHtmlItalic mayLabel
-      , pure $ D.penWidth constants.edgePenWidth
       ]
 
 -- | Creates a decision node (diamond shape) for branching transitions.
-mkDecisionNode :: Options -> String -> ColorHarmony -> D.Node
-mkDecisionNode options name colors = D.Node name
+mkDecisionNode :: String -> ColorHarmony -> D.Node
+mkDecisionNode name colors = D.Node name
   [ D.shapeDiamond
   , D.label "?"
-  , D.fontSize options.fontSize
   , D.fontColor colors.nodeFont
-  , D.styleFilled
   , D.fillColor colors.nodeBg
-  , D.penWidth constants.nodePenWidth
   ]
 
 -- | Validates that all specified entry points exist in the transit specification.

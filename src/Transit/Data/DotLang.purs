@@ -68,6 +68,8 @@ data Section
   | SecGlobalGraph (Array Attr)
   | SecGlobalNode (Array Attr)
   | SecGlobalEdge (Array Attr)
+  | SecNewline
+  | SecCommentLine String
 
 -- | Complete Graphviz directed graph.
 newtype GraphvizGraph = GraphvizGraph (Array Section)
@@ -119,6 +121,8 @@ instance ToDotStr Section where
   toDotStr (SecGlobalGraph global) = "graph " <> toDotStrMultiline global
   toDotStr (SecGlobalNode attrs) = "node " <> toDotStrMultiline attrs
   toDotStr (SecGlobalEdge attrs) = "edge " <> toDotStrMultiline attrs
+  toDotStr (SecNewline) = ""
+  toDotStr (SecCommentLine comment) = "// " <> comment
 
 instance ToDotStr Node where
   toDotStr (Node stateName attrs) = stateName <> " " <> toDotStr attrs

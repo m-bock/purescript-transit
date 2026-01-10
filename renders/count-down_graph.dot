@@ -1,7 +1,7 @@
 digraph {
+  // Global attributes
   graph [
     rankdir = TD
-    fontname = Arial
     labelloc = t
     fontsize = 12.0
     bgcolor = "#00000000"
@@ -10,15 +10,29 @@ digraph {
     layout = dot
     rankdir = TD
   ]
-  node []
-  edge []
-  Idle [shape = box, label = <<b>Idle</b>>, fontsize = 12.0, style = filled, fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = Arial, labelloc = c, penwidth = 0.0, height = 0.4]
-  Counting [shape = box, label = <<b>Counting</b>>, fontsize = 12.0, style = filled, fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = Arial, labelloc = c, penwidth = 0.0, height = 0.4]
-  decision_Counting_Tick [shape = diamond, label = "?", fontsize = 12.0, fontcolor = "#806300", style = filled, fillcolor = "#ffc700", penwidth = 0.0]
-  Done [shape = box, label = <<b>Done</b>>, fontsize = 12.0, style = filled, fillcolor = "#2f80ed", fontcolor = "#082e61", color = "#2f80ed", fontname = Arial, labelloc = c, penwidth = 0.0, height = 0.4]
-  Idle -> Counting [color = "#a3e635", fontcolor = "#ccf190", fontsize = 12.0, arrowsize = 0.7, label = <<b>Start</b>>, penwidth = 1.8]
-  Counting -> decision_Counting_Tick [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12.0, arrowsize = 0.7, label = <<b>Tick</b>>, penwidth = 1.8]
-  decision_Counting_Tick -> Done [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12.0, arrowsize = 0.7, penwidth = 1.8]
-  decision_Counting_Tick -> Counting [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12.0, arrowsize = 0.7, penwidth = 1.8]
-  Done -> Idle [color = "#2f80ed", fontcolor = "#8db9f5", fontsize = 12.0, arrowsize = 0.7, label = <<b>Reset</b>>, penwidth = 1.8]
+  node [
+    style = filled
+    fontsize = 12.0
+    fontname = Arial
+    penwidth = 0.0
+    labelloc = c
+  ]
+  edge [
+    arrowsize = 0.7
+    penwidth = 1.8
+    fontsize = 12.0
+  ]
+  
+  // Nodes
+  Idle [shape = box, label = <<b>Idle</b>>, height = 0.4, fontcolor = "#4d740e", fillcolor = "#a3e635", color = "#a3e635"]
+  Counting [shape = box, label = <<b>Counting</b>>, height = 0.4, fontcolor = "#806300", fillcolor = "#ffc700", color = "#ffc700"]
+  __DECISION__Counting__Tick [shape = diamond, label = "?", fontcolor = "#806300", fillcolor = "#ffc700"]
+  Done [shape = box, label = <<b>Done</b>>, height = 0.4, fontcolor = "#082e61", fillcolor = "#2f80ed", color = "#2f80ed"]
+  
+  // Edges
+  Idle -> Counting [label = <<b>Start</b>>, color = "#a3e635", fontcolor = "#ccf190"]
+  Counting -> __DECISION__Counting__Tick [label = <<b>Tick</b>>, color = "#ffc700", fontcolor = "#ffdd66"]
+  __DECISION__Counting__Tick -> Done [color = "#ffc700", fontcolor = "#ffdd66"]
+  __DECISION__Counting__Tick -> Counting [color = "#ffc700", fontcolor = "#ffdd66"]
+  Done -> Idle [label = <<b>Reset</b>>, color = "#2f80ed", fontcolor = "#8db9f5"]
 }
