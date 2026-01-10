@@ -1,8 +1,33 @@
-digraph 
-{
-rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12.0;bgcolor = "#00000000";color = "#c8c8c8";fontcolor = "#c8c8c8";layout = "dot";rankdir = "TD"
-DoorOpen [shape = "box", label = <<b>DoorOpen</b>>, fontsize = 12.0, style = "filled", fillcolor = "#a3e635", fontcolor = "#4d740e", color = "#a3e635", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-DoorOpen -> DoorClosed [color = "#a3e635", fontcolor = "#ccf190", fontsize = 12.0, arrowsize = "0.7", label = <<b>Close</b>>, penwidth = 1.8]
-DoorClosed [shape = "box", label = <<b>DoorClosed</b>>, fontsize = 12.0, style = "filled", fillcolor = "#ffc700", fontcolor = "#806300", color = "#ffc700", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-DoorClosed -> DoorOpen [color = "#ffc700", fontcolor = "#ffdd66", fontsize = 12.0, arrowsize = "0.7", label = <<b>Open</b>>, penwidth = 1.8]
+digraph {
+  // Global attributes
+  graph [
+    rankdir = TD
+    labelloc = t
+    fontsize = 12.0
+    bgcolor = "#00000000"
+    color = "#c8c8c8"
+    fontcolor = "#c8c8c8"
+    layout = dot
+    rankdir = TD
+  ]
+  node [
+    style = filled
+    fontsize = 12.0
+    fontname = Arial
+    penwidth = 0.0
+    labelloc = c
+  ]
+  edge [
+    arrowsize = 0.7
+    penwidth = 1.8
+    fontsize = 12.0
+  ]
+  
+  // Nodes
+  DoorOpen [shape = box, label = <<b>DoorOpen</b>>, height = 0.4, fontcolor = "#4d740e", fillcolor = "#a3e635", color = "#a3e635"]
+  DoorClosed [shape = box, label = <<b>DoorClosed</b>>, height = 0.4, fontcolor = "#806300", fillcolor = "#ffc700", color = "#ffc700"]
+  
+  // Edges
+  DoorOpen -> DoorClosed [label = <<b>Close</b>>, color = "#a3e635", fontcolor = "#ccf190"]
+  DoorClosed -> DoorOpen [label = <<b>Open</b>>, color = "#ffc700", fontcolor = "#ffdd66"]
 }

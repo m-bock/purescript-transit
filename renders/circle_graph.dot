@@ -1,24 +1,48 @@
-digraph 
-{
-rankdir = "TD";fontname = "Arial";labelloc = "t";fontsize = 12.0;bgcolor = "#000000";color = "#ffffff";fontcolor = "#ffffff";layout = "circo"
-State001 [shape = "box", label = <<b>State001</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State001 -> State002 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg001</b>>, penwidth = 1.8]
-State002 [shape = "box", label = <<b>State002</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State002 -> State003 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg002</b>>, penwidth = 1.8]
-State003 [shape = "box", label = <<b>State003</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State003 -> State004 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg003</b>>, penwidth = 1.8]
-State004 [shape = "box", label = <<b>State004</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State004 -> State005 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg004</b>>, penwidth = 1.8]
-State005 [shape = "box", label = <<b>State005</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State005 -> State006 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg005</b>>, penwidth = 1.8]
-State006 [shape = "box", label = <<b>State006</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State006 -> State007 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg006</b>>, penwidth = 1.8]
-State007 [shape = "box", label = <<b>State007</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State007 -> State008 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg007</b>>, penwidth = 1.8]
-State008 [shape = "box", label = <<b>State008</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State008 -> State009 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg008</b>>, penwidth = 1.8]
-State009 [shape = "box", label = <<b>State009</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State009 -> State010 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg009</b>>, penwidth = 1.8]
-State010 [shape = "box", label = <<b>State010</b>>, fontsize = 12.0, style = "filled", fillcolor = "#c8c8c8", fontcolor = "#000000", color = "#c8c8c8", fontname = "Arial", labelloc = "c", penwidth = 0.0, height = 0.4]
-State010 -> State001 [color = "#828282", fontcolor = "#c8c8c8", fontsize = 12.0, arrowsize = "0.7", label = <<b>Msg010</b>>, penwidth = 1.8]
+digraph {
+  // Global attributes
+  graph [
+    rankdir = TD
+    labelloc = t
+    fontsize = 12.0
+    bgcolor = "#000000"
+    color = "#ffffff"
+    fontcolor = "#ffffff"
+    layout = circo
+  ]
+  node [
+    style = filled
+    fontsize = 12.0
+    fontname = Arial
+    penwidth = 0.0
+    labelloc = c
+  ]
+  edge [
+    arrowsize = 0.7
+    penwidth = 1.8
+    fontsize = 12.0
+  ]
+  
+  // Nodes
+  State001 [shape = box, label = <<b>State001</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State002 [shape = box, label = <<b>State002</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State003 [shape = box, label = <<b>State003</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State004 [shape = box, label = <<b>State004</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State005 [shape = box, label = <<b>State005</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State006 [shape = box, label = <<b>State006</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State007 [shape = box, label = <<b>State007</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State008 [shape = box, label = <<b>State008</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State009 [shape = box, label = <<b>State009</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  State010 [shape = box, label = <<b>State010</b>>, height = 0.4, fontcolor = "#000000", fillcolor = "#c8c8c8", color = "#c8c8c8"]
+  
+  // Edges
+  State001 -> State002 [label = <<b>Msg001</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State002 -> State003 [label = <<b>Msg002</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State003 -> State004 [label = <<b>Msg003</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State004 -> State005 [label = <<b>Msg004</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State005 -> State006 [label = <<b>Msg005</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State006 -> State007 [label = <<b>Msg006</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State007 -> State008 [label = <<b>Msg007</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State008 -> State009 [label = <<b>Msg008</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State009 -> State010 [label = <<b>Msg009</b>>, color = "#828282", fontcolor = "#c8c8c8"]
+  State010 -> State001 [label = <<b>Msg010</b>>, color = "#828282", fontcolor = "#c8c8c8"]
 }
