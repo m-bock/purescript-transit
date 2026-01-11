@@ -326,6 +326,27 @@
       .footnotes {
         border-top: 0 !important;
       }
+
+      .floatingchat-container {
+        transform: scale(0.8) !important;
+        width: 240px !important;
+        overflow: hidden !important;
+      }
+
+      @media (max-width: 768px) {
+        .floatingchat-container {
+          display: none !important;
+        }
+      }
+
+      .kofi-button-container {
+        display: flex;
+        justify-content: center;
+      }
+
+      .kofi-button {
+        margin: 20px !important;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -425,7 +446,10 @@
                   </div>
       </div>
     </nav>
-    <article class="markdown-body">
+    <article
+      class="markdown-body"
+      data-page-type="content"
+    >
        <h2 data-number="5.4" id="generating-documentation-3">Generating
 documentation</h2>
 <p>Until now we always used automatic layouts for the state diagram.
@@ -604,14 +628,19 @@ drew at the beginning.</p>
       })();
     </script>
 
+    <!-- Ko-fi widgets -->
+        <!-- Content pages: floating chat widget only (desktop only) -->
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
     <script>
-      kofiWidgetOverlay.draw("mbock", {
-        type: "floating-chat",
-        "floating-chat.donateButton.text": "Support me",
-        "floating-chat.donateButton.background-color": "#596a70a1",
-        "floating-chat.donateButton.text-color": "#fff",
-      });
+      // Only show floating chat on desktop
+      if (window.matchMedia("(min-width: 769px)").matches) {
+        kofiWidgetOverlay.draw("mbock", {
+          type: "floating-chat",
+          "floating-chat.donateButton.text": "Support me on Ko-fi",
+          "floating-chat.donateButton.background-color": "#596a70a1",
+          "floating-chat.donateButton.text-color": "#fff",
+        });
+      }
     </script>
-  </body>
+      </body>
 </html>
