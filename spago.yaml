@@ -69,9 +69,9 @@ workspace:
         - type-equality
         - foreign-object
     patchdown:
-      path: ../purescript-patchdown
-      #git: https://github.com/m-bock/purescript-patchdown.git
-      # ref: b1387f3b67448dca38b2358677361ee3c7f61570
+      # path: ../purescript-patchdown
+      git: https://github.com/m-bock/purescript-patchdown.git
+      ref: 2d886345200e3953f7b9b4477200d61126c5fcac
     benchlib:
       # path: ../purescript-benchlib
       git: https://github.com/m-bock/purescript-benchlib.git
