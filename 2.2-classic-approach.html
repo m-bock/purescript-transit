@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -462,12 +467,7 @@ types</h3>
 <p>To represent our door in code, we need two major types: the states
 the door can be in, and the actions that can change those states. In
 PureScript, we define these as simple data types.</p>
-<!-- PD_START:purs
-filePath: test/Examples/Classic/Door.purs
-pick:
-  - State
-  - Msg
--->
+<!-- PD_START:purs { filePath: test/Examples/Classic/Door.purs, pick: [State, Msg] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
@@ -476,12 +476,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Msg</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Close</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Open</span></span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L14-L20">test/Examples/Classic/Door.purs
-L14-L20</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L14-L20">test/Examples/Classic/Door.purs (lines 14-20)</a></div></p>
 <!-- PD_END -->
 <p>The <code>State</code> type captures the two possible states we saw
 in the diagram: <code>DoorOpen</code> and <code>DoorClosed</code>. The
@@ -494,11 +489,7 @@ function</h3>
 <p>Now that we have our types, we need a function that takes the current
 state and a message, and returns the new state. The traditional way to
 implement this is with a pattern-matching function:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Classic/Door.purs
-pick:
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/Classic/Door.purs, pick: [update] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>update state msg <span class="ot">=</span></span>
@@ -506,12 +497,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">DoorOpen</span>, <span class="dt">Close</span> <span class="ot">-&gt;</span> <span class="dt">DoorClosed</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">DoorClosed</span>, <span class="dt">Open</span> <span class="ot">-&gt;</span> <span class="dt">DoorOpen</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L22-L27">test/Examples/Classic/Door.purs
-L22-L27</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L22-L27">test/Examples/Classic/Door.purs (lines 22-27)</a></div></p>
 <!-- PD_END -->
 <p>We pattern match on both the current state and the message at once.
 It could also be written as a nested pattern match. The

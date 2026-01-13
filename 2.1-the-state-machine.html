@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -393,11 +398,10 @@ implement.</p>
 <h3 data-number="2.1.1" id="state-diagram">State Diagram</h3>
 <p>The state diagram below shows all possible states and the valid
 transitions between them:</p>
-<p><picture>
-<source media="(prefers-color-scheme: dark)" srcset="renders/door_graph-dark.svg">
-<source media="(prefers-color-scheme: light)" srcset="renders/door_graph-light.svg">
-<img class="state-diagram" alt="Simple Door state diagram" src="renders/door_graph-light.svg">
-</picture></p>
+<figure>
+<picture>  <source media="(prefers-color-scheme: dark)" srcset="renders/door_graph-dark.svg"/>  <source media="(prefers-color-scheme: light)" srcset="renders/door_graph-light.svg"/>  <img alt="" src="renders/door_graph-dark.svg"/></picture>
+<figcaption>Simple Door state diagram</figcaption>
+</figure>
 <p>In this diagram, you can see:</p>
 <ul>
 <li><strong>Two states</strong>: <code>DoorOpen</code> and
@@ -410,10 +414,7 @@ state changes are valid</li>
 <h3 data-number="2.1.2" id="transition-table">Transition Table</h3>
 <p>For a more structured view, here’s the corresponding transition
 table:</p>
-<!-- PD_START:raw
-filePath: renders/door_table.md
-wrapNl: true
--->
+<!-- PD_START:raw { filePath: renders/door_table.md, wrapNl: true } -->
 <table>
 <thead>
 <tr>

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -460,11 +465,7 @@ an undirected graph.</li>
 <li><code>fontSize</code>: Since our edges and labels consist of only
 single characters, we can make their font size a bit larger.</li>
 </ul>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - generateGraphLight
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [generateGraphLight] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateGraphLight ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>generateGraphLight <span class="ot">=</span> <span class="kw">do</span></span>
@@ -473,30 +474,19 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    graph <span class="ot">=</span> TransitGraphviz.generate bridgesTransit _</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      { theme <span class="ot">=</span> themeHarmonyLight</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      , undirectedEdges <span class="ot">=</span> true</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      , fontSize <span class="ot">=</span> <span class="fl">15.0</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      , fontSize <span class="ot">=</span> <span class="fl">14.0</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_graph-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L124-L133">test/Examples/BridgesKoenigsberg.purs
-L124-L133</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L124-L133">test/Examples/BridgesKoenigsberg.purs (lines 124-133)</a></div></p>
 <!-- PD_END -->
-<blockquote>
 <p><strong>Generated Output</strong>: This produces the graph
-visualization we examined earlier in this example.<br />
-🔗
+visualization we examined earlier in this example.</p>
+<p>🔗
 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/bridges-koenigsberg_graph-light.dot" target="_blank">View
 diagram on GraphvizOnline</a></p>
-</blockquote>
 <p>The transition table is generated the same way as before, but we also
 add the <code>undirectedEdges</code> option to the options:</p>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - generateTable
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [generateTable] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateTable <span class="ot">=</span> <span class="kw">do</span></span>
@@ -506,18 +496,11 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      { undirectedEdges <span class="ot">=</span> true</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/bridges-koenigsberg_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L146-L153">test/Examples/BridgesKoenigsberg.purs
-L146-L153</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L146-L153">test/Examples/BridgesKoenigsberg.purs (lines 146-153)</a></div></p>
 <!-- PD_END -->
-<blockquote>
 <p><strong>Generated Output</strong>: This creates the transition table
 in the undirected format, showing all possible bridge crossings between
-the land areas.</p>
-</blockquote> 
+the land areas.</p> 
       <div class="scroll-to-top">
         <a
           href="#"

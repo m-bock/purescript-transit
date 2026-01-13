@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -456,10 +461,7 @@ the update function</h2>
 example. Let’s recap how it works quickly by looking at its type
 signature:</p>
 <!-- PD_START:purs
-pick:
-  - tag: signature_or_foreign
-    name: assertWalk
-    filePath: test/Examples/Common.purs
+pick: [{tag: "signature_or_foreign", name: "assertWalk", filePath: test/Examples/Common.purs}]
 -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>assertWalk</span>
@@ -486,11 +488,7 @@ to <code>DoorClosed</code></li>
 <code>DoorOpen</code></li>
 </ol>
 <p>In code this looks like this:</p>
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - specWalk
--->
+<!-- PD_START:purs { filePath: test/Examples/DoorPin.purs, pick: [specWalk] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>specWalk <span class="ot">=</span></span>
@@ -503,12 +501,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Unlock&quot;</span> { enteredPin<span class="op">:</span> <span class="st">&quot;1234&quot;</span> } <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L83-L93">test/Examples/DoorPin.purs
-L83-L93</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L83-L93">test/Examples/DoorPin.purs (lines 83-93)</a></div></p>
 <!-- PD_END -->
 <p>Since this test passes, we can be pretty confident that the update
 function is correct.</p> 

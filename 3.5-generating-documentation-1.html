@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -460,11 +465,7 @@ Documentation</h2>
 <li><code>layout</code>: The state diagram will be displayed in
 landscape mode.</li>
 </ul>
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - generateGraphLight
--->
+<!-- PD_START:purs { filePath: test/Examples/DoorPin.purs, pick: [generateGraphLight] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateGraphLight ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>generateGraphLight <span class="ot">=</span> <span class="kw">do</span></span>
@@ -477,20 +478,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door-pin_graph-light.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L103-L113">test/Examples/DoorPin.purs
-L103-L113</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L103-L113">test/Examples/DoorPin.purs (lines 103-113)</a></div></p>
 <!-- PD_END -->
-<blockquote>
 <p><strong>Generated Output</strong>: This creates the state diagram we
-saw earlier in this example.<br />
-🔗
+saw earlier in this example.</p>
+<p>🔗
 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/door-pin_graph-light.dot" target="_blank">View
 diagram on GraphvizOnline</a></p>
-</blockquote>
 <p>The generation of the transition table works exactly the same as in
 the previous example.</p> 
       <div class="scroll-to-top">

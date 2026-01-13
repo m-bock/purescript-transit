@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -465,12 +470,7 @@ within any monad context.</p>
 <p>Let’s see how to create an update function that logs each transition
 using the <code>Writer</code> monad. This is just an example, you can
 use any monad.</p>
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - Accum
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/Monadic.purs, pick: [Accum, update] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Accum</span> <span class="ot">=</span> <span class="dt">Array</span> <span class="dt">String</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -484,12 +484,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      tell [ <span class="st">&quot;You just opened the door&quot;</span> ]</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L13-L24">test/Examples/Monadic.purs
-L13-L24</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L13-L24">test/Examples/Monadic.purs (lines 13-24)</a></div></p>
 <!-- PD_END -->
 <p>The key differences from the non-monadic version are:</p>
 <ul>
@@ -504,11 +499,7 @@ lift it into the monad</li>
 </ul>
 <p>Now we can use this monadic update function to process a sequence of
 messages while collecting logs:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - walk
--->
+<!-- PD_START:purs { filePath: test/Examples/Monadic.purs, pick: [walk] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">walk ::</span> <span class="dt">Writer</span> <span class="dt">Accum</span> <span class="dt">State</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>walk <span class="ot">=</span> <span class="kw">do</span></span>
@@ -517,23 +508,14 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  s2 <span class="ot">&lt;-</span> update s1 (v <span class="op">@</span><span class="st">&quot;Open&quot;</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  s3 <span class="ot">&lt;-</span> update s2 (v <span class="op">@</span><span class="st">&quot;Close&quot;</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pure</span> s3</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L26-L32">test/Examples/Monadic.purs
-L26-L32</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L26-L32">test/Examples/Monadic.purs (lines 26-32)</a></div></p>
 <!-- PD_END -->
 <p>Here we chain multiple state updates in a do-notation, just like any
 other monadic computation. Each call to <code>update</code> not only
 returns the next state, but also accumulates logs in the Writer
 monad.</p>
 <p>Let’s verify that the logs are collected correctly:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - specLogs
--->
+<!-- PD_START:purs { filePath: test/Examples/Monadic.purs, pick: [specLogs] } -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specLogs ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>specLogs <span class="ot">=</span> <span class="kw">do</span></span>
@@ -547,12 +529,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      , <span class="st">&quot;You just opened the door&quot;</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      , <span class="st">&quot;You just closed the door&quot;</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L34-L45">test/Examples/Monadic.purs
-L34-L45</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L34-L45">test/Examples/Monadic.purs (lines 34-45)</a></div></p>
 <!-- PD_END --> 
       <div class="scroll-to-top">
         <a

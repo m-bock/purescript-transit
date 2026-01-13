@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -459,12 +464,7 @@ did in the previous examples. By using Variants, we have no constraint
 on how the labels are named; we can use any type-level string we want:
 numbers, lowercase letters, etc. Traditional ADTs wouldn’t give us this
 flexibility.</p>
-<!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
-pick:
-  - State
-  - Msg
--->
+<!-- PD_START:purs { filePath: test/Examples/HouseSantaClaus.purs, pick: [State, Msg] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;1&quot;</span><span class="ot"> ::</span> {}</span>
@@ -484,22 +484,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;g&quot;</span><span class="ot"> ::</span> {}</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;h&quot;</span><span class="ot"> ::</span> {}</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L27-L44">test/Examples/HouseSantaClaus.purs
-L27-L44</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L27-L44">test/Examples/HouseSantaClaus.purs (lines 27-44)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="5.2.2" id="type-level-specification-1">Type-level
 specification</h3>
 <p>The transit specification follows the same pattern as in the previous
 example.</p>
-<!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
-pick:
-  - SantaTransit
--->
+<!-- PD_START:purs { filePath: test/Examples/HouseSantaClaus.purs, pick: [SantaTransit] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">SantaTransit</span> <span class="ot">=</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
@@ -511,12 +502,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;1&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;3&quot;</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;2&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;3&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;h&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;4&quot;</span>)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L46-L55">test/Examples/HouseSantaClaus.purs
-L46-L55</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L46-L55">test/Examples/HouseSantaClaus.purs (lines 46-55)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="5.2.3" id="the-update-function-5">The Update
 Function</h3>
@@ -533,21 +519,12 @@ function. This works if the following conditions are met:</p>
 <code>mkUpdateAuto</code> to generate the update function for us. We
 could have used it in the Door example and the Bridges of Königsberg
 example as well.</p>
-<!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
-pick:
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/HouseSantaClaus.purs, pick: [update] } -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  mkUpdateAuto <span class="op">@</span><span class="dt">SantaTransit</span></span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L57-L59">test/Examples/HouseSantaClaus.purs
-L57-L59</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L57-L59">test/Examples/HouseSantaClaus.purs (lines 57-59)</a></div></p>
 <!-- PD_END --> 
       <div class="scroll-to-top">
         <a

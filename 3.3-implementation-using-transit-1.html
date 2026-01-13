@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -457,12 +462,7 @@ Types</h3>
 <p>Also in the <strong>Transit</strong> approach we define
 <code>State</code> and <code>Msg</code> types. This time some cases of
 those types have data attached to them:</p>
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - State
-  - Msg
--->
+<!-- PD_START:purs { filePath: test/Examples/DoorPin.purs, pick: [State, Msg] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;DoorOpen&quot;</span><span class="ot"> ::</span> {}</span>
@@ -476,22 +476,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Lock&quot;</span><span class="ot"> ::</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;Unlock&quot;</span><span class="ot"> ::</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L31-L42">test/Examples/DoorPin.purs
-L31-L42</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L31-L42">test/Examples/DoorPin.purs (lines 31-42)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="3.3.2" id="transit-specification-1">Transit
 Specification</h3>
 <p>In the DSL specification, we express conditional transitions by
 listing multiple possible target states:</p>
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - DoorPinTransit
--->
+<!-- PD_START:purs { filePath: test/Examples/DoorPin.purs, pick: [DoorPinTransit] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">DoorPinTransit</span> <span class="ot">=</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
@@ -503,12 +494,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;PinCorrect&quot;</span> <span class="op">:?</span> <span class="st">&quot;DoorClosed&quot;</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>          <span class="op">&gt;|</span> (<span class="st">&quot;PinIncorrect&quot;</span> <span class="op">:?</span> <span class="st">&quot;DoorLocked&quot;</span>)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L44-L53">test/Examples/DoorPin.purs
-L44-L53</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L44-L53">test/Examples/DoorPin.purs (lines 44-53)</a></div></p>
 <!-- PD_END -->
 <p>The syntax
 <code>("PinCorrect" :? "DoorClosed") &gt;| ("PinIncorrect" :? "DoorLocked")</code>
@@ -522,11 +508,7 @@ Function</h3>
 <p>The handlers in the update function now have access to both the
 matching state and message data, allowing you to implement the
 conditional runtime logic for the transition.</p>
-<!-- PD_START:purs
-filePath: test/Examples/DoorPin.purs
-pick:
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/DoorPin.purs, pick: [update] } -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>update <span class="ot">=</span> mkUpdate <span class="op">@</span><span class="dt">DoorPinTransit</span></span>
@@ -548,12 +530,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">else</span></span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>          returnVia <span class="op">@</span><span class="st">&quot;PinIncorrect&quot;</span> <span class="op">@</span><span class="st">&quot;DoorLocked&quot;</span> { storedPin<span class="op">:</span> state<span class="op">.</span>storedPin }</span>
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L55-L74">test/Examples/DoorPin.purs
-L55-L74</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L55-L74">test/Examples/DoorPin.purs (lines 55-74)</a></div></p>
 <!-- PD_END -->
 <p>The order of match handlers in <code>mkUpdate</code> must match the
 order of transitions in the DSL specification. The compiler <em>can</em>

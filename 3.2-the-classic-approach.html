@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -458,12 +463,7 @@ approach.</p>
 Message types</h3>
 <p>The PureScript types now include data in both states and
 messages:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Classic/DoorPin.purs
-pick:
-  - State
-  - Msg
--->
+<!-- PD_START:purs { filePath: test/Examples/Classic/DoorPin.purs, pick: [State, Msg] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">State</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">DoorOpen</span></span>
@@ -475,12 +475,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Open</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Lock</span> {<span class="ot"> newPin ::</span> <span class="dt">String</span> }</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="dt">Unlock</span> {<span class="ot"> enteredPin ::</span> <span class="dt">String</span> }</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L10-L27">test/Examples/Classic/DoorPin.purs
-L10-L27</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L10-L27">test/Examples/Classic/DoorPin.purs (lines 10-27)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="3.2.2" id="the-update-function-2">The update
 function</h3>
@@ -503,12 +498,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">else</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">DoorLocked</span> { storedPin }</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  _, _ <span class="ot">-&gt;</span> state</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L29-L39">test/Examples/Classic/DoorPin.purs
-L29-L39</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L29-L39">test/Examples/Classic/DoorPin.purs (lines 29-39)</a></div></p>
 <!-- PD_END --> 
       <div class="scroll-to-top">
         <a

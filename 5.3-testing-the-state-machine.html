@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -455,11 +460,7 @@ state machine</h2>
 <p>At the beginning of this chapter, we saw an image of one possible
 solution to the puzzle. Let’s write a test to verify that the update
 function follows this solution:</p>
-<!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
-pick:
-  - specWalk
--->
+<!-- PD_START:purs { filePath: test/Examples/HouseSantaClaus.purs, pick: [specWalk] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>specWalk <span class="ot">=</span></span>
@@ -475,21 +476,12 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;c&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;3&quot;</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;b&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;2&quot;</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L68-L81">test/Examples/HouseSantaClaus.purs
-L68-L81</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L68-L81">test/Examples/HouseSantaClaus.purs (lines 68-81)</a></div></p>
 <!-- PD_END -->
 <p>Since this test passes, we know that the state machine has an
 Eulerian trail. We can also assert that with the
 <code>hasEulerTrail</code> function we defined earlier:</p>
-<!-- PD_START:purs
-filePath: test/Examples/HouseSantaClaus.purs
-pick:
-  - specEulerTrail
--->
+<!-- PD_START:purs { filePath: test/Examples/HouseSantaClaus.purs, pick: [specEulerTrail] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specEulerTrail ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>specEulerTrail <span class="ot">=</span></span>
@@ -499,12 +491,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      graph <span class="ot">=</span> mkStateGraph santaTransit</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    hasEulerTrail graph <span class="ot">`shouldEqual`</span> true</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L83-L90">test/Examples/HouseSantaClaus.purs
-L83-L90</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L83-L90">test/Examples/HouseSantaClaus.purs (lines 83-90)</a></div></p>
 <!-- PD_END --> 
       <div class="scroll-to-top">
         <a

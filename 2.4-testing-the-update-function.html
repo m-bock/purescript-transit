@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -530,11 +535,7 @@ split: true
 <p>The simplest way to test the update function is to use
 <code>foldl</code> to apply a sequence of messages and check if the
 final state matches what we expect:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - specWalk1
--->
+<!-- PD_START:purs { filePath: test/Examples/Door.purs, pick: [specWalk1] } -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk1 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>specWalk1 <span class="ot">=</span></span>
@@ -542,12 +543,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">foldl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        (v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L59">test/Examples/Door.purs
-L54-L59</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L59">test/Examples/Door.purs (lines 54-59)</a></div></p>
 <!-- PD_END -->
 <p>This test starts with the door open, closes it, opens it, then closes
 it again. It checks that we end up with the door closed, as
@@ -556,11 +552,7 @@ expected.</p>
 should also verify that each step along the way works correctly. The
 <code>scanl</code> function is perfect for this — it shows us all the
 intermediate states, not just the final one.</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - specWalk2
--->
+<!-- PD_START:purs { filePath: test/Examples/Door.purs, pick: [specWalk2] } -->
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk2 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>specWalk2 <span class="ot">=</span></span>
@@ -568,12 +560,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scanl</span> update (v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>) [ v <span class="op">@</span><span class="st">&quot;Close&quot;</span>, v <span class="op">@</span><span class="st">&quot;Open&quot;</span>, v <span class="op">@</span><span class="st">&quot;Close&quot;</span> ]</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="ot">`shouldEqual`</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        [ v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span>, v <span class="op">@</span><span class="st">&quot;DoorClosed&quot;</span> ]</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L66">test/Examples/Door.purs
-L61-L66</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L66">test/Examples/Door.purs (lines 61-66)</a></div></p>
 <!-- PD_END -->
 <p>This test is similar to the previous one. But instead of just
 checking the final result, it verifies each step along the way: after
@@ -588,11 +575,7 @@ it’s helpful to define a reusable helper function. The
 <code>assertWalk</code> function takes an update function, an initial
 state, and a list of message/state pairs representing the expected walk
 through the state machine:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Common.purs
-pick:
-  - assertWalk
--->
+<!-- PD_START:purs { filePath: test/Examples/Common.purs, pick: [assertWalk] } -->
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>assertWalk</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  ::</span> <span class="kw">forall</span> msg state</span>
@@ -614,21 +597,12 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    actualStates <span class="ot">=</span> <span class="fu">scanl</span> updateFn initState msgs</span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  actualStates <span class="ot">`shouldEqual`</span> expectedStates</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L40-L59">test/Examples/Common.purs
-L40-L59</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L40-L59">test/Examples/Common.purs (lines 40-59)</a></div></p>
 <!-- PD_END -->
 <p>The function extracts the messages from the pairs, applies them
 sequentially using <code>scanl</code>, and verifies that the resulting
 states match the expected ones. Here’s how we use it:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - specWalk3
--->
+<!-- PD_START:purs { filePath: test/Examples/Door.purs, pick: [specWalk3] } -->
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specWalk3 ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>specWalk3 <span class="ot">=</span></span>
@@ -643,12 +617,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb6-
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      , v <span class="op">@</span><span class="st">&quot;Open&quot;</span> <span class="op">~&gt;</span> v <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      ]</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L80">test/Examples/Door.purs
-L68-L80</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L80">test/Examples/Door.purs (lines 68-80)</a></div></p>
 <!-- PD_END -->
 <p>The <code>~&gt;</code> operator is an infix alias for
 <code>Tuple</code>. So <code>v @"Close" ~&gt; v @"DoorClosed"</code> is

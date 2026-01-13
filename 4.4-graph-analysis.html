@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -457,20 +462,11 @@ convert the reflected data structure into a general-purpose graph. Using
 specification into a <code>StateGraph</code> — a specialized
 <code>Graph</code> type configured with edge and node labels suitable
 for state machine analysis.</p>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - bridgesGraph
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [bridgesGraph] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">bridgesGraph ::</span> <span class="dt">StateGraph</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>bridgesGraph <span class="ot">=</span> mkStateGraph bridgesTransit</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs
-L97-L98</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98">test/Examples/BridgesKoenigsberg.purs (lines 97-98)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="4.4.1" id="eulerian-trail">Eulerian trail</h3>
 <p>Once we have this graph data structure, we can perform sophisticated
@@ -496,27 +492,14 @@ exactly <em>zero or two</em> vertices of odd degree.</p>
 degree of a node is the number of edges connected to it. Since our graph
 is undirected, we can obtain the degree of a node by counting the number
 of outgoing edges:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Common.purs
-pick:
-  - nodeDegree
--->
+<!-- PD_START:purs { filePath: test/Examples/Common.purs, pick: [nodeDegree] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">nodeDegree ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">StateNode</span> <span class="ot">-&gt;</span> <span class="dt">Int</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>nodeDegree graph node <span class="ot">=</span> Set.size (Graph.getOutgoingEdges node graph)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L21-L22">test/Examples/Common.purs
-L21-L22</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L21-L22">test/Examples/Common.purs (lines 21-22)</a></div></p>
 <!-- PD_END -->
 <p>And we can easily see that all of our nodes have odd degree:</p>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - specNodeDegree
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [specNodeDegree] } -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specNodeDegree ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>specNodeDegree <span class="ot">=</span> <span class="kw">do</span></span>
@@ -525,12 +508,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;B&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;C&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    nodeDegree bridgesGraph <span class="st">&quot;D&quot;</span> <span class="ot">`shouldEqual`</span> <span class="dv">3</span></span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106">test/Examples/BridgesKoenigsberg.purs
-L100-L106</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106">test/Examples/BridgesKoenigsberg.purs (lines 100-106)</a></div></p>
 <!-- PD_END -->
 <p>And this already shows that our graph does <em>not</em> have an
 Eulerian trail.</p>
@@ -539,11 +517,7 @@ Eulerian trail</h3>
 <p>But we want to create a function that can tell this for any state
 graph. Let’s do that now, we’ll use this function in the next example
 again:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Common.purs
-pick:
-  - hasEulerTrail
--->
+<!-- PD_START:purs { filePath: test/Examples/Common.purs, pick: [hasEulerTrail] } -->
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">hasEulerTrail ::</span> <span class="dt">StateGraph</span> <span class="ot">-&gt;</span> <span class="dt">Boolean</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>hasEulerTrail graph <span class="ot">=</span></span>
@@ -558,33 +532,19 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="ot">=</span> Array.length (Array.filter <span class="dt">Int</span><span class="op">.</span><span class="fu">odd</span> countEdgesByNode)</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    sumOddEdges <span class="op">==</span> <span class="dv">2</span> <span class="op">||</span> sumOddEdges <span class="op">==</span> <span class="dv">0</span></span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L24-L36">test/Examples/Common.purs
-L24-L36</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L24-L36">test/Examples/Common.purs (lines 24-36)</a></div></p>
 <!-- PD_END -->
 <p>The implementation is pretty straightforward. We get all nodes, count
 the number of edges connected to each node, filter the odd ones and
 count them. If the count is 2 or 0, we have an Eulerian trail, otherwise
 we don’t. We can use this function to test our graph:</p>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - specEulerTrail
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [specEulerTrail] } -->
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">specEulerTrail ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>specEulerTrail <span class="ot">=</span> <span class="kw">do</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  it <span class="st">&quot;should not have an Eulerian trail&quot;</span> <span class="kw">do</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    hasEulerTrail bridgesGraph <span class="ot">`shouldEqual`</span> false</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs
-L108-L111</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111">test/Examples/BridgesKoenigsberg.purs (lines 108-111)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="4.4.4"
 id="graph-analysis-with-the-classic-state-machine-approach">Graph

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -456,12 +461,7 @@ monadic effects using <code>mkUpdateMaybeM</code>.</p>
 <p>Here’s an update function that logs transitions AND returns
 <code>Maybe</code>. Again we use the <code>Writer</code> as example, but
 you can use any monad you want.</p>
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
-pick:
-  - Accum
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandlingMonadic.purs, pick: [Accum, update] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">Accum</span> <span class="ot">=</span> <span class="dt">Array</span> <span class="dt">String</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -475,12 +475,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      tell [ <span class="st">&quot;Opening door&quot;</span> ]</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pure</span> <span class="op">$</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;DoorOpen&quot;</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L15-L26">test/Examples/ErrorHandlingMonadic.purs
-L15-L26</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L15-L26">test/Examples/ErrorHandlingMonadic.purs (lines 15-26)</a></div></p>
 <!-- PD_END -->
 <p>The return type is <code>m (Maybe State)</code> - combining the monad
 <code>m</code> (e.g. for effects) with <code>Maybe</code> (for error
@@ -488,11 +483,7 @@ handling). Inside each handler, we can perform monadic operations like
 <code>tell</code> to log transitions.</p>
 <p>Now let’s use this in a scenario where we attempt an invalid
 transition in the middle of a sequence:</p>
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
-pick:
-  - walk
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandlingMonadic.purs, pick: [walk] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">walk ::</span> <span class="dt">MaybeT</span> (<span class="dt">Writer</span> <span class="dt">Accum</span>) <span class="dt">State</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>walk <span class="ot">=</span> <span class="kw">do</span></span>
@@ -503,12 +494,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  s4 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s3 (v <span class="op">@</span><span class="st">&quot;Close&quot;</span>) <span class="co">-- here we request illegal transition</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  s5 <span class="ot">&lt;-</span> <span class="dt">MaybeT</span> <span class="op">$</span> update s4 (v <span class="op">@</span><span class="st">&quot;Open&quot;</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pure</span> s5</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L28-L36">test/Examples/ErrorHandlingMonadic.purs
-L28-L36</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L28-L36">test/Examples/ErrorHandlingMonadic.purs (lines 28-36)</a></div></p>
 <!-- PD_END -->
 <p>Here we use the <code>MaybeT</code> transformer to work with the
 <code>Writer</code> monad while handling potential failures. Notice that
@@ -517,11 +503,7 @@ already closed door). This will cause the computation to short-circuit -
 the subsequent transitions won’t be executed.</p>
 <p>Let’s verify that the logs only contain the transitions that actually
 occurred:</p>
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
-pick:
-  - spec
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandlingMonadic.purs, pick: [spec] } -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">spec ::</span> <span class="dt">Spec</span> <span class="dt">Unit</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="kw">do</span></span>
@@ -535,12 +517,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        , <span class="st">&quot;Opening door&quot;</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        , <span class="st">&quot;Closing door&quot;</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        ]</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L38-L49">test/Examples/ErrorHandlingMonadic.purs
-L38-L49</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L38-L49">test/Examples/ErrorHandlingMonadic.purs (lines 38-49)</a></div></p>
 <!-- PD_END -->
 <p>Indeed, the logs stop after the invalid transition.</p> 
       <div class="scroll-to-top">

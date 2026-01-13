@@ -3,7 +3,7 @@ digraph {
   graph [
     rankdir = TD
     labelloc = t
-    fontsize = 16.0
+    fontsize = 14.0
     bgcolor = "#ffffff"
     color = "#000000"
     fontcolor = "#000000"
@@ -11,7 +11,7 @@ digraph {
   ]
   node [
     style = filled
-    fontsize = 16.0
+    fontsize = 14.0
     fontname = Arial
     penwidth = 0.0
     labelloc = c
@@ -19,7 +19,7 @@ digraph {
   edge [
     arrowsize = 0.7
     penwidth = 1.8
-    fontsize = 16.0
+    fontsize = 14.0
   ]
   
   // Nodes

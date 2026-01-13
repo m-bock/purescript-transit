@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -366,7 +371,7 @@
           m-bock/purescript-transit
         </a>
         
-        <div class="header-title"></div>
+        <div class="header-title">The Transit library</div>
         
         <div class="nav-links">
                     <a href="2.6-conclusion.html" rel="prev" title="Conclusion"
@@ -387,11 +392,13 @@
     >
        <h1 data-number="3" id="example-2-door-with-pin">Example 2: Door
 with Pin</h1>
-<blockquote>
 <p>Full source code: <em><a
 href="test/Examples/DoorPin.purs">test/Examples/DoorPin.purs</a></em></p>
-</blockquote>
-<p><img src="assets/door-pin-header.jpg" width="450" /></p>
+<figure>
+<img src="assets/door-pin-header.jpg" style="width:50.0%"
+alt="Door with Pin" />
+<figcaption aria-hidden="true">Door with Pin</figcaption>
+</figure>
 <p>Now let’s extend our door to support PIN-based locking. In this
 enhanced version, you can lock the door with a PIN code, and then only
 unlock it by entering the correct PIN. This introduces two important

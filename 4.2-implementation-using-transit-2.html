@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -460,12 +465,7 @@ letters <code>A</code>, <code>B</code>, <code>C</code>, and
 <code>a</code> through <code>g</code>). Each message represents crossing
 a specific bridge, which transitions between the corresponding land
 areas.</p>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - State
-  - Msg
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [State, Msg] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">State</span> <span class="ot">=</span> <span class="dt">Variant</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ( <span class="st">&quot;A&quot;</span><span class="ot"> ::</span> {}</span>
@@ -483,12 +483,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;f&quot;</span><span class="ot"> ::</span> {}</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  , <span class="st">&quot;g&quot;</span><span class="ot"> ::</span> {}</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L25-L40">test/Examples/BridgesKoenigsberg.purs
-L25-L40</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L25-L40">test/Examples/BridgesKoenigsberg.purs (lines 25-40)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="4.2.2" id="type-level-specification">Type-level
 specification</h3>
@@ -499,11 +494,7 @@ specification, we define transitions using the syntax
 defines two transitions: one from <code>State1</code> to
 <code>State2</code> and one from <code>State2</code> to
 <code>State1</code>.</p>
-<!-- PD_START:purs
-filePath: test/Examples/BridgesKoenigsberg.purs
-pick:
-  - BridgesTransit
--->
+<!-- PD_START:purs { filePath: test/Examples/BridgesKoenigsberg.purs, pick: [BridgesTransit] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="dt">BridgesTransit</span> <span class="ot">=</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Transit</span></span>
@@ -514,12 +505,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;A&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;e&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;D&quot;</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;B&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;f&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;D&quot;</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">:*</span> (<span class="st">&quot;C&quot;</span> <span class="op">|&lt;</span> <span class="st">&quot;g&quot;</span> <span class="op">&gt;|</span> <span class="st">&quot;D&quot;</span>)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L42-L50">test/Examples/BridgesKoenigsberg.purs
-L42-L50</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L42-L50">test/Examples/BridgesKoenigsberg.purs (lines 42-50)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="4.2.3" id="the-update-function-4">The Update
 Function</h3>
@@ -528,8 +514,7 @@ directions of each bridge as shown below.</p>
 <!-- PD_START:purs
 filePath: test/Examples/BridgesKoenigsberg.purs
 maxLines: 10
-pick:
-  - update
+pick: ["update"]
 -->
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">update ::</span> <span class="dt">State</span> <span class="ot">-&gt;</span> <span class="dt">Msg</span> <span class="ot">-&gt;</span> <span class="dt">State</span></span>
@@ -544,12 +529,7 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb3-
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  (match <span class="op">@</span><span class="st">&quot;C&quot;</span> <span class="op">@</span><span class="st">&quot;c&quot;</span> \_ _ <span class="ot">-&gt;</span> <span class="fu">return</span> <span class="op">@</span><span class="st">&quot;A&quot;</span>)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- And so on ... (13 lines omitted)</span></span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L52-L73">test/Examples/BridgesKoenigsberg.purs
-L52-L73</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L52-L73">test/Examples/BridgesKoenigsberg.purs (lines 52-73)</a></div></p>
 <!-- PD_END --> 
       <div class="scroll-to-top">
         <a

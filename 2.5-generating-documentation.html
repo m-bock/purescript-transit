@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>The Transit library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Your GitHub stylesheet -->
@@ -347,6 +347,11 @@
       .kofi-button {
         margin: 20px !important;
       }
+
+      figcaption {
+        font-size: 12px;
+        color: #8b949e;
+      }
     </style>
 
     <!-- Pandoc syntax highlighting CSS -->
@@ -457,20 +462,11 @@ transition tables directly from your type-level specification. Both
 generation processes use the same approach: <code>reflectType</code>
 converts your type-level DSL specification to a term-level equivalent,
 which can then be used to generate the documentation.</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - doorTransit
--->
+<!-- PD_START:purs { filePath: test/Examples/Door.purs, pick: [doorTransit] } -->
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">doorTransit ::</span> <span class="dt">TransitCore</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>doorTransit <span class="ot">=</span> reflectType (<span class="dt">Proxy</span> <span class="op">@</span><span class="dt">DoorTransit</span>)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L48">test/Examples/Door.purs
-L47-L48</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L48">test/Examples/Door.purs (lines 47-48)</a></div></p>
 <!-- PD_END -->
 <h3 data-number="2.5.1" id="state-diagrams">State Diagrams</h3>
 <p><strong>Transit</strong> can generate state diagrams using Graphviz<a
@@ -491,11 +487,7 @@ split: true
 the previous step and a function that takes the default options and
 returns the options we want to use. Now we have everything in place to
 generate the state diagram:</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - generateGraphDark
--->
+<!-- PD_START:purs { filePath: test/Examples/Door.purs, pick: [generateGraphDark] } -->
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateGraphDark ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>generateGraphDark <span class="ot">=</span></span>
@@ -507,20 +499,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb2-
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">in</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door_graph-dark.dot&quot;</span> (Graphviz.toDotStr graph)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L104-L113">test/Examples/Door.purs
-L104-L113</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L104-L113">test/Examples/Door.purs (lines 104-113)</a></div></p>
 <!-- PD_END -->
-<blockquote>
 <p><strong>Generated Output</strong>: This code produces the diagram we
-examined at the beginning of this example.<br />
-🔗
+examined at the beginning of this example.</p>
+<p>🔗
 <a href="https://dreampuf.github.io/GraphvizOnline/?url=https://m-bock.github.io/purescript-transit/renders/door_graph-dark.dot" target="_blank">View
 diagram on GraphvizOnline</a></p>
-</blockquote>
 <p>The options we’re using above are:</p>
 <ul>
 <li><p>The <code>theme</code> option we’re using above controls the
@@ -542,11 +527,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="
 <p>In addition to state diagrams, you can also generate transition
 tables from the same specification. This provides a tabular view of all
 state transitions, which can be easier to read for some use cases.</p>
-<!-- PD_START:purs
-filePath: test/Examples/Door.purs
-pick:
-  - generateTable
--->
+<!-- PD_START:purs { filePath: test/Examples/Door.purs, pick: [generateTable] } -->
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">generateTable ::</span> <span class="dt">Effect</span> <span class="dt">Unit</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>generateTable <span class="ot">=</span> <span class="kw">do</span></span>
@@ -555,20 +536,13 @@ class="sourceCode purescript"><code class="sourceCode purescript"><span id="cb4-
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    table <span class="ot">=</span> TransitTable.generate doorTransit \def <span class="ot">-&gt;</span> def</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  FS.writeTextFile <span class="dt">UTF8</span> <span class="st">&quot;renders/door_table.md&quot;</span> (Table.toMarkdown table)</span></code></pre></div>
-<p align="right">
-<sup
-    >🗎
-<a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L115-L121">test/Examples/Door.purs
-L115-L121</a> </sup>
-</p>
+<p><div style="text-align:right; font-size:0.85em; opacity:0.75">🗎 <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L115-L121">test/Examples/Door.purs (lines 115-121)</a></div></p>
 <!-- PD_END -->
 <p>Here we provide no options to the <code>generate</code> function, so
 we use the identity function <code>\def -&gt; def</code> to pass the
 default options.</p>
-<blockquote>
 <p><strong>Generated Output</strong>: This generates the transition
 table shown earlier, with rows for each valid state transition.</p>
-</blockquote>
 <section id="footnotes" class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
