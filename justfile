@@ -29,7 +29,7 @@ gen-site BASEURL='':
       -o site \
       --highlight-style=zenburn \
       --template=assets/gh-template.html \
-      --lua-filter=filter.lua \
+      --lua-filter=assets/filter.lua \
       --variable=baseurl:{{BASEURL}}
     
     cp -r assets renders bench -t site
