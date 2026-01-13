@@ -46,10 +46,12 @@ gen-pdf:
       --resource-path=.
 
 gen-epub:
+    mkdir -p site/downloads
     pandoc docs/tutorial/*.md \
-    --highlight-style=tango --css=epub.css \
+    --highlight-style=tango --css=assets/epub.css \
     --toc --split-level=2 \
-    -t epub3 -o transit-tutorial.epub
+    --lua-filter=assets/filter.lua \
+    -t epub3 -o site/downloads/transit-tutorial.epub
 
 build:
     npx spago build
@@ -130,6 +132,7 @@ deploy:
     just gen
     just gen-site 'https://m-bock.github.io/purescript-transit/'
     just gen-pdf
+    just gen-epub
     just format
     just check-git-clean
     npx gh-pages -d site
