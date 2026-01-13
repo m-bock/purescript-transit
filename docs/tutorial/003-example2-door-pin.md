@@ -55,7 +55,6 @@ data Msg
 
 [test/Examples/Classic/DoorPin.purs (lines 10-27)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L10-L27){.fileLink}
 
-
 <!-- PD_END -->
 
 ### The update function
@@ -84,7 +83,6 @@ update state msg = case state, msg of
 
 [test/Examples/Classic/DoorPin.purs (lines 29-39)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/DoorPin.purs#L29-L39){.fileLink}
 
-
 <!-- PD_END -->
 
 ## Implementation using Transit
@@ -112,7 +110,6 @@ type Msg = Variant
 
 [test/Examples/DoorPin.purs (lines 31-42)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L31-L42){.fileLink}
 
-
 <!-- PD_END -->
 
 ### Transit Specification
@@ -135,7 +132,6 @@ type DoorPinTransit =
 ```
 
 [test/Examples/DoorPin.purs (lines 44-53)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L44-L53){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -171,7 +167,6 @@ update = mkUpdate @DoorPinTransit
 ```
 
 [test/Examples/DoorPin.purs (lines 55-74)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L55-L74){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -226,7 +221,6 @@ specWalk =
 
 [test/Examples/DoorPin.purs (lines 83-93)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L83-L93){.fileLink}
 
-
 <!-- PD_END -->
 
 Since this test passes, we can be pretty confident that the update function is correct.
@@ -255,7 +249,6 @@ generateGraphLight = do
 ```
 
 [test/Examples/DoorPin.purs (lines 103-113)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs#L103-L113){.fileLink}
-
 
 <!-- PD_END -->
 

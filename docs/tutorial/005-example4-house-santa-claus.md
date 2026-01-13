@@ -61,7 +61,6 @@ type Msg = Variant
 
 [test/Examples/HouseSantaClaus.purs (lines 27-44)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L27-L44){.fileLink}
 
-
 <!-- PD_END -->
 
 ### Type-level specification
@@ -85,7 +84,6 @@ type SantaTransit =
 
 [test/Examples/HouseSantaClaus.purs (lines 46-55)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L46-L55){.fileLink}
 
-
 <!-- PD_END -->
 
 ### The Update Function
@@ -106,7 +104,6 @@ update =
 ```
 
 [test/Examples/HouseSantaClaus.purs (lines 57-59)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L57-L59){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -135,7 +132,6 @@ specWalk =
 
 [test/Examples/HouseSantaClaus.purs (lines 68-81)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L68-L81){.fileLink}
 
-
 <!-- PD_END -->
 
 Since this test passes, we know that the state machine has an Eulerian trail. We can also assert that with the `hasEulerTrail` function we defined earlier:
@@ -154,7 +150,6 @@ specEulerTrail =
 ```
 
 [test/Examples/HouseSantaClaus.purs (lines 83-90)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L83-L90){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -177,7 +172,6 @@ baseUnit = Inch 0.6
 
 [test/Examples/HouseSantaClaus.purs (lines 102-103)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L102-L103){.fileLink}
 
-
 <!-- PD_END -->
 
 Since we'll need vectors of inches to position the nodes, we define a helper function to create them as multiples of the base unit.
@@ -193,7 +187,6 @@ units2D x y =
 ```
 
 [test/Examples/HouseSantaClaus.purs (lines 105-109)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L105-L109){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -226,7 +219,6 @@ generateGraphDark = do
 ```
 
 [test/Examples/HouseSantaClaus.purs (lines 133-153)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseSantaClaus.purs#L133-L153){.fileLink}
-
 
 <!-- PD_END -->
 

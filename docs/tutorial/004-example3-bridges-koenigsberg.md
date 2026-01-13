@@ -68,7 +68,6 @@ type Msg = Variant
 
 [test/Examples/BridgesKoenigsberg.purs (lines 25-40)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L25-L40){.fileLink}
 
-
 <!-- PD_END -->
 
 ### Type-level specification
@@ -90,7 +89,6 @@ type BridgesTransit =
 ```
 
 [test/Examples/BridgesKoenigsberg.purs (lines 42-50)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L42-L50){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -121,7 +119,6 @@ update = mkUpdate @BridgesTransit
 
 [test/Examples/BridgesKoenigsberg.purs (lines 52-73)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L52-L73){.fileLink}
 
-
 <!-- PD_END -->
 
 ## Testing the update function
@@ -151,7 +148,6 @@ specSampleWalk =
 
 [test/Examples/BridgesKoenigsberg.purs (lines 82-95)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L82-L95){.fileLink}
 
-
 <!-- PD_END -->
 
 We could try many other walks the same way. But — spoiler alert — none of them will visit all bridges exactly once. And in the next section we'll see a way to prove this for our state machine.
@@ -168,7 +164,6 @@ bridgesGraph = mkStateGraph bridgesTransit
 ```
 
 [test/Examples/BridgesKoenigsberg.purs (lines 97-98)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L97-L98){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -195,7 +190,6 @@ nodeDegree graph node = Set.size (Graph.getOutgoingEdges node graph)
 
 [test/Examples/Common.purs (lines 21-22)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L21-L22){.fileLink}
 
-
 <!-- PD_END -->
 
 And we can easily see that all of our nodes have odd degree:
@@ -213,7 +207,6 @@ specNodeDegree = do
 ```
 
 [test/Examples/BridgesKoenigsberg.purs (lines 100-106)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L100-L106){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -243,7 +236,6 @@ hasEulerTrail graph =
 
 [test/Examples/Common.purs (lines 24-36)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L24-L36){.fileLink}
 
-
 <!-- PD_END -->
 
 The implementation is pretty straightforward. We get all nodes, count the number of edges connected to each node, filter the odd ones and count them. If the count is 2 or 0, we have an Eulerian trail, otherwise we don't. We can use this function to test our graph:
@@ -258,7 +250,6 @@ specEulerTrail = do
 ```
 
 [test/Examples/BridgesKoenigsberg.purs (lines 108-111)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L108-L111){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -291,7 +282,6 @@ generateGraphLight = do
 
 [test/Examples/BridgesKoenigsberg.purs (lines 124-133)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L124-L133){.fileLink}
 
-
 <!-- PD_END -->
 
 **Generated Output**: This produces the graph visualization we examined earlier in this example.
@@ -314,7 +304,6 @@ generateTable = do
 ```
 
 [test/Examples/BridgesKoenigsberg.purs (lines 146-153)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs#L146-L153){.fileLink}
-
 
 <!-- PD_END -->
 

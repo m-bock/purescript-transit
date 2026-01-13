@@ -41,7 +41,6 @@ update = mkUpdateM @DoorTransit
 
 [test/Examples/Monadic.purs (lines 13-24)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L13-L24){.fileLink}
 
-
 <!-- PD_END -->
 
 The key differences from the non-monadic version are:
@@ -68,7 +67,6 @@ walk = do
 
 [test/Examples/Monadic.purs (lines 26-32)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L26-L32){.fileLink}
 
-
 <!-- PD_END -->
 
 Here we chain multiple state updates in a do-notation, just like any other monadic computation. Each call to `update` not only returns the next state, but also accumulates logs in the Writer monad.
@@ -93,7 +91,6 @@ specLogs = do
 ```
 
 [test/Examples/Monadic.purs (lines 34-45)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L34-L45){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -122,7 +119,6 @@ update = mkUpdateMaybe @DoorTransit
 
 [test/Examples/ErrorHandling.purs (lines 13-20)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L13-L20){.fileLink}
 
-
 <!-- PD_END -->
 
 The key difference is the return type: `State -> Msg -> Maybe State` instead of `State -> Msg -> State`. The function uses `mkUpdateMaybe` instead of `mkUpdate`, but the match handlers remain the same.
@@ -140,7 +136,6 @@ specSuccess = do
 
 [test/Examples/ErrorHandling.purs (lines 22-25)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L22-L25){.fileLink}
 
-
 <!-- PD_END -->
 
 But when you call it with an invalid combination (like trying to open a door that's already open), it returns `Nothing`:
@@ -155,7 +150,6 @@ specFailure = do
 ```
 
 [test/Examples/ErrorHandling.purs (lines 27-30)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L27-L30){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -186,7 +180,6 @@ update = mkUpdateMaybeM @DoorTransit
 
 [test/Examples/ErrorHandlingMonadic.purs (lines 15-26)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L15-L26){.fileLink}
 
-
 <!-- PD_END -->
 
 The return type is `m (Maybe State)` - combining the monad `m` (e.g. for effects) with `Maybe` (for error handling). Inside each handler, we can perform monadic operations like `tell` to log transitions.
@@ -208,7 +201,6 @@ walk = do
 ```
 
 [test/Examples/ErrorHandlingMonadic.purs (lines 28-36)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L28-L36){.fileLink}
-
 
 <!-- PD_END -->
 
@@ -234,7 +226,6 @@ spec = do
 ```
 
 [test/Examples/ErrorHandlingMonadic.purs (lines 38-49)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L38-L49){.fileLink}
-
 
 <!-- PD_END -->
 

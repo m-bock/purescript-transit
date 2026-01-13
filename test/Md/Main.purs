@@ -22,6 +22,6 @@ main = do
 renderFileLink :: FileLinkParams -> String
 renderFileLink { url, label } = Str.joinWith "\n"
   [ "[" <> label <> "](" <> url <> "){.fileLink}"
-  , "\n\n"
+  , "\n"
   ]
 
