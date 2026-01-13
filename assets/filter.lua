@@ -4,8 +4,8 @@ function Link(link)
   if link.attr and (link.attr.classes:includes("fileLink")) then
     local href = link.target
     local link_text = pandoc.utils.stringify(link.content)
-    
-    if FORMAT:match("html") then
+
+    if FORMAT:match("html") or FORMAT:match("epub3") then
       return pandoc.RawInline("html",
         '<div style="text-align:right; font-size:0.85em; opacity:0.75">' ..
         '🗎 <a href="' .. href .. '">' .. link_text .. '</a>' ..
