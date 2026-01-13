@@ -1,6 +1,6 @@
 # Example 4: House of Santa Claus
 
-Full source code: _[test/Examples/HouseOfSantaClaus.purs](test/Examples/HouseOfSantaClaus.purs)_
+Full source code: _[test/Examples/HouseOfSantaClaus.purs](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/HouseOfSantaClaus.purs)_
 
 ![House of Santa Claus drawing game](assets/house-santa-claus-solution.png){width=350}
 

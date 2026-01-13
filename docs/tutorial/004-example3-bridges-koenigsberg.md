@@ -1,6 +1,6 @@
 # Example 3: Bridges of Königsberg
 
-Full source code: _[test/Examples/BridgesKoenigsberg.purs](test/Examples/BridgesKoenigsberg.purs)_
+Full source code: _[test/Examples/BridgesKoenigsberg.purs](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/BridgesKoenigsberg.purs)_
 
 ![Map of Königsberg](assets/bridges-koenigsberg.png){width=450}
 

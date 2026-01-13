@@ -10,6 +10,8 @@ Let's explore each pattern in detail.
 
 ## Monadic Updates
 
+Full source code: _[test/Examples/Monadic.purs](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs)_
+
 In some cases, you may want your update function to perform effects or collect information during state transitions. **Transit** supports monadic update functions through `mkUpdateM` and `matchM`, which allow you to work within any monad context.
 
 This is useful for scenarios like:
@@ -97,6 +99,8 @@ specLogs = do
 
 ## Error Handling
 
+Full source code: _[test/Examples/ErrorHandling.purs](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs)_
+
 With **Transit**'s `mkUpdate` function, you define valid transitions in your type-level specification, and the compiler ensures you implement handlers for each one. When an invalid state-message combination (one not in your specification) is encountered at runtime, `mkUpdate` silently returns the unchanged state. This is sometimes exactly what you want - the state machine simply ignores invalid messages and stays in its current state.
 
 However, sometimes you need to explicitly know whether a transition was valid or not. For these cases, **Transit** provides `mkUpdateMaybe`, which wraps the result in a `Maybe` type. Valid transitions return `Just state`, while invalid transitions return `Nothing`, allowing you to handle the error explicitly.
@@ -156,6 +160,8 @@ specFailure = do
 <!-- PD_END -->
 
 ## Combining Monads and Error Handling
+
+Full source code: _[test/Examples/ErrorHandlingMonadic.purs](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs)_
 
 For more advanced scenarios, you can combine error handling with monadic effects using `mkUpdateMaybeM`.
 

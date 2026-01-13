@@ -1,6 +1,6 @@
 # Example 2: Door with Pin
 
-Full source code: _[test/Examples/DoorPin.purs](test/Examples/DoorPin.purs)_
+Full source code: _[test/Examples/DoorPin.purs](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/DoorPin.purs)_
 
 ![Door with Pin](assets/door-pin-header.jpg){width=50%}
 
