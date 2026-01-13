@@ -7,19 +7,12 @@ gen-examples:
     mkdir -p renders/themes
     just node-run Docs.Main
 
-t:
-    echo 1
-
-    echo 2
-
 gen-patchdown:
-    for file in docs/tutorial/*.md; do \
-        PATCHDOWN_FILE_PATH="$file" \
-        PATCHDOWN_BASE_URL=https://github.com/m-bock/purescript-transit/blob/main \
-        just node-run Md.Main; \
-    done
+    PATCHDOWN_GLOBS='docs/tutorial/*.md' \
+    PATCHDOWN_PURS_FILE_LINK_BASE_URL='https://github.com/m-bock/purescript-transit/blob/main' \
+    just node-run Md.Main
     
-    PATCHDOWN_FILE_PATH=README.md \
+    PATCHDOWN_GLOBS='README.md' \
     just node-run Md.Main
 
 gen-svgs:
@@ -28,7 +21,7 @@ gen-svgs:
 gen-md-prettier:
     npx prettier --write "renders/*.md"
 
-gen-book BASEURL='':
+gen-site BASEURL='':
     rm -rf site
     pandoc docs/tutorial/*.md -t chunkedhtml \
       --split-level=2 \
@@ -36,9 +29,27 @@ gen-book BASEURL='':
       -o site \
       --highlight-style=zenburn \
       --template=assets/gh-template.html \
+      --lua-filter=filter.lua \
       --variable=baseurl:{{BASEURL}}
     
     cp -r assets renders bench -t site
+
+gen-pdf:
+    mkdir -p site/downloads
+    pandoc docs/tutorial/*.md -o site/downloads/transit-tutorial.pdf \
+      --pdf-engine=xelatex \
+      -V geometry:margin=1.5cm -V footnoterule=20pt \
+      -H assets/pdf-header.tex \
+      --toc --toc-depth=2 \
+      --highlight-style=tango \
+      --lua-filter=assets/filter.lua \
+      --resource-path=.
+
+gen-epub:
+    pandoc docs/tutorial/*.md \
+    --highlight-style=tango --css=epub.css \
+    --toc --split-level=2 \
+    -t epub3 -o transit-tutorial.epub
 
 build:
     npx spago build
@@ -117,7 +128,8 @@ deploy:
     just clean
     just test
     just gen
-    just gen-book 'https://m-bock.github.io/purescript-transit/'
+    just gen-site 'https://m-bock.github.io/purescript-transit/'
+    just gen-pdf
     just format
     just check-git-clean
     npx gh-pages -d site

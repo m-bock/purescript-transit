@@ -20,12 +20,7 @@ This is useful for scenarios like:
 
 Let's see how to create an update function that logs each transition using the `Writer` monad. This is just an example, you can use any monad.
 
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - Accum
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/Monadic.purs, pick: [Accum, update] } -->
 
 ```purescript
 type Accum = Array String
@@ -42,12 +37,8 @@ update = mkUpdateM @DoorTransit
   )
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L13-L24">test/Examples/Monadic.purs L13-L24</a>
-  </sup>
-</p>
+[test/Examples/Monadic.purs (lines 13-24)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L13-L24){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -61,11 +52,7 @@ The key differences from the non-monadic version are:
 
 Now we can use this monadic update function to process a sequence of messages while collecting logs:
 
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - walk
--->
+<!-- PD_START:purs { filePath: test/Examples/Monadic.purs, pick: [walk] } -->
 
 ```purescript
 walk :: Writer Accum State
@@ -77,12 +64,8 @@ walk = do
   pure s3
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L26-L32">test/Examples/Monadic.purs L26-L32</a>
-  </sup>
-</p>
+[test/Examples/Monadic.purs (lines 26-32)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L26-L32){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -90,11 +73,7 @@ Here we chain multiple state updates in a do-notation, just like any other monad
 
 Let's verify that the logs are collected correctly:
 
-<!-- PD_START:purs
-filePath: test/Examples/Monadic.purs
-pick:
-  - specLogs
--->
+<!-- PD_START:purs { filePath: test/Examples/Monadic.purs, pick: [specLogs] } -->
 
 ```purescript
 specLogs :: Spec Unit
@@ -111,12 +90,8 @@ specLogs = do
       ]
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L34-L45">test/Examples/Monadic.purs L34-L45</a>
-  </sup>
-</p>
+[test/Examples/Monadic.purs (lines 34-45)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Monadic.purs#L34-L45){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -128,11 +103,7 @@ However, sometimes you need to explicitly know whether a transition was valid or
 
 Here's an update function that only handles valid transitions:
 
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandling.purs
-pick:
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandling.purs, pick: [update] } -->
 
 ```purescript
 update :: State -> Msg -> Maybe State
@@ -145,12 +116,8 @@ update = mkUpdateMaybe @DoorTransit
   )
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L13-L20">test/Examples/ErrorHandling.purs L13-L20</a>
-  </sup>
-</p>
+[test/Examples/ErrorHandling.purs (lines 13-20)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L13-L20){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -158,11 +125,7 @@ The key difference is the return type: `State -> Msg -> Maybe State` instead of 
 
 When you call this update function with a valid state-message combination, it returns `Just` with the new state:
 
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandling.purs
-pick:
-  - specSuccess
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandling.purs, pick: [specSuccess] } -->
 
 ```purescript
 specSuccess :: Spec Unit
@@ -171,22 +134,14 @@ specSuccess = do
     update (v @"DoorOpen") (v @"Close") `shouldEqual` Just (v @"DoorClosed")
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L22-L25">test/Examples/ErrorHandling.purs L22-L25</a>
-  </sup>
-</p>
+[test/Examples/ErrorHandling.purs (lines 22-25)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L22-L25){.fileLink}
+
 
 <!-- PD_END -->
 
 But when you call it with an invalid combination (like trying to open a door that's already open), it returns `Nothing`:
 
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandling.purs
-pick:
-  - specFailure
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandling.purs, pick: [specFailure] } -->
 
 ```purescript
 specFailure :: Spec Unit
@@ -195,12 +150,8 @@ specFailure = do
     update (v @"DoorOpen") (v @"Open") `shouldEqual` Nothing
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L27-L30">test/Examples/ErrorHandling.purs L27-L30</a>
-  </sup>
-</p>
+[test/Examples/ErrorHandling.purs (lines 27-30)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandling.purs#L27-L30){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -210,12 +161,7 @@ For more advanced scenarios, you can combine error handling with monadic effects
 
 Here's an update function that logs transitions AND returns `Maybe`. Again we use the `Writer` as example, but you can use any monad you want.
 
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
-pick:
-  - Accum
-  - update
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandlingMonadic.purs, pick: [Accum, update] } -->
 
 ```purescript
 type Accum = Array String
@@ -232,12 +178,8 @@ update = mkUpdateMaybeM @DoorTransit
   )
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L15-L26">test/Examples/ErrorHandlingMonadic.purs L15-L26</a>
-  </sup>
-</p>
+[test/Examples/ErrorHandlingMonadic.purs (lines 15-26)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L15-L26){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -245,11 +187,7 @@ The return type is `m (Maybe State)` - combining the monad `m` (e.g. for effects
 
 Now let's use this in a scenario where we attempt an invalid transition in the middle of a sequence:
 
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
-pick:
-  - walk
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandlingMonadic.purs, pick: [walk] } -->
 
 ```purescript
 walk :: MaybeT (Writer Accum) State
@@ -263,12 +201,8 @@ walk = do
   pure s5
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L28-L36">test/Examples/ErrorHandlingMonadic.purs L28-L36</a>
-  </sup>
-</p>
+[test/Examples/ErrorHandlingMonadic.purs (lines 28-36)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L28-L36){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -276,11 +210,7 @@ Here we use the `MaybeT` transformer to work with the `Writer` monad while handl
 
 Let's verify that the logs only contain the transitions that actually occurred:
 
-<!-- PD_START:purs
-filePath: test/Examples/ErrorHandlingMonadic.purs
-pick:
-  - spec
--->
+<!-- PD_START:purs { filePath: test/Examples/ErrorHandlingMonadic.purs, pick: [spec] } -->
 
 ```purescript
 spec :: Spec Unit
@@ -297,12 +227,8 @@ spec = do
         ]
 ```
 
-<p align="right">
-  <sup
-    >🗎
-    <a href="https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L38-L49">test/Examples/ErrorHandlingMonadic.purs L38-L49</a>
-  </sup>
-</p>
+[test/Examples/ErrorHandlingMonadic.purs (lines 38-49)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/ErrorHandlingMonadic.purs#L38-L49){.fileLink}
+
 
 <!-- PD_END -->
 

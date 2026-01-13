@@ -128,7 +128,7 @@ generateGraphLight = do
     graph = TransitGraphviz.generate bridgesTransit _
       { theme = themeHarmonyLight
       , undirectedEdges = true
-      , fontSize = 15.0
+      , fontSize = 14.0
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-light.dot" (Graphviz.toDotStr graph)
 
@@ -139,7 +139,7 @@ generateGraphDark = do
     graph = TransitGraphviz.generate bridgesTransit _
       { theme = themeHarmonyDark
       , undirectedEdges = true
-      , fontSize = 15.0
+      , fontSize = 14.0
       }
   FS.writeTextFile UTF8 "renders/bridges-koenigsberg_graph-dark.dot" (Graphviz.toDotStr graph)
 

@@ -191,6 +191,7 @@
             "node-buffer",
             "node-event-emitter",
             "node-fs",
+            "node-glob-basic",
             "node-path",
             "node-process",
             "node-streams",
@@ -803,8 +804,7 @@
         ]
       },
       "patchdown": {
-        "git": "https://github.com/m-bock/purescript-patchdown.git",
-        "ref": "b1387f3b67448dca38b2358677361ee3c7f61570"
+        "path": "../purescript-patchdown"
       }
     }
   },
@@ -1506,6 +1506,28 @@
         "unsafe-coerce"
       ]
     },
+    "node-glob-basic": {
+      "type": "registry",
+      "version": "2.0.0",
+      "integrity": "sha256-COPsHFpqwFGOBbo3DZ4yQLp5UTNshLcINIV2P3h8g6o=",
+      "dependencies": [
+        "aff",
+        "effect",
+        "either",
+        "foldable-traversable",
+        "lists",
+        "maybe",
+        "node-fs",
+        "node-path",
+        "node-process",
+        "ordered-collections",
+        "parallel",
+        "prelude",
+        "refs",
+        "strings",
+        "tuples"
+      ]
+    },
     "node-path": {
       "type": "registry",
       "version": "5.0.1",
@@ -1697,9 +1719,8 @@
       "dependencies": []
     },
     "patchdown": {
-      "type": "git",
-      "url": "https://github.com/m-bock/purescript-patchdown.git",
-      "rev": "b1387f3b67448dca38b2358677361ee3c7f61570",
+      "type": "local",
+      "path": "../purescript-patchdown",
       "dependencies": [
         "argonaut",
         "argonaut-core",
@@ -1711,6 +1732,7 @@
         "filterable",
         "language-cst-parser",
         "node-fs",
+        "node-glob-basic",
         "node-process",
         "prelude",
         "strings-extra"

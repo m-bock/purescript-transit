@@ -1,0 +1,37 @@
+% Increase space between main text and the footnote block
+\setlength{\skip\footins}{30pt}
+
+% Increase space between individual footnotes
+\setlength{\footnotesep}{10pt}
+
+% Optional: make the rule a bit less cramped
+\renewcommand{\footnoterule}{%
+  \kern -3pt
+  \hrule width 0.4\columnwidth
+  \kern 6pt
+}
+
+\usepackage{framed}
+\usepackage{fancyvrb}
+
+% Inner padding
+\setlength{\fboxsep}{6pt}
+
+% Outer vertical margin
+\setlength{\topsep}{10pt}
+\setlength{\partopsep}{0pt}
+
+% Left / right margin (indent)
+\fvset{
+  frame=none,
+  framesep=6pt,
+  xleftmargin=1em,
+  xrightmargin=1em
+}
+
+\let\oldtableofcontents\tableofcontents
+\renewcommand{\tableofcontents}{
+  \clearpage
+  \oldtableofcontents
+  \clearpage
+}

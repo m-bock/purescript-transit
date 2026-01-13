@@ -22,6 +22,18 @@
             pandoc
             graphviz
             just
+            noto-fonts-color-emoji
+            noto-fonts
+            librsvg
+            (pkgs.texlive.withPackages (ps: with ps; [
+              scheme-small
+              xetex
+              newunicodechar
+              fontspec
+              svg
+              transparent
+              framed
+            ]))
           ];
         };
       });

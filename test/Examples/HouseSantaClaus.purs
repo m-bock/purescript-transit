@@ -123,7 +123,7 @@ generateGraphLight = do
           , { node: "5", pos: units2D 1 4, exact: true }
           ]
       , fixedNodeSize = pure $ units2D 1 1
-      , fontSize = 16.0
+      , fontSize = 14.0
       }
 
   FS.writeTextFile UTF8
@@ -145,7 +145,7 @@ generateGraphDark = do
           , { node: "5", pos: units2D 1 4, exact: true }
           ]
       , fixedNodeSize = pure $ units2D 1 1
-      , fontSize = 16.0
+      , fontSize = 14.0
       }
 
   FS.writeTextFile UTF8
