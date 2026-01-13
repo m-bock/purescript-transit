@@ -63,6 +63,7 @@ data Msg
 
 [test/Examples/Classic/Door.purs (lines 14-20)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L14-L20){.fileLink}
 
+
 <!-- PD_END -->
 
 The `State` type captures the two possible states we saw in the diagram: `DoorOpen` and `DoorClosed`. The `Msg` type represents the two actions: `Close` and `Open`. These correspond directly to what we visualized earlier — each state and each transition from the diagram has a corresponding value in these types.
@@ -83,6 +84,7 @@ update state msg =
 ```
 
 [test/Examples/Classic/Door.purs (lines 22-27)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Classic/Door.purs#L22-L27){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -120,6 +122,7 @@ type Msg = Variant
 
 [test/Examples/Door.purs (lines 27-35)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L27-L35){.fileLink}
 
+
 <!-- PD_END -->
 
 The empty record `{}` is used to represent the absence of any data (payload) associated with the state or message.
@@ -138,6 +141,7 @@ type DoorTransit =
 ```
 
 [test/Examples/Door.purs (lines 37-40)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L37-L40){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -165,6 +169,7 @@ update = mkUpdate @DoorTransit
 ```
 
 [test/Examples/Door.purs (lines 42-45)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L42-L45){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -274,6 +279,7 @@ specWalk1 =
 
 [test/Examples/Door.purs (lines 54-59)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L54-L59){.fileLink}
 
+
 <!-- PD_END -->
 
 This test starts with the door open, closes it, opens it, then closes it again. It checks that we end up with the door closed, as expected.
@@ -292,6 +298,7 @@ specWalk2 =
 ```
 
 [test/Examples/Door.purs (lines 61-66)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L61-L66){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -328,6 +335,7 @@ assertWalk updateFn initState walk = do
 
 [test/Examples/Common.purs (lines 40-59)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Common.purs#L40-L59){.fileLink}
 
+
 <!-- PD_END -->
 
 The function extracts the messages from the pairs, applies them sequentially using `scanl`, and verifies that the resulting states match the expected ones. Here's how we use it:
@@ -352,6 +360,7 @@ specWalk3 =
 
 [test/Examples/Door.purs (lines 68-80)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L68-L80){.fileLink}
 
+
 <!-- PD_END -->
 
 The `~>` operator is an infix alias for `Tuple`. So `v @"Close" ~> v @"DoorClosed"` is equivalent to `Tuple (v @"Close") (v @"DoorClosed")`.
@@ -370,6 +379,7 @@ doorTransit = reflectType (Proxy @DoorTransit)
 ```
 
 [test/Examples/Door.purs (lines 47-48)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L47-L48){.fileLink}
+
 
 <!-- PD_END -->
 
@@ -409,6 +419,7 @@ generateGraphDark =
 
 [test/Examples/Door.purs (lines 104-113)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L104-L113){.fileLink}
 
+
 <!-- PD_END -->
 
 **Generated Output**: This code produces the diagram we examined at the beginning of this example.
@@ -444,6 +455,7 @@ generateTable = do
 ```
 
 [test/Examples/Door.purs (lines 115-121)](https://github.com/m-bock/purescript-transit/blob/main/test/Examples/Door.purs#L115-L121){.fileLink}
+
 
 <!-- PD_END -->
 
