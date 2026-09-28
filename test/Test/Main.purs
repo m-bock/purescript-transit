@@ -22,6 +22,7 @@ import Test.Transit.Class.MkUpdate as Test.Transit.Class.MkUpdate
 import Test.Transit.HandlerLookup as Test.Transit.HandlerLookup
 import Test.Transit.DSL as Test.Transit.DSL
 import Test.Transit.VariantUtils as Test.Transit.VariantUtils
+import Test.Transit.Apply as Test.Transit.Apply
 
 main :: Effect Unit
 main = do
@@ -43,3 +44,4 @@ main = do
     Test.Transit.HandlerLookup.spec
     Test.Transit.DSL.spec
     Test.Transit.VariantUtils.spec
+    Test.Transit.Apply.spec
